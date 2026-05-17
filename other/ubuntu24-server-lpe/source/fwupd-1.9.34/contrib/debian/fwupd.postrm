@@ -1,9 +1,0 @@
-#!/bin/sh
-set -e
-
-#DEBHELPER#
-
-if [ "$1" = purge ]; then
-	rm -rf /var/lib/fwupd /var/cache/fwupd /var/cache/fwupdmgr
-	rm -f /var/cache/app-info/xmls/fwupd.xml
-fi

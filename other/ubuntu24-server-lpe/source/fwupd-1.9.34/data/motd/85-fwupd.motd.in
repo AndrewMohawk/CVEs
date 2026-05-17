@@ -1,5 +1,0 @@
-#!/bin/sh
-
-if [ -f @motd_fullpath@ ]; then
-        cat @motd_fullpath@
-fi

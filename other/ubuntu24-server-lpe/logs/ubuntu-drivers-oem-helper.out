@@ -1,403 +1,0 @@
-ubuntu-drivers/update-notifier OEM helper probe
-target=ubuntu24-server-lpe-target attacker=attacker selfauth=selfauth
-2026-05-16T13:26:30-0400
-
-$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== release and users =="\ncat /etc/os-release | sed -n "1,8p"\nuname -a\nid attacker\nid selfauth\n\necho\necho "== default package status =="\ndpkg-query -W -f="\\${binary:Package}\\t\\${Version}\\t\\${db:Status-Abbrev}\\n" \\\n  ubuntu-drivers-common update-notifier update-notifier-common update-manager-core \\\n  ubuntu-release-upgrader-core python3-apt python3-gi 2>&1 || true\napt-cache policy ubuntu-drivers-common update-notifier update-notifier-common 2>/dev/null | sed -n "1,80p" || true\n\necho\necho "== command/module presence =="\ncommand -v ubuntu-drivers || echo "ubuntu-drivers=ABSENT"\ncommand -v list-oem-metapackages || echo "list-oem-metapackages=not-on-PATH"\n[ -x /usr/lib/update-notifier/list-oem-metapackages ] && echo "list-oem-helper=/usr/lib/update-notifier/list-oem-metapackages"\npython3 - <<\'PY\'\nimport importlib.util\nfor name in ("UbuntuDrivers", "UbuntuDrivers.detect", "apt", "apt_pkg", "gi"):\n    try:\n        spec = importlib.util.find_spec(name)\n    except Exception as exc:\n        print(f"{name}=ERROR:{exc.__class__.__name__}:{exc}")\n    else:\n        print(f"{name}={spec.origin if spec else \'MISSING\'}")\nPY\n'
-== release and users ==
-PRETTY_NAME="Ubuntu 24.04.4 LTS"
-NAME="Ubuntu"
-VERSION_ID="24.04"
-VERSION="24.04.4 LTS (Noble Numbat)"
-VERSION_CODENAME=noble
-ID=ubuntu
-ID_LIKE=debian
-HOME_URL="https://www.ubuntu.com/"
-Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
-uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
-uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
-
-== default package status ==
-dpkg-query: no packages found matching ubuntu-drivers-common
-python3-apt	2.7.7ubuntu5.2	ii 
-python3-gi	3.48.2-1	ii 
-ubuntu-release-upgrader-core	1:24.04.28	ii 
-update-manager-core	1:24.04.12	ii 
-update-notifier		un 
-update-notifier-common	3.192.68.2	ii 
-ubuntu-drivers-common:
-  Installed: (none)
-  Candidate: 1:0.9.7.6ubuntu3.7
-  Version table:
-     1:0.9.7.6ubuntu3.7 500
-        500 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages
-     1:0.9.7.6ubuntu3 500
-        500 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages
-update-notifier:
-  Installed: (none)
-  Candidate: 3.192.68.2
-  Version table:
-     3.192.68.2 500
-        500 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages
-     3.192.68build3 500
-        500 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages
-update-notifier-common:
-  Installed: 3.192.68.2
-  Candidate: 3.192.68.2
-  Version table:
- *** 3.192.68.2 500
-        500 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages
-        100 /var/lib/dpkg/status
-     3.192.68build3 500
-        500 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages
-
-== command/module presence ==
-ubuntu-drivers=ABSENT
-list-oem-metapackages=not-on-PATH
-list-oem-helper=/usr/lib/update-notifier/list-oem-metapackages
-UbuntuDrivers=MISSING
-UbuntuDrivers.detect=ERROR:ModuleNotFoundError:No module named 'UbuntuDrivers'
-apt=/usr/lib/python3/dist-packages/apt/__init__.py
-apt_pkg=/usr/lib/python3/dist-packages/apt_pkg.cpython-312-aarch64-linux-gnu.so
-gi=/usr/lib/python3/dist-packages/gi/__init__.py
-rc=0
-
-$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== helper source =="\nnl -ba /usr/lib/update-notifier/list-oem-metapackages | sed -n "1,90p"\n\necho\necho "== root update-notifier units and apt hooks =="\nsystemctl cat update-notifier-download.service update-notifier-download.timer \\\n  update-notifier-motd.service update-notifier-motd.timer --no-pager 2>&1 || true\necho\nsystemctl show update-notifier-download.service update-notifier-motd.service \\\n  -p Id -p LoadState -p ActiveState -p User -p Group -p ExecStart \\\n  -p Environment -p WorkingDirectory -p FragmentPath --no-pager 2>&1 || true\necho\nfor f in /etc/apt/apt.conf.d/99update-notifier /etc/update-motd.d/90-updates-available \\\n  /etc/update-motd.d/91-release-upgrade /etc/update-motd.d/95-hwe-eol \\\n  /etc/update-motd.d/98-fsck-at-reboot /etc/update-motd.d/98-reboot-required; do\n  [ -e "$f" ] && echo "--- $f" && nl -ba "$f" | sed -n "1,120p"\ndone\n'
-== helper source ==
-     1	#!/usr/bin/python3
-     2	
-     3	import fnmatch
-     4	import os
-     5	import sys
-     6	
-     7	import apt
-     8	import UbuntuDrivers.detect
-     9	from gi.repository import GLib
-    10	
-    11	import apt_pkg
-    12	
-    13	STAMP_FILE = os.path.join(
-    14	    GLib.get_user_runtime_dir(), "ubuntu-drivers-oem.package-list"
-    15	)
-    16	
-    17	
-    18	def any_oem_metapackages_installed(cache):
-    19	    installed_oem_packages = (
-    20	        pkg
-    21	        for pkg in cache.packages
-    22	        if fnmatch.fnmatch(pkg.name, "oem-*-meta") and pkg.current_ver
-    23	    )
-    24	
-    25	    # Empty if there are no installed OEM packages
-    26	    return any((True for _ in installed_oem_packages))
-    27	
-    28	
-    29	def write_oem_metapackage_list(cache, filename):
-    30	    packages = UbuntuDrivers.detect.system_device_specific_metapackages(
-    31	        apt_cache=cache
-    32	    )
-    33	
-    34	    if not packages:
-    35	        return
-    36	
-    37	    with open(STAMP_FILE, "w") as f:
-    38	        f.write("\n".join(packages))
-    39	
-    40	
-    41	if __name__ == "__main__":
-    42	    if os.path.exists(STAMP_FILE):
-    43	        sys.exit(0)
-    44	
-    45	    try:
-    46	        cache = apt_pkg.Cache()
-    47	    except apt_pkg.Error:  # broken things in sources.list, or corrupted list files
-    48	        print(
-    49	            "ERROR: Can't look into APT cache. Check your sources.list file(s), run `apt update` and try again",
-    50	            file=sys.stderr,
-    51	        )
-    52	        sys.exit(0)
-    53	
-    54	    if any_oem_metapackages_installed(cache):
-    55	        sys.exit(0)
-    56	
-    57	    write_oem_metapackage_list(cache, STAMP_FILE)
-
-== root update-notifier units and apt hooks ==
-# /usr/lib/systemd/system/update-notifier-download.service
-[Unit]
-Description=Download data for packages that failed at package install time
-ConditionFileIsExecutable=/usr/lib/update-notifier/package-data-downloader
-
-[Service]
-ExecStart=/usr/lib/update-notifier/package-data-downloader
-Type=oneshot
-
-# /usr/lib/systemd/system/update-notifier-download.timer
-[Unit]
-Description=Download data for packages that failed at package install time
-After=network.target network-online.target systemd-networkd.service NetworkManager.service connman.service
-
-[Timer]
-OnStartupSec=5m
-OnUnitActiveSec=24h
-
-[Install]
-WantedBy=timers.target
-
-# /usr/lib/systemd/system/update-notifier-motd.service
-[Unit]
-Description=Check to see whether there is a new version of Ubuntu available
-ConditionFileIsExecutable=/usr/lib/ubuntu-release-upgrader/release-upgrade-motd
-
-[Service]
-ExecStart=/usr/lib/ubuntu-release-upgrader/release-upgrade-motd
-Type=oneshot
-
-# /usr/lib/systemd/system/update-notifier-motd.timer
-[Unit]
-Description=Check to see whether there is a new version of Ubuntu available
-After=network.target network-online.target systemd-networkd.service NetworkManager.service connman.service
-
-[Timer]
-OnCalendar=Sun *-*-* 06:00:00
-RandomizedDelaySec=1w
-Persistent=true
-
-[Install]
-WantedBy=timers.target
-
-ExecStart={ path=/usr/lib/update-notifier/package-data-downloader ; argv[]=/usr/lib/update-notifier/package-data-downloader ; ignore_errors=no ; start_time=[Sat 2026-05-16 17:25:40 UTC] ; stop_time=[Sat 2026-05-16 17:25:40 UTC] ; pid=748793 ; code=exited ; status=0 }
-Environment=
-WorkingDirectory=
-User=
-Group=
-Id=update-notifier-download.service
-LoadState=loaded
-ActiveState=inactive
-FragmentPath=/usr/lib/systemd/system/update-notifier-download.service
-
-ExecStart={ path=/usr/lib/ubuntu-release-upgrader/release-upgrade-motd ; argv[]=/usr/lib/ubuntu-release-upgrader/release-upgrade-motd ; ignore_errors=no ; start_time=[Sat 2026-05-16 17:25:40 UTC] ; stop_time=[Sat 2026-05-16 17:25:40 UTC] ; pid=748794 ; code=exited ; status=0 }
-Environment=
-WorkingDirectory=
-User=
-Group=
-Id=update-notifier-motd.service
-LoadState=loaded
-ActiveState=inactive
-FragmentPath=/usr/lib/systemd/system/update-notifier-motd.service
-
---- /etc/apt/apt.conf.d/99update-notifier
-     1	DPkg::Post-Invoke {"if [ -d /var/lib/update-notifier ]; then touch /var/lib/update-notifier/dpkg-run-stamp; fi; /usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";};
-     2	APT::Update::Post-Invoke-Success {"/usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";};
---- /etc/update-motd.d/90-updates-available
-     1	#!/bin/sh
-     2	
-     3	stamp="/var/lib/update-notifier/updates-available"
-     4	
-     5	[ ! -r "$stamp" ] || cat "$stamp"
-     6	
-     7	find $stamp -newermt 'now-7 days' 2> /dev/null | grep -q -m 1 '.' || /usr/share/update-notifier/notify-updates-outdated
---- /etc/update-motd.d/91-release-upgrade
-     1	#!/bin/sh
-     2	
-     3	# if the current release is under development there won't be a new one
-     4	[ -r /etc/lsb-release ] && . /etc/lsb-release
-     5	if [ -z "$DISTRIB_DESCRIPTION" ] && command -v lsb_release > /dev/null; then
-     6	    DISTRIB_DESCRIPTION=$(lsb_release -s -d)
-     7	fi
-     8	
-     9	if [ "$(echo "$DISTRIB_DESCRIPTION" | cut -d' ' -f4)" = "(development" ]; then
-    10	    exit 0
-    11	fi
-    12	
-    13	# if it is non-root user, skip
-    14	if [ $(id -u) -ne 0 ]; then
-    15	    exit 0
-    16	fi
-    17	
-    18	if [ -x /usr/lib/ubuntu-release-upgrader/release-upgrade-motd ]; then
-    19	    exec /usr/lib/ubuntu-release-upgrader/release-upgrade-motd
-    20	fi
---- /etc/update-motd.d/95-hwe-eol
-     1	#!/bin/sh
-     2	
-     3	# this stamp is created and updated by /usr/lib/update-notifier/update-motd-hwe-eol
-     4	stamp="/var/lib/update-notifier/hwe-eol"
-     5	
-     6	# do not try to refresh this more than once per day
-     7	[ -z "$(find "$stamp" -newermt 'now-1 days' 2> /dev/null)" ] && exit 0
-     8	
-     9	if [ -x /usr/lib/update-notifier/update-motd-hwe-eol ]; then
-    10	    exec /usr/lib/update-notifier/update-motd-hwe-eol
-    11	fi
---- /etc/update-motd.d/98-fsck-at-reboot
-     1	#!/bin/sh
-     2	
-     3	if [ -x /usr/lib/update-notifier/update-motd-fsck-at-reboot ]; then
-     4	    exec /usr/lib/update-notifier/update-motd-fsck-at-reboot
-     5	fi
---- /etc/update-motd.d/98-reboot-required
-     1	#!/bin/sh
-     2	
-     3	if [ -x /usr/lib/update-notifier/update-motd-reboot-required ]; then
-     4	    exec /usr/lib/update-notifier/update-motd-reboot-required
-     5	fi
-rc=0
-
-$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== references to OEM helper/runtime file =="\ngrep -RInE "list-oem-metapackages|ubuntu-drivers-oem\\\\.package-list|UbuntuDrivers|ubuntu-drivers|system_device_specific_metapackages|GLib.get_user_runtime_dir|XDG_RUNTIME_DIR" \\\n  /etc /usr/lib /usr/share /var/lib/dpkg/info 2>/dev/null | sed -n "1,240p" || true\n'
-== references to OEM helper/runtime file ==
-/etc/apparmor.d/usr.lib.snapd.snap-confine.real:452:    # for creating the user XDG_RUNTIME_DIR: /run/user, /run/user/UID and
-/etc/X11/Xsession.d/20dbus_xdg-runtime:3:if [ -z "$DBUS_SESSION_BUS_ADDRESS" ] && [ -n "$XDG_RUNTIME_DIR" ] && \
-/etc/X11/Xsession.d/20dbus_xdg-runtime:4:    [ "$XDG_RUNTIME_DIR" = "/run/user/`id -u`" ] && \
-/etc/X11/Xsession.d/20dbus_xdg-runtime:5:    [ -S "$XDG_RUNTIME_DIR/bus" ]; then
-/etc/X11/Xsession.d/20dbus_xdg-runtime:11:  # XDG_RUNTIME_DIR = "/run/user/`id -u`" is because we know that
-/etc/X11/Xsession.d/20dbus_xdg-runtime:14:  DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
-/usr/lib/systemd/catalog/systemd.catalog:300:Subject: User manager failed to determine $XDG_RUNTIME_DIR path
-/usr/lib/openssh/agent-launch:8:if [ ! -d "$XDG_RUNTIME_DIR" ]; then
-/usr/lib/openssh/agent-launch:10:    echo 'This needs $XDG_RUNTIME_DIR to be set' >&2
-/usr/lib/openssh/agent-launch:36:        S="$XDG_RUNTIME_DIR/openssh_agent"
-/usr/lib/python3/dist-packages/DistUpgrade/DistUpgradeQuirks.py:989:        """ copied from ubuntu-drivers common """
-/usr/lib/python3/dist-packages/DistUpgrade/DistUpgradeQuirks.py:1006:            copied from ubuntu-drivers-common
-/usr/lib/python3/dist-packages/DistUpgrade/DistUpgradeCache.py:553:            nv = NvidiaDetection(obsolete="./ubuntu-drivers-obsolete.pkgs")
-/usr/lib/python3/dist-packages/sos/report/plugins/x11.py:47:            'XDG_RUNTIME_DIR',
-/usr/lib/python3/dist-packages/pkg_resources/_vendor/platformdirs/unix.py:134:         ``$XDG_RUNTIME_DIR/$appname/$version``
-/usr/lib/python3/dist-packages/pkg_resources/_vendor/platformdirs/unix.py:136:        path = os.environ.get("XDG_RUNTIME_DIR", "")
-/usr/lib/python3/dist-packages/apport/report.py:825:        anonymize_vars = {"LD_LIBRARY_PATH", "LD_PRELOAD", "XDG_RUNTIME_DIR"}
-/usr/lib/update-notifier/list-oem-metapackages:8:import UbuntuDrivers.detect
-/usr/lib/update-notifier/list-oem-metapackages:14:    GLib.get_user_runtime_dir(), "ubuntu-drivers-oem.package-list"
-/usr/lib/update-notifier/list-oem-metapackages:30:    packages = UbuntuDrivers.detect.system_device_specific_metapackages(
-/var/lib/dpkg/info/update-notifier-common.list:31:/usr/lib/update-notifier/list-oem-metapackages
-/var/lib/dpkg/info/update-notifier-common.md5sums:9:47efa72308a5be295fdfbb6a5660ff4a  usr/lib/update-notifier/list-oem-metapackages
-rc=0
-
-$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== writable/default cache and package-data paths =="\nfor p in \\\n  /usr/lib/update-notifier/list-oem-metapackages \\\n  /usr/share/package-data-downloads \\\n  /var/lib/update-notifier \\\n  /var/lib/update-notifier/user.d \\\n  /var/lib/update-notifier/package-data-downloads \\\n  /var/lib/update-notifier/package-data-downloads/partial \\\n  /var/lib/ubuntu-drivers-common \\\n  /var/cache/ubuntu-drivers-common \\\n  /run/user/1001 \\\n  /run/user/1002 \\\n  /tmp; do\n  [ -e "$p" ] && stat -Lc "%A %U:%G %n" "$p" || echo "MISSING $p"\ndone\necho\necho "attacker write attempts:"\nfor p in \\\n  /usr/share/package-data-downloads/attacker-oem-probe \\\n  /var/lib/update-notifier/attacker-oem-probe \\\n  /var/lib/update-notifier/user.d/attacker-oem-probe \\\n  /var/lib/update-notifier/package-data-downloads/attacker-oem-probe \\\n  /var/lib/ubuntu-drivers-common/attacker-oem-probe \\\n  /var/cache/ubuntu-drivers-common/attacker-oem-probe; do\n  runuser -u attacker -- sh -c "touch \\"\\$1\\"" sh "$p" 2>&1 && echo "WRITE_OK $p" || echo "WRITE_DENIED $p"\ndone\nfind /etc /run /var/lib /var/cache /usr/lib /usr/share -xdev \\( -iname "*ubuntu-drivers*" -o -iname "*oem*" \\) \\\n  -maxdepth 5 -printf "%M %u:%g %p\\n" 2>/dev/null | sort | sed -n "1,200p"\n'
-== writable/default cache and package-data paths ==
--rwxr-xr-x root:root /usr/lib/update-notifier/list-oem-metapackages
-drwxr-xr-x root:root /usr/share/package-data-downloads
-drwxr-xr-x root:root /var/lib/update-notifier
-drwxr-xr-x root:root /var/lib/update-notifier/user.d
-drwxr-xr-x root:root /var/lib/update-notifier/package-data-downloads
-drwx------ _apt:root /var/lib/update-notifier/package-data-downloads/partial
-MISSING /var/lib/ubuntu-drivers-common
-MISSING /var/cache/ubuntu-drivers-common
-MISSING /run/user/1001
-MISSING /run/user/1002
-drwxrwxrwt root:root /tmp
-
-attacker write attempts:
-touch: cannot touch '/usr/share/package-data-downloads/attacker-oem-probe': Permission denied
-WRITE_DENIED /usr/share/package-data-downloads/attacker-oem-probe
-touch: cannot touch '/var/lib/update-notifier/attacker-oem-probe': Permission denied
-WRITE_DENIED /var/lib/update-notifier/attacker-oem-probe
-touch: cannot touch '/var/lib/update-notifier/user.d/attacker-oem-probe': Permission denied
-WRITE_DENIED /var/lib/update-notifier/user.d/attacker-oem-probe
-touch: cannot touch '/var/lib/update-notifier/package-data-downloads/attacker-oem-probe': Permission denied
-WRITE_DENIED /var/lib/update-notifier/package-data-downloads/attacker-oem-probe
-touch: cannot touch '/var/lib/ubuntu-drivers-common/attacker-oem-probe': No such file or directory
-WRITE_DENIED /var/lib/ubuntu-drivers-common/attacker-oem-probe
-touch: cannot touch '/var/cache/ubuntu-drivers-common/attacker-oem-probe': No such file or directory
-WRITE_DENIED /var/cache/ubuntu-drivers-common/attacker-oem-probe
--rw-r--r-- root:root /usr/lib/multipath/libprioemc.so
--rw-r--r-- root:root /usr/lib/python3.12/encodings/__pycache__/oem.cpython-312.pyc
--rw-r--r-- root:root /usr/lib/python3.12/encodings/oem.py
--rwxr-xr-x root:root /usr/lib/update-notifier/list-oem-metapackages
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-meta-oem-6.10.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-meta-oem-6.11.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-meta-oem-6.14.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-meta-oem-6.17.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-meta-oem-6.8.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-meta-oem-7.0.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-meta-oem-osp1.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-meta-oem.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-oem-6.10.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-oem-6.11.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-oem-6.14.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-oem-6.17.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-oem-6.8.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-oem-7.0.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-oem-osp1.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-oem.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-restricted-modules-oem-6.10.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-restricted-modules-oem-6.11.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-restricted-modules-oem-6.14.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-restricted-modules-oem-6.17.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-restricted-modules-oem-6.8.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-restricted-modules-oem-7.0.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-signed-oem-6.10.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-signed-oem-6.11.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-signed-oem-6.14.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-signed-oem-6.17.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-signed-oem-6.8.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-signed-oem-7.0.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-signed-oem-osp1.py
-lrwxrwxrwx root:root /usr/share/apport/package-hooks/source_linux-signed-oem.py
-rc=0
-
-$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== direct helper execution in default state =="\nset +e\n/usr/lib/update-notifier/list-oem-metapackages 2>&1\nroot_rc=$?\nrunuser -u attacker -- env -i HOME=/home/attacker USER=attacker LOGNAME=attacker \\\n  PATH=/usr/sbin:/usr/bin:/sbin:/bin /usr/lib/update-notifier/list-oem-metapackages 2>&1\nattacker_rc=$?\nset -e\necho "root_rc=$root_rc"\necho "attacker_rc=$attacker_rc"\n'
-== direct helper execution in default state ==
-Traceback (most recent call last):
-  File "/usr/lib/update-notifier/list-oem-metapackages", line 8, in <module>
-    import UbuntuDrivers.detect
-ModuleNotFoundError: No module named 'UbuntuDrivers'
-Traceback (most recent call last):
-  File "/usr/lib/update-notifier/list-oem-metapackages", line 8, in <module>
-    import UbuntuDrivers.detect
-ModuleNotFoundError: No module named 'UbuntuDrivers'
-root_rc=1
-attacker_rc=1
-rc=0
-
-$ docker exec ubuntu24-server-lpe-target runuser -u attacker -- bash -lc $'\nset -euo pipefail\necho "== direct attacker-controlled runtime/import proof =="\nwork=/home/attacker/ubuntu-drivers-oem-probe\nrm -rf "$work"\nmkdir -p "$work/UbuntuDrivers" "$work/runtime"\nchmod 700 "$work/runtime"\ncat > "$work/UbuntuDrivers/__init__.py" <<PY\nPY\ncat > "$work/UbuntuDrivers/detect.py" <<PY\nimport os\nwith open("/home/attacker/ubuntu-drivers-oem-probe/import-marker", "a") as f:\n    f.write("uid=%s euid=%s\\\\n" % (os.getuid(), os.geteuid()))\ndef system_device_specific_metapackages(apt_cache=None):\n    return ["oem-attacker-direct-meta"]\nPY\nset +e\nenv -i HOME=/home/attacker USER=attacker LOGNAME=attacker PATH=/usr/sbin:/usr/bin:/sbin:/bin \\\n  PYTHONPATH="$work" XDG_RUNTIME_DIR="$work/runtime" \\\n  /usr/lib/update-notifier/list-oem-metapackages 2>&1\ndirect_rc=$?\nset -e\necho "direct_rc=$direct_rc"\nfind "$work" -maxdepth 3 -printf "%M %u:%g %p\\n" | sort\necho "--- import marker"\ncat "$work/import-marker" 2>/dev/null || true; echo\necho "--- package list"\ncat "$work/runtime/ubuntu-drivers-oem.package-list" 2>/dev/null || true; echo\n'
-== direct attacker-controlled runtime/import proof ==
-Reading package lists... 0%Reading package lists... 0%Reading package lists... 0%Reading package lists... 4%Reading package lists... 4%Reading package lists... 45%Reading package lists... 45%Reading package lists... 45%Reading package lists... 45%Reading package lists... 46%Reading package lists... 46%Reading package lists... 52%Reading package lists... 52%Reading package lists... 58%Reading package lists... 58%Reading package lists... 74%Reading package lists... 74%Reading package lists... 74%Reading package lists... 74%Reading package lists... 74%Reading package lists... 74%Reading package lists... 74%Reading package lists... 74%Reading package lists... 74%Reading package lists... 74%Reading package lists... 75%Reading package lists... 80%Reading package lists... 80%Reading package lists... 84%Reading package lists... 84%Reading package lists... 99%Reading package lists... 99%Reading package lists... 99%Reading package lists... 99%Reading package lists... Done
-Building dependency tree... 0%Building dependency tree... 0%Building dependency tree... 50%Building dependency tree... 50%Building dependency tree... Done
-Reading state information... 0% Reading state information... 0%Reading state information... Done
-direct_rc=0
--rw-r--r-- attacker:attacker /home/attacker/ubuntu-drivers-oem-probe/UbuntuDrivers/__init__.py
--rw-r--r-- attacker:attacker /home/attacker/ubuntu-drivers-oem-probe/UbuntuDrivers/__pycache__/__init__.cpython-312.pyc
--rw-r--r-- attacker:attacker /home/attacker/ubuntu-drivers-oem-probe/UbuntuDrivers/__pycache__/detect.cpython-312.pyc
--rw-r--r-- attacker:attacker /home/attacker/ubuntu-drivers-oem-probe/UbuntuDrivers/detect.py
--rw-r--r-- attacker:attacker /home/attacker/ubuntu-drivers-oem-probe/import-marker
--rw-r--r-- attacker:attacker /home/attacker/ubuntu-drivers-oem-probe/runtime/ubuntu-drivers-oem.package-list
-drwx------ attacker:attacker /home/attacker/ubuntu-drivers-oem-probe/runtime
-drwxr-xr-x attacker:attacker /home/attacker/ubuntu-drivers-oem-probe
-drwxr-xr-x attacker:attacker /home/attacker/ubuntu-drivers-oem-probe/UbuntuDrivers
-drwxr-xr-x attacker:attacker /home/attacker/ubuntu-drivers-oem-probe/UbuntuDrivers/__pycache__
---- import marker
-uid=1001 euid=1001
-
---- package list
-oem-attacker-direct-meta
-rc=0
-
-$ docker exec ubuntu24-server-lpe-target runuser -u attacker -- bash -lc $'\nset -euo pipefail\necho "== unprivileged root-service trigger attempts =="\nset +e\nsystemctl start update-notifier-download.service 2>&1\ndownload_start_rc=$?\nsystemctl start update-notifier-motd.service 2>&1\nmotd_start_rc=$?\nset -e\necho "download_start_rc=$download_start_rc"\necho "motd_start_rc=$motd_start_rc"\n'
-== unprivileged root-service trigger attempts ==
-Failed to start update-notifier-download.service: Interactive authentication required.
-See system logs and 'systemctl status update-notifier-download.service' for details.
-Failed to start update-notifier-motd.service: Interactive authentication required.
-See system logs and 'systemctl status update-notifier-motd.service' for details.
-download_start_rc=1
-motd_start_rc=1
-rc=0
-
-$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== root service execution proof =="\nrm -f /root/ubuntu-drivers-oem-helper-root-marker\nsystemctl reset-failed update-notifier-download.service update-notifier-motd.service 2>/dev/null || true\nsystemctl start update-notifier-download.service update-notifier-motd.service 2>&1 || true\nsystemctl show update-notifier-download.service update-notifier-motd.service \\\n  -p Id -p ActiveState -p Result -p ExecMainCode -p ExecMainStatus --no-pager 2>&1 || true\nif [ -e /root/ubuntu-drivers-oem-helper-root-marker ]; then\n  echo "ROOT_MARKER_PRESENT"\n  stat -Lc "%A %U:%G %n" /root/ubuntu-drivers-oem-helper-root-marker\nelse\n  echo "ROOT_MARKER_ABSENT"\nfi\n'
-== root service execution proof ==
-Result=success
-ExecMainCode=1
-ExecMainStatus=0
-Id=update-notifier-download.service
-ActiveState=inactive
-
-Result=success
-ExecMainCode=1
-ExecMainStatus=0
-Id=update-notifier-motd.service
-ActiveState=inactive
-ROOT_MARKER_ABSENT
-rc=0
-
-$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== cleanup =="\nrm -rf /home/attacker/ubuntu-drivers-oem-probe\nrm -f /root/ubuntu-drivers-oem-helper-root-marker\nfind /home/attacker /tmp /root -maxdepth 2 \\( -name "*ubuntu-drivers-oem*" -o -name "*oemprobe*" \\) -printf "%M %u:%g %p\\n" 2>/dev/null || true\nsystemctl is-system-running || true\nsystemctl --failed --no-legend || true\n'
-== cleanup ==
-running
-rc=0
-
-RESULT: no validated uid1001/uid1002-to-root LPE in this lane

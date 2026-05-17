@@ -1,2 +1,0 @@
-leak:Esys_Initialize
-leak:OPENSSL_init_ssl

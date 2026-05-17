@@ -1,4 +1,0 @@
-[BLUETOOTH\VID_0461&PID_4EEE&REV_0001]
-Plugin = test_ble
-[BLUETOOTH\VID_0461&PID_4EEF&REV_0001]
-Plugin = test_ble

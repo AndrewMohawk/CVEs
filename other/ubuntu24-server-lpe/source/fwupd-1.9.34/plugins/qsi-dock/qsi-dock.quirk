@@ -1,3 +1,0 @@
-[USB\VID_047D&PID_808D]
-Plugin = qsi_dock
-GType = FuQsiDockMcuDevice

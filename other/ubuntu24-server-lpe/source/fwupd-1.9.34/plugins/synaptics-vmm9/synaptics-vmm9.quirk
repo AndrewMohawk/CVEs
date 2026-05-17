@@ -1,4 +1,0 @@
-# VMM9430 EVB
-[USB\VID_06CB&PID_9430]
-Plugin = synaptics_vmm9
-Name = VMM9430 EVB

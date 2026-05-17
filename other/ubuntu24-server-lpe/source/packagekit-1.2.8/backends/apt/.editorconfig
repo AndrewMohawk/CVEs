@@ -1,5 +1,0 @@
-# See https://editorconfig.org/
-
-[*.{h,cpp}]
-indent_style = space
-indent_size = 4

@@ -1,0 +1,495 @@
+== host/container proof ==
+utc=2026-05-16T21:17:32Z
+container=/ubuntu24-server-lpe-target id=508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b image=ubuntu24-server-default-lpe:20260516-standard status=running started=2026-05-16T20:04:41.15534196Z
+
+== os, attacker, and package versions ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+apport	2.28.1-0ubuntu3.8	ii 
+apport-core-dump-handler	2.28.1-0ubuntu3.8	ii 
+dmeventd	2:1.02.185-3ubuntu3.2	ii 
+dmsetup	2:1.02.185-3ubuntu3.2	ii 
+libuuid1:arm64	2.39.3-9ubuntu6.5	ii 
+lvm2	2.03.16-3ubuntu3.2	ii 
+python3-apport	2.28.1-0ubuntu3.8	ii 
+systemd	255.4-1ubuntu8.15	ii 
+udev	255.4-1ubuntu8.15	ii 
+util-linux	2.39.3-9ubuntu6.5	ii 
+uuid-runtime	2.39.3-9ubuntu6.5	ii 
+
+== unit reachability and activation mapping ==
+-- uuidd.socket status --
+* uuidd.socket - UUID daemon activation socket
+     Loaded: loaded (/usr/lib/systemd/system/uuidd.socket; enabled; preset: enabled)
+     Active: active (listening) since Sat 2026-05-16 20:04:41 UTC; 1h 12min ago
+   Triggers: * uuidd.service
+     Listen: /run/uuidd/request (Stream)
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/uuidd.socket
+
+May 16 20:04:41 508d797cbad0 systemd[1]: Listening on uuidd.socket - UUID daemon activation socket.
+-- uuidd.socket unit --
+# /usr/lib/systemd/system/uuidd.socket
+[Unit]
+Description=UUID daemon activation socket
+
+[Socket]
+ListenStream=/run/uuidd/request
+
+[Install]
+WantedBy=sockets.target
+-- uuidd.service status --
+* uuidd.service - Daemon for generating UUIDs
+     Loaded: loaded (/usr/lib/systemd/system/uuidd.service; indirect; preset: enabled)
+     Active: inactive (dead)
+TriggeredBy: * uuidd.socket
+       Docs: man:uuidd(8)
+-- uuidd.service unit --
+# /usr/lib/systemd/system/uuidd.service
+[Unit]
+Description=Daemon for generating UUIDs
+Documentation=man:uuidd(8)
+Requires=uuidd.socket
+
+[Service]
+ExecStart=/usr/sbin/uuidd --socket-activation
+Restart=no
+User=uuidd
+Group=uuidd
+ProtectSystem=strict
+ProtectHome=yes
+PrivateDevices=yes
+PrivateUsers=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+MemoryDenyWriteExecute=yes
+ReadWritePaths=/var/lib/libuuid/
+SystemCallFilter=@default @file-system @basic-io @system-service @signal @io-event @network-io
+
+[Install]
+Also=uuidd.socket
+-- dm-event.socket status --
+* dm-event.socket - Device-mapper event daemon FIFOs
+     Loaded: loaded (/usr/lib/systemd/system/dm-event.socket; enabled; preset: enabled)
+     Active: active (listening) since Sat 2026-05-16 20:04:41 UTC; 1h 12min ago
+   Triggers: * dm-event.service
+       Docs: man:dmeventd(8)
+     Listen: /run/dmeventd-server (FIFO)
+             /run/dmeventd-client (FIFO)
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/dm-event.socket
+
+Notice: journal has been rotated since unit was started, output may be incomplete.
+-- dm-event.socket unit --
+# /usr/lib/systemd/system/dm-event.socket
+[Unit]
+Description=Device-mapper event daemon FIFOs
+Documentation=man:dmeventd(8)
+DefaultDependencies=no
+
+[Socket]
+ListenFIFO=/run/dmeventd-server
+ListenFIFO=/run/dmeventd-client
+SocketMode=0600
+RemoveOnStop=true
+
+[Install]
+WantedBy=sockets.target
+-- dm-event.service status --
+* dm-event.service - Device-mapper event daemon
+     Loaded: loaded (/usr/lib/systemd/system/dm-event.service; static)
+     Active: inactive (dead)
+TriggeredBy: * dm-event.socket
+       Docs: man:dmeventd(8)
+-- dm-event.service unit --
+# /usr/lib/systemd/system/dm-event.service
+[Unit]
+Description=Device-mapper event daemon
+Documentation=man:dmeventd(8)
+Requires=dm-event.socket
+After=dm-event.socket
+Before=local-fs-pre.target shutdown.target
+Conflicts=shutdown.target
+DefaultDependencies=no
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/dmeventd -f
+Environment=SD_ACTIVATION=1
+PIDFile=/run/dmeventd.pid
+OOMScoreAdjust=-1000
+-- lvm2-lvmpolld.socket status --
+* lvm2-lvmpolld.socket - LVM2 poll daemon socket
+     Loaded: loaded (/usr/lib/systemd/system/lvm2-lvmpolld.socket; enabled; preset: enabled)
+     Active: active (listening) since Sat 2026-05-16 20:04:41 UTC; 1h 12min ago
+   Triggers: * lvm2-lvmpolld.service
+       Docs: man:lvmpolld(8)
+     Listen: /run/lvm/lvmpolld.socket (Stream)
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/lvm2-lvmpolld.socket
+
+Notice: journal has been rotated since unit was started, output may be incomplete.
+-- lvm2-lvmpolld.socket unit --
+# /usr/lib/systemd/system/lvm2-lvmpolld.socket
+[Unit]
+Description=LVM2 poll daemon socket
+Documentation=man:lvmpolld(8)
+DefaultDependencies=no
+Conflicts=shutdown.target
+
+[Socket]
+ListenStream=/run/lvm/lvmpolld.socket
+SocketMode=0600
+RemoveOnStop=true
+
+[Install]
+WantedBy=sysinit.target
+-- lvm2-lvmpolld.service status --
+* lvm2-lvmpolld.service - LVM2 poll daemon
+     Loaded: loaded (/usr/lib/systemd/system/lvm2-lvmpolld.service; static)
+     Active: inactive (dead)
+TriggeredBy: * lvm2-lvmpolld.socket
+       Docs: man:lvmpolld(8)
+-- lvm2-lvmpolld.service unit --
+# /usr/lib/systemd/system/lvm2-lvmpolld.service
+[Unit]
+Description=LVM2 poll daemon
+Documentation=man:lvmpolld(8)
+Requires=lvm2-lvmpolld.socket
+Before=shutdown.target
+After=lvm2-lvmpolld.socket
+DefaultDependencies=no
+Conflicts=shutdown.target
+
+[Service]
+Type=simple
+NonBlocking=true
+ExecStart=/usr/sbin/lvmpolld -t 60 -f
+Environment=SD_ACTIVATION=1
+PIDFile=/run/lvmpolld.pid
+-- apport-forward.socket status --
+* apport-forward.socket - Unix socket for apport crash forwarding
+     Loaded: loaded (/usr/lib/systemd/system/apport-forward.socket; enabled; preset: enabled)
+     Active: active (listening) since Sat 2026-05-16 20:04:41 UTC; 1h 12min ago
+     Listen: /run/apport.socket (Stream)
+   Accepted: 0; Connected: 0;
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/apport-forward.socket
+
+May 16 20:04:41 508d797cbad0 systemd[1]: Listening on apport-forward.socket - Unix socket for apport crash forwarding.
+-- apport-forward.socket unit --
+# /usr/lib/systemd/system/apport-forward.socket
+[Unit]
+Description=Unix socket for apport crash forwarding
+ConditionVirtualization=container
+
+[Socket]
+ListenStream=/run/apport.socket
+SocketMode=0600
+Accept=yes
+MaxConnections=10
+Backlog=5
+PassCredentials=true
+
+[Install]
+WantedBy=sockets.target
+-- apport-forward@.service status --
+Failed to get properties: Unit name apport-forward@.service is neither a valid invocation ID nor unit name.
+-- apport-forward@.service unit --
+# /usr/lib/systemd/system/apport-forward@.service
+[Unit]
+Description=Apport crash forwarding receiver
+Requires=apport-forward.socket
+
+[Service]
+Type=oneshot
+ExecStart=/usr/share/apport/apport
+-- apport.service status --
+* apport.service - automatic crash report generation
+     Loaded: loaded (/usr/lib/systemd/system/apport.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 20:04:41 UTC; 1h 12min ago
+
+May 16 20:04:41 508d797cbad0 systemd[1]: apport.service - automatic crash report generation was skipped because of an unmet condition check (ConditionVirtualization=!container).
+-- apport.service unit --
+# /usr/lib/systemd/system/apport.service
+[Unit]
+Description=automatic crash report generation
+After=remote-fs.target
+ConditionVirtualization=!container
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/share/apport/apport --start
+ExecStop=/usr/share/apport/apport --stop
+
+[Install]
+WantedBy=multi-user.target
+-- systemd-udevd-control.socket status --
+* systemd-udevd-control.socket - udev Control Socket
+     Loaded: loaded (/usr/lib/systemd/system/systemd-udevd-control.socket; static)
+     Active: active (running) since Sat 2026-05-16 20:04:41 UTC; 1h 12min ago
+   Triggers: * systemd-udevd.service
+       Docs: man:systemd-udevd-control.socket(8)
+             man:udev(7)
+     Listen: /run/udev/control (SequentialPacket)
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/systemd-udevd-control.socket
+
+Notice: journal has been rotated since unit was started, output may be incomplete.
+-- systemd-udevd-control.socket unit --
+# /usr/lib/systemd/system/systemd-udevd-control.socket
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=udev Control Socket
+Documentation=man:systemd-udevd-control.socket(8) man:udev(7)
+DefaultDependencies=no
+Before=sockets.target
+ConditionPathIsReadWrite=/sys
+
+[Socket]
+Service=systemd-udevd.service
+ListenSequentialPacket=/run/udev/control
+SocketMode=0600
+PassCredentials=yes
+RemoveOnStop=yes
+-- systemd-udevd.service status --
+* systemd-udevd.service - Rule-based Manager for Device Events and Files
+     Loaded: loaded (/usr/lib/systemd/system/systemd-udevd.service; static)
+    Drop-In: /usr/lib/systemd/system/systemd-udevd.service.d
+             `-syscall-architecture.conf
+     Active: active (running) since Sat 2026-05-16 20:04:41 UTC; 1h 12min ago
+TriggeredBy: * systemd-udevd-control.socket
+             * systemd-udevd-kernel.socket
+       Docs: man:systemd-udevd.service(8)
+             man:udev(7)
+   Main PID: 83 (systemd-udevd)
+     Status: "Processing with 36 children at max"
+      Tasks: 1
+     Memory: 10.3M (peak: 32.8M)
+        CPU: 876ms
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/systemd-udevd.service
+             `-udev
+               `-83 /usr/lib/systemd/systemd-udevd
+
+May 16 20:04:41 508d797cbad0 systemd[1]: Starting systemd-udevd.service - Rule-based Manager for Device Events and Files...
+May 16 20:04:41 508d797cbad0 systemd-udevd[83]: Using default interface naming scheme 'v255'.
+May 16 20:04:41 508d797cbad0 systemd[1]: Started systemd-udevd.service - Rule-based Manager for Device Events and Files.
+-- systemd-udevd.service unit --
+# /usr/lib/systemd/system/systemd-udevd.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Rule-based Manager for Device Events and Files
+Documentation=man:systemd-udevd.service(8) man:udev(7)
+DefaultDependencies=no
+After=systemd-sysusers.service systemd-hwdb-update.service
+Before=sysinit.target
+ConditionPathIsReadWrite=/sys
+
+[Service]
+CapabilityBoundingSet=~CAP_SYS_TIME CAP_WAKE_ALARM
+Delegate=pids
+DelegateSubgroup=udev
+Type=notify-reload
+# Note that udev will reset the value internally for its workers
+OOMScoreAdjust=-1000
+Sockets=systemd-udevd-control.socket systemd-udevd-kernel.socket
+Restart=always
+RestartSec=0
+ExecStart=/usr/lib/systemd/systemd-udevd
+KillMode=mixed
+TasksMax=infinity
+PrivateMounts=yes
+ProtectHostname=yes
+MemoryDenyWriteExecute=yes
+RestrictAddressFamilies=AF_UNIX AF_NETLINK AF_INET AF_INET6
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+SystemCallFilter=@system-service @module @raw-io bpf
+SystemCallFilter=~@clock
+SystemCallErrorNumber=EPERM
+SystemCallArchitectures=native
+LockPersonality=yes
+IPAddressDeny=any
+WatchdogSec=3min
+
+# /usr/lib/systemd/system/systemd-udevd.service.d/syscall-architecture.conf
+# We can't really control what helper programs are run from other udev
+# rules. E.g. running i386 binaries under amd64 is a valid use case and
+# should not trigger a SIGSYS failure.
+# https://bugs.debian.org/869719
+
+[Service]
+SystemCallArchitectures=
+
+== exact runtime socket modes ==
+drwxr-xr-x directory 755 0:0 root:root /run/uuidd
+srw-rw-rw- socket 666 0:0 root:root /run/uuidd/request
+prw------- fifo 600 0:0 root:root /run/dmeventd-client
+prw------- fifo 600 0:0 root:root /run/dmeventd-server
+drwx------ directory 700 0:0 root:root /run/lvm
+srw------- socket 600 0:0 root:root /run/lvm/lvmpolld.socket
+srw------- socket 600 0:0 root:root /run/apport.socket
+drwxr-xr-x directory 755 0:0 root:root /run/udev
+srw------- socket 600 0:0 root:root /run/udev/control
+
+== kernel unix listener table ==
+Num       RefCount Protocol Flags    Type St Inode Path
+ffff0000df31c400: 00000002 00000000 00010000 0001 01  1721 /run/lvm/lvmpolld.socket
+ffff0000df318800: 00000002 00000000 00010000 0005 01  1731 /run/udev/control
+ffff0000d2290000: 00000002 00000000 00010000 0001 01  6734 /run/apport.socket
+ffff0000d2291800: 00000002 00000000 00010000 0001 01  6744 /run/uuidd/request
+
+== root marker setup ==
+root_marker=/root/codex-default-runtime-socket-root-proof
+tmp_marker=/tmp/codex-default-runtime-socket-root-proof
+marker_preexisting=no
+
+== uuidd world socket probes ==
+
+$ runuser -u attacker -- bash -lc /usr/sbin/uuidd\ --time\ --uuids\ 2
+a725d4ee-516c-11f1-883f-a65407a0b4c6 and 1 subsequent UUID
+rc=0
+
+$ runuser -u attacker -- bash -lc /usr/sbin/uuidd\ --random\ --uuids\ 2
+List of UUIDs:
+	7c14e535-ee46-4b9b-8757-0082a5c98c51
+	fbaa87ab-b904-4e72-baa6-58e8626454c7
+rc=0
+
+$ runuser -u attacker -- bash -lc $'python3 - <<\'PY\'\nimport socket, struct\npath = "/run/uuidd/request"\npayloads = [\n    ("max-op", struct.pack("ii", 0x7fffffff, 1)),\n    ("path-string", b"WRITE /root/codex-default-runtime-socket-root-proof\\n"),\n]\nfor name, payload in payloads:\n    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)\n    s.settimeout(1.0)\n    try:\n        s.connect(path)\n        print(f"{name}: connect=ok payload_len={len(payload)}")\n        s.sendall(payload)\n        try:\n            data = s.recv(64)\n            print(f"{name}: recv_len={len(data)} recv_hex={data.hex()}")\n        except Exception as e:\n            print(f"{name}: recv_error={type(e).__name__}:{e}")\n    except Exception as e:\n        print(f"{name}: connect_error={type(e).__name__}:{e}")\n    finally:\n        s.close()\nPY'
+max-op: connect=ok payload_len=8
+max-op: recv_error=ConnectionResetError:[Errno 104] Connection reset by peer
+path-string: connect=ok payload_len=52
+path-string: recv_error=ConnectionResetError:[Errno 104] Connection reset by peer
+rc=0
+
+$ runuser -u attacker -- bash -lc rm\ -f\ /run/uuidd/request\ 2\>\&1
+rm: cannot remove '/run/uuidd/request': Permission denied
+rc=1
+
+== dmeventd fifo probes ==
+
+$ runuser -u attacker -- bash -lc printf\ \"codex\ /root/codex-default-runtime-socket-root-proof\\n\"\ \>\ /run/dmeventd-client
+rc=1
+
+$ runuser -u attacker -- bash -lc printf\ \"codex\ /root/codex-default-runtime-socket-root-proof\\n\"\ \>\ /run/dmeventd-server
+rc=1
+
+$ runuser -u attacker -- bash -lc timeout\ 2\ bash\ -lc\ \"cat\ /run/dmeventd-client\ \>\ /tmp/codex-default-runtime-socket-dmeventd-client\"
+rc=1
+
+$ runuser -u attacker -- bash -lc timeout\ 2\ bash\ -lc\ \"cat\ /run/dmeventd-server\ \>\ /tmp/codex-default-runtime-socket-dmeventd-server\"
+rc=1
+
+$ runuser -u attacker -- bash -lc /usr/sbin/lvm\ version
+  LVM version:     2.03.16(2) (2022-05-18)
+  Library version: 1.02.185 (2022-05-18)
+  Configuration:   ./configure --build=aarch64-linux-gnu --prefix=/usr --includedir=${prefix}/include --mandir=${prefix}/share/man --infodir=${prefix}/share/info --sysconfdir=/etc --localstatedir=/var --disable-option-checking --disable-silent-rules --libdir=${prefix}/lib/aarch64-linux-gnu --runstatedir=/run --disable-maintainer-mode --disable-dependency-tracking --prefix=/usr --exec-prefix=/usr --with-usrlibdir=/usr/lib/aarch64-linux-gnu --with-optimisation=-O2 --with-cache=internal --with-device-uid=0 --with-device-gid=6 --with-device-mode=0660 --with-default-pid-dir=/run --with-default-run-dir=/run/lvm --with-default-locking-dir=/run/lock/lvm --with-thin=internal --with-thin-check=/usr/sbin/thin_check --with-thin-dump=/usr/sbin/thin_dump --with-thin-repair=/usr/sbin/thin_repair --enable-applib --enable-blkid_wiping --enable-cmdlib --enable-dmeventd --enable-editline --enable-lvmlockd-dlm --enable-lvmlockd-sanlock --enable-lvmpolld --enable-notify-dbus --enable-pkgconfig --enable-udev_rules --enable-udev_sync --disable-readline
+rc=0
+
+$ runuser -u attacker -- bash -lc /usr/sbin/pvscan\ --cache
+rc=0
+
+$ runuser -u attacker -- bash -lc /usr/sbin/lvs
+rc=5
+
+$ runuser -u attacker -- bash -lc /usr/sbin/dmsetup\ version
+Library version:   1.02.185 (2022-05-18)
+rc=1
+
+== lvmpolld socket probes ==
+
+$ runuser -u attacker -- bash -lc $'python3 - <<\'PY\'\nimport socket\ns = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)\ns.settimeout(1.0)\ntry:\n    s.connect("/run/lvm/lvmpolld.socket")\n    print("connect=ok")\n    s.sendall(b"/root/codex-default-runtime-socket-root-proof\\n")\n    try:\n        data = s.recv(64)\n        print("recv_len=%d recv_hex=%s" % (len(data), data.hex()))\n    except Exception as e:\n        print("recv_error=%s:%s" % (type(e).__name__, e))\nexcept Exception as e:\n    print("connect_error=%s:%s" % (type(e).__name__, e))\nfinally:\n    s.close()\nPY'
+connect_error=PermissionError:[Errno 13] Permission denied
+rc=0
+
+$ runuser -u attacker -- bash -lc /usr/sbin/lvm\ fullreport\ --config\ \"global\ \{\ use_lvmpolld=1\ \}\"
+rc=5
+
+== apport socket probes ==
+
+$ runuser -u attacker -- bash -lc printf\ \"ProblemType:\ Crash\\nExecutablePath:\ /bin/false\\nProcCmdline:\ /root/codex-default-runtime-socket-root-proof\\n\"\ \>\ /var/crash/codex-default-runtime-socket.crash\ \&\&\ ls\ -l\ /var/crash/codex-default-runtime-socket.crash
+-rw-r--r-- 1 attacker root 105 May 16 21:17 /var/crash/codex-default-runtime-socket.crash
+rc=0
+
+$ runuser -u attacker -- bash -lc timeout\ 2\ nc\ -U\ /run/apport.socket\ \<\ /var/crash/codex-default-runtime-socket.crash
+rc=1
+
+$ runuser -u attacker -- bash -lc $'python3 - <<\'PY\'\nimport socket\ns = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)\ns.settimeout(1.0)\ntry:\n    s.connect("/run/apport.socket")\n    print("connect=ok")\n    s.sendall(b"ProblemType: Crash\\nProcCmdline: /root/codex-default-runtime-socket-root-proof\\n\\n")\n    try:\n        data = s.recv(64)\n        print("recv_len=%d recv_hex=%s" % (len(data), data.hex()))\n    except Exception as e:\n        print("recv_error=%s:%s" % (type(e).__name__, e))\nexcept Exception as e:\n    print("connect_error=%s:%s" % (type(e).__name__, e))\nfinally:\n    s.close()\nPY'
+connect_error=PermissionError:[Errno 13] Permission denied
+rc=0
+
+$ runuser -u attacker -- bash -lc /usr/bin/apport-cli\ -f\ -p\ bash\ --save\ /tmp/codex-default-runtime-socket-apport.crash\ \>/tmp/codex-default-runtime-socket-apport.out\ 2\>\&1\;\ rc=\$\?\;\ echo\ apport_cli_rc=\$rc\;\ sed\ -n\ \"1\,40p\"\ /tmp/codex-default-runtime-socket-apport.out\;\ ls\ -l\ /tmp/codex-default-runtime-socket-apport.crash\ 2\>\&1
+apport_cli_rc=0
+
+*** Collecting problem information
+
+The collected information can be sent to the developers to improve the
+application. This might take a few minutes.
+.........
+-rw-r--r-- 1 attacker attacker 1197 May 16 21:17 /tmp/codex-default-runtime-socket-apport.crash
+rc=0
+
+== udev control socket probes ==
+
+$ runuser -u attacker -- bash -lc /usr/bin/udevadm\ control\ --ping
+rc=1
+
+$ runuser -u attacker -- bash -lc /usr/bin/udevadm\ control\ --reload
+rc=1
+
+$ runuser -u attacker -- bash -lc /usr/bin/udevadm\ trigger\ --action=add\ --subsystem-match=block
+rc=1
+
+$ runuser -u attacker -- bash -lc $'python3 - <<\'PY\'\nimport socket\ns = socket.socket(socket.AF_UNIX, socket.SOCK_SEQPACKET)\ns.settimeout(1.0)\ntry:\n    s.connect("/run/udev/control")\n    print("seqpacket_connect=ok")\n    s.sendall(b"RELOAD\\0/root/codex-default-runtime-socket-root-proof\\0")\n    try:\n        data = s.recv(64)\n        print("recv_len=%d recv_hex=%s" % (len(data), data.hex()))\n    except Exception as e:\n        print("recv_error=%s:%s" % (type(e).__name__, e))\nexcept Exception as e:\n    print("connect_error=%s:%s" % (type(e).__name__, e))\nfinally:\n    s.close()\nPY'
+connect_error=PermissionError:[Errno 13] Permission denied
+rc=0
+
+== post-trigger daemon state ==
+active
+active
+active
+inactive
+active
+inactive
+active
+active
+active
+USER                 UID     PID    PPID COMMAND         COMMAND
+root                   0      83       1 systemd-udevd   /usr/lib/systemd/systemd-udevd
+uuidd                101  258601       1 uuidd           /usr/sbin/uuidd --socket-activation
+drwxrwsr-x directory 2775 101:102 uuidd:uuidd 4096 /var/lib/libuuid
+-rw-rw---- regular file 660 101:102 uuidd:uuidd 75 /var/lib/libuuid/clock.txt
+-rw-r--r-- regular file 644 1001:0 attacker:root 105 /var/crash/codex-default-runtime-socket.crash
+-rw-r--r-- regular file 644 1001:1001 attacker:attacker 1197 /tmp/codex-default-runtime-socket-apport.crash
+
+== root marker/root proof check ==
+ROOT_MARKER_ABSENT /root/codex-default-runtime-socket-root-proof
+TMP_MARKER_ABSENT /tmp/codex-default-runtime-socket-root-proof
+
+== cleanup ==
+removed_or_absent /root/codex-default-runtime-socket-root-proof
+removed_or_absent /tmp/codex-default-runtime-socket-root-proof
+removed_or_absent /var/crash/codex-default-runtime-socket.crash
+removed_or_absent /tmp/codex-default-runtime-socket-apport.crash

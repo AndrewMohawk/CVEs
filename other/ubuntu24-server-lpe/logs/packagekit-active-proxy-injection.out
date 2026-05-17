@@ -1,0 +1,740 @@
+PackageKit active proxy/config injection probe
+target=ubuntu24-server-lpe-target
+2026-05-16T15:05:46-0400
+
+$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== baseline target =="\ncat /etc/os-release | sed -n "1,8p"\nuname -a\nid attacker\nid selfauth\necho\necho "== package/default proof =="\ndpkg-query -W -f="\\${Package}\\t\\${Version}\\t\\${Status}\\n" \\\n  packagekit packagekit-tools libpackagekit-glib2-18 python3-gi apt polkitd dbus systemd 2>&1 || true\napt-cache show packagekit | sed -n "1,35p"\necho\necho "== packagekit service =="\nsystemctl cat packagekit.service\nsystemctl status packagekit.service --no-pager -l || true\necho\necho "== packagekit policy snippets =="\nnl -ba /usr/share/polkit-1/actions/org.freedesktop.packagekit.policy | sed -n "1009,1168p"\necho\necho "== packagekit dbus interface snippets =="\nsed -n "378,430p" /usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.xml\nsed -n "887,925p" /usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml\nsed -n "665,705p" /usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml\nsed -n "1424,1468p" /usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml\necho\necho "== default writable roots =="\nfor p in /etc/apt /etc/apt/apt.conf.d /etc/PackageKit /var/lib/PackageKit /var/cache/PackageKit /root; do\n  stat -c "%A %U:%G %n" "$p"\ndone\n'
+== baseline target ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+
+== package/default proof ==
+apt	2.8.3	install ok installed
+dbus	1.14.10-4ubuntu4.1	install ok installed
+libpackagekit-glib2-18	1.2.8-2ubuntu1.5	install ok installed
+packagekit	1.2.8-2ubuntu1.5	install ok installed
+packagekit-tools	1.2.8-2ubuntu1.5	install ok installed
+polkitd	124-2ubuntu1.24.04.3	install ok installed
+python3-gi	3.48.2-1	install ok installed
+systemd	255.4-1ubuntu8.15	install ok installed
+Package: packagekit
+Priority: extra
+Section: admin
+Installed-Size: 1964
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Architecture: arm64
+Version: 1.2.8-2ubuntu1.5
+Recommends: appstream, packagekit-tools, systemd
+Depends: libglib2.0-bin, polkitd, init-system-helpers (>= 1.52), libappstream5 (>= 1.0.0), libapt-pkg6.0t64 (>= 1.9.2), libc6 (>= 2.38), libgcc-s1 (>= 3.3.1), libglib2.0-0t64 (>= 2.79.0), libgstreamer1.0-0 (>= 1.0.0), libpackagekit-glib2-18 (>= 1.2.4), libpolkit-gobject-1-0 (>= 0.99), libsqlite3-0 (>= 3.5.9), libstdc++6 (>= 13.1), libsystemd0 (>= 214)
+Breaks: plymouth (<< 0.9.5)
+Filename: pool/main/p/packagekit/packagekit_1.2.8-2ubuntu1.5_arm64.deb
+Size: 421670
+MD5sum: e85f1bd3464d9ce033d8f3dba052c572
+SHA1: 1306edf2d3e27120ea8176c9c3a62ac8f68b3ba6
+SHA256: 704f14bd5b5e2184259066427e7d60a8ab1ee1051defc34f6ef11bcc5d77cb0b
+SHA512: 1e071bf35280db65cb527583597f1a98f7ff374de689bfb2e15197333517a16918b7835b35751ed9e95a96553cd89a1b49cfdb4210e9080e52fa1bc925ce13da
+Homepage: https://www.freedesktop.org/software/PackageKit/
+Description: Provides a package management service
+Description-md5: a0dfd7a2ce227d0b9e8f1e1e31158688
+Multi-Arch: foreign
+Original-Maintainer: Matthias Klumpp <mak@debian.org>
+Origin: Ubuntu
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Task: ubuntu-desktop-minimal, ubuntu-desktop, cloud-image, cloud-image, ubuntu-wsl, server, ubuntu-server-raspi, ubuntu-desktop-raspi, kubuntu-desktop, xubuntu-minimal, xubuntu-desktop, lubuntu-desktop, ubuntustudio-desktop-core, ubuntustudio-desktop, ubuntukylin-desktop, ubuntukylin-desktop-minimal, ubuntu-mate-core, ubuntu-mate-desktop, ubuntu-budgie-desktop-minimal, ubuntu-budgie-desktop, ubuntu-budgie-desktop-raspi, ubuntu-unity-desktop, edubuntu-desktop-gnome-minimal, edubuntu-desktop-gnome-raspi, ubuntucinnamon-desktop-minimal, ubuntucinnamon-desktop-raspi
+
+Package: packagekit
+Architecture: arm64
+Version: 1.2.8-2build3
+Multi-Arch: foreign
+Priority: extra
+Section: admin
+Origin: Ubuntu
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Original-Maintainer: Matthias Klumpp <mak@debian.org>
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+
+== packagekit service ==
+# /usr/lib/systemd/system/packagekit.service
+[Unit]
+Description=PackageKit Daemon
+# PK doesn't know how to do anything on ostree-managed systems;
+# currently the design is to have dedicated daemons like
+# eos-updater and rpm-ostree, and gnome-software talks to those.
+ConditionPathExists=!/run/ostree-booted
+Wants=network-online.target
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.PackageKit
+User=root
+ExecStart=/usr/libexec/packagekitd
+● packagekit.service - PackageKit Daemon
+     Loaded: loaded (/usr/lib/systemd/system/packagekit.service; static)
+     Active: active (running) since Sat 2026-05-16 19:04:58 UTC; 49s ago
+   Main PID: 803302 (packagekitd)
+      Tasks: 4 (limit: 9517)
+     Memory: 3.2M (peak: 4.4M)
+        CPU: 15ms
+     CGroup: /docker/4f5b414436aefb655c3e4b9b25b80c8483306cde6cc3186d655231e3631e5f6a/system.slice/packagekit.service
+             └─803302 /usr/libexec/packagekitd
+
+May 16 19:04:58 4f5b414436ae systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 16 19:04:58 4f5b414436ae PackageKit[803302]: daemon start
+May 16 19:04:58 4f5b414436ae systemd[1]: Started packagekit.service - PackageKit Daemon.
+
+== packagekit policy snippets ==
+  1009	  <action id="org.freedesktop.packagekit.system-sources-refresh">
+  1010	    <!-- SECURITY:
+  1011	          - Normal users do not require admin authentication to refresh the
+  1012	            cache, as this doesn't actually install or remove software.
+  1013	     -->
+  1014	    <description>Refresh system repositories</description>
+  1015	    <description xml:lang="zh_TW">重整系統軟體庫</description>
+  1016	    <description xml:lang="zh_CN">刷新系统仓库</description>
+  1017	    <description xml:lang="uk">Оновлення списків сховищ системи</description>
+  1018	    <description xml:lang="tr">Sistem depolarını yenile</description>
+  1019	    <description xml:lang="sv">Uppdatera systemprogramförråden</description>
+  1020	    <description xml:lang="sr">Освежи системске ризнице</description>
+  1021	    <description xml:lang="sq">Rifresko depo sistemi</description>
+  1022	    <description xml:lang="sl">Osveži sistemska skladišča</description>
+  1023	    <description xml:lang="sk">Obnoviť systémové repozitáre</description>
+  1024	    <description xml:lang="si">පද්ධති ගබඩාවන් නැවුම් කරන්න</description>
+  1025	    <description xml:lang="ru">Обновить системные репозитории</description>
+  1026	    <description xml:lang="ro">Împrospătează depozitele sistemului</description>
+  1027	    <description xml:lang="pt">Atualizar fontes do sistema</description>
+  1028	    <description xml:lang="pt_BR">Atualizar repositórios de sistema</description>
+  1029	    <description xml:lang="pl">Odświeżenie repozytoriów systemu</description>
+  1030	    <description xml:lang="pa">ਸਿਸਟਮ ਰਿਪੋਜ਼ਟਰੀਆਂ ਤਾਜ਼ਾ ਕਰੋ</description>
+  1031	    <description xml:lang="ko">시스템 저장소 새로 고침</description>
+  1032	    <description xml:lang="ka">სისტემური რეპოზიტორიების განახლება</description>
+  1033	    <description xml:lang="ja">システムリポジトリの更新</description>
+  1034	    <description xml:lang="it">Aggiorna repository di sistema</description>
+  1035	    <description xml:lang="id">Segarkan repositori sistem</description>
+  1036	    <description xml:lang="hu">Rendszertárolók frissítése</description>
+  1037	    <description xml:lang="hr">Osvježi repozitorije sustava</description>
+  1038	    <description xml:lang="he">רענון מאגרי המערכת</description>
+  1039	    <description xml:lang="fr">Actualiser les dépôts du système</description>
+  1040	    <description xml:lang="fi">Päivitä järjestelmän ohjelmistolähteet</description>
+  1041	    <description xml:lang="eu">Freskatu sistemaren biltegiak</description>
+  1042	    <description xml:lang="es">Recargar repositorios del sistema</description>
+  1043	    <description xml:lang="eo">Aktualigi sistem-deponejojn</description>
+  1044	    <description xml:lang="en_GB">Refresh system repositories</description>
+  1045	    <description xml:lang="de">System-Repositorien aktualisieren</description>
+  1046	    <description xml:lang="da">Opdater systempakkearkiver</description>
+  1047	    <description xml:lang="cs">Aktualizovat systémové repozitáře</description>
+  1048	    <description xml:lang="ca">Refresca els dipòsits del sistema</description>
+  1049	    <message>Authentication is required to refresh the system repositories</message>
+  1050	    <message xml:lang="zh_TW">必須先通過身份核對才能重新整理系統軟體庫</message>
+  1051	    <message xml:lang="zh_CN">刷新系统仓库需要认证</message>
+  1052	    <message xml:lang="uk">Для оновлення списку сховищ системи слід пройти розпізнавання</message>
+  1053	    <message xml:lang="tr">Sistem depolarını yenilemek için kimlik doğrulaması gerekiyor</message>
+  1054	    <message xml:lang="sv">Autentisering krävs för att uppdatera systemprogramförråden</message>
+  1055	    <message xml:lang="sr">Потребно је потврђивање идентитета за освежавање системских ризница</message>
+  1056	    <message xml:lang="sq">Që të rifreskohen depot e sistemit, lypset mirëfilltësim</message>
+  1057	    <message xml:lang="sl">Za osvežitev sistemskih skladišč je zahtevana overitev</message>
+  1058	    <message xml:lang="sk">Vyžaduje sa overenie totožnosti na obnovenie systémových repozitárov</message>
+  1059	    <message xml:lang="si">පද්ධති ගබඩාවන් නැවුම් කිරීමට සත්‍යාපනය අවශ්‍ය වේ</message>
+  1060	    <message xml:lang="ru">Для обновления системных репозиториев необходима аутентификация</message>
+  1061	    <message xml:lang="ro">Este necesară autentificarea pentru a împrospăta depozitele sistemului</message>
+  1062	    <message xml:lang="pt">Autenticação é necessária para atualizar as fontes do sistema</message>
+  1063	    <message xml:lang="pt_BR">Autenticação é necessária para atualizar os repositórios de sistema</message>
+  1064	    <message xml:lang="pl">Wymagane jest uwierzytelnienie, aby odświeżyć repozytoria systemu</message>
+  1065	    <message xml:lang="pa">ਸਿਸਟਮ ਰਿਪੋਜ਼ਟਰੀਆਂ ਤਾਜ਼ਾ ਕਰਨ ਲਈ ਪਰਮਾਣਕਿਤਾ ਚਾਹੀਦੀ ਹੈ</message>
+  1066	    <message xml:lang="ko">시스템 저장소를 새로 고치려면 인증해야 합니다</message>
+  1067	    <message xml:lang="ja">システムリポジトリの更新には認証が必要です</message>
+  1068	    <message xml:lang="it">È richiesto autenticarsi per aggiornare i repository di sistema</message>
+  1069	    <message xml:lang="id">Otentikasi diperlukan untuk menyegarkan repositori sistem</message>
+  1070	    <message xml:lang="hu">Hitelesítés szükséges a rendszertárolók frissítéséhez</message>
+  1071	    <message xml:lang="hr">Potrebna je ovjera za osvježavanje repozitorija sustava</message>
+  1072	    <message xml:lang="he">נדרש אימות כדי לרענן את מאגרי המערכת</message>
+  1073	    <message xml:lang="fr">Une authentification est nécessaire pour rafraîchir les dépôts du système </message>
+  1074	    <message xml:lang="fi">Ohjelmistolähteiden päivittäminen vaatii tunnistautumisen</message>
+  1075	    <message xml:lang="eu">Autentifikazioa behar da sistemaren biltegiak freskatzeko</message>
+  1076	    <message xml:lang="es">Necesita autenticarse para actualizar los repositorios del sistema</message>
+  1077	    <message xml:lang="eo">Necesas aŭtentigo por aktualigi la sistem-deponejojn</message>
+  1078	    <message xml:lang="en_GB">Authentication is required to refresh the system repositories</message>
+  1079	    <message xml:lang="de">Legitimation ist zum Aktualisieren der System-Repositorien erforderlich</message>
+  1080	    <message xml:lang="da">Godkendelse kræves for at opdatere systempakkearkiverne</message>
+  1081	    <message xml:lang="cs">Pro aktualizaci systémových repozitářů je vyžadováno ověření</message>
+  1082	    <message xml:lang="ca">Es requereix autenticació per refrescar els dipòsits de sistema</message>
+  1083	    <message xml:lang="ar">الاستيثاق مطلوب لتحديث مستودعات النظام</message>
+  1084	    <icon_name>package-x-generic</icon_name>
+  1085	    <defaults>
+  1086	      <allow_any>auth_admin</allow_any>
+  1087	      <allow_inactive>yes</allow_inactive>
+  1088	      <allow_active>yes</allow_active>
+  1089	    </defaults>
+  1090	  </action>
+  1091	  <action id="org.freedesktop.packagekit.system-network-proxy-configure">
+  1092	    <!-- SECURITY:
+  1093	          - Normal users do not require admin authentication to set the proxy
+  1094	            used for downloading packages.
+  1095	     -->
+  1096	    <description>Set network proxy</description>
+  1097	    <description xml:lang="zh_TW">設定網路代理伺服器</description>
+  1098	    <description xml:lang="zh_CN">设置网络代理</description>
+  1099	    <description xml:lang="uk">Встановлення проксі-сервер</description>
+  1100	    <description xml:lang="tr">Vekil sunucuyu ayarla</description>
+  1101	    <description xml:lang="te">నెట్వర్కు ప్రోక్సీను అమర్చుము</description>
+  1102	    <description xml:lang="ta">பிராக்ஸி பிணையத்தைஅமை</description>
+  1103	    <description xml:lang="sv">Ange nätverksproxyserver</description>
+  1104	    <description xml:lang="sr">Постави мрежног посредника</description>
+  1105	    <description xml:lang="sr@latin">Postavi mrežnog posrednika</description>
+  1106	    <description xml:lang="sq">Ujdisni ndërmjetës rrjeti</description>
+  1107	    <description xml:lang="sl">Nastavi posredniški strežnik omrežja</description>
+  1108	    <description xml:lang="sk">Nastaviť proxy server</description>
+  1109	    <description xml:lang="si">ජාල ප්‍රොක්සි සකසන්න</description>
+  1110	    <description xml:lang="ru">Указать прокси-сервер</description>
+  1111	    <description xml:lang="ro">Definește proxy de rețea</description>
+  1112	    <description xml:lang="pt">Configurar o proxy da rede</description>
+  1113	    <description xml:lang="pt_BR">Definir um proxy de rede</description>
+  1114	    <description xml:lang="pl">Ustawienie pośrednika sieciowego</description>
+  1115	    <description xml:lang="pa">ਨੈੱਟਵਰਕ ਪਰਾਕਸੀ ਸੈੱਟ ਕਰੋ</description>
+  1116	    <description xml:lang="or">ନେଟୱର୍କ ପ୍ରକ୍ସି ସେଟ କରନ୍ତୁ</description>
+  1117	    <description xml:lang="oc">Configurar lo proxy de ret</description>
+  1118	    <description xml:lang="nl">Stel netwerkproxy in</description>
+  1119	    <description xml:lang="mr">जाळं प्रॉक्सी निश्चित करा</description>
+  1120	    <description xml:lang="ml">നെറ്റ്‌വര്‍ക്ക് പ്രോക്സി സജ്ജമാക്കുക</description>
+  1121	    <description xml:lang="lv">Iestatīt tīkla starpniekserveri</description>
+  1122	    <description xml:lang="lt">Nustatyti įgaliotąjį tinklo serverį</description>
+  1123	    <description xml:lang="ko">네트워크 프록시 설정</description>
+  1124	    <description xml:lang="kn">ಜಾಲಬಂಧ ಪ್ರಾಕ್ಸಿಯನ್ನು ಸಿದ್ಧಗೊಳಿಸು</description>
+  1125	    <description xml:lang="ka">ქსელური პროქსის დაყენება</description>
+  1126	    <description xml:lang="ja">ネットワークプロキシをセット</description>
+  1127	    <description xml:lang="it">Imposta proxy di rete</description>
+  1128	    <description xml:lang="id">Tata proksi jaringan</description>
+  1129	    <description xml:lang="hu">Hálózati proxy beállítása</description>
+  1130	    <description xml:lang="hr">Postavi mrežni proxy</description>
+  1131	    <description xml:lang="hi">संजाल प्रॉक्सी सेट करें</description>
+  1132	    <description xml:lang="he">הגדרת מתווך לרשת</description>
+  1133	    <description xml:lang="gu">નેટવર્ક પ્રોક્સીને સુયોજિત કરો</description>
+  1134	    <description xml:lang="gl">Estabelecer o proxy da rede</description>
+  1135	    <description xml:lang="fr">Configurer le proxy réseau</description>
+  1136	    <description xml:lang="fi">Aseta välipalvelin</description>
+  1137	    <description xml:lang="eu">Ezarri sarearen proxy-a</description>
+  1138	    <description xml:lang="es">Establecer el proxy de la red</description>
+  1139	    <description xml:lang="en_GB">Set network proxy</description>
+  1140	    <description xml:lang="el">Ορισμός διαμεσολαβητή δικτύου</description>
+  1141	    <description xml:lang="de">Netwerk-Proxy festlegen</description>
+  1142	    <description xml:lang="da">Sæt netværksproxy</description>
+  1143	    <description xml:lang="cs">Nastavit síťovou proxy</description>
+  1144	    <description xml:lang="ca">Estableix el servidor intermediari</description>
+  1145	    <description xml:lang="bn_IN">নেটওয়ার্ক প্রক্সি নির্ধারণ করুন</description>
+  1146	    <description xml:lang="bg">Задаване на сървър-посредник</description>
+  1147	    <description xml:lang="as">নে'টৱৰ্ক নিযুক্তক নিৰ্ধাৰিত কৰক</description>
+  1148	    <message>Authentication is required to set the network proxy used for downloading software</message>
+  1149	    <message xml:lang="zh_TW">必須先通過身份核對才能設定用來下載軟體的網路代理</message>
+  1150	    <message xml:lang="zh_CN">设置下载软件所用的代理服务器需要认证</message>
+  1151	    <message xml:lang="uk">Для визначення проксі-сервера, який буде використано для отримання програмного забезпечення, слід пройти розпізнавання</message>
+  1152	    <message xml:lang="tr">Yazılım indirmek üzere vekil sunucuyu ayarlamak için kimlik doğrulaması gerekiyor</message>
+  1153	    <message xml:lang="sv">Autentisering krävs för att ställa in nätverksproxyn som används för att hämta ner programvara</message>
+  1154	    <message xml:lang="sr">Потребно је потврђивање идентитета за подешавање мрежног посредника коришћеног за преузимање софтвера</message>
+  1155	    <message xml:lang="sq">Që të ujdiset ndërmjetës i përdorur për shkarkim software-i, lypset mirëfilltësim</message>
+  1156	    <message xml:lang="sl">Za nastavitev omrežnega posredniškega strežnika, uporabljenega za prejem programja, je obvezna overitev</message>
+  1157	    <message xml:lang="sk">Nastavenie sieťového proxy servera na aktualizáciu softvéru vyžaduje overenie totožnosti</message>
+  1158	    <message xml:lang="si">මෘදුකාංග බාගත කිරීම සඳහා භාවිතා කරන ජාල ප්‍රොක්සි සැකසීමට සත්‍යාපනය අවශ්‍ය වේ</message>
+  1159	    <message xml:lang="ru">Для настройки прокси-сервера, используемого для загрузки приложений, необходима аутентификация</message>
+  1160	    <message xml:lang="ro">Este necesară autentificarea pentru a stabili proxy-ul de rețea folosit la descărcarea programelor</message>
+  1161	    <message xml:lang="pt">Autenticação é necessária para configurar o proxy de rede utilizado para transferir pacotes</message>
+  1162	    <message xml:lang="pt_BR">Autenticação é necessária para definir um proxy de rede para baixar softwares</message>
+  1163	    <message xml:lang="pl">Wymagane jest uwierzytelnienie, aby ustawić pośrednika sieciowego używanego do pobierania oprogramowania</message>
+  1164	    <message xml:lang="pa">ਸਾਫਟਵੇਅਰ ਡਾਊਨਲੋਡ ਕਰਨ ਲਈ ਨੈੱਟਵਰਕ ਪਰਾਕਸੀ ਸੈੱਟ ਕਰਨ ਲਈ ਪਰਮਾਣਕਿਤਾ ਚਾਹੀਦੀ ਹੈ</message>
+  1165	    <message xml:lang="nl">Authenticatie is vereist bij instellen van een netwerkproxy die gebruikt wordt voor het downloaden van software</message>
+  1166	    <message xml:lang="ko">소프트웨어를 다운로드할 때 사용할 네트워크 프록시를 설정하려면 인증해야 합니다</message>
+  1167	    <message xml:lang="ja">ソフトウェアのダウンロードに使用するネットワークプロキシを設定するには、認証が必要です</message>
+  1168	    <message xml:lang="it">È richiesto autenticarsi per impostare il proxy di rete usato per scaricare software</message>
+
+== packagekit dbus interface snippets ==
+    <method name="SetProxy">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            Sets the proxy used by the dameon.
+          </doc:para>
+        </doc:description>
+        <doc:permission>Callers need the org.freedesktop.packagekit.set-proxy</doc:permission>
+      </doc:doc>
+      <arg type="s" name="proxy_http" direction="in">
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The HTTP proxy, e.g. <doc:tt>username:password@server:port</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type="s" name="proxy_https" direction="in">
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The HTTPS proxy, e.g. <doc:tt>username:password@server:port</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type="s" name="proxy_ftp" direction="in">
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The FTP proxy, e.g. <doc:tt>username:password@server:port</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type="s" name="proxy_socks" direction="in">
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The SOCKS proxy, e.g. <doc:tt>username:password@server:port</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type="s" name="no_proxy" direction="in">
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              The comma seporated list of sites to not use the proxy for, e.g.
+              <doc:tt>127.0.0.1,localmirror.org</doc:tt>.
+            </doc:para>
+    <method name="RefreshCache">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            This method should fetch updated meta-data for all enabled repositories.
+            This operation should be only scheduled when the computer is idle as
+            the network connection will be very active, and will the computer will
+            have have non-trivial levels of hard disk and processor activity.
+            For these reasons, it should not be done automatically when on battery
+            power.
+          </doc:para>
+          <doc:para>
+            When fetching each software repository, ensure to emit RepoDetail for the
+            current repository to give the user interface some extra details. Be sure to
+            have the "enabled" field set to true, otherwise you wouldn't be fetching
+            that repository.
+          </doc:para>
+          <doc:para>
+            This method typically emits
+            <doc:tt>Progress</doc:tt>,
+            <doc:tt>Error</doc:tt> and
+            <doc:tt>RepoDetail</doc:tt>.
+          </doc:para>
+        </doc:description>
+        <doc:permission>Callers need the org.freedesktop.packagekit.refresh-cache</doc:permission>
+      </doc:doc>
+      <arg type="b" name="force" direction="in">
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              If the caches should be cleaned and reloaded even if there is valid, up to date data.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+    </method>
+
+    <!--*********************************************************************-->
+    <method name="GetUpdates">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            This method should return a list of packages that are installed and are upgradable.
+            It should only return the newest update for each installed package.
+          </doc:para>
+          <doc:para>
+            This method typically emits
+            <doc:tt>Progress</doc:tt>,
+            <doc:tt>Error</doc:tt> and
+            <doc:tt>Package</doc:tt>.
+          </doc:para>
+          <doc:para>
+            <doc:tt>Package</doc:tt> enumerated types should be
+            <doc:tt>blocked</doc:tt>,
+            <doc:tt>low</doc:tt>,
+            <doc:tt>normal</doc:tt>,
+            <doc:tt>important</doc:tt> or
+            <doc:tt>security</doc:tt>.
+          </doc:para>
+          <doc:para>
+            The status <doc:tt>blocked</doc:tt> signifies the package cannot be
+            updated, probably due to other dependencies not being met.
+            This type allows the GUI tools to show to the user that an update
+            exists, but cannot be installed.
+            The reason for it not being installed should be put into the update
+            description when doing GetUpdateDetail.
+          </doc:para>
+          <doc:para>
+            A filter such as <doc:tt>basename</doc:tt> or <doc:tt>gui</doc:tt>
+            is also useful if you want to do filtering on the method to only show
+            the main packages rather than the complete list.
+            The complete list is available but specifying <doc:tt>none</doc:tt>
+            as the filter.
+            Using no filter which may be useful in advanced tools or when using
+            libpackagekit and searching for an update of a specific name.
+            Other filter types may be present, but can be safely ignored of the
+            backend does not support them.
+          </doc:para>
+    <method name="UpdatePackages">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value=""/>
+      <doc:doc>
+        <doc:description>
+          <doc:para>
+            This method updates existing packages on the local system.
+          </doc:para>
+          <doc:para>
+            The installer should always update extra packages automatically to fulfil dependencies.
+          </doc:para>
+          <doc:para>
+            This should allow an application to find out what package owns a file on the system.
+          </doc:para>
+          <doc:para>
+            This method typically emits
+            <doc:tt>Progress</doc:tt>,
+            <doc:tt>Status</doc:tt> and
+            <doc:tt>Error</doc:tt> and
+            <doc:tt>Package</doc:tt>.
+          </doc:para>
+        </doc:description>
+        <doc:permission>Callers need the org.freedesktop.packagekit.update-package</doc:permission>
+      </doc:doc>
+      <arg type="t" name="transaction_flags" direction="in">
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              If the transaction is only allowed to update to trusted packages.
+              Unsigned packages should not be installed if this transaction_flags has <doc:tt>ONLY_TRUSTED</doc:tt>.
+            </doc:para>
+            <doc:para>
+              If this method is can only update trusted packages, and the packages are unsigned, then
+              the backend will send a <doc:tt>ErrorCode(missing-gpg-signature)</doc:tt>.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+      </arg>
+      <arg type="as" name="package_ids" direction="in">
+        <doc:doc>
+          <doc:summary>
+            <doc:para>
+              An array of package IDs.
+            </doc:para>
+          </doc:summary>
+        </doc:doc>
+
+== default writable roots ==
+drwxr-xr-x root:root /etc/apt
+drwxr-xr-x root:root /etc/apt/apt.conf.d
+drwxr-xr-x root:root /etc/PackageKit
+drwxr-xr-x root:root /var/lib/PackageKit
+drwxr-xr-x root:root /var/cache/PackageKit
+drwx------ root:root /root
+
+$ docker exec -i ubuntu24-server-lpe-target bash
+== cleanup before ==
+== start root env monitor ==
+== launch active tty selfauth probe ==
+openvt: Couldn't deallocate console 1
+openvt_rc=8
+== active probe log ==
+== active identity ==
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/tty1
+selfauth (1002)
+   Since: Sat 2026-05-16 19:05:47 UTC; 221ms ago
+   State: active
+Sessions: *133
+  Linger: no
+    Unit: user-1002.slice
+          ├─session-133.scope
+          │ ├─803471 /bin/login -f
+          │ ├─803540 bash /home/selfauth/packagekit_active_proxy_injection_runner.sh
+          │ ├─803543 python3 /tmp/packagekit-active-proxy-injection/active_probe.py
+          │ ├─803547 sh -c -- "id; tty; loginctl user-status selfauth --no-pager 2>/dev/null | sed -n '1,35p' || true"
+          │ ├─803550 loginctl user-status selfauth --no-pager
+          │ └─803551 sed -n 1,35p
+          └─user@1002.service
+            └─init.scope
+              ├─803528 /usr/lib/systemd/systemd --user
+              └─803529 "(sd-pam)"
+
+May 16 19:05:47 4f5b414436ae systemd[803528]: Listening on gpg-agent.socket - GnuPG cryptographic agent and passphrase cache.
+May 16 19:05:47 4f5b414436ae systemd[803528]: Listening on keyboxd.socket - GnuPG public key management service.
+May 16 19:05:47 4f5b414436ae systemd[803528]: Listening on pk-debconf-helper.socket - debconf communication socket.
+May 16 19:05:47 4f5b414436ae systemd[803528]: Listening on snapd.session-agent.socket - REST API socket for snapd user session agent.
+May 16 19:05:47 4f5b414436ae systemd[803528]: Listening on dbus.socket - D-Bus User Message Bus Socket.
+May 16 19:05:47 4f5b414436ae systemd[803528]: Listening on gpg-agent-ssh.socket - GnuPG cryptographic agent (ssh-agent emulation).
+May 16 19:05:47 4f5b414436ae systemd[803528]: Reached target sockets.target - Sockets.
+May 16 19:05:47 4f5b414436ae systemd[803528]: Reached target basic.target - Basic System.
+May 16 19:05:47 4f5b414436ae systemd[803528]: Reached target default.target - Main User Target.
+May 16 19:05:47 4f5b414436ae systemd[803528]: Startup finished in 77ms.
+CAN_AUTHORIZE org.freedesktop.packagekit.system-network-proxy-configure -> 1
+CAN_AUTHORIZE org.freedesktop.packagekit.system-sources-refresh -> 1
+CAN_AUTHORIZE org.freedesktop.packagekit.system-update -> 3
+CAN_AUTHORIZE org.freedesktop.packagekit.package-install -> 3
+PROXY_READY label=newline-config port=34061
+PROXY_READY label=acquire-alt port=36415
+PROXY_READY label=auth-userinfo port=36133
+EVIL_APT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf
+EVIL_NETRC=/home/selfauth/.netrc
+EVIL_AUTH_CONF=/tmp/packagekit-active-proxy-injection/auth.conf
+SET_PROXY label=newline-config
+  http='127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\''
+  https='127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\''
+  ftp='127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\''
+  socks=''
+  no_proxy='localhost,127.0.0.1\nDir::Etc::netrc=/home/selfauth/.netrc\nPKPROBE_NOPROXY=1'
+  pac='file:///tmp/packagekit-active-proxy-injection/probe.pac\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_PAC=1'
+SET_PROXY_OK label=newline-config
+FRONTEND_READY label=refresh-newline path=/tmp/packagekit-active-proxy-injection/refresh-newline.sock
+RUN_TX label=refresh-newline-config method=RefreshCache
+TX_CREATE /72_dcebaebd props={'Uid': 1002, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+SET_HINTS_OK label=refresh-newline-config hints=['frontend-socket=/tmp/packagekit-active-proxy-injection/refresh-newline.sock', 'interactive=true']
+TX_CALL_OK label=refresh-newline-config method=RefreshCache
+PROXY_HIT label=newline-config addr=('127.0.0.1', 45950) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble/InRelease HTTP/1.1'
+PROXY_HEADER label=newline-config 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble/InRelease HTTP/1.1'
+PROXY_HEADER label=newline-config 'Host: ports.ubuntu.com'
+PROXY_HEADER label=newline-config 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=newline-config addr=('127.0.0.1', 45956) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-updates/InRelease HTTP/1.1'
+PROXY_HEADER label=newline-config 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-updates/InRelease HTTP/1.1'
+PROXY_HEADER label=newline-config 'Host: ports.ubuntu.com'
+PROXY_HEADER label=newline-config 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=newline-config addr=('127.0.0.1', 41120) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease HTTP/1.1'
+PROXY_HEADER label=newline-config 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease HTTP/1.1'
+PROXY_HEADER label=newline-config 'Host: ports.ubuntu.com'
+PROXY_HEADER label=newline-config 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=newline-config addr=('127.0.0.1', 41134) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease HTTP/1.1'
+PROXY_HEADER label=newline-config 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease HTTP/1.1'
+PROXY_HEADER label=newline-config 'Host: ports.ubuntu.com'
+PROXY_HEADER label=newline-config 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+TX_SIGNAL label=refresh-newline-config signal=ErrorCode data=(64, "E: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease  Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?)\nE: The repository 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease' is no longer signed.\nW: Updating from such a repository can't be done securely, and is therefore disabled by default.\nW: See apt-secure(8) manpage for repository creation and user configuration details.\nE: http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease is not (yet) available (Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?))\nE: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease  Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?)\nE: The repository 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease' is no longer signed.\nW: Updating from such a repository can't be done securely, and is therefore disabled by default.\nW: See apt-secure(8) manpage for repository creation and user configuration details.\nE: http://ports.ubuntu.com/ubuntu-ports noble-security InRelease is not (yet) available (Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?))\n")
+TX_SIGNAL label=refresh-newline-config signal=Finished data=(2, 7296)
+PROXY_COUNT newline-config=4 acquire-alt=0
+FRONTEND_COUNT refresh-newline=0
+SET_PROXY label=auth-userinfo
+  http='pkuser:pkpass@127.0.0.1:36133'
+  https=''
+  ftp=''
+  socks=''
+  no_proxy=''
+  pac=''
+SET_PROXY_OK label=auth-userinfo
+RUN_TX label=refresh-auth-userinfo method=RefreshCache
+TX_CREATE /73_aaceeead props={'Uid': 1002, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+TX_CALL_OK label=refresh-auth-userinfo method=RefreshCache
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 50402) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 50416) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-updates/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-updates/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 50424) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 50428) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+TX_SIGNAL label=refresh-auth-userinfo signal=ErrorCode data=(64, "E: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease  Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?)\nE: The repository 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease' is no longer signed.\nW: Updating from such a repository can't be done securely, and is therefore disabled by default.\nW: See apt-secure(8) manpage for repository creation and user configuration details.\nE: http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease is not (yet) available (Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?))\nE: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease  Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?)\nE: The repository 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease' is no longer signed.\nW: Updating from such a repository can't be done securely, and is therefore disabled by default.\nW: See apt-secure(8) manpage for repository creation and user configuration details.\nE: http://ports.ubuntu.com/ubuntu-ports noble-security InRelease is not (yet) available (Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?))\n")
+TX_SIGNAL label=refresh-auth-userinfo signal=Finished data=(2, 3280)
+AUTH_PROXY_COUNT=4
+AUTH_PROXY_EXPECTED_HEADER=Basic cGt1c2VyOnBrcGFzcw==
+AUTH_PROXY_HEADERS=['Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw==', 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw==', 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw==', 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw==']
+SET_PROXY label=clear-empty
+  http=''
+  https=''
+  ftp=''
+  socks=''
+  no_proxy=''
+  pac=''
+SET_PROXY_OK label=clear-empty
+RUN_TX label=refresh-after-clear method=RefreshCache
+TX_CREATE /74_ccaecbba props={'Uid': 1002, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+TX_CALL_OK label=refresh-after-clear method=RefreshCache
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 50434) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 50450) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-updates/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-updates/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 50456) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 50470) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+TX_SIGNAL label=refresh-after-clear signal=ErrorCode data=(64, "E: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease  Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?)\nE: The repository 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease' is no longer signed.\nW: Updating from such a repository can't be done securely, and is therefore disabled by default.\nW: See apt-secure(8) manpage for repository creation and user configuration details.\nE: http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease is not (yet) available (Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?))\nE: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease  Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?)\nE: The repository 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease' is no longer signed.\nW: Updating from such a repository can't be done securely, and is therefore disabled by default.\nW: See apt-secure(8) manpage for repository creation and user configuration details.\nE: http://ports.ubuntu.com/ubuntu-ports noble-security InRelease is not (yet) available (Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?))\n")
+TX_SIGNAL label=refresh-after-clear signal=Finished data=(2, 3275)
+STALE_AFTER_CLEAR_PROXY_HITS=4
+FRONTEND_READY label=frontend-refresh-clear path=/tmp/packagekit-active-proxy-injection/frontend-refresh-clear.sock
+RUN_TX label=frontend-refresh-clear method=RefreshCache
+TX_CREATE /75_ebadadeb props={'Uid': 1002, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+SET_HINTS_OK label=frontend-refresh-clear hints=['frontend-socket=/tmp/packagekit-active-proxy-injection/frontend-refresh-clear.sock', 'interactive=true']
+TX_CALL_OK label=frontend-refresh-clear method=RefreshCache
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 41978) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 41984) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-updates/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-updates/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 41998) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT label=auth-userinfo addr=('127.0.0.1', 42000) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease HTTP/1.1'
+PROXY_HEADER label=auth-userinfo 'Host: ports.ubuntu.com'
+PROXY_HEADER label=auth-userinfo 'Proxy-Authorization: Basic cGt1c2VyOnBrcGFzcw=='
+PROXY_HEADER label=auth-userinfo 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+TX_SIGNAL label=frontend-refresh-clear signal=ErrorCode data=(64, "E: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease  Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?)\nE: The repository 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease' is no longer signed.\nW: Updating from such a repository can't be done securely, and is therefore disabled by default.\nW: See apt-secure(8) manpage for repository creation and user configuration details.\nE: http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease is not (yet) available (Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?))\nE: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease  Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?)\nE: The repository 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease' is no longer signed.\nW: Updating from such a repository can't be done securely, and is therefore disabled by default.\nW: See apt-secure(8) manpage for repository creation and user configuration details.\nE: http://ports.ubuntu.com/ubuntu-ports noble-security InRelease is not (yet) available (Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?))\n")
+TX_SIGNAL label=frontend-refresh-clear signal=Finished data=(2, 3309)
+FRONTEND_COUNT refresh-clear=0
+FRONTEND_READY label=frontend-getupdates path=/tmp/packagekit-active-proxy-injection/frontend-getupdates.sock
+RUN_TX label=frontend-getupdates method=GetUpdates
+TX_CREATE /76_acddaebb props={'Uid': 1002, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+SET_HINTS_OK label=frontend-getupdates hints=['frontend-socket=/tmp/packagekit-active-proxy-injection/frontend-getupdates.sock', 'interactive=true']
+TX_CALL_OK label=frontend-getupdates method=GetUpdates
+TX_SIGNAL label=frontend-getupdates signal=Finished data=(1, 1409)
+GETUPDATES_PACKAGE_COUNT=0
+FRONTEND_COUNT getupdates=0
+FRONTEND_READY label=frontend-update-only-download path=/tmp/packagekit-active-proxy-injection/frontend-update-only-download.sock
+RUN_TX label=frontend-update-only-download method=UpdatePackages
+TX_CREATE /77_eddaeaea props={'Uid': 1002, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+SET_HINTS_OK label=frontend-update-only-download hints=['frontend-socket=/tmp/packagekit-active-proxy-injection/frontend-update-only-download.sock', 'interactive=true']
+TX_CALL_OK label=frontend-update-only-download method=UpdatePackages
+TX_SIGNAL label=frontend-update-only-download signal=Finished data=(1, 1299)
+FRONTEND_COUNT update-only-download=0
+FRONTEND_READY label=frontend-update-real path=/tmp/packagekit-active-proxy-injection/frontend-update-real.sock
+RUN_TX label=frontend-update-real method=UpdatePackages
+TX_CREATE /78_decccbdc props={'Uid': 1002, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+SET_HINTS_OK label=frontend-update-real hints=['frontend-socket=/tmp/packagekit-active-proxy-injection/frontend-update-real.sock', 'interactive=true']
+TX_CALL_OK label=frontend-update-real method=UpdatePackages
+TX_SIGNAL label=frontend-update-real signal=ErrorCode data=(48, 'Failed to obtain authentication.')
+TX_SIGNAL label=frontend-update-real signal=Finished data=(2, 0)
+FRONTEND_COUNT update-real=0
+SET_PROXY label=final-clear
+  http=''
+  https=''
+  ftp=''
+  socks=''
+  no_proxy=''
+  pac=''
+SET_PROXY_OK label=final-clear
+ACTIVE_PROBE_DONE
+ACTIVE_PROBE_COMPLETED=1
+== root env monitor log ==
+ENV_SNAPSHOT pid=803543 uid=1002 cmd='python3 /tmp/packagekit-active-proxy-injection/active_probe.py '
+  ENV_ITEM b'PKPROBE_ACTIVE_SESSION=1'
+  SEPARATE_APT_CONFIG=0 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=803567 uid=0 cmd='/usr/bin/dpkg --print-foreign-architectures '
+  ENV_ITEM b'http_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  ENV_ITEM b'ftp_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  SEPARATE_APT_CONFIG=0 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=803583 uid=0 cmd='sh -c -- [ ! -e /run/systemd/system ] || [ $(id -u) -ne 0 ] || systemctl start --no-block apt-news.service esm-cache.service >/dev/null 2>&1 || true '
+  ENV_ITEM b'http_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  ENV_ITEM b'ftp_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  SEPARATE_APT_CONFIG=0 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=803585 uid=0 cmd='systemctl start --no-block apt-news.service esm-cache.service '
+  ENV_ITEM b'http_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  ENV_ITEM b'ftp_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  SEPARATE_APT_CONFIG=0 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=803588 uid=42 cmd='/usr/lib/apt/methods/http '
+  ENV_ITEM b'http_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  ENV_ITEM b'ftp_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  SEPARATE_APT_CONFIG=0 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=803635 uid=42 cmd='/bin/sh /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-pro-esm-apps.gpg verify --status-fd 3 /tmp/apt.sig.t2SvyE /tmp/apt.data.6QPxAq '
+  ENV_ITEM b'APT_CONFIG=/tmp/apt.conf.kUYnUr'
+  SEPARATE_APT_CONFIG=1 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=803984 uid=42 cmd='/usr/lib/apt/methods/http '
+  ENV_ITEM b'http_proxy=http://pkuser:pkpass@127.0.0.1:36133/'
+  ENV_ITEM b'ftp_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  SEPARATE_APT_CONFIG=0 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=804034 uid=42 cmd='/bin/sh /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-pro-esm-apps.gpg verify --status-fd 3 /tmp/apt.sig.PH05sc /tmp/apt.data.zAUZzK '
+  ENV_ITEM b'APT_CONFIG=/tmp/apt.conf.dAOmgw'
+  SEPARATE_APT_CONFIG=1 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=804083 uid=0 cmd='sh -c -- [ ! -e /run/systemd/system ] || [ $(id -u) -ne 0 ] || systemctl start --no-block apt-news.service esm-cache.service >/dev/null 2>&1 || true '
+  ENV_ITEM b'http_proxy=http://pkuser:pkpass@127.0.0.1:36133/'
+  ENV_ITEM b'ftp_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  SEPARATE_APT_CONFIG=0 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=804085 uid=0 cmd='systemctl start --no-block apt-news.service esm-cache.service '
+  ENV_ITEM b'http_proxy=http://pkuser:pkpass@127.0.0.1:36133/'
+  ENV_ITEM b'ftp_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  SEPARATE_APT_CONFIG=0 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=804088 uid=42 cmd='/usr/lib/apt/methods/http '
+  ENV_ITEM b'http_proxy=http://pkuser:pkpass@127.0.0.1:36133/'
+  ENV_ITEM b'ftp_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  SEPARATE_APT_CONFIG=0 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=804103 uid=42 cmd='/bin/sh /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-pro-esm-apps.gpg verify --status-fd 3 /tmp/apt.sig.BdpiUE /tmp/apt.data.Vx2408 '
+  ENV_ITEM b'APT_CONFIG=/tmp/apt.conf.wmobuu'
+  SEPARATE_APT_CONFIG=1 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=804202 uid=42 cmd='/usr/lib/apt/methods/http '
+  ENV_ITEM b'http_proxy=http://pkuser:pkpass@127.0.0.1:36133/'
+  ENV_ITEM b'ftp_proxy=http://127.0.0.1:34061\nAPT_CONFIG=/tmp/packagekit-active-proxy-injection/evil-apt.conf\nPKPROBE_NEWLINE_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com "http://127.0.0.1:36415/";\nAPT::Update::Pre-Invoke:: "/bin/sh -c \'id > /root/packagekit_active_proxy_injection_root\'";\nsh -c \'id >/root/packagekit_active_proxy_injection_root\'/'
+  SEPARATE_APT_CONFIG=0 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=804216 uid=42 cmd='/bin/sh /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-pro-esm-apps.gpg verify --status-fd 3 /tmp/apt.sig.FI1faM /tmp/apt.data.c7uTUu '
+  ENV_ITEM b'APT_CONFIG=/tmp/apt.conf.kHDa7G'
+  SEPARATE_APT_CONFIG=1 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=804249 uid=42 cmd='/bin/sh /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-pro-esm-apps.gpg verify --status-fd 3 /tmp/apt.sig.mWLMm2 /tmp/apt.data.URdRFO '
+  ENV_ITEM b'APT_CONFIG=/tmp/apt.conf.i8kqt5'
+  SEPARATE_APT_CONFIG=1 SEPARATE_ACQUIRE=0
+ENV_SNAPSHOT pid=804260 uid=42 cmd='apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo '
+  ENV_ITEM b'APT_CONFIG=/tmp/apt.conf.i8kqt5'
+  SEPARATE_APT_CONFIG=1 SEPARATE_ACQUIRE=0
+== root marker/config checks ==
+NO_ROOT_PAYLOAD_MARKER
+-- grep PKPROBE/APT_CONFIG in root-owned config/state roots --
+== cleanup explicit ==
+== final target health ==
+running
+ABSENT /tmp/packagekit-active-proxy-injection
+ABSENT /home/selfauth/packagekit_active_proxy_injection_runner.sh
+ABSENT /root/packagekit_active_proxy_injection_root
+
+$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== post-run PackageKit/root state =="\nsystemctl is-system-running || true\nsystemctl --failed --no-legend || true\nsystemctl status packagekit.service --no-pager -l || true\ntest ! -e /root/packagekit_active_proxy_injection_root && echo NO_ROOT_PAYLOAD_MARKER_POST\ntest ! -e /tmp/packagekit-active-proxy-injection && echo NO_TMP_WORKDIR_POST\n'
+== post-run PackageKit/root state ==
+running
+● packagekit.service - PackageKit Daemon
+     Loaded: loaded (/usr/lib/systemd/system/packagekit.service; static)
+     Active: active (running) since Sat 2026-05-16 19:06:08 UTC; 71ms ago
+   Main PID: 804341 (packagekitd)
+      Tasks: 5 (limit: 9517)
+     Memory: 3.2M (peak: 4.7M)
+        CPU: 14ms
+     CGroup: /docker/4f5b414436aefb655c3e4b9b25b80c8483306cde6cc3186d655231e3631e5f6a/system.slice/packagekit.service
+             └─804341 /usr/libexec/packagekitd
+
+May 16 19:06:08 4f5b414436ae systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 16 19:06:08 4f5b414436ae PackageKit[804341]: daemon start
+May 16 19:06:08 4f5b414436ae systemd[1]: Started packagekit.service - PackageKit Daemon.
+NO_ROOT_PAYLOAD_MARKER_POST
+NO_TMP_WORKDIR_POST

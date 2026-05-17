@@ -1,0 +1,1100 @@
+
+### initial cleanup and target health
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux 5cc17259abde 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+running
+failed_units=0
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+
+### default package and unit proof
+apport	2.28.1-0ubuntu3.8	ii 
+apport-core-dump-handler	2.28.1-0ubuntu3.8	ii 
+apport-symptoms	0.25	ii 
+python3-apport	2.28.1-0ubuntu3.8	ii 
+python3-problem-report	2.28.1-0ubuntu3.8	ii 
+systemd	255.4-1ubuntu8.15	ii 
+systemd-coredump		un 
+--- unit files ---
+UNIT FILE                     STATE   PRESET
+apport-autoreport.path        enabled enabled
+apport-autoreport.service     static  -
+apport-coredump-hook@.service static  -
+apport-forward@.service       static  -
+apport.service                enabled enabled
+apport-forward.socket         enabled enabled
+apport-autoreport.timer       enabled enabled
+
+7 unit files listed.
+--- live units ---
+  apport-autoreport.path                   loaded    inactive dead      Process error reports when automatic reporting is enabled (file watch)
+● whoopsie.path                            not-found inactive dead      whoopsie.path
+  apport-autoreport.service                loaded    inactive dead      Process error reports when automatic reporting is enabled
+  apport.service                           loaded    inactive dead      automatic crash report generation
+  apport-forward.socket                    loaded    active   listening Unix socket for apport crash forwarding
+  apport-autoreport.timer                  loaded    inactive dead      Process error reports when automatic reporting is enabled (timer based)
+--- detailed state ---
+Result=success
+Id=apport-autoreport.path
+Triggers=apport-autoreport.service
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=enabled
+
+Result=success
+Id=apport-autoreport.timer
+Triggers=apport-autoreport.service
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=enabled
+
+Result=success
+Id=apport-autoreport.service
+Triggers=
+TriggeredBy=apport-autoreport.timer apport-autoreport.path
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=static
+
+Result=success
+Id=apport-forward.socket
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=active
+SubState=listening
+UnitFileState=enabled
+
+### unit file line evidence
+--- /usr/lib/systemd/system/apport-autoreport.path ---
+     1	[Unit]
+     2	Description=Process error reports when automatic reporting is enabled (file watch)
+     3	ConditionPathExists=/var/lib/apport/autoreport
+     4	
+     5	[Path]
+     6	PathChanged=/var/crash
+     7	
+     8	[Install]
+     9	WantedBy=paths.target
+--- /usr/lib/systemd/system/apport-autoreport.service ---
+     1	[Unit]
+     2	Description=Process error reports when automatic reporting is enabled
+     3	ConditionPathExists=/var/lib/apport/autoreport
+     4	Wants=whoopsie.path
+     5	After=whoopsie.path
+     6	
+     7	[Service]
+     8	Type=oneshot
+     9	ExecStart=/usr/share/apport/whoopsie-upload-all --timeout 20
+--- /usr/lib/systemd/system/apport-autoreport.timer ---
+     1	[Unit]
+     2	Description=Process error reports when automatic reporting is enabled (timer based)
+     3	ConditionPathExists=/var/lib/apport/autoreport
+     4	
+     5	[Timer]
+     6	OnStartupSec=1h
+     7	OnUnitActiveSec=3h
+     8	
+     9	[Install]
+    10	WantedBy=timers.target
+--- /usr/lib/systemd/system/apport-forward.socket ---
+     1	[Unit]
+     2	Description=Unix socket for apport crash forwarding
+     3	ConditionVirtualization=container
+     4	
+     5	[Socket]
+     6	ListenStream=/run/apport.socket
+     7	SocketMode=0600
+     8	Accept=yes
+     9	MaxConnections=10
+    10	Backlog=5
+    11	PassCredentials=true
+    12	
+    13	[Install]
+    14	WantedBy=sockets.target
+--- /usr/lib/systemd/system/apport-forward@.service ---
+     1	[Unit]
+     2	Description=Apport crash forwarding receiver
+     3	Requires=apport-forward.socket
+     4	
+     5	[Service]
+     6	Type=oneshot
+     7	ExecStart=/usr/share/apport/apport
+--- /usr/lib/systemd/system/apport-coredump-hook@.service ---
+     1	# This service is responsible for reading the coredump data from systemd journal
+     2	# after a crash has occurred, and generating a crash file to /var/crash/.
+     3	[Service]
+     4	Type=oneshot
+     5	ExecStart=/usr/share/apport/apport --from-systemd-coredump %i
+     6	Nice=9
+     7	OOMScoreAdjust=500
+     8	IPAddressDeny=any
+     9	LockPersonality=yes
+    10	MemoryDenyWriteExecute=yes
+    11	NoNewPrivileges=yes
+    12	PrivateDevices=yes
+    13	PrivateNetwork=yes
+    14	PrivateTmp=yes
+    15	ProtectControlGroups=yes
+    16	ProtectHome=read-only
+    17	ProtectHostname=yes
+    18	ProtectKernelLogs=yes
+    19	ProtectKernelModules=yes
+    20	ProtectKernelTunables=yes
+    21	ProtectSystem=strict
+    22	ReadWritePaths=/var/crash /var/log
+    23	RestrictAddressFamilies=AF_UNIX
+    24	RestrictRealtime=yes
+    25	RestrictSUIDSGID=yes
+    26	SystemCallArchitectures=native
+    27	SystemCallErrorNumber=EPERM
+    28	SystemCallFilter=@system-service @file-system @setuid
+--- /usr/lib/systemd/system/systemd-coredump@.service.d/apport-coredump-hook.conf ---
+     1	[Unit]
+     2	OnSuccess=apport-coredump-hook@%i.service
+
+### code line evidence
+--- whoopsie-upload-all process_report ---
+    35	def process_report(report):
+    36	    # TODO: Split into smaller functions/methods
+    37	    # pylint: disable=too-many-branches,too-many-return-statements
+    38	    # pylint: disable=too-many-statements
+    39	    """Collect information for a report and mark for whoopsie upload
+    40	
+    41	    errors.ubuntu.com does not collect any hook data anyway, so we do not need
+    42	    to bother collecting it.
+    43	
+    44	    Return path of upload stamp if report was successfully processed, or None
+    45	    otherwise.
+    46	    """
+    47	    upload_stamp = f"{report.rsplit('.', 1)[0]}.upload"
+    48	
+    49	    # whoopsie-upload-all is only called if autoreporting of crashes is set,
+    50	    # so its unlikely that systems with that set are interested in having the
+    51	    # .crash file around. Additionally, having .crash files left over causes
+    52	    # systemd's PathExistsGlob to be constantly triggered. See systemd issue
+    53	    # #16669 and LP: #1891657 for some details.
+    54	    uploaded_stamp = f"{upload_stamp}ed"
+    55	    if os.path.exists(uploaded_stamp) and os.path.exists(report):
+    56	        report_st = os.stat(report)
+    57	        uploaded_st = os.stat(uploaded_stamp)
+    58	        # if the crash file is new delete the uploaded file
+    59	        if uploaded_st.st_mtime < report_st.st_mtime:
+    60	            os.unlink(uploaded_stamp)
+    61	            if os.path.exists(upload_stamp):
+    62	                upload_st = os.stat(upload_stamp)
+    63	                # also delete the upload file
+    64	                if upload_st.st_mtime < report_st.st_mtime:
+    65	                    os.unlink(upload_stamp)
+    66	
+    67	    if os.path.exists(upload_stamp):
+    68	        logging.info("%s already marked for upload, skipping", report)
+    69	        return upload_stamp
+    70	
+    71	    report_stat = None
+    72	
+    73	    r = apport.Report()
+    74	    # make sure we're actually on the hook to write this updated report
+    75	    # before we start doing expensive collection operations
+    76	    try:
+    77	        with open(report, "rb") as f:
+    78	            try:
+    79	                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    80	            except OSError:
+    81	                logging.info("%s already being processed, skipping", report)
+    82	                return None
+    83	            r.load(f, binary="compressed")
+    84	            report_stat = os.stat(report)
+    85	    except (MalformedProblemReport, OSError, zlib.error) as error:
+    86	        sys.stderr.write(f"ERROR: cannot load {report}: {str(error)}\n")
+    87	        return None
+    88	    if r.get("ProblemType", "") != "Crash" and "ExecutablePath" not in r:
+    89	        logging.info("  skipping, not a crash")
+    90	        return None
+    91	    if "Dependencies" in r and r.get("_HooksRun") != "no":
+    92	        logging.info("%s already has info collected", report)
+    93	    else:
+    94	        logging.info("Collecting info for %s...", report)
+    95	        r.add_os_info()
+    96	        try:
+    97	            r.add_package_info()
+    98	        except (SystemError, ValueError) as error:
+    99	            sys.stderr.write(
+   100	                f"ERROR: cannot add package info on {report}: {str(error)}\n"
+   101	            )
+   102	            return None
+   103	        # add information from package specific hooks
+   104	        try:
+   105	            r.add_hooks_info()
+   106	        except Exception as error:  # pylint: disable=broad-except
+   107	            sys.stderr.write(
+   108	                f"WARNING: hook failed for processing {report}: {str(error)}\n"
+   109	            )
+   110	
+   111	        try:
+   112	            r.add_gdb_info()
+   113	        except (EOFError, OSError, zlib.error) as error:
+   114	            # gzip.GzipFile.read can raise zlib.error. See LP bug #1947800
+   115	
+   116	            # Calling add_gdb_info raises ENOENT if the crash's executable
+   117	            # is missing or gdb is not available, but apport-retrace could
+   118	            # still process it.
+   119	            if getattr(error, "errno", None) != errno.ENOENT:
+   120	                sys.stderr.write(f"ERROR: processing {report}: {str(error)}\n")
+   121	                if os.path.exists(report):
+   122	                    os.unlink(report)
+   123	                return None
+   124	
+   125	        # write updated report, we use os.open and os.fdopen as
+   126	        # /proc/sys/fs/protected_regular is set to 1 (LP: #1848064)
+   127	        # make sure the file isn't a FIFO or symlink
+   128	        try:
+   129	            fd = os.open(report, os.O_NOFOLLOW | os.O_WRONLY | os.O_NONBLOCK)
+   130	        except FileNotFoundError:
+   131	            # The crash report was deleted. Nothing left to do.
+   132	            return None
+   133	        st = os.fstat(fd)
+   134	        if stat.S_ISREG(st.st_mode):
+   135	            with os.fdopen(fd, "wb") as f:
+   136	                os.fchmod(fd, 0)
+   137	                r.write(f)
+   138	                os.fchmod(fd, 0o640)
+   139	
+   140	    # now tell whoopsie to upload the report
+   141	    logging.info("Marking %s for whoopsie upload", report)
+   142	    apport.fileutils.mark_report_upload(report)
+   143	    assert os.path.exists(upload_stamp)
+   144	    os.chown(upload_stamp, report_stat.st_uid, report_stat.st_gid)
+   145	    return upload_stamp
+--- whoopsie-upload-all main gate ---
+   151	    Return set of all generated upload stamps.
+   152	    """
+   153	    if os.geteuid() != 0:
+   154	        sys.stderr.write(
+   155	            f"WARNING: Not running as root, cannot process reports"
+   156	            f" which are not owned by uid {os.getuid()}\n"
+   157	        )
+   158	
+   159	    stamps = set()
+   160	    reports = apport.fileutils.get_all_reports()
+   161	    for r in reports:
+   162	        res = process_report(r)
+   163	        if res:
+   164	            stamps.add(res)
+   165	
+   166	    return stamps
+   167	
+   168	
+   169	def wait_uploaded(stamps, timeout):
+   170	    """Wait until all reports were uploaded.
+   171	
+   172	    Times out after a given number of seconds.
+   173	
+   174	    Return True if all reports were uploaded, False if there are some missing.
+   175	    """
+   176	    logging.info("Waiting for whoopsie to upload reports (timeout: %d s)", timeout)
+   177	
+   178	    while timeout >= 0:
+   179	        # determine missing stamps
+   180	        missing = ""
+   181	        for stamp in stamps:
+   182	            uploaded = f"{stamp}ed"
+   183	            if os.path.exists(stamp) and not os.path.exists(uploaded):
+   184	                missing += f"{uploaded} "
+   185	        if not missing:
+   186	            return True
+   187	
+   188	        logging.info("  missing (remaining: %d s): %s", timeout, missing)
+   189	        time.sleep(10)
+   190	        timeout -= 10
+   191	
+   192	    return False
+   193	
+   194	
+   195	# pylint: disable-next=missing-function-docstring
+   196	def main() -> None:
+   197	    parser = argparse.ArgumentParser(
+   198	        description="Noninteractively upload all "
+   199	        "Apport crash reports to errors.ubuntu.com"
+   200	    )
+   201	    parser.add_argument(
+   202	        "-t",
+   203	        "--timeout",
+   204	        default=0,
+   205	        type=int,
+   206	        help="seconds to wait for whoopsie to upload the reports"
+   207	        " (default: do not wait)",
+   208	    )
+   209	    parser.add_argument("--loglevel", default="info", help="log level (default: info)")
+   210	    opts = parser.parse_args()
+   211	
+   212	    numeric_level = getattr(logging, opts.loglevel.upper(), None)
+   213	    if not isinstance(numeric_level, int):
+   214	        raise ValueError(f"Invalid log level: {opts.loglevel}")
+   215	    logging.basicConfig(level=numeric_level)
+   216	
+   217	    # verify that whoopsie.path is enabled
+   218	    if (
+   219	        subprocess.call(
+   220	            ["/bin/systemctl", "--quiet", "is-enabled", "whoopsie.path"],
+   221	            stdout=subprocess.PIPE,
+   222	        )
+   223	        != 0
+   224	    ):
+   225	        logging.info("whoopsie.path is not enabled, doing nothing")
+   226	        return
+   227	
+   228	    stamps = collect_info()
+   229	    # print('stamps:', stamps)
+   230	    if stamps:
+   231	        # Touch the directory that is monitored by whoopsie.path so that
+   232	        # whoopsie.service can activate. Ideally, this directory and the one
+   233	        # that apport-autoreport.path monitors would be different but they are
+   234	        # the same currently.
+   235	        os.utime(apport.fileutils.report_dir)
+   236	
+   237	        if opts.timeout > 0:
+   238	            if not wait_uploaded(stamps, opts.timeout):
+   239	                sys.exit(2)
+   240	            logging.info("All reports uploaded successfully")
+   241	        else:
+   242	            logging.info("All reports processed")
+   243	
+   244	
+   245	if __name__ == "__main__":
+--- apport fileutils report state helpers ---
+   195	def seen_report(report):
+   196	    """Check whether the report file has already been processed earlier."""
+   197	    st = os.stat(report)
+   198	    return (st.st_atime > st.st_mtime) or (st.st_size == 0)
+   199	
+   200	
+   201	def mark_report_upload(report):
+   202	    upload = f"{report.rsplit('.', 1)[0]}.upload"
+   203	    uploaded = f"{report.rsplit('.', 1)[0]}.uploaded"
+   204	    # if uploaded exists and is older than the report remove it and upload
+   205	    if os.path.exists(uploaded) and os.path.exists(upload):
+   206	        report_st = os.stat(report)
+   207	        upload_st = os.stat(upload)
+   208	        if upload_st.st_mtime < report_st.st_mtime:
+   209	            os.unlink(upload)
+   210	    with open(upload, "a", encoding="utf-8"):
+   211	        pass
+   212	
+   213	
+   214	def mark_hanging_process(report, pid):
+   215	    if "ExecutablePath" in report:
+   216	        subject = report["ExecutablePath"].replace("/", "_")
+   217	    else:
+   218	        raise ValueError("report does not have the ExecutablePath attribute")
+   219	
+   220	    uid = os.geteuid()
+   221	    base = f"{subject}.{str(uid)}.{pid}.hanging"
+   222	    path = os.path.join(report_dir, base)
+   223	    with open(path, "a", encoding="utf-8"):
+   224	        pass
+   225	
+   226	
+   227	def mark_report_seen(report):
+   228	    """Mark given report file as seen."""
+   229	    st = os.stat(report)
+   230	    try:
+   231	        os.utime(report, (st.st_mtime, st.st_mtime - 1))
+   232	    except OSError:
+   233	        # file is probably not our's, so do it the slow and boring way
+   234	        # change the file's access time until it stat's different than the
+   235	        # mtime. This might take a while if we only have 1-second resolution.
+   297	def get_all_reports():
+   298	    """Return a list with all report files accessible to the calling user."""
+   299	    reports = []
+   300	    for r in glob.glob(os.path.join(report_dir, "*.crash")):
+   301	        try:
+   302	            if os.path.getsize(r) > 0 and os.access(r, os.R_OK | os.W_OK):
+   303	                reports.append(r)
+   304	        except OSError:
+   305	            # race condition, can happen if report disappears between glob and
+   306	            # stat
+   307	            pass
+   308	    return reports
+   309	
+   310	
+   311	def get_new_reports():
+   312	    """Get new reports for calling user.
+   313	
+   314	    Return a list with all report files which have not yet been processed
+   315	    and are accessible to the calling user.
+   316	    """
+   317	    reports = []
+   318	    for r in get_all_reports():
+   319	        try:
+   320	            if not seen_report(r):
+   321	                reports.append(r)
+   322	        except OSError:
+   323	            # race condition, can happen if report disappears between glob and
+   324	            # stat
+   325	            pass
+   326	    return reports
+   327	
+   328	
+   329	def get_all_system_reports():
+   330	    """Get all system reports.
+   331	
+   332	    Return a list with all report files which belong to a system user.
+   333	    The maximum system user group ID is taken from SYS_UID_MAX from
+   334	    /etc/login.defs (defaults to 999 on Debian based systems and LSB
+   335	    specifies 499 in "User ID Ranges").
+   336	    """
+   337	    reports = []
+   338	    sys_uid_max = get_sys_uid_max()
+   339	    for r in glob.glob(os.path.join(report_dir, "*.crash")):
+   340	        try:
+   341	            st = os.stat(r)
+   342	            if st.st_size > 0 and st.st_uid <= sys_uid_max:
+   343	                # filter out guest session crashes;
+   344	                # they might have a system UID
+   345	                try:
+   346	                    pw = pwd.getpwuid(st.st_uid)
+   347	                    if pw.pw_name.startswith("guest"):
+   348	                        continue
+   349	                except KeyError:
+   350	                    pass
+   351	
+   352	                reports.append(r)
+   353	        except OSError:
+   354	            # race condition, can happen if report disappears between glob and
+   355	            # stat
+   356	            pass
+   357	    return reports
+   358	
+   359	
+   360	def get_new_system_reports():
+   361	    """Get new system reports.
+   362	
+   363	    Return a list with all report files which have not yet been processed
+   364	    and belong to a system user. The maximum system user group ID is taken
+   365	    from SYS_UID_MAX from /etc/login.defs (defaults to 999 on Debian based
+   366	    systems and LSB specifies 499 in "User ID Ranges").
+   367	    """
+   368	    return [r for r in get_all_system_reports() if not seen_report(r)]
+   404	def increment_crash_counter(report: ProblemReport, filename: str) -> None:
+   405	    """Increment the crash counter if report was seen."""
+   406	    if not seen_report(filename):
+   407	        return
+   408	    # Make sure the file isn't a FIFO or symlink
+   409	    fd = os.open(filename, os.O_NOFOLLOW | os.O_RDONLY | os.O_NONBLOCK)
+   410	    st = os.fstat(fd)
+   411	    if stat.S_ISREG(st.st_mode):
+   412	        with os.fdopen(fd, "rb") as f:
+   413	            crash_counter = get_recent_crashes(f) + 1
+   414	        report["CrashCounter"] = str(crash_counter)
+   415	
+   416	
+   417	def make_report_file(report, uid=None):
+   418	    """Construct a canonical pathname for a report and open it for writing.
+   419	
+   420	    If uid is not given, it defaults to the effective uid of the current
+   421	    process. The report file must not exist already, to prevent losing
+   422	    previous reports or symlink attacks.
+   423	
+   424	    Return an open file object for binary writing.
+   425	    """
+   426	    if "ExecutablePath" in report:
+   427	        subject = report["ExecutablePath"].replace("/", "_")
+   428	    elif "Package" in report:
+   429	        subject = report["Package"].split(None, 1)[0]
+   430	    else:
+   431	        raise ValueError("report has neither ExecutablePath nor Package attribute")
+   432	
+   433	    if not uid:
+   434	        uid = os.geteuid()
+   435	
+   436	    path = os.path.join(report_dir, f"{subject}.{str(uid)}.crash")
+   437	    return open(path, "xb")
+--- apport crash privilege transitions ---
+   130	def check_lock():
+   131	    """Abort if another instance of apport is already running.
+   132	
+   133	    This avoids bringing down the system to its knees if there is a series of
+   134	    crashes."""
+   135	    logger = logging.getLogger()
+   136	
+   137	    # create a lock file
+   138	    try:
+   139	        fd = os.open(
+   140	            os.environ.get("APPORT_LOCK_FILE", "/var/run/apport.lock"),
+   141	            os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW,
+   142	            mode=0o600,
+   143	        )
+   144	    except OSError as error:
+   145	        logger.error("cannot create lock file (uid %i): %s", os.getuid(), str(error))
+   146	        sys.exit(1)
+   147	
+   148	    def error_running(*_unused_args):
+   149	        logger.error("another apport instance is already running, aborting")
+   150	        sys.exit(1)
+   151	
+   152	    original_handler = signal.signal(signal.SIGALRM, error_running)
+   153	    signal.alarm(30)  # Timeout after that many seconds
+   154	    try:
+   155	        fcntl.lockf(fd, fcntl.LOCK_EX)
+   156	    except OSError:
+   157	        error_running()
+   158	    finally:
+   159	        signal.alarm(0)
+   160	        signal.signal(signal.SIGALRM, original_handler)
+   161	
+   162	
+   163	def get_core_path(
+   164	    options: argparse.Namespace,
+   165	    real_user: UserGroupID,
+   166	    proc_pid: ProcPid,
+   167	    timestamp: int | None = None,
+   168	) -> str:
+   169	    """Get the path to the core file."""
+   170	    return apport.fileutils.get_core_path(
+   171	        proc_pid.pid, options.executable_path, real_user.uid, timestamp, proc_pid.fd
+   172	    )[1]
+   173	
+   174	
+   175	def get_pid_info(proc_pid: ProcPid) -> tuple[UserGroupID, os.stat_result]:
+   176	    """Read /proc information about pid"""
+   177	    # unhandled exceptions on missing or invalidly formatted files are okay
+   178	    # here -- we want to know in the log file
+   179	    pidstat = os.stat("stat", dir_fd=proc_pid.fd)
+   180	
+   181	    # determine UID and GID of the target process; do *not* use the owner of
+   182	    # /proc/pid/stat, as that will be root for setuid or unreadable programs!
+   183	    # (this matters when suid_dumpable is enabled)
+   184	    with proc_pid.open("status") as status_file:
+   185	        contents = status_file.read()
+   186	    (real_uid, real_gid) = apport.fileutils.get_uid_and_gid(contents)
+   187	
+   188	    assert real_uid is not None, "failed to parse Uid"
+   189	    assert real_gid is not None, "failed to parse Gid"
+   190	    return UserGroupID(real_uid, real_gid), pidstat
+   191	
+   192	
+   193	def get_process_starttime(proc_pid: ProcPid) -> int:
+   194	    """Get the starttime of the process using proc_pid_fd"""
+   195	
+   196	    with proc_pid.open("stat") as stat_file:
+   197	        contents = stat_file.read()
+   198	    return apport.fileutils.get_starttime(contents)
+   199	
+   200	
+   201	def get_apport_starttime() -> int:
+   202	    """Get the Apport process starttime"""
+   203	
+   204	    with open(f"/proc/{os.getpid()}/stat", encoding="utf-8") as stat_file:
+   205	        contents = stat_file.read()
+   206	    return apport.fileutils.get_starttime(contents)
+   207	
+   208	
+   209	def drop_privileges(real_user: UserGroupID) -> None:
+   210	    """Change effective user and group to crash user/group ID"""
+   211	    # Drop any supplemental groups, or we'll still be in the root group
+   212	    if os.getuid() == 0:
+   213	        os.setgroups([])
+   214	        assert os.getgroups() == []
+   215	    os.setregid(-1, real_user.gid)
+   216	    os.setreuid(-1, real_user.uid)
+   217	    assert os.getegid() == real_user.gid
+   218	    assert os.geteuid() == real_user.uid
+   219	
+   220	
+   221	def recover_privileges():
+   222	    """Change effective user and group back to real uid and gid"""
+   223	    os.setregid(-1, os.getgid())
+   224	    os.setreuid(-1, os.getuid())
+   225	    assert os.getegid() == os.getgid()
+  1013	    check_lock()
+  1014	    setup_signals()
+  1015	
+  1016	    real_user, _ = get_pid_info(proc_pid)
+  1017	    process_start = get_process_starttime(proc_pid)
+  1018	    if not consistency_checks(options, process_start, proc_pid, real_user):
+  1019	        return 0
+  1020	
+  1021	    if _check_global_pid_and_forward(options, proc_pid):
+  1022	        return 0
+  1023	
+  1024	    coredump_fd = sys.stdin.fileno()
+  1025	    logger.info(
+  1026	        "called for %s, signal %s, core limit %s, dump mode %s",
+  1027	        (
+  1028	            f"pid {options.pid}"
+  1029	            if options.global_pid is None
+  1030	            else f"global pid {options.global_pid}"
+  1031	        ),
+  1032	        options.signal_number,
+  1033	        options.core_ulimit,
+  1034	        options.dump_mode,
+  1035	    )
+  1036	
+  1037	    core_ulimit = refine_core_ulimit(options)
+  1038	
+  1039	    core_path = get_core_path(options, real_user, proc_pid, process_start)
+  1040	    report_owner = determine_report_owner(options.dump_mode, real_user)
+  1041	
+  1042	    # ignore SIGQUIT (it's usually deliberately generated by users)
+  1043	    if options.signal_number == int(signal.SIGQUIT):
+  1044	        write_user_coredump(core_path, core_ulimit, proc_pid, report_owner, coredump_fd)
+  1045	        return 0
+  1046	
+  1047	    info = apport.report.Report("Crash")
+  1048	    _set_signal(info, options.signal_number)
+  1049	    core_size_limit = usable_ram() * 3 / 4
+  1050	    # sys.stdin has type io.TextIOWrapper, not the claimed io.TextIO.
+  1051	    # See https://github.com/python/typeshed/issues/10093
+  1052	    assert isinstance(sys.stdin, io.TextIOWrapper)
+  1053	    # read binary data from stdio
+  1054	    info["CoreDump"] = (sys.stdin.detach(), True, core_size_limit, True)
+  1055	
+  1056	    # We already need this here to figure out the ExecutableName (for
+  1057	    # scripts, etc).
+  1058	    if options.executable_path is not None and os.path.exists(options.executable_path):
+  1059	        info["ExecutablePath"] = options.executable_path
+  1060	    else:
+  1061	        info["ExecutablePath"] = os.readlink("exe", dir_fd=proc_pid.fd)
+  1062	
+  1063	    # Do not check closing session for root processes
+  1064	    if not real_user.is_root() and is_closing_session(proc_pid, real_user):
+  1065	        logger.error("happens for shutting down session, ignoring")
+  1066	        return 0
+  1067	
+  1068	    # ignore systemd watchdog kills; most often they don't tell us the
+  1069	    # actual reason (kernel hang, etc.), LP #1433320
+  1070	    if is_systemd_watchdog_restart(options.signal_number, proc_pid):
+  1071	        logger.error("Ignoring systemd watchdog restart")
+  1072	        return 0
+  1073	
+  1074	    # Drop privileges temporarily to make sure that we don't
+  1075	    # include information in the crash report that the user should
+  1076	    # not be allowed to access.
+  1077	    drop_privileges(real_user)
+  1078	
+  1079	    info.pid = proc_pid.pid
+  1080	    info.add_proc_info(proc_pid_fd=proc_pid.fd)
+  1081	
+  1082	    if "ExecutablePath" not in info:
+  1083	        logger.error("could not determine ExecutablePath, aborting")
+  1084	        return 1
+  1085	
+  1086	    def _write_coredump_callback(from_report: typing.BinaryIO | None = None) -> None:
+  1087	        write_user_coredump(
+  1088	            core_path, core_ulimit, proc_pid, report_owner, coredump_fd, from_report
+  1089	        )
+  1090	
+  1091	    result = process_crash(info, real_user, report_owner, _write_coredump_callback)
+  1092	    if "CoreDump" not in info:
+  1093	        logger.error(
+  1094	            "core dump exceeded %i MiB, dropped to avoid memory overflow",
+  1095	            core_size_limit / 1048576,
+  1096	        )
+  1097	    return result
+  1098	
+  1099	
+  1100	def process_crash(
+  1101	    info: apport.report.Report,
+  1102	    real_user: UserGroupID,
+  1103	    report_owner: UserGroupID,
+  1104	    write_coredump_callback: Callable[[typing.BinaryIO | None], None] | None = None,
+  1105	) -> int:
+  1106	    """Process crash and return exit code."""
+  1107	    # TODO: Split into smaller functions/methods
+  1108	    # pylint: disable=too-many-branches,too-many-statements
+  1109	    logger = logging.getLogger()
+  1110	
+  1111	    report = (
+  1112	        f"{apport.fileutils.report_dir}"
+  1113	        f"/{info['ExecutablePath'].replace('/', '_')}.{real_user.uid}.crash"
+  1114	    )
+  1115	    hanging = f"{os.path.splitext(report)[0]}.{info.pid}.hanging"
+  1116	
+  1117	    if os.path.exists(hanging):
+  1118	        if os.stat("/proc/uptime").st_ctime < os.stat(hanging).st_mtime:
+  1119	            info["ProblemType"] = "Hang"
+  1120	        os.unlink(hanging)
+  1121	
+  1122	    if "InterpreterPath" in info:
+  1123	        logger.info(
+  1124	            'script: %s, interpreted by %s (command line "%s")',
+  1125	            info["ExecutablePath"],
+  1126	            info["InterpreterPath"],
+  1127	            info["ProcCmdline"],
+  1128	        )
+  1129	    else:
+  1130	        logger.info(
+  1131	            'executable: %s (command line "%s")',
+  1132	            info["ExecutablePath"],
+  1133	            info["ProcCmdline"],
+  1134	        )
+  1135	
+  1136	    # ignore non-package binaries (unless configured otherwise)
+  1137	    if not apport.fileutils.likely_packaged(info["ExecutablePath"]):
+  1138	        if not apport.fileutils.get_config("main", "unpackaged", False, boolean=True):
+  1139	            logger.error("executable does not belong to a package, ignoring")
+  1140	            # check if the user wants a core dump
+  1141	            recover_privileges()
+  1142	            if write_coredump_callback:
+  1143	                write_coredump_callback(None)
+  1144	            return 0
+  1145	
+  1146	    # ignore SIGXCPU and SIGXFSZ since this indicates some external
+  1147	    # influence changing soft RLIMIT values when running programs.
+  1148	    if int(info["Signal"]) in (int(signal.SIGXCPU), int(signal.SIGXFSZ)):
+  1149	        logger.error(
+  1150	            "Ignoring signal %s (caused by exceeding soft RLIMIT)", info["Signal"]
+  1151	        )
+  1152	        recover_privileges()
+  1153	        if write_coredump_callback:
+  1154	            write_coredump_callback(None)
+  1155	        return 0
+  1156	
+  1157	    if info.check_ignored():
+  1158	        logger.info("executable version is in denylist or not in allowlist, ignoring")
+  1159	        return 0
+  1160	
+  1161	    # We can now recover privileges to create the crash report file and
+  1162	    # write out the user coredumps
+  1163	    recover_privileges()
+  1164	
+  1165	    # Create crash report file descriptor for writing the report into
+  1166	    # report_dir
+  1167	    try:
+  1168	        if os.path.exists(report):
+  1169	            apport.fileutils.increment_crash_counter(info, report)
+  1170	            skip_msg = apport.fileutils.should_skip_crash(info, report)
+  1171	            if skip_msg:
+  1172	                logger.error("%s", skip_msg)
+  1173	                if write_coredump_callback:
+  1174	                    write_coredump_callback(None)
+  1175	                return 0
+  1176	            # remove the old file, so that we can create the new one
+  1177	            # with os.O_CREAT|os.O_EXCL
+  1178	            os.unlink(report)
+  1179	
+  1180	        # we prefer having a file mode of 0 while writing;
+  1181	        fd = os.open(report, os.O_RDWR | os.O_CREAT | os.O_EXCL, 0)
+  1182	        reportfile = os.fdopen(fd, "w+b")
+  1183	        assert reportfile.fileno() > sys.stderr.fileno()
+  1184	
+  1185	        # Make sure the crash reporting daemon can read this report
+  1186	        try:
+  1187	            gid = pwd.getpwnam("whoopsie").pw_gid
+  1188	            os.fchown(fd, report_owner.uid, gid)
+  1189	        except (OSError, KeyError):
+  1190	            os.fchown(fd, report_owner.uid, -1)
+  1191	    except OSError as error:
+  1192	        logger.error("Could not create report file: %s", str(error))
+  1193	        return 1
+  1194	
+  1195	    # Drop privileges before writing out the reportfile.
+  1196	    drop_privileges(real_user)
+  1197	
+  1198	    info.add_user_info()
+  1199	    info.add_os_info()
+  1200	    with contextlib.suppress(SystemError, ValueError):
+  1201	        info.add_package_info()
+  1202	    info["_HooksRun"] = "no"
+  1203	
+  1204	    # Ensure that the CoreDump from systemd-coredump can be read.
+  1205	    if report_owner.is_root():
+  1206	        recover_privileges()
+  1207	
+  1208	    try:
+  1209	        info.write(reportfile)
+  1210	    except OSError:
+  1211	        os.unlink(report)
+  1212	        raise
+  1213	
+  1214	    # Get privileges back so the core file can be written to root-owned
+  1215	    # corefile directory
+  1216	    recover_privileges()
+  1217	
+  1218	    # make the report writable now, when it's completely written
+  1219	    os.fchmod(fd, 0o640)
+  1220	    logger.info("wrote report %s", report)
+  1221	
+  1222	    if write_coredump_callback:
+  1223	        # Check if the user wants a core file. We need to create that
+  1224	        # from the written report, as we can only read stdin once and
+  1225	        # write_user_coredump() might abort reading from stdin and remove
+  1226	        # the written core file when core_ulimit is > 0 and smaller
+  1227	        # than the core size.
+  1228	        reportfile.seek(0)
+  1229	        write_coredump_callback(reportfile)
+
+### state paths and hook trust roots
+drwxrwsrwt root root 3777 /var/crash
+drwxr-xr-x root root 755 /var/lib/apport
+drwxr-xr-x root root 755 /var/lib/apport/coredump
+srw------- root root 600 /run/apport.socket
+drwxr-xr-x root root 755 /usr/share/apport
+drwxr-xr-x root root 755 /usr/share/apport/package-hooks
+drwxr-xr-x root root 755 /etc/apport
+--- hook/config owners ---
+-rw-r--r-- root root /etc/apport/crashdb.conf
+-rw-r--r-- root root /etc/apport/report-ignore/README.denylist
+-rw-r--r-- root root /usr/share/apport/package-hooks/cryptsetup.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/libatasmart4.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/openssh-client.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_apparmor.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_apport.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_byobu.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_console-setup.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_linux.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_mdadm.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_plymouth.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_shadow.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_ubiquity.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_ubuntu-advantage-tools.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_ubuntu-release-upgrader.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_unattended-upgrades.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/source_update-manager.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/subiquity.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/systemd.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/ubuntu-desktop-bootstrap.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/udev.py
+-rw-r--r-- root root /usr/share/apport/package-hooks/udisks2.py
+-rwxr-xr-x root root /usr/share/apport/package-hooks/source_sudo.py
+drwxr-xr-x root root /etc/apport
+drwxr-xr-x root root /etc/apport/report-ignore
+drwxr-xr-x root root /usr/share/apport/package-hooks
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-aws-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-aws-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-aws-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-aws-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-aws-fips.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-aws.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-fde-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-fde-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-fde-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-fde.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-fips.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-nvidia-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-nvidia-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-nvidia-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure-nvidia.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-azure.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-bluefield-modules-signed.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-bluefield-modules.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-bluefield.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-fips.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-firmware.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-gcp-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-gcp-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-gcp-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-gcp-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-gcp-fips.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-gcp.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-gke.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-gkeop.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-hwe-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-hwe-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-hwe-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-hwe-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-ibm-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-ibm-gt-tdx.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-ibm-gt.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-ibm.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-imx.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-intel.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-iot.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-lowlatency-hwe-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-lowlatency.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-aws-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-aws-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-aws-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-aws-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-aws-fips.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-aws.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-fde-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-fde-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-fde-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-fde.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-fips.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-nvidia-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-nvidia-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-nvidia-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure-nvidia.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-azure.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-bluefield.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-fips.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-gcp-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-gcp-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-gcp-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-gcp-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-gcp-fips.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-gcp.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-gke.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-gkeop.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-hwe-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-hwe-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-hwe-6.17.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-hwe-7.0.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-ibm-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-ibm-gt-tdx.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-ibm-gt.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-ibm.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-imx.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-intel.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-iot.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-lowlatency-hwe-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-lowlatency.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-mtk.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-nvidia-6.11.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-nvidia-6.14.py
+lrwxrwxrwx root root /usr/share/apport/package-hooks/source_linux-meta-nvidia-6.17.py
+--- user writable hook/config roots as attacker ---
+not_writable /usr/share/apport
+not_writable /usr/share/apport/package-hooks
+not_writable /etc/apport
+not_writable /var/lib/apport
+not_writable /var/lib/apport/coredump
+WRITABLE /var/crash
+
+### attacker path trigger attempt
+identity=uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+-rw-r--r-- 1 attacker root 180 May 16 19:50 /var/crash/apport_autoreport_attacker.crash
+-rw-r--r-- 1 attacker root   0 May 16 19:50 /var/crash/apport_autoreport_attacker.upload
+-rw-r--r-- 1 attacker root   0 May 16 19:50 /var/crash/apport_autoreport_attacker.uploaded
+prw-r--r-- 1 attacker root   0 May 16 19:50 /var/crash/apport_autoreport_fifo.crash
+lrwxrwxrwx 1 attacker root  36 May 16 19:50 /var/crash/apport_autoreport_symlink.crash -> /root/apport_autoreport_crash_target
+lrwxrwxrwx 1 attacker root  37 May 16 19:50 /var/crash/apport_autoreport_symlink.upload -> /root/apport_autoreport_upload_target
+--- after attacker /var/crash changes ---
+Result=success
+Id=apport-autoreport.path
+ActiveState=inactive
+SubState=dead
+
+Result=success
+NRestarts=0
+ExecMainStatus=0
+Id=apport-autoreport.service
+ActiveState=inactive
+SubState=dead
+-- No entries --
+no root apport_autoreport target
+
+### normal user systemd start attempts
+--- attacker ---
+start apport-autoreport.path
+Failed to start apport-autoreport.path: Interactive authentication required.
+See system logs and 'systemctl status apport-autoreport.path' for details.
+rc=1
+start apport-autoreport.timer
+Failed to start apport-autoreport.timer: Interactive authentication required.
+See system logs and 'systemctl status apport-autoreport.timer' for details.
+rc=1
+start apport-autoreport.service
+Failed to start apport-autoreport.service: Interactive authentication required.
+See system logs and 'systemctl status apport-autoreport.service' for details.
+rc=1
+start apport-coredump-hook@manual.service
+Failed to start apport-coredump-hook@manual.service: Interactive authentication required.
+See system logs and 'systemctl status apport-coredump-hook@manual.service' for details.
+rc=1
+--- selfauth ---
+start apport-autoreport.path
+Failed to start apport-autoreport.path: Interactive authentication required.
+See system logs and 'systemctl status apport-autoreport.path' for details.
+rc=1
+start apport-autoreport.timer
+Failed to start apport-autoreport.timer: Interactive authentication required.
+See system logs and 'systemctl status apport-autoreport.timer' for details.
+rc=1
+start apport-autoreport.service
+Failed to start apport-autoreport.service: Interactive authentication required.
+See system logs and 'systemctl status apport-autoreport.service' for details.
+rc=1
+start apport-coredump-hook@manual.service
+Failed to start apport-coredump-hook@manual.service: Interactive authentication required.
+See system logs and 'systemctl status apport-coredump-hook@manual.service' for details.
+rc=1
+
+### normal user direct whoopsie-upload-all
+--- attacker ---
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+INFO:root:whoopsie.path is not enabled, doing nothing
+rc=0
+--- selfauth ---
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+INFO:root:whoopsie.path is not enabled, doing nothing
+rc=0
+
+### apport-forward socket reachability
+--- attacker ---
+id 1001 1001 [1001]
+connect=FAIL errno=13 Permission denied
+--- selfauth ---
+id 1002 1002 [1002]
+connect=FAIL errno=13 Permission denied
+
+### attacker .upload/.uploaded and mark_report_upload semantics
+all_reports_contains_userapi True
+reg 0o644 uid=1001 gid=0 size=0 /var/crash/apport_autoreport_userapi.upload
+symlink_tmp_mark=OK
+link 0o777 uid=1001 gid=0 size=44 /var/crash/apport_autoreport_userapi.upload -> /tmp/apport_autoreport_userapi_upload_target
+reg 0o644 uid=1001 gid=1001 size=0 /tmp/apport_autoreport_userapi_upload_target
+symlink_root_mark=FAIL PermissionError(13, 'Permission denied')
+link 0o777 uid=1001 gid=0 size=45 /var/crash/apport_autoreport_userapi.upload -> /root/apport_autoreport_userapi_upload_target
+Traceback (most recent call last):
+  File "<stdin>", line 60, in <module>
+PermissionError: [Errno 13] Permission denied: '/var/crash/apport_autoreport_userapi.upload'
+
+### attacker process_report semantics with regular, symlink, fifo, and locked reports
+Traceback (most recent call last):
+  File "/tmp/apport_autoreport_process_probe.py", line 51, in call
+    res = process_report(path)
+          ^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 40] Too many levels of symbolic links: '/var/crash/apport_autoreport_process_symlink.crash'
+CALL regular /var/crash/apport_autoreport_process_regular.crash
+RESULT '/var/crash/apport_autoreport_process_regular.upload'
+regular 0o640 uid=1001 gid=0 size=1816 /var/crash/apport_autoreport_process_regular.crash
+regular 0o644 uid=1001 gid=0 size=0 /var/crash/apport_autoreport_process_regular.upload
+CALL crash_symlink_to_regular /var/crash/apport_autoreport_process_symlink.crash
+EXCEPTION OSError(40, 'Too many levels of symbolic links')
+link -> /tmp/apport_autoreport_process_symlink_target 0o777 uid=1001 gid=0 size=45 /var/crash/apport_autoreport_process_symlink.crash
+regular 0o644 uid=1001 gid=1001 size=180 /tmp/apport_autoreport_process_symlink_target
+MISSING /var/crash/apport_autoreport_process_symlink.upload
+fifo_process_timeout=True
+lock-held
+CALL locked /var/crash/apport_autoreport_process_locked.crash
+RESULT None
+regular 0o644 uid=1001 gid=0 size=180 /var/crash/apport_autoreport_process_locked.crash
+MISSING /var/crash/apport_autoreport_process_locked.upload
+rc=0
+
+### root marker, cleanup, and final health
+--- root marker check before cleanup ---
+no root marker
+ROOT_PROOF=NO
+--- post-clean health ---
+running
+failed_units=0

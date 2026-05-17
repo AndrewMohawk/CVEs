@@ -1,0 +1,460 @@
+## target/default proof
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 508d797cbad0 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+sudo:x:27:ubuntu
+
+## package versions
+dbus	1.14.10-4ubuntu4.1	ii 
+libblockdev-crypto3:arm64	3.1.1-1ubuntu0.1	ii 
+libblockdev-fs3:arm64	3.1.1-1ubuntu0.1	ii 
+libblockdev-loop3:arm64	3.1.1-1ubuntu0.1	ii 
+libblockdev-mdraid3:arm64	3.1.1-1ubuntu0.1	ii 
+libblockdev-nvme3:arm64	3.1.1-1ubuntu0.1	ii 
+libblockdev-part3:arm64	3.1.1-1ubuntu0.1	ii 
+libblockdev-swap3:arm64	3.1.1-1ubuntu0.1	ii 
+libblockdev3:arm64	3.1.1-1ubuntu0.1	ii 
+libudisks2-0:arm64	2.10.1-6ubuntu1.3	ii 
+polkitd	124-2ubuntu1.24.04.3	ii 
+systemd	255.4-1ubuntu8.15	ii 
+udisks2	2.10.1-6ubuntu1.3	ii 
+
+## UDisks service and D-Bus activation
+enabled
+active
+# /usr/lib/systemd/system/udisks2.service
+[Unit]
+Description=Disk Manager
+Documentation=man:udisks(8)
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.UDisks2
+ExecStart=/usr/libexec/udisks2/udisksd
+KillSignal=SIGINT
+
+[Install]
+WantedBy=graphical.target
+[D-BUS Service]
+Name=org.freedesktop.UDisks2
+Exec=/usr/libexec/udisks2/udisksd
+User=root
+SystemdService=udisks2.service
+org.freedesktop.PolicyKit1       266 polkitd         polkitd         :1.4          polkit.service              -       -
+org.freedesktop.UDisks2       249412 udisksd         root            :1.337        udisks2.service             -       -
+org.freedesktop.login1           271 systemd-logind  root            :1.3          systemd-logind.service      -       -
+
+## UDisks D-Bus policy and polkit action search
+<?xml version="1.0" encoding="UTF-8"?> <!-- -*- XML -*- -->
+
+<!DOCTYPE busconfig PUBLIC
+ "-//freedesktop//DTD D-BUS Bus Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/busconfig.dtd">
+<busconfig>
+  <!-- Only root can own the service -->
+  <policy user="root">
+    <allow own="org.freedesktop.UDisks2"/>
+  </policy>
+
+  <!-- Anyone can send messages to the owner of org.freedesktop.UDisks2 -->
+  <policy context="default">
+    <allow send_destination="org.freedesktop.UDisks2"/>
+  </policy>
+</busconfig>
+### polkit module action grep
+
+## Manager method introspection
+NAME                            TYPE      SIGNATURE  RESULT/VALUE                                                                             FLAGS
+.CanCheck                       method    s          (bs)                                                                                     -
+.CanFormat                      method    s          (bs)                                                                                     -
+.CanRepair                      method    s          (bs)                                                                                     -
+.CanResize                      method    s          (bts)                                                                                    -
+.EnableModule                   method    sb         -                                                                                        -
+.EnableModules                  method    b          -                                                                                        deprecated
+.GetBlockDevices                method    a{sv}      ao                                                                                       -
+.LoopSetup                      method    ha{sv}     o                                                                                        -
+.MDRaidCreate                   method    aossta{sv} o                                                                                        -
+.ResolveDevice                  method    a{sv}a{sv} ao                                                                                       -
+.DefaultEncryptionType          property  s          "luks2"                                                                                  emits-change
+.SupportedEncryptionTypes       property  as         2 "luks1" "luks2"                                                                        emits-change
+.SupportedFilesystems           property  as         12 "ext2" "ext3" "ext4" "xfs" "vfat" "ntfs" "f2fs" "nilfs2" "exfat" "btrfs" "udf" "swap" emits-change
+.Version                        property  s          "2.10.1"                                                                                 emits-change
+
+## baseline object/interface inventory
+└─ /org
+  └─ /org/freedesktop
+    └─ /org/freedesktop/UDisks2
+      ├─ /org/freedesktop/UDisks2/Manager
+      ├─ /org/freedesktop/UDisks2/block_devices
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop0
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop1
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop2
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop3
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop4
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop5
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop6
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop7
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd0
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd1
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd10
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd11
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd12
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd13
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd14
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd15
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd2
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd3
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd4
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd5
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd6
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd7
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd8
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd9
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram0
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram1
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram10
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram11
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram12
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram13
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram14
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram15
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram2
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram3
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram4
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram5
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram6
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram7
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram8
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram9
+      │ ├─ /org/freedesktop/UDisks2/block_devices/vda
+      │ ├─ /org/freedesktop/UDisks2/block_devices/vda1
+      │ └─ /org/freedesktop/UDisks2/block_devices/vdb
+      └─ /org/freedesktop/UDisks2/drives
+        ├─ /org/freedesktop/UDisks2/drives/VirtIO_Disk
+        └─ /org/freedesktop/UDisks2/drives/VirtIO_Disk_1
+### Manager interfaces before EnableModules
+  interface org.freedesktop.UDisks2.Manager.NVMe {
+  interface org.freedesktop.UDisks2.Manager {
+
+## installed module and libblockdev search paths
+ls: cannot access '/usr/lib/aarch64-linux-gnu/udisks2': No such file or directory
+ls: cannot access '/usr/lib/aarch64-linux-gnu/udisks2/modules': No such file or directory
+drwxr-x--- 1 attacker attacker  4096 May 16 20:37 /home/attacker
+drwxrwxrwt 1 root     root      4096 May 16 20:37 /tmp
+drwxr-xr-x 1 root     root     20480 May 16 10:22 /usr/lib/aarch64-linux-gnu
+drwxrwxrwt 1 root     root      4096 May 16 20:21 /var/tmp
+### libblockdev config
+drwxr-xr-x 3 root root 4096 May 16 10:22 /etc/libblockdev
+drwxr-xr-x 3 root root 4096 May 16 10:22 /etc/libblockdev/3
+drwxr-xr-x 2 root root 4096 May 16 10:22 /etc/libblockdev/3/conf.d
+/etc/libblockdev/3/conf.d/00-default.cfg
+# This is the default configuration for the libblockdev library. For
+# each supported technology/plugin there is a separate section/group
+# with the 'sonames' key. The value of the key has to be a list of
+# sonames of shared objects that should be attempted to be loaded for
+# the plugin falling back to the next one in the list.
+#
+# So this example:
+# [lvm]
+# sonames=libbd_lvm-dbus.so.0;libbd_lvm.so.0
+#
+# would result in the libbd_lvm-dbus.so.0 shared object attempted to
+# be loaded and if that failed, the libbd_lvm.so.0 would be attempted
+# to be loaded.
+
+[btrfs]
+sonames=libbd_btrfs.so.3
+
+[crypto]
+sonames=libbd_crypto.so.3
+
+[dm]
+sonames=libbd_dm.so.3
+
+[fs]
+sonames=libbd_fs.so.3
+
+[loop]
+sonames=libbd_loop.so.3
+
+[lvm]
+sonames=libbd_lvm.so.3
+
+[mdraid]
+sonames=libbd_mdraid.so.3
+
+[mpath]
+sonames=libbd_mpath.so.3
+
+[nvdimm]
+sonames=libbd_nvdimm.so.3
+
+[nvme]
+sonames=libbd_nvme.so.3
+
+[part]
+sonames=libbd_part.so.3
+
+[swap]
+sonames=libbd_swap.so.3
+
+[s390]
+sonames=libbd_s390.so.3
+### libblockdev installed plugins
+/usr/lib/aarch64-linux-gnu/libbd_crypto.so.3.0.0
+/usr/lib/aarch64-linux-gnu/libbd_fs.so.3.0.0
+/usr/lib/aarch64-linux-gnu/libbd_loop.so.3.0.0
+/usr/lib/aarch64-linux-gnu/libbd_mdraid.so.3.0.0
+/usr/lib/aarch64-linux-gnu/libbd_nvme.so.3.0.0
+/usr/lib/aarch64-linux-gnu/libbd_part.so.3.0.0
+/usr/lib/aarch64-linux-gnu/libbd_swap.so.3.0.0
+/usr/lib/aarch64-linux-gnu/libbd_utils.so.3.0.0
+/usr/lib/aarch64-linux-gnu/libblockdev.so.3.0.0
+### libblockdev strings for config boundary
+/etc/libblockdev/3/conf.d/
+LIBBLOCKDEV_CONFIG_DIR
+libbd_btrfs.so.3
+libbd_crypto.so.3
+libbd_dm.so.3
+libbd_fs.so.3
+libbd_loop.so.3
+libbd_lvm.so.3
+libbd_mdraid.so.3
+libbd_mpath.so.3
+libbd_nvdimm.so.3
+libbd_nvme.so.3
+libbd_part.so.3
+libbd_s390.so.3
+libbd_swap.so.3
+libbd_utils.so.3
+
+## reachability from plain non-sudo attacker
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+Failed to get user: User ID 1001 is not logged in or lingering
+
+## EnableModule/EnableModules calls from plain attacker
+### EnableModule 'bcache' true
+Error: GDBus.Error:org.freedesktop.UDisks2.Error.Failed: Error initializing module 'bcache': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_bcache.so: cannot open shared object file: No such file or directory
+rc=1
+### EnableModule 'btrfs' true
+Error: GDBus.Error:org.freedesktop.UDisks2.Error.Failed: Error initializing module 'btrfs': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_btrfs.so: cannot open shared object file: No such file or directory
+rc=1
+### EnableModule 'lvm2' true
+Error: GDBus.Error:org.freedesktop.UDisks2.Error.Failed: Error initializing module 'lvm2': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_lvm2.so: cannot open shared object file: No such file or directory
+rc=1
+### EnableModule 'mdraid' true
+Error: GDBus.Error:org.freedesktop.UDisks2.Error.Failed: Error initializing module 'mdraid': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_mdraid.so: cannot open shared object file: No such file or directory
+rc=1
+### EnableModule 'zram' true
+Error: GDBus.Error:org.freedesktop.UDisks2.Error.Failed: Error initializing module 'zram': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_zram.so: cannot open shared object file: No such file or directory
+rc=1
+### EnableModule 'evil' true
+Error: GDBus.Error:org.freedesktop.UDisks2.Error.Failed: Error initializing module 'evil': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_evil.so: cannot open shared object file: No such file or directory
+rc=1
+### EnableModule 'evil-name' true
+Error: GDBus.Error:org.freedesktop.UDisks2.Error.Failed: Error initializing module 'evil-name': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_evil-name.so: cannot open shared object file: No such file or directory
+rc=1
+### EnableModule '' true
+Error: GDBus.Error:org.freedesktop.UDisks2.Error.Failed: Error initializing module '': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_.so: cannot open shared object file: No such file or directory
+rc=1
+### EnableModules true
+()
+rc=0
+### EnableModule lvm2 false
+Error: GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._g_2dio_2derror_2dquark.Code13: Module unloading is not currently supported.
+rc=1
+
+## module-name/path traversal probes
+### EnableModule ../tmp/evil true
+Error: GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._g_2dio_2derror_2dquark.Code13: Requested module name '../tmp/evil' is not a valid udisks2 module name.
+rc=1
+### EnableModule evil/../../tmp/x true
+Error: GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._g_2dio_2derror_2dquark.Code13: Requested module name 'evil/../../tmp/x' is not a valid udisks2 module name.
+rc=1
+### EnableModule /tmp/evil true
+Error: GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._g_2dio_2derror_2dquark.Code13: Requested module name '/tmp/evil' is not a valid udisks2 module name.
+rc=1
+### EnableModule . true
+Error: GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._g_2dio_2derror_2dquark.Code13: Requested module name '.' is not a valid udisks2 module name.
+rc=1
+### EnableModule .. true
+Error: GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._g_2dio_2derror_2dquark.Code13: Requested module name '..' is not a valid udisks2 module name.
+rc=1
+### EnableModule evil..name true
+Error: GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._g_2dio_2derror_2dquark.Code13: Requested module name 'evil..name' is not a valid udisks2 module name.
+rc=1
+### EnableModule evil\ name true
+Error: GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._g_2dio_2derror_2dquark.Code13: Requested module name 'evil name' is not a valid udisks2 module name.
+rc=1
+### EnableModule $'evil\nname' true
+Error: GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._g_2dio_2derror_2dquark.Code13: Requested module name 'evil
+name' is not a valid udisks2 module name.
+rc=1
+
+## options dict injection probes
+Warning: Introspection data indicates 2 parameters but more was passed
+Error: GDBus.Error:org.freedesktop.DBus.Error.InvalidArgs: Type of message, ?(sba{sv})?, does not match expected type ?(sb)?
+(According to introspection data, you need to pass 'sb')
+EnableModule_extra_dict_rc=1
+Warning: Introspection data indicates 1 parameters but more was passed
+Error: GDBus.Error:org.freedesktop.DBus.Error.InvalidArgs: Type of message, ?(ba{sv})?, does not match expected type ?(b)?
+(According to introspection data, you need to pass 'b')
+EnableModules_extra_dict_rc=1
+
+## attacker-controlled module search path and env probes
+-rwxr-xr-x 1 attacker attacker 25 May 16 20:37 /tmp/libbd_gap_evil.so
+-rwxr-xr-x 1 attacker attacker 20 May 16 20:37 /tmp/libudisks2_gap_evil.so
+-rwxr-xr-x 1 attacker attacker 20 May 16 20:37 /tmp/udisks2/modules/libudisks2_gap_evil.so
+Call failed: Error initializing module 'gap_evil': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_gap_evil.so: cannot open shared object file: No such file or directory
+client_env_EnableModule_rc=1
+### restart via D-Bus activation with attacker client env
+Call failed: Error initializing module 'gap_evil': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_gap_evil.so: cannot open shared object file: No such file or directory
+activation_env_EnableModule_rc=1
+active
+    PID TTY      STAT   TIME COMMAND
+ 251674 ?        Ssl    0:00 /usr/libexec/udisks2/udisksd LANG=C.UTF-8 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin USER=root INVOCATION_ID=e7068f14bb28412dbe28a4bbfa284554 JOURNAL_STREAM=9:371293 SYSTEMD_EXEC_PID=251674 MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/udisks2.service/memory.pressure MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=
+
+## libblockdev plugin loading confusion checks
+### root service environment after attacker env attempt
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin
+### EnableModules true after client LIBBLOCKDEV_CONFIG_DIR=/tmp
+libblockdev_env_EnableModules_rc=0
+### udisks journal module messages
+May 16 20:25:36 508d797cbad0 udisksd[249178]: udisks daemon version 2.10.1 starting
+May 16 20:25:36 508d797cbad0 udisksd[249178]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+May 16 20:25:46 508d797cbad0 udisksd[249205]: udisks daemon version 2.10.1 starting
+May 16 20:25:46 508d797cbad0 udisksd[249205]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+May 16 20:26:11 508d797cbad0 udisksd[249398]: udisks daemon version 2.10.1 starting
+May 16 20:26:11 508d797cbad0 udisksd[249398]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+May 16 20:26:11 508d797cbad0 udisksd[249412]: udisks daemon version 2.10.1 starting
+May 16 20:26:11 508d797cbad0 udisksd[249412]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+May 16 20:34:49 508d797cbad0 udisksd[249412]: Error initializing module 'bcache': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_bcache.so: cannot open shared object file: No such file or directory
+May 16 20:34:49 508d797cbad0 udisksd[249412]: Error initializing module 'btrfs': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_btrfs.so: cannot open shared object file: No such file or directory
+May 16 20:34:49 508d797cbad0 udisksd[249412]: Error initializing module 'lvm2': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_lvm2.so: cannot open shared object file: No such file or directory
+May 16 20:34:49 508d797cbad0 udisksd[249412]: Error initializing module 'lvm2-locking': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_lvm2-locking.so: cannot open shared object file: No such file or directory
+May 16 20:34:49 508d797cbad0 udisksd[249412]: Error initializing module 'mdraid': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_mdraid.so: cannot open shared object file: No such file or directory
+May 16 20:34:49 508d797cbad0 udisksd[249412]: Error initializing module 'zram': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_zram.so: cannot open shared object file: No such file or directory
+May 16 20:34:49 508d797cbad0 udisksd[249412]: Error initializing module 'invalid': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_invalid.so: cannot open shared object file: No such file or directory
+May 16 20:34:49 508d797cbad0 udisksd[249412]: Error loading modules: Error opening directory “/usr/lib/aarch64-linux-gnu/udisks2/modules”: No such file or directory
+May 16 20:34:49 508d797cbad0 udisksd[249412]: Error initializing module '': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_.so: cannot open shared object file: No such file or directory
+May 16 20:35:17 508d797cbad0 udisksd[249412]: Error initializing module 'evil': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_evil.so: cannot open shared object file: No such file or directory
+May 16 20:35:45 508d797cbad0 udisksd[249412]: Error initializing module 'evil': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_evil.so: cannot open shared object file: No such file or directory
+May 16 20:36:26 508d797cbad0 udisksd[249412]: Error initializing module 'evil-name': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_evil-name.so: cannot open shared object file: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[249412]: Error initializing module 'bcache': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_bcache.so: cannot open shared object file: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[249412]: Error initializing module 'btrfs': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_btrfs.so: cannot open shared object file: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[249412]: Error initializing module 'lvm2': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_lvm2.so: cannot open shared object file: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[249412]: Error initializing module 'mdraid': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_mdraid.so: cannot open shared object file: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[249412]: Error initializing module 'zram': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_zram.so: cannot open shared object file: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[249412]: Error initializing module 'evil': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_evil.so: cannot open shared object file: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[249412]: Error initializing module 'evil-name': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_evil-name.so: cannot open shared object file: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[249412]: Error initializing module '': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_.so: cannot open shared object file: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[249412]: Error loading modules: Error opening directory “/usr/lib/aarch64-linux-gnu/udisks2/modules”: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[249412]: Error initializing module 'gap_evil': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_gap_evil.so: cannot open shared object file: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[249412]: udisks daemon version 2.10.1 exiting
+May 16 20:37:56 508d797cbad0 udisksd[251674]: udisks daemon version 2.10.1 starting
+May 16 20:37:56 508d797cbad0 udisksd[251674]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+May 16 20:37:56 508d797cbad0 udisksd[251674]: Error initializing module 'gap_evil': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_gap_evil.so: cannot open shared object file: No such file or directory
+May 16 20:37:56 508d797cbad0 udisksd[251674]: Error loading modules: Error opening directory “/usr/lib/aarch64-linux-gnu/udisks2/modules”: No such file or directory
+
+## subsequent method/interface inventory after EnableModules
+└─ /org
+  └─ /org/freedesktop
+    └─ /org/freedesktop/UDisks2
+      ├─ /org/freedesktop/UDisks2/Manager
+      ├─ /org/freedesktop/UDisks2/block_devices
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop0
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop1
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop2
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop3
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop4
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop5
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop6
+      │ ├─ /org/freedesktop/UDisks2/block_devices/loop7
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd0
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd1
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd10
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd11
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd12
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd13
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd14
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd15
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd2
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd3
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd4
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd5
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd6
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd7
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd8
+      │ ├─ /org/freedesktop/UDisks2/block_devices/nbd9
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram0
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram1
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram10
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram11
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram12
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram13
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram14
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram15
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram2
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram3
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram4
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram5
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram6
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram7
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram8
+      │ ├─ /org/freedesktop/UDisks2/block_devices/ram9
+      │ ├─ /org/freedesktop/UDisks2/block_devices/vda
+      │ ├─ /org/freedesktop/UDisks2/block_devices/vda1
+      │ └─ /org/freedesktop/UDisks2/block_devices/vdb
+      └─ /org/freedesktop/UDisks2/drives
+        ├─ /org/freedesktop/UDisks2/drives/VirtIO_Disk
+        └─ /org/freedesktop/UDisks2/drives/VirtIO_Disk_1
+### Manager interfaces after EnableModules
+  interface org.freedesktop.UDisks2.Manager.NVMe {
+  interface org.freedesktop.UDisks2.Manager {
+### direct module interface method attempts
+### org.freedesktop.UDisks2.Manager.BTRFS introspect/call
+NAME TYPE SIGNATURE RESULT/VALUE FLAGS
+### org.freedesktop.UDisks2.Manager.LVM2 introspect/call
+NAME TYPE SIGNATURE RESULT/VALUE FLAGS
+### org.freedesktop.UDisks2.Manager.NVMe introspect/call
+NAME                                 TYPE      SIGNATURE RESULT/VALUE                                                                                                                                                                                                                              FLAGS
+.Connect                             method    ayssa{sv} o                                                                                                                                                                                                                                         -
+.SetHostID                           method    aya{sv}   -                                                                                                                                                                                                                                         -
+.SetHostNQN                          method    aya{sv}   -                                                                                                                                                                                                                                         -
+.HostID                              property  ay        1 0                                                                                                                                                                                                                                       emits-change
+.HostNQN                             property  ay        69 110 113 110 46 50 48 49 52 45 48 56 46 111 114 103 46 110 118 109 101 120 112 114 101 115 115 58 117 117 105 100 58 55 53 55 48 50 57 57 102 45 54 55 100 49 45 52 51 48 98 45 56 53 55 102 45 54 102 99 99 48 99 57 48 53 53 56 102 0 emits-change
+
+## active selfauth comparison
+openvt: Couldn't deallocate console 1
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/tty1
+XDG_SESSION_ID=45
+Id=45
+User=1002
+Name=selfauth
+Seat=seat0
+TTY=tty1
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+### active EnableModule gap_evil true
+Error: GDBus.Error:org.freedesktop.UDisks2.Error.Failed: Error initializing module 'gap_evil': /usr/lib/aarch64-linux-gnu/udisks2/modules/libudisks2_gap_evil.so: cannot open shared object file: No such file or directory
+rc=1
+### active EnableModules true
+()
+rc=0
+
+## root proof and cleanup state
+ROOT_PROOF_ABSENT /root/udisks_enable_module_gap_root
+ROOT_PROOF_ABSENT /tmp/udisks_enable_module_gap_root
+active

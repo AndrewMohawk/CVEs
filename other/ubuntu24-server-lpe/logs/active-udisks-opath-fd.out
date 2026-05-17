@@ -1,0 +1,201 @@
+## target/default proof
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 508d797cbad0 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+dbus	1.14.10-4ubuntu4.1	ii 
+libudisks2-0:arm64	2.10.1-6ubuntu1.3	ii 
+polkitd	124-2ubuntu1.24.04.3	ii 
+python3-dbus	1.3.2-5build3	ii 
+python3-gi	3.48.2-1	ii 
+systemd	255.4-1ubuntu8.15	ii 
+udisks2	2.10.1-6ubuntu1.3	ii 
+● udisks2.service - Disk Manager
+     Loaded: loaded (/usr/lib/systemd/system/udisks2.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-05-16 20:25:46 UTC; 24s ago
+       Docs: man:udisks(8)
+   Main PID: 249205 (udisksd)
+      Tasks: 6 (limit: 9517)
+     Memory: 2.5M (peak: 4.1M)
+        CPU: 40ms
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/udisks2.service
+             └─249205 /usr/libexec/udisks2/udisksd
+
+May 16 20:25:46 508d797cbad0 systemd[1]: Starting udisks2.service - Disk Manager...
+May 16 20:25:46 508d797cbad0 udisksd[249205]: udisks daemon version 2.10.1 starting
+May 16 20:25:46 508d797cbad0 udisksd[249205]: Error statting /var/lib/swap: No such file or directory
+May 16 20:25:46 508d797cbad0 systemd[1]: Started udisks2.service - Disk Manager.
+May 16 20:25:46 508d797cbad0 udisksd[249205]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+
+## UDisks LoopSetup and policy
+      LoopSetup(in  h fd,
+                in  a{sv} options,
+                out o resulting_device);
+      MDRaidCreate(in  ao blocks,
+                   in  s level,
+                   in  s name,
+                   in  t chunk,
+                   in  a{sv} options,
+                   out o resulting_array);
+  <action id="org.freedesktop.udisks2.loop-setup">
+    <description>Manage loop devices</description>
+    <description xml:lang="zh_TW">管理迴圈裝置</description>
+    <description xml:lang="zh_CN">管理回环设备</description>
+    <description xml:lang="uk">Керування петльовими пристроями</description>
+    <description xml:lang="tr">Döngü aygıtlarını yönet</description>
+    <description xml:lang="sv">Hantera loop-enheter</description>
+    <description xml:lang="sr">Управљајте уређајима петље</description>
+    <description xml:lang="sl">Upravljaj z zančnimi napravami</description>
+    <description xml:lang="sk">Spravovať zariadenia loop</description>
+    <description xml:lang="ru">Управление петлевыми устройствами</description>
+    <description xml:lang="pt_BR">Gerenciar dispositivos de loop</description>
+    <description xml:lang="pl">Zarządzanie urządzeniami zwrotnymi</description>
+    <description xml:lang="pa">ਲੂਪ ਜੰਤਰ ਪਰਬੰਧ</description>
+    <description xml:lang="nn">Handsam loop-einingar</description>
+    <description xml:lang="nl">Manage loop-devices</description>
+    <description xml:lang="lv">Pārvaldīt cikla ierīces</description>
+    <description xml:lang="lt">Tvarkyti ciklinius įrenginius</description>
+    <description xml:lang="ko">루프 장치 관리</description>
+    <description xml:lang="kk">Loop құрылғыларын басқару</description>
+    <description xml:lang="ka">მარყუჟის მოწყობილობის მართვა</description>
+    <description xml:lang="ja">ループデバイスを管理します。</description>
+    <description xml:lang="it">Gestisce device di loop</description>
+    <description xml:lang="id">Kelola perangkat loop</description>
+    <description xml:lang="ia">Gerer dispositivos de bucla</description>
+    <description xml:lang="hu">Hurokeszközök kezelése</description>
+    <description xml:lang="hr">Upravljanje virtualnim uređajima</description>
+    <description xml:lang="gl">Xestionar os dispositivos loop</description>
+    <description xml:lang="fur">Gjestìs dispositîfs di loop</description>
+    <description xml:lang="fr">Gérer les périphériques virtuels</description>
+    <description xml:lang="es">Gestiona sus dispositivos de «loop»</description>
+    <description xml:lang="en_GB">Manage loop devices</description>
+    <description xml:lang="el">Διαχείριση συσκευών βρόχου</description>
+    <description xml:lang="de">Schleifen-Geräte verwalten</description>
+    <description xml:lang="da">Håndter loop-enheder</description>
+    <description xml:lang="cs">Spravovat zařízení místních smyček</description>
+    <description xml:lang="ca">Gestiona els dispositius de bucles</description>
+    <description xml:lang="af">Bestuur lustoestelle</description>
+    <message>Authentication is required to set up a loop device</message>
+    <message xml:lang="zh_TW">要設置迴圈裝置需要先核對身分</message>
+    <message xml:lang="zh_CN">设定回环设备需要身份验证</message>
+    <message xml:lang="uk">Щоб отримати доступ до визначення петльового пристрою, слід пройти розпізнавання</message>
+    <message xml:lang="tr">Döngü aygıtı kurmak için kimlik doğrulaması gerekli</message>
+    <message xml:lang="sv">Autentisering krävs för att konfigurera en loop-enhet</message>
+    <message xml:lang="sr">Потребно је потврђивање идентитета за подешавање уређаја петље</message>
+    <message xml:lang="sl">Za vzpostavitev zančne naprave je zahtevana overitev.</message>
+    <message xml:lang="sk">Nastavenie zariadenia loop vyžaduje overenie totožnosti</message>
+    <message xml:lang="ru">Для настройки петлевого устройства требуется подтверждение подлинности пользователя</message>
+    <message xml:lang="pt_BR">Autenticação é necessária para criar um dispositivo de loop</message>
+    <message xml:lang="pl">Wymagane jest uwierzytelnienie, aby ustawić urządzenie zwrotne</message>
+    <message xml:lang="nn">Treng autentisering for å setja opp ei loop-eining</message>
+    <message xml:lang="nl">Authenticatie is vereist om een loop-device op te zetten</message>
+    <message xml:lang="lv">Vajag autentificēties, lai iestatītu cikla ierīci</message>
+    <message xml:lang="lt">Norint nustatyti ciklinį įrenginį, reikia patvirtinti tapatybę</message>
+    <message xml:lang="ko">루프 장치를 설정하려면 인증이 필요합니다</message>
+    <message xml:lang="kk">Loop құрылғысын жасау үшін аутентификация керек</message>
+    <message xml:lang="ka">მარყუჟმოწყობილობის დაყენებას ავთენტიკაცია სჭირდება</message>
+    <message xml:lang="ja">ループデバイスをセットアップするには、認証が必要です。</message>
+    <message xml:lang="it">È richiesto autenticarsi per impostare il device di loop</message>
+    <message xml:lang="id">Otentikasi diperlukan untuk menyiapkan suatu perangkat loop</message>
+    <message xml:lang="ia">Authentication es necessari pro crear un dispositivo de bucla</message>
+    <message xml:lang="hu">Hitelesítés szükséges egy hurokeszköz beállításához</message>
+    <message xml:lang="hr">Potrebna je provjera za postavljanje virtualnog uređaja</message>
+    <message xml:lang="gl">Debe autenticarse para configurar un dispositivo loop</message>
+    <message xml:lang="fur">La autenticazion e je necessarie par configurâ un dispositîf di loop</message>
+    <message xml:lang="fr">Une authentification est nécessaire pour configurer un périphérique virtuel</message>
+    <message xml:lang="es">Se requiere autenticación para configurar un dispositivo de «loop»</message>
+    <message xml:lang="en_GB">Authentication is required to set up a loop device</message>
+    <message xml:lang="el">Απαιτείται πιστοποίηση για ρύθμιση μιας συσκευής βρόχου</message>
+    <message xml:lang="de">Legitimierung ist zum Einrichten eines Schleifengeräts notwendig</message>
+    <message xml:lang="da">Der kræves godkendelse for at opsætte en loop-enhed</message>
+    <message xml:lang="cs">Pro nastavení zařízení místní smyčky je vyžadována autentizace</message>
+    <message xml:lang="ca">Es requereix autenticació per gestionar els dispositius de bucles</message>
+    <message xml:lang="af">Verifiëring is nodig om ’n lustoestel op te stel</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <!-- NOTE: this is not a DoS because we are using /dev/loop-control -->
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
+## root-owned target file modes
+-rw-r----- 640 root:shadow regular file 937 /etc/shadow
+-r--r----- 440 root:root regular file 1800 /etc/sudoers
+-rw------- 600 root:root regular empty file 0 /var/cache/debconf/passwords.dat
+-rw-r--r-- 644 root:root regular file 1704 /etc/passwd
+-rw------- 600 root:root regular file 30 /root/active_udisks_opath_fd_victim
+
+
+## active selfauth fd-passing results
+## active session proof
+uid=1002 gid=1002 groups=[1002]
+tty=/dev/tty10
+XDG_SESSION_ID=42
+Id=42
+User=1002
+Name=selfauth
+Seat=seat0
+TTY=tty10
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+== shadow-opath: path=/etc/shadow flags=O_PATH readonly=True ==
+  lstat mode=-rw-r----- uid=0 gid=42 size=937 rdev=0
+  open ok fd=4 fstat mode=-rw-r----- uid=0 gid=42 size=937
+  LoopSetup error DBusException: org.gtk.GDBus.UnmappedGError.Quark._g_2dbd_2dloop_2derror_2dquark.Code2: Error creating loop device: Failed to associate the /dev/loop0 device with the file descriptor: Bad file descriptor
+== sudoers-opath: path=/etc/sudoers flags=O_PATH readonly=True ==
+  lstat mode=-r--r----- uid=0 gid=0 size=1800 rdev=0
+  open ok fd=4 fstat mode=-r--r----- uid=0 gid=0 size=1800
+  LoopSetup error DBusException: org.gtk.GDBus.UnmappedGError.Quark._g_2dbd_2dloop_2derror_2dquark.Code2: Error creating loop device: Failed to associate the /dev/loop0 device with the file descriptor: Bad file descriptor
+== debconf-passwords-opath: path=/var/cache/debconf/passwords.dat flags=O_PATH readonly=True ==
+  lstat mode=-rw------- uid=0 gid=0 size=0 rdev=0
+  open ok fd=4 fstat mode=-rw------- uid=0 gid=0 size=0
+  LoopSetup error DBusException: org.gtk.GDBus.UnmappedGError.Quark._g_2dbd_2dloop_2derror_2dquark.Code2: Error creating loop device: Failed to associate the /dev/loop0 device with the file descriptor: Bad file descriptor
+== passwd-opath-rw-request: path=/etc/passwd flags=O_PATH readonly=False ==
+  lstat mode=-rw-r--r-- uid=0 gid=0 size=1704 rdev=0
+  open ok fd=4 fstat mode=-rw-r--r-- uid=0 gid=0 size=1704
+  LoopSetup error DBusException: org.gtk.GDBus.UnmappedGError.Quark._g_2dbd_2dloop_2derror_2dquark.Code2: Error creating loop device: Failed to associate the /dev/loop0 device with the file descriptor: Bad file descriptor
+== passwd-ordinary-rw-request: path=/etc/passwd flags=O_RDONLY readonly=False ==
+  lstat mode=-rw-r--r-- uid=0 gid=0 size=1704 rdev=0
+  open ok fd=4 fstat mode=-rw-r--r-- uid=0 gid=0 size=1704
+  LoopSetup OK /org/freedesktop/UDisks2/block_devices/loop0
+  loop_device=/dev/loop0
+  block_id_usage= id_type= size=1536
+  loop_setup_by_uid=1002 backing=dbus.Array([dbus.Byte(47), dbus.Byte(101), dbus.Byte(116), dbus.Byte(99), dbus.Byte(47), dbus.Byte(112), dbus.Byte(97), dbus.Byte(115), dbus.Byte(115), dbus.Byte(119), dbus.Byte(100), dbus.Byte(0)], signature=dbus.Signature('y'), variant_level=1) autoclear=0
+  OpenDevice(r) error DBusException: org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: Not authorized to perform operation
+  OpenDevice(w) error DBusException: org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: Not authorized to perform operation
+  OpenDevice(rw) error DBusException: org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: Not authorized to perform operation
+  Mount(ro) error DBusException: org.freedesktop.DBus.Error.UnknownMethod: No such interface “org.freedesktop.UDisks2.Filesystem” on object at path /org/freedesktop/UDisks2/block_devices/loop0
+== root-safe-victim-opath-rw-request: path=/root/active_udisks_opath_fd_victim flags=O_PATH readonly=False ==
+  lstat error [Errno 13] Permission denied: '/root/active_udisks_opath_fd_victim'
+  open error PermissionError: [Errno 13] Permission denied: '/root/active_udisks_opath_fd_victim'
+## loop cleanup
+  loop_delete ok dev=/dev/loop0
+## marker checks
+  /root/active_udisks_opath_fd_root: absent-or-inaccessible PermissionError: [Errno 13] Permission denied: '/root/active_udisks_opath_fd_root'
+  /root/active_udisks_opath_fd_victim: absent-or-inaccessible PermissionError: [Errno 13] Permission denied: '/root/active_udisks_opath_fd_victim'
+
+## root-side post checks
+-rw------- 600 root:root regular file 30 /root/active_udisks_opath_fd_victim
+safe_victim_hex:  72 6f 6f 74 2d 6f 77 6e 65 64 20 73 61 66 65 20
+safe_victim_hex:  76 69 63 74 69 6d 20 62 65 66 6f 72 65 0a
+ROOT_PROOF_ABSENT /root/active_udisks_opath_fd_root
+
+## health before cleanup
+running
+
+## cleanup verification
+root_marker_absent
+safe_victim_absent
+active
+running

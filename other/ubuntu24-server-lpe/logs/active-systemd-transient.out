@@ -1,0 +1,659 @@
+
+## target identity and package versions
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 508d797cbad0 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+systemd 255 (255.4-1ubuntu8.15)
++PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -BPF_FRAMEWORK -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified
+D-Bus Message Bus Daemon 1.14.10
+Copyright (C) 2002, 2003 Red Hat, Inc., CodeFactory AB, and others
+pkaction version 124
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+selfauth : selfauth
+dbus	1.14.10-4ubuntu4.1	ii 
+dbus-bin	1.14.10-4ubuntu4.1	ii 
+dbus-daemon	1.14.10-4ubuntu4.1	ii 
+dbus-user-session	1.14.10-4ubuntu4.1	ii 
+libpam-systemd:arm64	255.4-1ubuntu8.15	ii 
+libpolkit-agent-1-0:arm64	124-2ubuntu1.24.04.3	ii 
+libpolkit-gobject-1-0:arm64	124-2ubuntu1.24.04.3	ii 
+libsystemd0:arm64	255.4-1ubuntu8.15	ii 
+login	1:4.13+dfsg1-4ubuntu3.2	ii 
+passwd	1:4.13+dfsg1-4ubuntu3.2	ii 
+policykit-1		un 
+polkitd	124-2ubuntu1.24.04.3	ii 
+systemd	255.4-1ubuntu8.15	ii 
+systemd-sysv	255.4-1ubuntu8.15	ii 
+util-linux	2.39.3-9ubuntu6.5	ii 
+
+## default systemd policy and D-Bus config snippets
+### /usr/share/polkit-1/actions/org.freedesktop.systemd1.policy
+    21	        <action id="org.freedesktop.systemd1.reply-password">
+    22	                <description gettext-domain="systemd">Send passphrase back to system</description>
+    23	                <message gettext-domain="systemd">Authentication is required to send the entered passphrase back to the system.</message>
+    24	                <defaults>
+    25	                        <allow_any>no</allow_any>
+    26	                        <allow_inactive>no</allow_inactive>
+    27	                        <allow_active>auth_admin_keep</allow_active>
+    28	                </defaults>
+    29	                <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/systemd/systemd-reply-password</annotate>
+    30	        </action>
+    31	
+    32	        <action id="org.freedesktop.systemd1.manage-units">
+    33	                <description gettext-domain="systemd">Manage system services or other units</description>
+    34	                <message gettext-domain="systemd">Authentication is required to manage system services or other units.</message>
+    35	                <defaults>
+    36	                        <allow_any>auth_admin</allow_any>
+    37	                        <allow_inactive>auth_admin</allow_inactive>
+    38	                        <allow_active>auth_admin_keep</allow_active>
+    39	                </defaults>
+    40	        </action>
+    41	
+    42	        <action id="org.freedesktop.systemd1.manage-unit-files">
+    43	                <description gettext-domain="systemd">Manage system service or unit files</description>
+    44	                <message gettext-domain="systemd">Authentication is required to manage system service or unit files.</message>
+    45	                <defaults>
+    46	                        <allow_any>auth_admin</allow_any>
+    47	                        <allow_inactive>auth_admin</allow_inactive>
+    48	                        <allow_active>auth_admin_keep</allow_active>
+    49	                </defaults>
+    50	                <annotate key="org.freedesktop.policykit.imply">org.freedesktop.systemd1.reload-daemon org.freedesktop.systemd1.manage-units</annotate>
+    51	        </action>
+    52	
+    53	        <action id="org.freedesktop.systemd1.set-environment">
+    54	                <description gettext-domain="systemd">Set or unset system and service manager environment variables</description>
+    55	                <message gettext-domain="systemd">Authentication is required to set or unset system and service manager environment variables.</message>
+    56	                <defaults>
+    57	                        <allow_any>auth_admin</allow_any>
+    58	                        <allow_inactive>auth_admin</allow_inactive>
+    59	                        <allow_active>auth_admin_keep</allow_active>
+    60	                </defaults>
+    61	        </action>
+    62	
+    63	        <action id="org.freedesktop.systemd1.reload-daemon">
+    64	                <description gettext-domain="systemd">Reload the systemd state</description>
+    65	                <message gettext-domain="systemd">Authentication is required to reload the systemd state.</message>
+    66	                <defaults>
+    67	                        <allow_any>auth_admin</allow_any>
+    68	                        <allow_inactive>auth_admin</allow_inactive>
+    69	                        <allow_active>auth_admin_keep</allow_active>
+    70	                </defaults>
+    71	        </action>
+    72	
+    73	        <action id="org.freedesktop.systemd1.bypass-dump-ratelimit">
+    74	                <description gettext-domain="systemd">Dump the systemd state without rate limits</description>
+    75	                <message gettext-domain="systemd">Authentication is required to dump the systemd state without rate limits.</message>
+    76	                <defaults>
+    77	                        <allow_any>auth_admin</allow_any>
+    78	                        <allow_inactive>auth_admin</allow_inactive>
+    79	                        <allow_active>auth_admin_keep</allow_active>
+    80	                </defaults>
+    81	        </action>
+    82	
+    83	</policyconfig>
+
+### pkaction verbose systemd1 actions
+--- org.freedesktop.systemd1.manage-units
+org.freedesktop.systemd1.manage-units:
+  description:       Manage system services or other units
+  message:           Authentication is required to manage system services or other units.
+  vendor:            The systemd Project
+  vendor_url:        https://systemd.io
+  icon:              
+  implicit any:      auth_admin
+  implicit inactive: auth_admin
+  implicit active:   auth_admin_keep
+
+--- org.freedesktop.systemd1.manage-unit-files
+org.freedesktop.systemd1.manage-unit-files:
+  description:       Manage system service or unit files
+  message:           Authentication is required to manage system service or unit files.
+  vendor:            The systemd Project
+  vendor_url:        https://systemd.io
+  icon:              
+  implicit any:      auth_admin
+  implicit inactive: auth_admin
+  implicit active:   auth_admin_keep
+  annotation:        org.freedesktop.policykit.imply -> org.freedesktop.systemd1.reload-daemon org.freedesktop.systemd1.manage-units
+
+--- org.freedesktop.systemd1.set-environment
+org.freedesktop.systemd1.set-environment:
+  description:       Set or unset system and service manager environment variables
+  message:           Authentication is required to set or unset system and service manager environment variables.
+  vendor:            The systemd Project
+  vendor_url:        https://systemd.io
+  icon:              
+  implicit any:      auth_admin
+  implicit inactive: auth_admin
+  implicit active:   auth_admin_keep
+
+--- org.freedesktop.systemd1.reload-daemon
+org.freedesktop.systemd1.reload-daemon:
+  description:       Reload the systemd state
+  message:           Authentication is required to reload the systemd state.
+  vendor:            The systemd Project
+  vendor_url:        https://systemd.io
+  icon:              
+  implicit any:      auth_admin
+  implicit inactive: auth_admin
+  implicit active:   auth_admin_keep
+
+
+### /usr/share/dbus-1/system.d/org.freedesktop.systemd1.conf readable/mutating method gates
+    18	        <policy user="root">
+    19	                <allow own="org.freedesktop.systemd1"/>
+    20	
+    21	                <!-- Root clients can do everything -->
+    22	                <allow send_destination="org.freedesktop.systemd1"/>
+    23	                <allow receive_sender="org.freedesktop.systemd1"/>
+    24	
+    25	                <!-- systemd may receive activator requests -->
+    26	                <allow receive_interface="org.freedesktop.systemd1.Activator"
+    27	                       receive_member="ActivationRequest"/>
+    28	        </policy>
+    29	
+    30	        <policy context="default">
+    31	                <deny send_destination="org.freedesktop.systemd1"/>
+    32	
+    33	                <!-- Completely open to anyone: org.freedesktop.DBus.* interfaces -->
+    34	
+    35	                <allow send_destination="org.freedesktop.systemd1"
+    36	                       send_interface="org.freedesktop.DBus.Introspectable"/>
+    37	
+    38	                <allow send_destination="org.freedesktop.systemd1"
+   203	                <!-- Managed via polkit or other criteria: org.freedesktop.systemd1.Manager interface -->
+   204	
+   205	                <allow send_destination="org.freedesktop.systemd1"
+   206	                       send_interface="org.freedesktop.systemd1.Manager"
+   207	                       send_member="StartUnit"/>
+   208	
+   209	                <allow send_destination="org.freedesktop.systemd1"
+   210	                       send_interface="org.freedesktop.systemd1.Manager"
+   211	                       send_member="StartUnitReplace"/>
+   212	
+   213	                <allow send_destination="org.freedesktop.systemd1"
+   214	                       send_interface="org.freedesktop.systemd1.Manager"
+   215	                       send_member="StopUnit"/>
+   216	
+   217	                <allow send_destination="org.freedesktop.systemd1"
+   218	                       send_interface="org.freedesktop.systemd1.Manager"
+   219	                       send_member="ReloadUnit"/>
+   220	
+   221	                <allow send_destination="org.freedesktop.systemd1"
+   222	                       send_interface="org.freedesktop.systemd1.Manager"
+   223	                       send_member="RestartUnit"/>
+   224	
+   225	                <allow send_destination="org.freedesktop.systemd1"
+   226	                       send_interface="org.freedesktop.systemd1.Manager"
+   227	                       send_member="TryRestartUnit"/>
+   228	
+   229	                <allow send_destination="org.freedesktop.systemd1"
+   230	                       send_interface="org.freedesktop.systemd1.Manager"
+   231	                       send_member="ReloadOrRestartUnit"/>
+   232	
+   233	                <allow send_destination="org.freedesktop.systemd1"
+   234	                       send_interface="org.freedesktop.systemd1.Manager"
+   235	                       send_member="ReloadOrTryRestartUnit"/>
+   236	
+   237	                <allow send_destination="org.freedesktop.systemd1"
+   238	                       send_interface="org.freedesktop.systemd1.Manager"
+   239	                       send_member="BindMountUnit"/>
+   240	
+   241	                <allow send_destination="org.freedesktop.systemd1"
+   242	                       send_interface="org.freedesktop.systemd1.Manager"
+   243	                       send_member="MountImageUnit"/>
+   244	
+   245	                <allow send_destination="org.freedesktop.systemd1"
+   246	                       send_interface="org.freedesktop.systemd1.Manager"
+   247	                       send_member="KillUnit"/>
+   248	
+   249	                <allow send_destination="org.freedesktop.systemd1"
+   250	                       send_interface="org.freedesktop.systemd1.Manager"
+   251	                       send_member="QueueSignalUnit"/>
+   252	
+   253	                <allow send_destination="org.freedesktop.systemd1"
+   254	                       send_interface="org.freedesktop.systemd1.Manager"
+   255	                       send_member="ResetFailedUnit"/>
+   256	
+   257	                <allow send_destination="org.freedesktop.systemd1"
+   258	                       send_interface="org.freedesktop.systemd1.Manager"
+   259	                       send_member="SetUnitProperties"/>
+   260	
+   261	                <allow send_destination="org.freedesktop.systemd1"
+   262	                       send_interface="org.freedesktop.systemd1.Manager"
+   263	                       send_member="RefUnit"/>
+   264	
+   265	                <allow send_destination="org.freedesktop.systemd1"
+   266	                       send_interface="org.freedesktop.systemd1.Manager"
+   267	                       send_member="UnrefUnit"/>
+   268	
+   269	                <allow send_destination="org.freedesktop.systemd1"
+   270	                       send_interface="org.freedesktop.systemd1.Manager"
+   271	                       send_member="StartTransientUnit"/>
+   272	
+   273	                <allow send_destination="org.freedesktop.systemd1"
+   274	                       send_interface="org.freedesktop.systemd1.Manager"
+   275	                       send_member="AttachProcessesToUnit"/>
+   276	
+   277	                <allow send_destination="org.freedesktop.systemd1"
+   278	                       send_interface="org.freedesktop.systemd1.Manager"
+   279	                       send_member="CancelJob"/>
+   280	
+   281	                <allow send_destination="org.freedesktop.systemd1"
+   282	                       send_interface="org.freedesktop.systemd1.Manager"
+   283	                       send_member="ClearJobs"/>
+   284	
+   285	                <allow send_destination="org.freedesktop.systemd1"
+   286	                       send_interface="org.freedesktop.systemd1.Manager"
+   287	                       send_member="ResetFailed"/>
+   288	
+   289	                <allow send_destination="org.freedesktop.systemd1"
+   290	                       send_interface="org.freedesktop.systemd1.Manager"
+   291	                       send_member="Reload"/>
+   292	
+   293	                <allow send_destination="org.freedesktop.systemd1"
+   294	                       send_interface="org.freedesktop.systemd1.Manager"
+   295	                       send_member="Reexecute"/>
+   296	
+   297	                <allow send_destination="org.freedesktop.systemd1"
+   298	                       send_interface="org.freedesktop.systemd1.Manager"
+   299	                       send_member="EnableUnitFiles"/>
+   300	
+   301	                <allow send_destination="org.freedesktop.systemd1"
+   302	                       send_interface="org.freedesktop.systemd1.Manager"
+   303	                       send_member="EnableUnitFilesWithFlags"/>
+   304	
+   305	                <allow send_destination="org.freedesktop.systemd1"
+   306	                       send_interface="org.freedesktop.systemd1.Manager"
+   307	                       send_member="DisableUnitFiles"/>
+   308	
+   309	                <allow send_destination="org.freedesktop.systemd1"
+   310	                       send_interface="org.freedesktop.systemd1.Manager"
+   311	                       send_member="DisableUnitFilesWithFlags"/>
+   312	
+   313	                <allow send_destination="org.freedesktop.systemd1"
+   314	                       send_interface="org.freedesktop.systemd1.Manager"
+   315	                       send_member="DisableUnitFilesWithFlagsAndInstallInfo"/>
+   316	
+   317	                <allow send_destination="org.freedesktop.systemd1"
+   318	                       send_interface="org.freedesktop.systemd1.Manager"
+   319	                       send_member="ReenableUnitFiles"/>
+   320	
+   321	                <allow send_destination="org.freedesktop.systemd1"
+   322	                       send_interface="org.freedesktop.systemd1.Manager"
+   323	                       send_member="LinkUnitFiles"/>
+   324	
+   325	                <allow send_destination="org.freedesktop.systemd1"
+   326	                       send_interface="org.freedesktop.systemd1.Manager"
+   327	                       send_member="PresetUnitFiles"/>
+   328	
+   329	                <allow send_destination="org.freedesktop.systemd1"
+   330	                       send_interface="org.freedesktop.systemd1.Manager"
+   331	                       send_member="PresetUnitFilesWithMode"/>
+   332	
+   333	                <allow send_destination="org.freedesktop.systemd1"
+   334	                       send_interface="org.freedesktop.systemd1.Manager"
+   335	                       send_member="MaskUnitFiles"/>
+   336	
+   337	                <allow send_destination="org.freedesktop.systemd1"
+   338	                       send_interface="org.freedesktop.systemd1.Manager"
+   339	                       send_member="UnmaskUnitFiles"/>
+   340	
+
+### local polkit rule overrides mentioning systemd1
+
+## default system manager and unit path state
+PID=1
+PPID=n/a
+TTY=n/a
+UID=0
+EUID=0
+SUID=0
+FSUID=0
+GID=0
+EGID=0
+SGID=0
+FSGID=0
+SupplementaryGIDs=0
+Comm=systemd
+Exe=/usr/lib/systemd/systemd
+CommandLine=/sbin/init
+CGroup=/docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/init.scope
+Unit=init.scope
+Slice=-.slice
+UserUnit=n/a
+UserSlice=n/a
+Session=n/a
+AuditLoginUID=n/a
+AuditSessionID=n/a
+UniqueName=:1.1
+EffectiveCapabilities=cap_chown cap_dac_override cap_dac_read_search 
+        cap_fowner cap_fsetid cap_kill cap_setgid 
+        cap_setuid cap_setpcap cap_linux_immutable cap_net_bind_service 
+        cap_net_broadcast cap_net_admin cap_net_raw cap_ipc_lock 
+        cap_ipc_owner cap_sys_module cap_sys_rawio cap_sys_chroot 
+        cap_sys_ptrace cap_sys_pacct cap_sys_admin cap_sys_boot 
+        cap_sys_nice cap_sys_resource cap_sys_time cap_sys_tty_config 
+        cap_mknod cap_lease cap_audit_write cap_audit_control 
+        cap_setfcap cap_mac_override cap_mac_admin cap_syslog 
+        cap_wake_alarm cap_block_suspend cap_audit_read cap_perfmon 
+        cap_bpf cap_checkpoint_restore
+PermittedCapabilities=cap_chown cap_dac_override cap_dac_read_search 
+        cap_fowner cap_fsetid cap_kill cap_setgid 
+        cap_setuid cap_setpcap cap_linux_immutable cap_net_bind_service 
+        cap_net_broadcast cap_net_admin cap_net_raw cap_ipc_lock 
+        cap_ipc_owner cap_sys_module cap_sys_rawio cap_sys_chroot 
+        cap_sys_ptrace cap_sys_pacct cap_sys_admin cap_sys_boot 
+        cap_sys_nice cap_sys_resource cap_sys_time cap_sys_tty_config 
+        cap_mknod cap_lease cap_audit_write cap_audit_control 
+        cap_setfcap cap_mac_override cap_mac_admin cap_syslog 
+        cap_wake_alarm cap_block_suspend cap_audit_read cap_perfmon 
+        cap_bpf cap_checkpoint_restore
+InheritableCapabilities=
+BoundingCapabilities=cap_chown cap_dac_override cap_dac_read_search 
+        cap_fowner cap_fsetid cap_kill cap_setgid 
+        cap_setuid cap_setpcap cap_linux_immutable cap_net_bind_service 
+        cap_net_broadcast cap_net_admin cap_net_raw cap_ipc_lock 
+        cap_ipc_owner cap_sys_module cap_sys_rawio cap_sys_chroot 
+        cap_sys_ptrace cap_sys_pacct cap_sys_admin cap_sys_boot 
+        cap_sys_nice cap_sys_resource cap_sys_time cap_sys_tty_config 
+        cap_mknod cap_lease cap_audit_write cap_audit_control 
+        cap_setfcap cap_mac_override cap_mac_admin cap_syslog 
+        cap_wake_alarm cap_block_suspend cap_audit_read cap_perfmon 
+        cap_bpf cap_checkpoint_restore
+.BindMountUnit                             method    sssbb            -                                                                                                                                                                                                                                                                                                                                                 -
+.EnableUnitFiles                           method    asbb             ba(sss)                                                                                                                                                                                                                                                                                                                                           -
+.EnableUnitFilesWithFlags                  method    ast              ba(sss)                                                                                                                                                                                                                                                                                                                                           -
+.LinkUnitFiles                             method    asbb             a(sss)                                                                                                                                                                                                                                                                                                                                            -
+.MountImageUnit                            method    sssbba(ss)       -                                                                                                                                                                                                                                                                                                                                                 -
+.Reexecute                                 method    -                -                                                                                                                                                                                                                                                                                                                                                 no-reply
+.Reload                                    method    -                -                                                                                                                                                                                                                                                                                                                                                 -
+.SetEnvironment                            method    as               -                                                                                                                                                                                                                                                                                                                                                 -
+.SetUnitProperties                         method    sba(sv)          -                                                                                                                                                                                                                                                                                                                                                 -
+.StartTransientUnit                        method    ssa(sv)a(sa(sv)) o                                                                                                                                                                                                                                                                                                                                                 -
+.StartUnit                                 method    ss               o                                                                                                                                                                                                                                                                                                                                                 -
+.StartUnitReplace                          method    sss              o                                                                                                                                                                                                                                                                                                                                                 -
+.StartUnitWithFlags                        method    sst              o                                                                                                                                                                                                                                                                                                                                                 -
+.UnsetAndSetEnvironment                    method    asas             -                                                                                                                                                                                                                                                                                                                                                 -
+.UnsetEnvironment                          method    as               -                                                                                                                                                                                                                                                                                                                                                 -
+.Environment                               property  as               2 "LANG=C.UTF-8" "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin"                                                                                                                                                                                                                                                               -
+
+LANG=C.UTF-8
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin
+
+drwxr-xr-x root:root /etc/systemd/system
+drwxr-xr-x root:root /run/systemd/system
+drwxr-xr-x root:root /usr/lib/systemd/system
+stat: cannot statx '/usr/local/lib/systemd/system': No such file or directory
+-rw-r--r-- root:root /etc/systemd/system.conf
+stat: cannot statx '/etc/systemd/system.conf.d': No such file or directory
+stat: cannot statx '/run/systemd/system.conf.d': No such file or directory
+
+
+## openvt active selfauth execution
+openvt: Couldn't deallocate console 1
+openvt_rc=8
+
+## active selfauth output
+
+## active selfauth tty session proof
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+selfauth
+/dev/tty1
+XDG_SESSION_ID=85
+Id=85
+User=1002
+Name=selfauth
+Seat=seat0
+TTY=tty1
+Remote=no
+Leader=401426
+Type=tty
+Class=user
+Active=yes
+State=active
+SESSION  UID USER     SEAT  TTY  STATE  IDLE SINCE
+     85 1002 selfauth seat0 tty1 active yes  1h 23min ago
+
+1 sessions listed.
+selfauth P 2026-05-16 0 99999 7 -1
+
+## active selfauth polkit authorization checks
+CanAuthorize org.freedesktop.systemd1.manage-units -> authorized=0 challenged=1 details={dbus.String('polkit.retains_authorization_after_challenge'): dbus.String('1')}
+CanAuthorize org.freedesktop.systemd1.manage-unit-files -> authorized=0 challenged=1 details={dbus.String('polkit.retains_authorization_after_challenge'): dbus.String('1')}
+CanAuthorize org.freedesktop.systemd1.set-environment -> authorized=0 challenged=1 details={dbus.String('polkit.retains_authorization_after_challenge'): dbus.String('1')}
+CanAuthorize org.freedesktop.systemd1.reload-daemon -> authorized=0 challenged=1 details={dbus.String('polkit.retains_authorization_after_challenge'): dbus.String('1')}
+
+### pkcheck org.freedesktop.systemd1.manage-units no-interaction
+$ pkcheck --action-id 'org.freedesktop.systemd1.manage-units' --process $$
+polkit\56retains_authorization_after_challenge=1
+Authorization requires authentication and -u wasn't passed.
+rc=2
+
+### pkcheck org.freedesktop.systemd1.manage-unit-files no-interaction
+$ pkcheck --action-id 'org.freedesktop.systemd1.manage-unit-files' --process $$
+polkit\56retains_authorization_after_challenge=1
+Authorization requires authentication and -u wasn't passed.
+rc=2
+
+### pkcheck org.freedesktop.systemd1.set-environment no-interaction
+$ pkcheck --action-id 'org.freedesktop.systemd1.set-environment' --process $$
+polkit\56retains_authorization_after_challenge=1
+Authorization requires authentication and -u wasn't passed.
+rc=2
+
+### pkcheck org.freedesktop.systemd1.reload-daemon no-interaction
+$ pkcheck --action-id 'org.freedesktop.systemd1.reload-daemon' --process $$
+polkit\56retains_authorization_after_challenge=1
+Authorization requires authentication and -u wasn't passed.
+rc=2
+
+## systemd-run --system transient root execution attempts
+
+### systemd-run basic root marker
+$ systemd-run --system --unit=active-systemd-transient-run --collect --wait --property=Type=oneshot /bin/sh -c 'id > /root/active_systemd_transient_root'
+rc=124
+
+### systemd-run Environment root marker
+$ systemd-run --system --unit=active-systemd-transient-run-env --collect --wait --property=Type=oneshot --property=Environment=ACTIVE_SYSTEMD_TRANSIENT=/root/active_systemd_transient_root /bin/sh -c 'id > "$ACTIVE_SYSTEMD_TRANSIENT"'
+rc=124
+
+### systemd-run WorkingDirectory
+$ systemd-run --system --unit=active-systemd-transient-run-workdir --collect --wait --property=Type=oneshot --property=WorkingDirectory=/home/selfauth/active-systemd-transient /bin/sh -c 'pwd; id > /root/active_systemd_transient_root'
+rc=124
+
+### systemd-run RootImage user file
+$ systemd-run --system --unit=active-systemd-transient-run-rootimage --collect --wait --property=Type=oneshot --property=RootImage=/home/selfauth/active-systemd-transient/rootimage.raw /bin/sh -c 'id > /root/active_systemd_transient_root'
+rc=124
+
+### systemd-run User=root
+$ systemd-run --system --unit=active-systemd-transient-run-user --collect --wait --property=Type=oneshot --property=User=root /bin/sh -c 'id > /root/active_systemd_transient_root'
+rc=124
+
+## direct D-Bus StartTransientUnit and manager method attempts
+
+### StartTransientUnit ExecStart root marker
+$ dbus StartTransientUnit unit=active-systemd-transient-dbus-basic.service mode=replace ExecStart='/bin/sh' '-c' 'id > /root/active_systemd_transient_root' 
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+### StartTransientUnit with Environment
+$ dbus StartTransientUnit unit=active-systemd-transient-dbus-env.service mode=replace ExecStart='/bin/sh' '-c' 'id > "$ACTIVE_SYSTEMD_TRANSIENT"' Environment=[ACTIVE_SYSTEMD_TRANSIENT=/root/active_systemd_transient_root,ROOT_MARKER_ENV=/root/active_systemd_transient_root]
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+### StartTransientUnit with WorkingDirectory
+$ dbus StartTransientUnit unit=active-systemd-transient-dbus-workdir.service mode=replace ExecStart='/bin/sh' '-c' 'id > /root/active_systemd_transient_root' WorkingDirectory=/home/selfauth/active-systemd-transient
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+### StartTransientUnit with RootImage user file
+$ dbus StartTransientUnit unit=active-systemd-transient-dbus-rootimage.service mode=replace ExecStart='/bin/sh' '-c' 'id > /root/active_systemd_transient_root' RootImage=/home/selfauth/active-systemd-transient/rootimage.raw
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+### StartTransientUnit with User=root
+$ dbus StartTransientUnit unit=active-systemd-transient-dbus-user.service mode=replace ExecStart='/bin/sh' '-c' 'id > /root/active_systemd_transient_root' User=root
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+### SetEnvironment root marker
+$ dbus Manager.SetEnvironment ['ACTIVE_SYSTEMD_TRANSIENT=/root/active_systemd_transient_root']
+EXC DBusException: org.freedesktop.DBus.Error.AccessDenied: Rejected send message, 2 matched rules; type="method_call", sender=":1.26064" (uid=1002 pid=401604 comm="python3 /home/selfauth/active-systemd-transient/db") interface="org.freedesktop.systemd1.Manager" member="SetEnvironment" error name="(unset)" requested_reply="0" destination=":1.1" (uid=0 pid=1 comm="/sbin/init")
+rc=1
+
+### UnsetEnvironment
+$ dbus Manager.UnsetEnvironment ['ACTIVE_SYSTEMD_TRANSIENT']
+EXC DBusException: org.freedesktop.DBus.Error.AccessDenied: Rejected send message, 2 matched rules; type="method_call", sender=":1.26064" (uid=1002 pid=401604 comm="python3 /home/selfauth/active-systemd-transient/db") interface="org.freedesktop.systemd1.Manager" member="UnsetEnvironment" error name="(unset)" requested_reply="0" destination=":1.1" (uid=0 pid=1 comm="/sbin/init")
+rc=1
+
+### UnsetAndSetEnvironment
+$ dbus Manager.UnsetAndSetEnvironment ['PATH'] ['PATH=/tmp:/usr/bin']
+EXC DBusException: org.freedesktop.DBus.Error.AccessDenied: Rejected send message, 2 matched rules; type="method_call", sender=":1.26064" (uid=1002 pid=401604 comm="python3 /home/selfauth/active-systemd-transient/db") interface="org.freedesktop.systemd1.Manager" member="UnsetAndSetEnvironment" error name="(unset)" requested_reply="0" destination=":1.1" (uid=0 pid=1 comm="/sbin/init")
+rc=1
+
+### LinkUnitFiles user unit
+$ dbus Manager.LinkUnitFiles ['/home/selfauth/active-systemd-transient/active-systemd-transient-linked.service'] false true
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+### LinkUnitFiles symlink unit
+$ dbus Manager.LinkUnitFiles ['/home/selfauth/active-systemd-transient/symlink-to-linked.service'] false true
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+### EnableUnitFiles absolute user path
+$ dbus Manager.EnableUnitFiles ['/home/selfauth/active-systemd-transient/active-systemd-transient-path.service'] false true
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+### StartUnit linked unit
+$ dbus Manager.StartUnit 'active-systemd-transient-linked.service' replace
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+### StartUnit isolate default target
+$ dbus Manager.StartUnit 'default.target' isolate
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+### SetUnitProperties on root service
+$ dbus Manager.SetUnitProperties ssh.service runtime=false Environment=[...]
+EXC DBusException: org.freedesktop.systemd1.NoSuchUnit: Unit ssh.service not found.
+rc=1
+
+### Reload manager
+$ dbus Manager.Reload
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+### Reexecute manager
+$ dbus Manager.Reexecute
+EXC DBusException: org.freedesktop.DBus.Error.InteractiveAuthorizationRequired: Interactive authentication required.
+rc=1
+
+## systemctl unit file, reload, reexec, and isolate attempts
+
+### systemctl link user service
+$ systemctl --system --no-ask-password link '/home/selfauth/active-systemd-transient/active-systemd-transient-linked.service'
+Failed to link unit: Interactive authentication required.
+rc=1
+
+### systemctl enable linked service
+$ systemctl --system --no-ask-password enable active-systemd-transient-linked.service
+Failed to enable unit: Interactive authentication required.
+rc=1
+
+### systemctl start linked service
+$ systemctl --system --no-ask-password start active-systemd-transient-linked.service
+Failed to start active-systemd-transient-linked.service: Interactive authentication required.
+See system logs and 'systemctl status active-systemd-transient-linked.service' for details.
+rc=1
+
+### systemctl link path trick service
+$ systemctl --system --no-ask-password link '/tmp/../home/selfauth/active-systemd-transient/active-systemd-transient-path.service'
+Failed to link unit: Interactive authentication required.
+rc=1
+
+### systemctl enable absolute path service
+$ systemctl --system --no-ask-password enable '/home/selfauth/active-systemd-transient/active-systemd-transient-path.service'
+Failed to enable unit: Interactive authentication required.
+rc=1
+
+### systemctl start path service
+$ systemctl --system --no-ask-password start active-systemd-transient-path.service
+Failed to start active-systemd-transient-path.service: Interactive authentication required.
+See system logs and 'systemctl status active-systemd-transient-path.service' for details.
+rc=1
+
+### systemctl set-environment
+$ systemctl --system --no-ask-password set-environment ACTIVE_SYSTEMD_TRANSIENT=/root/active_systemd_transient_root LD_PRELOAD=/home/selfauth/active-systemd-transient/notreal.so
+Failed to set environment: Access denied
+rc=1
+
+### systemctl unset-environment
+$ systemctl --system --no-ask-password unset-environment ACTIVE_SYSTEMD_TRANSIENT LD_PRELOAD
+Failed to set environment: Access denied
+rc=1
+
+### systemctl daemon-reload
+$ systemctl --system --no-ask-password daemon-reload
+Reload daemon failed: Interactive authentication required.
+rc=1
+
+### systemctl daemon-reexec
+$ systemctl --system --no-ask-password daemon-reexec
+Reexecute daemon failed: Interactive authentication required.
+rc=1
+
+### systemctl isolate default.target
+$ systemctl --system --no-ask-password isolate default.target
+Failed to start default.target: Interactive authentication required.
+See system logs and 'systemctl status default.target' for details.
+rc=1
+
+## active selfauth marker and root-write checks
+ls: cannot access '/root/active_systemd_transient_root': Permission denied
+ls: cannot access '/tmp/active_systemd_transient_root': No such file or directory
+
+## post-trigger root proof and system state
+### marker proof
+ls: cannot access '/root/active_systemd_transient_root': No such file or directory
+ls: cannot access '/tmp/active_systemd_transient_root': No such file or directory
+
+### manager environment marker
+
+### root unit file writes
+
+### unit states
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.
+To show all installed unit files use 'systemctl list-unit-files'.
+UNIT FILE STATE PRESET
+
+0 unit files listed.
+
+### failed units
+
+### system health
+running
+
+## cleanup
+marker_after_cleanup:
+ls: cannot access '/root/active_systemd_transient_root': No such file or directory
+ls: cannot access '/tmp/active_systemd_transient_root': No such file or directory
+
+manager_env_after_cleanup:
+
+unit_files_after_cleanup:
+
+system_health_after_cleanup:
+running

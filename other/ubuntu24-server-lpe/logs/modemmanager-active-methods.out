@@ -1,0 +1,427 @@
+
+## target identity
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+dbus	1.14.10-4ubuntu4.1	ii 
+modemmanager	1.23.4-0ubuntu2	ii 
+policykit-1		un 
+polkitd	124-2ubuntu1.24.04.3	ii 
+systemd	255.4-1ubuntu8.15	ii 
+udev	255.4-1ubuntu8.15	ii 
+
+## modemmanager policy defaults
+org.freedesktop.ModemManager1.Control	any=	inactive=no	active=auth_admin
+org.freedesktop.ModemManager1.Device.Control	any=	inactive=no	active=yes
+org.freedesktop.ModemManager1.Contacts	any=	inactive=no	active=yes
+org.freedesktop.ModemManager1.Messaging	any=	inactive=no	active=yes
+org.freedesktop.ModemManager1.Voice	any=	inactive=no	active=yes
+org.freedesktop.ModemManager1.Time	any=	inactive=no	active=yes
+org.freedesktop.ModemManager1.Location	any=	inactive=no	active=yes
+org.freedesktop.ModemManager1.USSD	any=	inactive=no	active=yes
+org.freedesktop.ModemManager1.Firmware	any=	inactive=no	active=auth_admin
+
+## dbus method allowlist
+28:           send_member="ScanDevices"/>
+32:           send_member="SetLogging"/>
+48:           send_member="CreateBearer"/>
+64:           send_member="FactoryReset"/>
+80:           send_member="Command"/>
+286:           send_member="CreateCall"/>
+345:           send_member="SendDtmf"/>
+
+ReportKernelEvent allow rule count:
+0
+
+## default service reachability before manual daemon
+ExecStart={ path=/usr/sbin/ModemManager ; argv[]=/usr/sbin/ModemManager ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+CapabilityBoundingSet=cap_net_admin cap_sys_admin
+User=root
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=yes
+NoNewPrivileges=yes
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=enabled
+ConditionResult=no
+# This D-Bus service activation file is only for systemd support since
+# an auto-activated ModemManager would be quite surprising for those people
+# who have MM installed but turned off.  Thus the Exec path available to
+# D-Bus is /bin/false, but systemd knows the real Exec path due to the MM
+# systemd .service file.
+
+[D-BUS Service]
+Name=org.freedesktop.ModemManager1
+Exec=/usr/sbin/ModemManager
+User=root
+SystemdService=dbus-org.freedesktop.ModemManager1.service
+org.freedesktop.ModemManager1      - -               -               (activatable) -                           -       -
+org.freedesktop.PolicyKit1       258 polkitd         polkitd         :1.4          polkit.service              -       -
+default_introspect_rc=124
+inactive
+
+## inactive selfauth pkcheck semantics
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+### org.freedesktop.ModemManager1.Control
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Device.Control
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Contacts
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Messaging
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Voice
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Time
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Location
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.USSD
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Firmware
+Not authorized.
+rc=1
+
+## active selfauth tty policy probe
+openvt: Couldn't deallocate console 6
+openvt_policy_rc=8
+## active tty subject
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/pts/0
+XDG_SESSION_ID=c9
+Id=c9
+User=1002
+Seat=
+TTY=pts/0
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+
+## active selfauth pkcheck semantics
+### org.freedesktop.ModemManager1.Control
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Device.Control
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Contacts
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Messaging
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Voice
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Time
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Location
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.USSD
+Not authorized.
+rc=1
+### org.freedesktop.ModemManager1.Firmware
+Not authorized.
+rc=1
+ModemManager daemon absent for active method attempts
+
+## manual daemon semantic-only setup
+manual_pid=736301
+:1.97530                      736301 ModemManager    root            :1.97530      init.scope                  -       -
+org.freedesktop.ModemManager1 736301 ModemManager    root            :1.97530      init.scope                  -       -
+org.freedesktop.PolicyKit1       258 polkitd         polkitd         :1.4          polkit.service              -       -
+NAME                          TYPE      SIGNATURE RESULT/VALUE FLAGS
+.InhibitDevice                method    sb        -            -
+.ReportKernelEvent            method    a{sv}     -            -
+.ScanDevices                  method    -         -            -
+.SetLogging                   method    s         -            -
+.Version                      property  s         "1.23.4"     emits-change
+manager_introspect_rc=0
+/
+/org
+/org/freedesktop
+/org/freedesktop/ModemManager1
+
+## active selfauth methods against manual daemon
+openvt: Couldn't deallocate console 6
+openvt_methods_rc=8
+## active tty subject
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/tty6
+XDG_SESSION_ID=71
+Id=71
+User=1002
+Seat=seat0
+TTY=tty6
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+
+## active selfauth pkcheck semantics
+### org.freedesktop.ModemManager1.Control
+Authorization requires authentication and -u wasn't passed.
+rc=2
+### org.freedesktop.ModemManager1.Device.Control
+rc=0
+### org.freedesktop.ModemManager1.Contacts
+rc=0
+### org.freedesktop.ModemManager1.Messaging
+rc=0
+### org.freedesktop.ModemManager1.Voice
+rc=0
+### org.freedesktop.ModemManager1.Time
+rc=0
+### org.freedesktop.ModemManager1.Location
+rc=0
+### org.freedesktop.ModemManager1.USSD
+rc=0
+### org.freedesktop.ModemManager1.Firmware
+Authorization requires authentication and -u wasn't passed.
+rc=2
+
+## active method attempts with daemon present
+No modems were found
+mmcli_list_rc=0
+error: couldn't request to scan devices: 'GDBus.Error:org.freedesktop.ModemManager1.Error.Core.Unauthorized: Unauthorized: PolicyKit authorization failed: challenge needed for 'org.freedesktop.ModemManager1.Control''
+mmcli_scan_rc=1
+error: couldn't set logging level: 'GDBus.Error:org.freedesktop.ModemManager1.Error.Core.Unauthorized: Unauthorized: PolicyKit authorization failed: challenge needed for 'org.freedesktop.ModemManager1.Control''
+mmcli_set_logging_rc=1
+attacker_pty=/dev/pts/1
+error: couldn't report kernel event: 'GDBus.Error:org.freedesktop.DBus.Error.AccessDenied: Rejected send message, 2 matched rules; type="method_call", sender=":1.97550" (uid=1002 pid=736461 comm="mmcli --report-kernel-event=action=add,subsystem=t") interface="org.freedesktop.ModemManager1" member="ReportKernelEvent" error name="(unset)" requested_reply="0" destination=":1.97530" (uid=0 pid=736301 comm="/usr/sbin/ModemManager --debug")'
+report_ttyS0_rc=1
+error: couldn't report kernel event: 'GDBus.Error:org.freedesktop.DBus.Error.AccessDenied: Rejected send message, 2 matched rules; type="method_call", sender=":1.97551" (uid=1002 pid=736466 comm="mmcli --report-kernel-event=action=add,subsystem=t") interface="org.freedesktop.ModemManager1" member="ReportKernelEvent" error name="(unset)" requested_reply="0" destination=":1.97530" (uid=0 pid=736301 comm="/usr/sbin/ModemManager --debug")'
+report_pty_rc=1
+Error: GDBus.Error:org.freedesktop.DBus.Error.UnknownMethod: Object does not exist at path “/org/freedesktop/ModemManager1/Modem/0”
+fake_modem_command_rc=1
+
+object tree after active attempts:
+/
+/org
+/org/freedesktop
+/org/freedesktop/ModemManager1
+
+## pseudo-device and root-consumed file/script gates
+candidate device nodes:
+660 root:dialout /dev/ttyS0
+660 root:dialout /dev/ttyS1
+660 root:dialout /dev/ttyS2
+660 root:dialout /dev/ttyS3
+666 root:tty /dev/pts/ptmx
+
+ModemManager writable/script directories:
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-altair-lte.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-anydata.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-broadmobi.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-cinterion.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-dell.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-dlink.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-ericsson-mbm.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-fibocom.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-foxconn.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-generic.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-gosuncn.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-haier.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-huawei.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-intel.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-iridium.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-linktop.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-longcheer.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-motorola.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-mtk-legacy.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-mtk.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-nokia-icera.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-nokia.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-novatel-lte.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-novatel.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-option-hso.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-option.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-pantech.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-qcom-soc.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-quectel.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-samsung.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-sierra-legacy.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-sierra.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-simtech.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-telit.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-thuraya.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-tplink.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-ublox.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-via.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-wavecom.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-x22x.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-plugin-zte.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-shared-fibocom.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-shared-foxconn.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-shared-icera.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-shared-novatel.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-shared-option.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-shared-sierra.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-shared-telit.so -> 
+644 root:root f /usr/lib/aarch64-linux-gnu/ModemManager/libmm-shared-xmm.so -> 
+644 root:root f /usr/share/ModemManager/mm-foxconn-t77w968-carrier-mapping.conf -> 
+755 root:root d /etc/ModemManager -> 
+755 root:root d /etc/ModemManager/connection.d -> 
+755 root:root d /etc/ModemManager/fcc-unlock.d -> 
+755 root:root d /usr/lib/aarch64-linux-gnu/ModemManager -> 
+755 root:root d /usr/lib/aarch64-linux-gnu/ModemManager/connection.d -> 
+755 root:root d /usr/share/ModemManager -> 
+755 root:root d /usr/share/ModemManager/connection.available.d -> 
+755 root:root d /usr/share/ModemManager/fcc-unlock.available.d -> 
+755 root:root f /usr/share/ModemManager/connection.available.d/99-log-event -> 
+755 root:root f /usr/share/ModemManager/fcc-unlock.available.d/105b -> 
+755 root:root f /usr/share/ModemManager/fcc-unlock.available.d/1199 -> 
+755 root:root f /usr/share/ModemManager/fcc-unlock.available.d/14c3 -> 
+755 root:root f /usr/share/ModemManager/fcc-unlock.available.d/1eac -> 
+755 root:root f /usr/share/ModemManager/fcc-unlock.available.d/2c7c -> 
+777 root:root l /usr/share/ModemManager/fcc-unlock.available.d/03f0:4e1d -> 1199
+777 root:root l /usr/share/ModemManager/fcc-unlock.available.d/105b:e0ab -> 105b
+777 root:root l /usr/share/ModemManager/fcc-unlock.available.d/105b:e0c3 -> 105b
+777 root:root l /usr/share/ModemManager/fcc-unlock.available.d/1199:9079 -> 1199
+777 root:root l /usr/share/ModemManager/fcc-unlock.available.d/14c3:4d75 -> 14c3
+777 root:root l /usr/share/ModemManager/fcc-unlock.available.d/1eac:1001 -> 1eac
+777 root:root l /usr/share/ModemManager/fcc-unlock.available.d/2c7c:030a -> 2c7c
+777 root:root l /usr/share/ModemManager/fcc-unlock.available.d/413c:81a3 -> 1199
+777 root:root l /usr/share/ModemManager/fcc-unlock.available.d/413c:81a8 -> 1199
+
+attacker write checks:
+not_writable /etc/ModemManager
+not_writable /etc/ModemManager/fcc-unlock.d
+not_writable /usr/share/ModemManager
+not_writable /usr/share/ModemManager/fcc-unlock.available.d
+not_writable /usr/share/ModemManager/fcc-unlock.available.d/105b
+not_writable /usr/share/ModemManager/fcc-unlock.available.d/1199
+not_writable /usr/share/ModemManager/connection.available.d/99-log-event
+not_writable /usr/lib/aarch64-linux-gnu/ModemManager/connection.d
+
+## manual daemon debug excerpts
+ModemManager[736301]: <dbg> [1778950596.040754] [filter]   virtual devices forbidden:  yes
+ModemManager[736301]: <dbg> [1778950596.040764] [filter]       platform driver check:    yes
+ModemManager[736301]: <dbg> [1778950596.051469] [ttyS0] port contents loaded:
+ModemManager[736301]: <dbg> [1778950596.051482] [ttyS0]   bus: platform
+ModemManager[736301]: <dbg> [1778950596.051485] [ttyS0]   device: /sys/devices/platform/serial8250
+ModemManager[736301]: <dbg> [1778950596.051490] [ttyS0]   driver: port
+ModemManager[736301]: <dbg> [1778950596.051492] [base-manager] adding port ttyS0 at sysfs path: /sys/devices/platform/serial8250/serial8250:0/serial8250:0.0/tty/ttyS0
+ModemManager[736301]: <dbg> [1778950596.051504] [filter] (tty/ttyS0): port filtered: tty platform driver
+ModemManager[736301]: <dbg> [1778950596.051621] [filter] (tty/ttyS1): port filtered: tty platform driver
+ModemManager[736301]: <dbg> [1778950596.051716] [filter] (tty/ttyS2): port filtered: tty platform driver
+ModemManager[736301]: <dbg> [1778950596.051817] [filter] (tty/ttyS3): port filtered: tty platform driver
+ModemManager[736301]: <dbg> [1778950596.052019] [filter] (tty/console) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052079] [filter] (tty/hvc0) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052226] [filter] (tty/hvc1) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052314] [filter] (tty/hvc2) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052362] [filter] (tty/hvc3) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052407] [filter] (tty/hvc4) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052452] [filter] (tty/hvc5) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052499] [filter] (tty/hvc6) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052542] [filter] (tty/hvc7) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052608] [filter] (tty/ptmx) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052649] [filter] (tty/tty) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052701] [filter] (tty/tty0) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052742] [filter] (tty/tty1) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052780] [filter] (tty/tty10) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052820] [filter] (tty/tty11) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052859] [filter] (tty/tty12) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052899] [filter] (tty/tty13) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052938] [filter] (tty/tty14) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.052976] [filter] (tty/tty15) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053013] [filter] (tty/tty16) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053051] [filter] (tty/tty17) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053089] [filter] (tty/tty18) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053127] [filter] (tty/tty19) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053164] [filter] (tty/tty2) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053201] [filter] (tty/tty20) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053239] [filter] (tty/tty21) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053276] [filter] (tty/tty22) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053321] [filter] (tty/tty23) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053360] [filter] (tty/tty24) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053403] [filter] (tty/tty25) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053441] [filter] (tty/tty26) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053482] [filter] (tty/tty27) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053520] [filter] (tty/tty28) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053577] [filter] (tty/tty29) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053616] [filter] (tty/tty3) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053657] [filter] (tty/tty30) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053699] [filter] (tty/tty31) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053745] [filter] (tty/tty32) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053785] [filter] (tty/tty33) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053822] [filter] (tty/tty34) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053861] [filter] (tty/tty35) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053900] [filter] (tty/tty36) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053940] [filter] (tty/tty37) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.053978] [filter] (tty/tty38) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054015] [filter] (tty/tty39) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054056] [filter] (tty/tty4) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054094] [filter] (tty/tty40) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054134] [filter] (tty/tty41) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054174] [filter] (tty/tty42) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054212] [filter] (tty/tty43) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054252] [filter] (tty/tty44) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054290] [filter] (tty/tty45) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054327] [filter] (tty/tty46) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054364] [filter] (tty/tty47) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054402] [filter] (tty/tty48) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054440] [filter] (tty/tty49) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054477] [filter] (tty/tty5) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054513] [filter] (tty/tty50) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054568] [filter] (tty/tty51) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054608] [filter] (tty/tty52) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054645] [filter] (tty/tty53) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054682] [filter] (tty/tty54) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054719] [filter] (tty/tty55) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054758] [filter] (tty/tty56) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054797] [filter] (tty/tty57) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054834] [filter] (tty/tty58) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054871] [filter] (tty/tty59) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054908] [filter] (tty/tty6) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054947] [filter] (tty/tty60) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.054984] [filter] (tty/tty61) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055021] [filter] (tty/tty62) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055059] [filter] (tty/tty63) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055096] [filter] (tty/tty7) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055132] [filter] (tty/tty8) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055177] [filter] (tty/tty9) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055252] [filter] (net/erspan0) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055322] [filter] (net/eth0) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055408] [filter] (net/gre0) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055482] [filter] (net/gretap0) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055563] [filter] (net/ip6_vti0) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055630] [filter] (net/ip6gre0) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055705] [filter] (net/ip6tnl0) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055779] [filter] (net/ip_vti0) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055853] [filter] (net/lo) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055928] [filter] (net/sit0) port filtered: virtual device
+ModemManager[736301]: <dbg> [1778950596.055995] [filter] (net/tunl0) port filtered: virtual device
+
+## root marker and cleanup precheck
+ROOT_PROOF=no
+ls: cannot access '/root/modemmanager_active_methods_root': No such file or directory
+running
+
+## cleanup verification
+ls: cannot access '/root/modemmanager_active_methods_root': No such file or directory
+running

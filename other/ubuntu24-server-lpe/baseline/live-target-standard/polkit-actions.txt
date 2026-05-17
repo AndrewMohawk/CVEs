@@ -1,0 +1,22 @@
+$ sh -lc find\ /usr/share/polkit-1/actions\ -maxdepth\ 1\ -type\ f\ -print\ \|\ sort
+/usr/share/polkit-1/actions/com.ubuntu.apport.policy
+/usr/share/polkit-1/actions/com.ubuntu.release-upgrader.policy
+/usr/share/polkit-1/actions/com.ubuntu.softwareproperties.policy
+/usr/share/polkit-1/actions/com.ubuntu.update-notifier.policy
+/usr/share/polkit-1/actions/io.snapcraft.snapd.policy
+/usr/share/polkit-1/actions/net.fiasko-nw.needrestart.policy
+/usr/share/polkit-1/actions/org.dpkg.pkexec.update-alternatives.policy
+/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy
+/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+/usr/share/polkit-1/actions/org.freedesktop.bolt.policy
+/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy
+/usr/share/polkit-1/actions/org.freedesktop.hostname1.policy
+/usr/share/polkit-1/actions/org.freedesktop.locale1.policy
+/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+/usr/share/polkit-1/actions/org.freedesktop.network1.policy
+/usr/share/polkit-1/actions/org.freedesktop.packagekit.policy
+/usr/share/polkit-1/actions/org.freedesktop.policykit.policy
+/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy
+/usr/share/polkit-1/actions/org.freedesktop.systemd1.policy
+/usr/share/polkit-1/actions/org.freedesktop.timedate1.policy
+/usr/share/polkit-1/actions/org.freedesktop.timesync1.policy

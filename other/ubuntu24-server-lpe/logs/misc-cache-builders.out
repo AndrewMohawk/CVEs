@@ -1,0 +1,817 @@
+misc cache builder trigger trust-boundary probe
+target=ubuntu24-server-lpe-target attacker=attacker
+2026-05-16T15:07:33-0400
+
+## cleanup before probe
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+
+## target, package, and helper proof
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+      1 root     systemd         /sbin/init
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+attacker
+sudo: a password is required
+sudo_rc=1
+
+== installed/default package versions ==
+debianutils	install ok installed	5.17build1
+dpkg-query: no packages found matching desktop-file-utils
+dpkg-query: no packages found matching fontconfig
+dpkg-query: no packages found matching hicolor-icon-theme
+dpkg-query: no packages found matching mailcap
+dpkg-query: no packages found matching xdg-utils
+info	install ok installed	7.1-3build2
+install-info	install ok installed	7.1-3build2
+libglib2.0-0t64:arm64	install ok installed	2.80.0-6ubuntu3.8
+libglib2.0-bin	install ok installed	2.80.0-6ubuntu3.8
+media-types	install ok installed	10.1.0
+mime-support	unknown ok not-installed	
+python3-twisted	install ok installed	24.3.0-1ubuntu0.1
+sgml-base	install ok installed	1.31
+shared-mime-info	install ok installed	2.4-4
+xml-core	install ok installed	0.19
+
+== helper paths ==
+update-info-dir              /usr/sbin/update-info-dir
+install-info                 /usr/bin/install-info
+update-mime-database         /usr/bin/update-mime-database
+update-xmlcatalog            /usr/sbin/update-xmlcatalog
+update-catalog               /usr/sbin/update-catalog
+glib-compile-schemas         /usr/bin/glib-compile-schemas
+gio-querymodules             /usr/bin/gio-querymodules
+update-shells                /usr/sbin/update-shells
+dpkg-trigger                 /usr/bin/dpkg-trigger
+py3versions                  /usr/bin/py3versions
+python3                      /usr/bin/python3
+fc-cache                     MISSING
+gtk-update-icon-cache        MISSING
+update-desktop-database      MISSING
+run-mailcap                  MISSING
+-rwxr-xr-x 1 root root 67904 Jan 28 17:53 /usr/lib/aarch64-linux-gnu/glib-2.0/glib-compile-schemas
+-rwxr-xr-x 1 root root 67672 Jan 28 17:53 /usr/lib/aarch64-linux-gnu/glib-2.0/gio-querymodules
+
+## default triggers and vulnerable-code candidates
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== relevant dpkg trigger registrations ==
+/var/lib/dpkg/triggers/File:1:/usr/share/debianutils/shells.d debianutils/noawait
+/var/lib/dpkg/triggers/File:4:/usr/lib/aarch64-linux-gnu/gio/modules libglib2.0-0t64:arm64/noawait
+/var/lib/dpkg/triggers/File:5:/usr/share/glib-2.0/schemas libglib2.0-0t64:arm64
+/var/lib/dpkg/triggers/File:8:/etc/sgml sgml-base
+/var/lib/dpkg/triggers/File:9:/usr/share/sgml sgml-base
+/var/lib/dpkg/triggers/File:10:/usr/share/xml sgml-base
+/var/lib/dpkg/triggers/File:12:/usr/share/info install-info/noawait
+/var/lib/dpkg/triggers/File:17:/usr/share/mime/packages shared-mime-info/noawait
+### /var/lib/dpkg/info/install-info.triggers
+     1	interest-noawait /usr/share/info
+### /var/lib/dpkg/info/shared-mime-info.triggers
+     1	interest-noawait /usr/share/mime/packages
+### /var/lib/dpkg/info/sgml-base.triggers
+     1	interest update-sgmlcatalog
+     2	interest /etc/sgml
+     3	interest /usr/share/sgml
+     4	interest /usr/share/xml
+### /var/lib/dpkg/info/xml-core.triggers
+     1	# Triggers added by dh_installcatalogs/13.11.8ubuntu1
+     2	activate-await update-sgmlcatalog
+### /var/lib/dpkg/info/libglib2.0-0t64:arm64.triggers
+     1	interest-noawait /usr/lib/aarch64-linux-gnu/gio/modules
+     2	interest-await /usr/share/glib-2.0/schemas
+     3	# Triggers added by dh_makeshlibs/13.14.1ubuntu5
+     4	activate-noawait ldconfig
+### /var/lib/dpkg/info/debianutils.triggers
+     1	interest-noawait /usr/share/debianutils/shells.d
+### /var/lib/dpkg/info/python3-twisted.triggers
+     1	interest twisted-plugins-cache
+
+== maintainer scripts and helper lines ==
+### /var/lib/dpkg/info/install-info.postinst
+-rwxr-xr-x 755 root:root /var/lib/dpkg/info/install-info.postinst
+     3	# postinst maintainer script for the Debian install-info package
+    22	# License in "/usr/share/common-licenses/GPL".
+    28	# we only have to call update-info-dir for configure, reconfigure, and
+    33	        update-info-dir
+### /usr/sbin/update-info-dir
+-rwxr-xr-x 755 root:root /usr/sbin/update-info-dir
+     2	# update-info-dir
+     7	INFODIR=/usr/share/info
+    28	SYNOPSIS: update-info-dir [-h,--help] [info-directory]
+    31	(the file /usr/share/info/dir) which is usually presented by info browsers
+    56	# we have to remove the dir file not make install-info being surprised
+    67	      install-info "$file" "$INFODIR/dir" || {
+### /var/lib/dpkg/info/shared-mime-info.postinst
+-rwxr-xr-x 755 root:root /var/lib/dpkg/info/shared-mime-info.postinst
+     5	    if which update-mime-database >/dev/null 2>&1; then
+     6	        update-mime-database /usr/share/mime
+    11	if which update-mime-database >/dev/null 2>&1; then
+    12	    update-mime-database /usr/share/mime
+### /var/lib/dpkg/info/sgml-base.postinst
+-rwxr-xr-x 755 root:root /var/lib/dpkg/info/sgml-base.postinst
+    19		## remove symlink to /etc/sgml/catalog
+    23		## move transitional SGML catalog to /etc/sgml
+    27		    mv -f /usr/lib/sgml/${TRANSCAT} /etc/sgml/${TRANSCAT}
+    30			mv -f /usr/lib/sgml/${TRANSCAT}.old /etc/sgml/${TRANSCAT}.old
+    43	    ## evolve legacy /etc/sgml.catalog
+    44	    OCATALOG=/etc/sgml.catalog
+    47		TRANSCAT=/etc/sgml/transitional.cat
+    52		    cp /usr/share/sgml-base/transitional.cat ${TRANSCAT}
+    64	    update-catalog --quiet --update-super
+    65	    ln -sf /var/lib/sgml-base/supercatalog /etc/sgml/catalog
+    69	    update-catalog --quiet --update-super
+### /usr/sbin/update-catalog
+-rwxr-xr-x 755 root:root /usr/sbin/update-catalog
+     3	## Debian GNU/Linux update-catalog version 0.2
+   103		$catalog = '/etc/sgml/catalog';
+   135	    print "update-catalog: Suppressing action on super catalog. Invoking trigger instead.\n";
+   136	    system("dpkg-trigger /etc/sgml");
+   139	        print "Invocation of dpkg-trigger failed with status $?.\n";
+   178		open( CATALOG, "<$catalog" )
+   190		$template = "/usr/share/sgml-base/catalog.$type";
+   193		open( TEMPLATE, "<$template" )
+   226		    rename( $catalog, $backup )
+   227			or die "cannot rename $catalog to $backup: $!";
+   229		open( CATALOG, ">$catalog" )
+   254	    unless(open(PKGCAT, "<", $catalog)) {
+   278	                    print "Warning ignoring catalog `$catalog' which references non-existent catalogs. See man update-catalog for details.\n"
+   296	    my($catdir)="/etc/sgml";
+   297	    my($supercat)="/var/lib/sgml-base/supercatalog";
+   313	        open( CATALOG, ">$supercat.new")
+   316	        print CATALOG "## This file is created by update-catalog with update-super.\n";
+   317	        print CATALOG "## Please see update-catalog(8) for how to modify this file.\n";
+   323	            rename( $supercat, "$supercat.old" )
+   324	                or die "cannot rename $supercat to $supercat.old: $!";
+   326	        rename( "$supercat.new", $supercat )
+   327	            or die "cannot rename $supercat.new to $supercat: $!";
+### /usr/sbin/update-xmlcatalog
+-rwxr-xr-x 755 root:root /usr/sbin/update-xmlcatalog
+     3	## Debian update-xmlcatalog
+    13	update-xmlcatalog - maintain XML catalog files
+    17	B<update-xmlcatalog> B<--add> B<--root> S<B<--package> I<package>>
+    20	B<update-xmlcatalog> B<--del> B<--root> S<B<--package> I<package>>
+    23	B<update-xmlcatalog> B<--add> S<B<--package> I<package>> S<B<--local>
+    26	B<update-xmlcatalog> B<--del> S<B<--package> I<package>> S<B<--local>
+    29	B<update-xmlcatalog> B<--add> S<B<--local> I<local>> S<B<--file>
+    32	B<update-xmlcatalog> B<--del> S<B<--local> I<local>> S<B<--file>
+    35	B<update-xmlcatalog> B<--help>
+    39	B<update-xmlcatalog> add entries to and removes entries from the root
+   102	B<update-xmlcatalog> is the de-facto standard tool to be used to
+   104	L<update-catalog(8)> is the standard tool to be used to main SGML
+   108	B<update-xmlcatalog> and L<xmlcatalog(1)> are incompatible.  The
+   114	time that XML catalog file is updated using B<update-xmlcatalog>.
+   118	F</usr/share/doc/xml-core/README.Debian>
+   145	$catalog_data_dir = '/var/lib/xml-core';
+   475	    open( CATALOG_DATA, '<', $catalog_data )
+   496	    open( CATALOG_DATA, '>', $catalog_data )
+   535	    rename( $catalog, $backup )
+   548	    my $header = '/usr/share/xml-core/catalog.header';
+   549	    open( HEADER, '<', $header )
+   570	    my $footer = '/usr/share/xml-core/catalog.footer';
+   571	    open( FOOTER, '<', $footer )
+   583	    open( CATALOG, '>', $catalog )
+### /var/lib/dpkg/info/libglib2.0-0t64:arm64.postinst
+-rwxr-xr-x 755 root:root /var/lib/dpkg/info/libglib2.0-0t64:arm64.postinst
+    14	          /usr/share/glib-2.0/schemas)
+    17	            "/usr/lib/aarch64-linux-gnu/glib-2.0/glib-compile-schemas" /usr/share/glib-2.0/schemas || true
+    24	            "/usr/lib/aarch64-linux-gnu/glib-2.0/gio-querymodules" "/usr/lib/aarch64-linux-gnu/gio/modules" || true
+    37	"/usr/lib/aarch64-linux-gnu/glib-2.0/glib-compile-schemas" /usr/share/glib-2.0/schemas || true
+    38	"/usr/lib/aarch64-linux-gnu/glib-2.0/gio-querymodules" "/usr/lib/aarch64-linux-gnu/gio/modules" || true
+### /var/lib/dpkg/info/debianutils.postinst
+-rwxr-xr-x 755 root:root /var/lib/dpkg/info/debianutils.postinst
+     6		update-alternatives --install /usr/bin/which which /usr/bin/which.debianutils 0 \
+     7			--slave /usr/share/man/man1/which.1.gz which.1.gz /usr/share/man/man1/which.debianutils.1.gz \
+     8			--slave /usr/share/man/de/man1/which.1.gz which.de1.gz /usr/share/man/de/man1/which.debianutils.1.gz \
+     9			--slave /usr/share/man/es/man1/which.1.gz which.es1.gz /usr/share/man/es/man1/which.debianutils.1.gz \
+    10			--slave /usr/share/man/fr/man1/which.1.gz which.fr1.gz /usr/share/man/fr/man1/which.debianutils.1.gz \
+    11			--slave /usr/share/man/it/man1/which.1.gz which.it1.gz /usr/share/man/it/man1/which.debianutils.1.gz \
+    12			--slave /usr/share/man/ja/man1/which.1.gz which.ja1.gz /usr/share/man/ja/man1/which.debianutils.1.gz \
+    13			--slave /usr/share/man/pl/man1/which.1.gz which.pl1.gz /usr/share/man/pl/man1/which.debianutils.1.gz \
+    14			--slave /usr/share/man/sl/man1/which.1.gz which.sl1.gz /usr/share/man/sl/man1/which.debianutils.1.gz
+    29		cp -pZ "$DPKG_ROOT/usr/share/debianutils/shells" "$DPKG_ROOT/etc/shells" || cp -p "$DPKG_ROOT/usr/share/debianutils/shells" "$DPKG_ROOT/etc/shells"
+    34		update-shells
+    39		update-shells
+### /usr/sbin/update-shells
+-rwxr-xr-x 755 root:root /usr/sbin/update-shells
+    64	PKG_DIR="$ROOT/usr/share/debianutils/shells.d"
+    65	STATE_FILE="$ROOT/var/lib/shells.state"
+    66	TEMPLATE_ETC_FILE="$ROOT/usr/share/debianutils/shells"
+    83			realshell=$(dpkg-realpath --root "$ROOT" "$(dirname "$line")")/$(basename "$line")
+   146		sync -d "$NEW_ETC_FILE" "$NEW_STATE_FILE"
+   147		mv -Z "${NEW_ETC_FILE}" "${TARGET_ETC_FILE}" || mv "${NEW_ETC_FILE}" "${TARGET_ETC_FILE}"
+   148		sync "$TARGET_ETC_FILE"
+   149		sync "$(dirname "$TARGET_ETC_FILE")"
+   150		mv "$NEW_STATE_FILE" "$STATE_FILE"
+   151		sync "$STATE_FILE"
+   152		sync "$(dirname "$STATE_FILE")"
+### /var/lib/dpkg/info/python3-twisted.postinst
+-rwxr-xr-x 755 root:root /var/lib/dpkg/info/python3-twisted.postinst
+     6	# Automatically added by dh_python3
+     8		py3compile -p python3-twisted 
+    11		pypy3compile -p python3-twisted  || true
+    19	    # remove all cache files, then rebuild for the installed python3 versions
+    20	    rm -f /usr/lib/python3/*-packages/twisted/plugins/dropin.cache
+    21	    for p in $(py3versions -i); do
+    22	        "${p}" -c 'from twisted.plugin import IPlugin, getPlugins; list(getPlugins(IPlugin))' \
+### /usr/lib/python3/dist-packages/twisted/plugin.py
+-rw-r--r-- 644 root:root /usr/lib/python3/dist-packages/twisted/plugin.py
+    32	    Only objects which implement this interface will be considered for return
+    33	    by C{getPlugins}.  To be useful, plugins should also implement some other
+    53	    def load(self):
+    59	                return self.load()
+    61	                return interface(self.load(), default)
+    82	    @ivar plugins: The L{CachedPlugin} instances which were loaded from this
+   140	        dropinPath = pseudoPackagePath.child("dropin.cache")
+   143	            with dropinPath.open("r") as f:
+   144	                dropinDotCache = pickle.load(f)
+   159	                    provider = pluginModule.load()
+   198	def getPlugins(
+   204	    @param interface: An interface class.  Only plugins which implement this
+   207	    @param package: A package beneath which plugins are installed.  For
+   227	getPlugIns = getPlugins
+   232	    Return a list of additional directories which should be searched for
+   240	    @return: The absolute paths to other directories which may contain plugin
+   244	    # Note that this may include directories which do not exist.  It may be
+   250	    # that if you create a master plugin package which has some other kind of
+   260	__all__ = ["getPlugins", "pluginPackagePaths"]
+
+## default filesystem trust boundaries
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== input/output path ownership ==
+drwxr-xr-x 755 root:root directory /usr/share/info -> '/usr/share/info'
+-rw-r--r-- 644 root:root regular file /usr/share/info/dir -> '/usr/share/info/dir'
+-rw-r--r-- 644 root:root regular file /usr/share/info/dir.old -> '/usr/share/info/dir.old'
+drwxr-xr-x 755 root:root directory /usr/share/mime -> '/usr/share/mime'
+drwxr-xr-x 755 root:root directory /usr/share/mime/packages -> '/usr/share/mime/packages'
+-rw-r--r-- 644 root:root regular file /usr/share/mime/mime.cache -> '/usr/share/mime/mime.cache'
+drwxr-xr-x 755 root:root directory /usr/share/xml -> '/usr/share/xml'
+drwxr-xr-x 755 root:root directory /etc/xml -> '/etc/xml'
+-rw-r--r-- 644 root:root regular file /etc/xml/catalog -> '/etc/xml/catalog'
+drwxr-xr-x 755 root:root directory /var/lib/xml-core -> '/var/lib/xml-core'
+drwxr-xr-x 755 root:root directory /usr/share/sgml -> '/usr/share/sgml'
+drwxr-xr-x 755 root:root directory /etc/sgml -> '/etc/sgml'
+-rw-r--r-- 644 root:root regular file /etc/sgml/catalog -> '/etc/sgml/catalog'
+drwxr-xr-x 755 root:root directory /var/lib/sgml-base -> '/var/lib/sgml-base'
+-rw-r--r-- 644 root:root regular file /var/lib/sgml-base/supercatalog -> '/var/lib/sgml-base/supercatalog'
+drwxr-xr-x 755 root:root directory /usr/share/glib-2.0/schemas -> '/usr/share/glib-2.0/schemas'
+MISSING /usr/share/glib-2.0/schemas/gschemas.compiled
+drwxr-xr-x 755 root:root directory /usr/lib/aarch64-linux-gnu/gio/modules -> '/usr/lib/aarch64-linux-gnu/gio/modules'
+MISSING /usr/lib/aarch64-linux-gnu/gio/modules/giomodule.cache
+drwxr-xr-x 755 root:root directory /usr/share/debianutils/shells.d -> '/usr/share/debianutils/shells.d'
+-rw-r--r-- 644 root:root regular file /etc/shells -> '/etc/shells'
+-rw-r--r-- 644 root:root regular file /var/lib/shells.state -> '/var/lib/shells.state'
+drwxr-xr-x 755 root:root directory /usr/lib/python3/dist-packages/twisted/plugins -> '/usr/lib/python3/dist-packages/twisted/plugins'
+-rwxr-xr-x 755 root:root regular file /usr/lib/python3/dist-packages/twisted/plugins/dropin.cache -> '/usr/lib/python3/dist-packages/twisted/plugins/dropin.cache'
+drwxr-xr-x 755 root:root directory /usr/share/icons/hicolor -> '/usr/share/icons/hicolor'
+drwxr-xr-x 755 root:root directory /usr/share/applications -> '/usr/share/applications'
+MISSING /usr/local/share/info
+MISSING /usr/local/share/mime
+drwxr-xr-x 755 root:root directory /usr/local/share/xml -> '/usr/local/share/xml'
+drwxr-xr-x 755 root:root directory /usr/local/share/sgml -> '/usr/local/share/sgml'
+MISSING /usr/local/share/glib-2.0/schemas
+MISSING /usr/local/share/applications
+MISSING /usr/local/share/icons
+
+== representative contents ==
+-rw-r--r-- root:root 10160 /usr/share/info/dir.old -> 
+-rw-r--r-- root:root 1039 /etc/xml/catalog -> 
+-rw-r--r-- root:root 11027 /usr/share/info/dir -> 
+-rw-r--r-- root:root 122772 /usr/share/info/gnupg-module-overview.png -> 
+-rw-r--r-- root:root 12573 /usr/share/info/bc.info.gz -> 
+-rw-r--r-- root:root 128 /var/lib/sgml-base/supercatalog.old -> 
+-rw-r--r-- root:root 13372 /usr/share/info/screen.info-3.gz -> 
+-rw-r--r-- root:root 13797 /usr/share/info/time.info.gz -> 
+-rw-r--r-- root:root 1384 /usr/share/info/screen.info-6.gz -> 
+-rw-r--r-- root:root 14 /usr/share/debianutils/shells.d/dash -> 
+-rw-r--r-- root:root 14 /usr/share/debianutils/shells.d/tmux -> 
+-rw-r--r-- root:root 1427 /usr/lib/python3/dist-packages/twisted/plugins/cred_sshkeys.py -> 
+-rw-r--r-- root:root 15666 /usr/share/info/gzip.info.gz -> 
+-rw-r--r-- root:root 159 /var/lib/sgml-base/supercatalog -> 
+-rw-r--r-- root:root 16 /usr/share/debianutils/shells.d/screen -> 
+-rw-r--r-- root:root 16015 /usr/share/info/screen.info-1.gz -> 
+-rw-r--r-- root:root 16061 /usr/share/info/screen.info-2.gz -> 
+-rw-r--r-- root:root 16600 /usr/share/info/screen.info-5.gz -> 
+-rw-r--r-- root:root 16673 /usr/share/info/screen.info-4.gz -> 
+-rw-r--r-- root:root 1768 /usr/lib/python3/dist-packages/twisted/plugins/twisted_reactors.py -> 
+-rw-r--r-- root:root 1811 /usr/lib/python3/dist-packages/twisted/plugins/cred_file.py -> 
+-rw-r--r-- root:root 1822 /usr/share/info/gnupg.info-3.gz -> 
+-rw-r--r-- root:root 192 /usr/share/applications/io.snapcraft.SessionAgent.desktop -> 
+-rw-r--r-- root:root 1936 /usr/share/info/find.info-2.gz -> 
+-rw-r--r-- root:root 21 /usr/share/debianutils/shells.d/bash -> 
+-rw-r--r-- root:root 212 /usr/lib/python3/dist-packages/twisted/plugins/twisted_ftp.py -> 
+-rw-r--r-- root:root 218 /usr/share/applications/snap-handle-link.desktop -> 
+-rw-r--r-- root:root 22033 /usr/share/info/ed.info.gz -> 
+-rw-r--r-- root:root 224 /usr/lib/python3/dist-packages/twisted/plugins/twisted_mail.py -> 
+-rw-r--r-- root:root 224 /usr/share/applications/python3.12.desktop -> 
+-rw-r--r-- root:root 2259 /usr/share/info/screen.info.gz -> 
+-rw-r--r-- root:root 22627 /usr/share/info/nano.info.gz -> 
+-rw-r--r-- root:root 2281 /usr/lib/python3/dist-packages/twisted/plugins/cred_memory.py -> 
+-rw-r--r-- root:root 236 /usr/lib/python3/dist-packages/twisted/plugins/twisted_names.py -> 
+-rw-r--r-- root:root 236 /usr/lib/python3/dist-packages/twisted/plugins/twisted_socks.py -> 
+-rw-r--r-- root:root 245605 /usr/share/info/coreutils.info.gz -> 
+-rw-r--r-- root:root 24671 /usr/share/info/find-maint.info.gz -> 
+-rw-r--r-- root:root 2470771 /usr/share/mime/packages/freedesktop.org.xml -> 
+-rw-r--r-- root:root 248 /usr/share/applications/info.desktop -> 
+-rw-r--r-- root:root 2533 /usr/share/info/find.info.gz -> 
+-rw-r--r-- root:root 2546 /usr/share/applications/htop.desktop -> 
+-rw-r--r-- root:root 262 /usr/lib/python3/dist-packages/twisted/plugins/twisted_inet.py -> 
+-rw-r--r-- root:root 26693 /usr/share/info/rluserman.info.gz -> 
+-rw-r--r-- root:root 277 /usr/lib/python3/dist-packages/twisted/plugins/twisted_portforward.py -> 
+-rw-r--r-- root:root 280 /usr/lib/python3/dist-packages/twisted/plugins/twisted_runner.py -> 
+-rw-r--r-- root:root 2916 /usr/share/info/gnupg.info.gz -> 
+-rw-r--r-- root:root 30429 /usr/share/info/info-stnd.info.gz -> 
+-rw-r--r-- root:root 313 /var/lib/xml-core/polkitd -> 
+-rw-r--r-- root:root 331 /usr/lib/python3/dist-packages/twisted/plugins/twisted_web.py -> 
+-rw-r--r-- root:root 34984 /usr/share/info/grep.info.gz -> 
+-rw-r--r-- root:root 3522 /usr/lib/python3/dist-packages/twisted/plugins/twisted_trial.py -> 
+-rw-r--r-- root:root 365 /etc/xml/polkitd.xml.old -> 
+-rw-r--r-- root:root 45 /etc/sgml/xml-core.cat -> 
+-rw-r--r-- root:root 526 /etc/xml/polkitd.xml -> 
+-rw-r--r-- root:root 530 /usr/lib/python3/dist-packages/twisted/plugins/twisted_conch.py -> 
+-rw-r--r-- root:root 550 /usr/lib/python3/dist-packages/twisted/plugins/twisted_core.py -> 
+-rw-r--r-- root:root 56008 /usr/share/info/sed.info.gz -> 
+-rw-r--r-- root:root 5602 /usr/share/applications/vim.desktop -> 
+-rw-r--r-- root:root 5951 /usr/lib/python3/dist-packages/twisted/plugins/cred_unix.py -> 
+-rw-r--r-- root:root 609 /usr/lib/python3/dist-packages/twisted/plugins/__init__.py -> 
+-rw-r--r-- root:root 61831 /usr/share/info/diffutils.info.gz -> 
+-rw-r--r-- root:root 627 /var/lib/xml-core/xml-core -> 
+-rw-r--r-- root:root 673 /etc/xml/xml-core.xml.old -> 
+-rw-r--r-- root:root 7157 /usr/share/info/gnupg-card-architecture.png -> 
+-rw-r--r-- root:root 71722 /usr/share/info/wget.info.gz -> 
+-rw-r--r-- root:root 826 /var/lib/xml-core/catalog -> 
+-rw-r--r-- root:root 840 /etc/xml/xml-core.xml -> 
+-rw-r--r-- root:root 893 /etc/xml/catalog.old -> 
+-rw-r--r-- root:root 90027 /usr/share/info/gnupg.info-2.gz -> 
+-rw-r--r-- root:root 91516 /usr/share/info/gnupg.info-1.gz -> 
+-rw-r--r-- root:root 93426 /usr/share/info/find.info-1.gz -> 
+-rw-r--r-- root:root 938 /usr/lib/python3/dist-packages/twisted/plugins/twisted_words.py -> 
+-rw-r--r-- root:root 958 /usr/lib/python3/dist-packages/twisted/plugins/cred_anonymous.py -> 
+-rwxr-xr-x root:root 5625 /usr/lib/python3/dist-packages/twisted/plugins/dropin.cache -> 
+drwxr-xr-x root:root 4096 /etc/sgml -> 
+drwxr-xr-x root:root 4096 /etc/xml -> 
+drwxr-xr-x root:root 4096 /usr/lib/aarch64-linux-gnu/gio/modules -> 
+drwxr-xr-x root:root 4096 /usr/lib/python3/dist-packages/twisted/plugins -> 
+drwxr-xr-x root:root 4096 /usr/lib/python3/dist-packages/twisted/plugins/__pycache__ -> 
+drwxr-xr-x root:root 4096 /usr/share/applications -> 
+drwxr-xr-x root:root 4096 /usr/share/debianutils/shells.d -> 
+drwxr-xr-x root:root 4096 /usr/share/glib-2.0/schemas -> 
+drwxr-xr-x root:root 4096 /usr/share/icons/hicolor -> 
+drwxr-xr-x root:root 4096 /usr/share/icons/hicolor/22x22 -> 
+drwxr-xr-x root:root 4096 /usr/share/icons/hicolor/32x32 -> 
+drwxr-xr-x root:root 4096 /usr/share/icons/hicolor/48x48 -> 
+drwxr-xr-x root:root 4096 /usr/share/icons/hicolor/64x64 -> 
+drwxr-xr-x root:root 4096 /usr/share/icons/hicolor/scalable -> 
+drwxr-xr-x root:root 4096 /usr/share/info -> 
+drwxr-xr-x root:root 4096 /usr/share/mime/packages -> 
+drwxr-xr-x root:root 4096 /var/lib/sgml-base -> 
+drwxr-xr-x root:root 4096 /var/lib/xml-core -> 
+lrwxrwxrwx root:root 31 /etc/sgml/catalog -> /var/lib/sgml-base/supercatalog
+lrwxrwxrwx root:root 42 /usr/share/applications/byobu.desktop -> /usr/share/byobu/desktop/byobu.desktop.old
+
+== attacker writability checks ==
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+NO_W /usr/share/info
+NO_W /usr/share/info/dir
+NO_W /usr/share/mime/packages
+NO_W /usr/share/mime/mime.cache
+NO_W /usr/share/xml
+NO_W /etc/xml
+NO_W /etc/xml/catalog
+NO_W /var/lib/xml-core
+NO_W /usr/share/sgml
+NO_W /etc/sgml
+NO_W /var/lib/sgml-base
+NO_W /usr/share/glib-2.0/schemas
+NO_W /usr/lib/aarch64-linux-gnu/gio/modules
+NO_W /usr/share/debianutils/shells.d
+NO_W /etc/shells
+NO_W /var/lib/shells.state
+NO_W /usr/lib/python3/dist-packages/twisted/plugins
+NO_W /usr/lib/python3/dist-packages/twisted/plugins/dropin.cache
+NO_W /usr/share/icons/hicolor
+NO_W /usr/share/applications
+NO_W /usr/local/share
+MISSING_PARENT_NO_W /usr/local/share/info
+MISSING_PARENT_NO_W /usr/local/share/mime
+NO_W /usr/local/share/xml
+NO_W /usr/local/share/sgml
+MISSING_PARENT_NO_W /usr/local/share/glib-2.0
+MISSING_PARENT_NO_W /usr/local/share/applications
+MISSING_PARENT_NO_W /usr/local/share/icons
+W /tmp
+W /var/tmp
+
+## attacker setup, write attempts, and direct helper execution
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash -s
+== write and symlink placement attempts in default roots ==
+write /usr/share/info/codex-probe.info -> bash: line 1: /usr/share/info/codex-probe.info: Permission denied
+write /usr/share/info/dir -> bash: line 1: /usr/share/info/dir: Permission denied
+write /usr/share/mime/packages/codex-probe.xml -> bash: line 1: /usr/share/mime/packages/codex-probe.xml: Permission denied
+write /usr/share/mime/mime.cache -> bash: line 1: /usr/share/mime/mime.cache: Permission denied
+write /usr/share/xml/codex-probe.xml -> bash: line 1: /usr/share/xml/codex-probe.xml: Permission denied
+write /etc/xml/catalog -> bash: line 1: /etc/xml/catalog: Permission denied
+write /var/lib/xml-core/codex-probe -> bash: line 1: /var/lib/xml-core/codex-probe: Permission denied
+write /usr/share/sgml/codex-probe.cat -> bash: line 1: /usr/share/sgml/codex-probe.cat: Permission denied
+write /etc/sgml/codex-probe.cat -> bash: line 1: /etc/sgml/codex-probe.cat: Permission denied
+write /var/lib/sgml-base/supercatalog -> bash: line 1: /var/lib/sgml-base/supercatalog: Permission denied
+write /usr/share/glib-2.0/schemas/org.codex.misc.gschema.xml -> bash: line 1: /usr/share/glib-2.0/schemas/org.codex.misc.gschema.xml: Permission denied
+write /usr/lib/aarch64-linux-gnu/gio/modules/libcodex-probe.so -> bash: line 1: /usr/lib/aarch64-linux-gnu/gio/modules/libcodex-probe.so: Permission denied
+write /usr/share/debianutils/shells.d/codex-probe -> bash: line 1: /usr/share/debianutils/shells.d/codex-probe: Permission denied
+write /etc/shells -> bash: line 1: /etc/shells: Permission denied
+write /var/lib/shells.state -> bash: line 1: /var/lib/shells.state: Permission denied
+write /usr/lib/python3/dist-packages/twisted/plugins/codex_probe.py -> bash: line 1: /usr/lib/python3/dist-packages/twisted/plugins/codex_probe.py: Permission denied
+write /usr/lib/python3/dist-packages/twisted/plugins/dropin.cache -> bash: line 1: /usr/lib/python3/dist-packages/twisted/plugins/dropin.cache: Permission denied
+write /usr/share/icons/hicolor/codex-probe.png -> bash: line 1: /usr/share/icons/hicolor/codex-probe.png: Permission denied
+write /usr/share/applications/codex-probe.desktop -> bash: line 1: /usr/share/applications/codex-probe.desktop: Permission denied
+write /usr/local/share/info/codex-probe.info -> bash: line 1: /usr/local/share/info/codex-probe.info: No such file or directory
+write /usr/local/share/mime/packages/codex-probe.xml -> bash: line 1: /usr/local/share/mime/packages/codex-probe.xml: No such file or directory
+write /usr/local/share/glib-2.0/schemas/org.codex.misc.gschema.xml -> bash: line 1: /usr/local/share/glib-2.0/schemas/org.codex.misc.gschema.xml: No such file or directory
+symlink /usr/share/info/dir -> ln: failed to create symbolic link '/usr/share/info/dir': File exists
+symlink /usr/share/mime/mime.cache -> ln: failed to create symbolic link '/usr/share/mime/mime.cache': File exists
+symlink /etc/xml/catalog -> ln: failed to create symbolic link '/etc/xml/catalog': File exists
+symlink /var/lib/sgml-base/supercatalog -> ln: failed to create symbolic link '/var/lib/sgml-base/supercatalog': File exists
+symlink /usr/share/glib-2.0/schemas/gschemas.compiled -> ln: failed to create symbolic link '/usr/share/glib-2.0/schemas/gschemas.compiled': Permission denied
+symlink /usr/lib/aarch64-linux-gnu/gio/modules/giomodule.cache -> ln: failed to create symbolic link '/usr/lib/aarch64-linux-gnu/gio/modules/giomodule.cache': Permission denied
+symlink /etc/shells -> ln: failed to create symbolic link '/etc/shells': File exists
+symlink /usr/lib/python3/dist-packages/twisted/plugins/dropin.cache -> ln: failed to create symbolic link '/usr/lib/python3/dist-packages/twisted/plugins/dropin.cache': File exists
+
+== attacker direct helper runs with hostile env ==
+attacker_update_info_dir_rc=0
+
+Note that '/home/attacker/misc_cache_builders_probe' is not in the search path
+set by the XDG_DATA_HOME and XDG_DATA_DIRS
+environment variables, so applications may not
+be able to find it until you set them. The
+directories currently searched are:
+
+- /home/attacker/.local/share
+- /usr/local/share/
+- /usr/share/
+
+attacker_update_mime_rc=0
+Adding entry /home/attacker/misc_cache_builders_probe/sgml/ordinary.cat to catalog /home/attacker/misc_cache_builders_probe/sgml/catalog...
+attacker_update_catalog_add_rc=0
+update-catalog: Suppressing action on super catalog. Invoking trigger instead.
+attacker_update_catalog_super_rc=0
+update-xmlcatalog: cannot open catalog data /var/lib/xml-core/_home_attacker_misc_cache_builders_probe_xml_local.xml for writing: Permission denied at /usr/sbin/update-xmlcatalog line 496.
+attacker_update_xmlcatalog_local_rc=13
+attacker_glib_compile_schemas_rc=0
+attacker_gio_querymodules_rc=0
+adding shell /tmp/misc-cache-probe-shell
+attacker_update_shells_rc=0
+attacker_twisted_cache_rc=0
+dpkg-trigger: error: unable to open/create triggers lock file '/var/lib/dpkg/triggers/Lock': Permission denied
+attacker_dpkg_trigger_info_rc=2
+dpkg-trigger: error: unable to open/create triggers lock file '/var/lib/dpkg/triggers/Lock': Permission denied
+attacker_dpkg_trigger_twisted_rc=2
+dpkg: error: requested operation requires superuser privilege
+attacker_dpkg_triggers_pending_rc=2
+
+== direct helper hits are attacker-only ==
+helper=mkdir uid=1001 euid=1001 args=-p /home/attacker/misc_cache_builders_probe/tmp
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=dpkg-trigger uid=1001 euid=1001 args=/etc/sgml
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=dpkg-realpath uid=1001 euid=1001 args=--root /home/attacker/misc_cache_builders_probe/root /bin
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=dpkg-realpath uid=1001 euid=1001 args=--root /home/attacker/misc_cache_builders_probe/root /tmp
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=chmod uid=1001 euid=1001 args=0644 /home/attacker/misc_cache_builders_probe/root/var/lib/shells.state.tmp
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=chmod uid=1001 euid=1001 args=--reference=/home/attacker/misc_cache_builders_probe/root/usr/share/debianutils/shells /home/attacker/misc_cache_builders_probe/root/etc/shells.tmp
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=chown uid=1001 euid=1001 args=--reference=/home/attacker/misc_cache_builders_probe/root/usr/share/debianutils/shells /home/attacker/misc_cache_builders_probe/root/etc/shells.tmp
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=sync uid=1001 euid=1001 args=-d /home/attacker/misc_cache_builders_probe/root/etc/shells.tmp /home/attacker/misc_cache_builders_probe/root/var/lib/shells.state.tmp
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=mv uid=1001 euid=1001 args=-Z /home/attacker/misc_cache_builders_probe/root/etc/shells.tmp /home/attacker/misc_cache_builders_probe/root/etc/shells
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=sync uid=1001 euid=1001 args=/home/attacker/misc_cache_builders_probe/root/etc/shells
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=sync uid=1001 euid=1001 args=/home/attacker/misc_cache_builders_probe/root/etc
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=mv uid=1001 euid=1001 args=/home/attacker/misc_cache_builders_probe/root/var/lib/shells.state.tmp /home/attacker/misc_cache_builders_probe/root/var/lib/shells.state
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=sync uid=1001 euid=1001 args=/home/attacker/misc_cache_builders_probe/root/var/lib/shells.state
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+helper=sync uid=1001 euid=1001 args=/home/attacker/misc_cache_builders_probe/root/var/lib
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+HOME=/home/attacker
+TMPDIR=/home/attacker/misc_cache_builders_probe/tmp
+PYTHONPATH=/home/attacker/misc_cache_builders_probe/py
+USER=attacker
+PATH=/home/attacker/misc_cache_builders_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+---
+-rw-r--r-- attacker:attacker 0 /home/attacker/misc_cache_builders_probe/mime/XMLnamespaces -> 
+-rw-r--r-- attacker:attacker 0 /home/attacker/misc_cache_builders_probe/mime/aliases -> 
+-rw-r--r-- attacker:attacker 0 /home/attacker/misc_cache_builders_probe/mime/generic-icons -> 
+-rw-r--r-- attacker:attacker 0 /home/attacker/misc_cache_builders_probe/mime/icons -> 
+-rw-r--r-- attacker:attacker 0 /home/attacker/misc_cache_builders_probe/mime/subclasses -> 
+-rw-r--r-- attacker:attacker 102 /home/attacker/misc_cache_builders_probe/info/probe.info -> 
+-rw-r--r-- attacker:attacker 102 /home/attacker/misc_cache_builders_probe/py/twisted/plugins/codex_probe.py -> 
+-rw-r--r-- attacker:attacker 110 /home/attacker/misc_cache_builders_probe/py/sitecustomize.py -> 
+-rw-r--r-- attacker:attacker 12 /home/attacker/misc_cache_builders_probe/mime/magic -> 
+-rw-r--r-- attacker:attacker 154 /home/attacker/misc_cache_builders_probe/mime/globs -> 
+-rw-r--r-- attacker:attacker 157 /home/attacker/misc_cache_builders_probe/mime/globs2 -> 
+-rw-r--r-- attacker:attacker 16 /home/attacker/misc_cache_builders_probe/mime/treemagic -> 
+-rw-r--r-- attacker:attacker 238 /home/attacker/misc_cache_builders_probe/xml/local.xml.old -> 
+-rw-r--r-- attacker:attacker 252 /home/attacker/misc_cache_builders_probe/schemas/gschemas.compiled -> 
+-rw-r--r-- attacker:attacker 287 /home/attacker/misc_cache_builders_probe/mime/packages/probe.xml -> 
+-rw-r--r-- attacker:attacker 287 /home/attacker/misc_cache_builders_probe/schemas/org.codex.misc.gschema.xml -> 
+-rw-r--r-- attacker:attacker 323 /home/attacker/misc_cache_builders_probe/mime/application/x-codex-misc-cache-probe.xml -> 
+-rw-r--r-- attacker:attacker 338 /home/attacker/misc_cache_builders_probe/py/__pycache__/sitecustomize.cpython-312.pyc -> 
+-rw-r--r-- attacker:attacker 36 /home/attacker/misc_cache_builders_probe/root/etc/shells -> 
+-rw-r--r-- attacker:attacker 36 /home/attacker/misc_cache_builders_probe/root/var/lib/shells.state -> 
+-rw-r--r-- attacker:attacker 37 /home/attacker/misc_cache_builders_probe/mime/types -> 
+-rw-r--r-- attacker:attacker 4 /home/attacker/misc_cache_builders_probe/mime/version -> 
+-rw-r--r-- attacker:attacker 428 /home/attacker/misc_cache_builders_probe/mime/mime.cache -> 
+-rw-r--r-- attacker:attacker 6 /home/attacker/misc_cache_builders_probe/sgml/ordinary.cat -> 
+-rw-r--r-- attacker:attacker 601 /home/attacker/misc_cache_builders_probe/info/dir -> 
+-rw-r--r-- attacker:attacker 67 /home/attacker/misc_cache_builders_probe/sgml/catalog -> 
+-rw-r--r-- attacker:attacker 67 /home/attacker/misc_cache_builders_probe/sgml/catalog.old -> 
+-rw-r--r-- attacker:attacker 9 /home/attacker/misc_cache_builders_probe/xml/file.xml -> 
+-rwxr-xr-x attacker:attacker 141 /home/attacker/misc_cache_builders_probe/py/twisted/plugins/dropin.cache -> 
+-rwxr-xr-x attacker:attacker 746 /home/attacker/misc_cache_builders_probe/bin/payload -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/bin -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/gio -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/gio/modules -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/info -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/mime -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/mime/application -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/mime/packages -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/py -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/py/__pycache__ -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/py/twisted -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/py/twisted/plugins -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/py/twisted/plugins/__pycache__ -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/root -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/root/etc -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/root/usr -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/root/usr/share -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/root/usr/share/debianutils -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/root/var -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/root/var/lib -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/schemas -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/sgml -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/tmp -> 
+drwxr-xr-x attacker:attacker 4096 /home/attacker/misc_cache_builders_probe/xml -> 
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/chmod -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/chown -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/cp -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/dpkg-realpath -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/dpkg-trigger -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/gio-querymodules -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/glib-compile-schemas -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/install-info -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/ln -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/mkdir -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/mv -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/py3versions -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/python3 -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/rm -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/sync -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/touch -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/update-catalog -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/update-info-dir -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/update-mime-database -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/update-shells -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/update-xmlcatalog -> payload
+lrwxrwxrwx attacker:attacker 7 /home/attacker/misc_cache_builders_probe/bin/which -> payload
+
+## attacker attempts to trigger or poison root context
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash -s
+== systemd manager env poisoning attempts ==
+Failed to set environment: Access denied
+setenv_path_rc=1
+Environment variable $PYTHONPATH not set, ignoring.
+Failed to import environment: Access denied
+importenv_rc=1
+
+== no default root units exist for these trigger-only builders ==
+Unit install-info.service could not be found.
+status_install-info.service_rc=4
+Unit shared-mime-info.service could not be found.
+status_shared-mime-info.service_rc=4
+Unit sgml-base.service could not be found.
+status_sgml-base.service_rc=4
+Unit xml-core.service could not be found.
+status_xml-core.service_rc=4
+Unit glib-compile-schemas.service could not be found.
+status_glib-compile-schemas.service_rc=4
+Unit gio-querymodules.service could not be found.
+status_gio-querymodules.service_rc=4
+Unit update-shells.service could not be found.
+status_update-shells.service_rc=4
+Unit twisted-plugins-cache.service could not be found.
+status_twisted-plugins-cache.service_rc=4
+
+## controlled non-default custom-directory sink tests
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== custom tree before root helpers ==
+-rw-r--r-- attacker:attacker 102 /tmp/misc_cache_builders_probe_custom/info/probe.info -> 
+-rw-r--r-- attacker:attacker 277 /tmp/misc_cache_builders_probe_custom/mime/packages/probe.xml -> 
+-rw-r--r-- attacker:attacker 291 /tmp/misc_cache_builders_probe_custom/schemas/org.codex.custom.gschema.xml -> 
+-rw-r--r-- attacker:attacker 6 /tmp/misc_cache_builders_probe_custom/sgml/ordinary.cat -> 
+-rw-r--r-- attacker:attacker 64 /tmp/misc_cache_builders_probe_custom/sgml/catalog -> 
+drwxr-xr-x attacker:attacker 100 /tmp/misc_cache_builders_probe_custom/root -> 
+drwxr-xr-x attacker:attacker 100 /tmp/misc_cache_builders_probe_custom/sgml -> 
+drwxr-xr-x attacker:attacker 180 /tmp/misc_cache_builders_probe_custom -> 
+drwxr-xr-x attacker:attacker 40 /tmp/misc_cache_builders_probe_custom/root/var/lib -> 
+drwxr-xr-x attacker:attacker 40 /tmp/misc_cache_builders_probe_custom/victims -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/gio -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/gio/modules -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/mime/packages -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/root/etc -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/root/usr -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/root/usr/share -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/root/var -> 
+drwxr-xr-x attacker:attacker 80 /tmp/misc_cache_builders_probe_custom/info -> 
+drwxr-xr-x attacker:attacker 80 /tmp/misc_cache_builders_probe_custom/mime -> 
+drwxr-xr-x attacker:attacker 80 /tmp/misc_cache_builders_probe_custom/root/usr/share/debianutils -> 
+drwxr-xr-x attacker:attacker 80 /tmp/misc_cache_builders_probe_custom/schemas -> 
+lrwxrwxrwx attacker:attacker 54 /tmp/misc_cache_builders_probe_custom/info/dir -> /tmp/misc_cache_builders_probe_custom/victims/info-dir
+lrwxrwxrwx attacker:attacker 54 /tmp/misc_cache_builders_probe_custom/schemas/gschemas.compiled -> /tmp/misc_cache_builders_probe_custom/victims/gschemas
+lrwxrwxrwx attacker:attacker 56 /tmp/misc_cache_builders_probe_custom/mime/mime.cache -> /tmp/misc_cache_builders_probe_custom/victims/mime-cache
+lrwxrwxrwx attacker:attacker 56 /tmp/misc_cache_builders_probe_custom/root/etc/shells -> /tmp/misc_cache_builders_probe_custom/victims/etc-shells
+lrwxrwxrwx attacker:attacker 58 /tmp/misc_cache_builders_probe_custom/sgml/catalog-symlink -> /tmp/misc_cache_builders_probe_custom/victims/sgml-catalog
+lrwxrwxrwx attacker:attacker 61 /tmp/misc_cache_builders_probe_custom/gio/modules/giomodule.cache -> /tmp/misc_cache_builders_probe_custom/victims/giomodule-cache
+
+== root helpers on attacker-owned custom paths (not default reachability) ==
+root_custom_update_info_rc=0
+
+Note that '/tmp/misc_cache_builders_probe_custom' is not in the search path
+set by the XDG_DATA_HOME and XDG_DATA_DIRS
+environment variables, so applications may not
+be able to find it until you set them. The
+directories currently searched are:
+
+- /root/.local/share
+- /usr/local/share/
+- /usr/share/
+
+root_custom_update_mime_rc=0
+root_custom_glib_schema_rc=0
+root_custom_gio_modules_rc=0
+adding shell /tmp/custom-shell
+root_custom_update_shells_rc=0
+Adding entry /tmp/misc_cache_builders_probe_custom/sgml/ordinary.cat to catalog /tmp/misc_cache_builders_probe_custom/sgml/catalog-symlink...
+root_custom_update_catalog_rc=0
+
+== custom tree after root helpers ==
+-rw-r--r-- attacker:attacker 102 /tmp/misc_cache_builders_probe_custom/info/probe.info -> 
+-rw-r--r-- attacker:attacker 26 /tmp/misc_cache_builders_probe_custom/root/etc/shells -> 
+-rw-r--r-- attacker:attacker 277 /tmp/misc_cache_builders_probe_custom/mime/packages/probe.xml -> 
+-rw-r--r-- attacker:attacker 291 /tmp/misc_cache_builders_probe_custom/schemas/org.codex.custom.gschema.xml -> 
+-rw-r--r-- attacker:attacker 6 /tmp/misc_cache_builders_probe_custom/sgml/ordinary.cat -> 
+-rw-r--r-- attacker:attacker 64 /tmp/misc_cache_builders_probe_custom/sgml/catalog -> 
+-rw-r--r-- root:root 0 /tmp/misc_cache_builders_probe_custom/mime/XMLnamespaces -> 
+-rw-r--r-- root:root 0 /tmp/misc_cache_builders_probe_custom/mime/aliases -> 
+-rw-r--r-- root:root 0 /tmp/misc_cache_builders_probe_custom/mime/generic-icons -> 
+-rw-r--r-- root:root 0 /tmp/misc_cache_builders_probe_custom/mime/icons -> 
+-rw-r--r-- root:root 0 /tmp/misc_cache_builders_probe_custom/mime/subclasses -> 
+-rw-r--r-- root:root 12 /tmp/misc_cache_builders_probe_custom/mime/magic -> 
+-rw-r--r-- root:root 156 /tmp/misc_cache_builders_probe_custom/mime/globs -> 
+-rw-r--r-- root:root 159 /tmp/misc_cache_builders_probe_custom/mime/globs2 -> 
+-rw-r--r-- root:root 16 /tmp/misc_cache_builders_probe_custom/mime/treemagic -> 
+-rw-r--r-- root:root 253 /tmp/misc_cache_builders_probe_custom/schemas/gschemas.compiled -> 
+-rw-r--r-- root:root 26 /tmp/misc_cache_builders_probe_custom/root/var/lib/shells.state -> 
+-rw-r--r-- root:root 313 /tmp/misc_cache_builders_probe_custom/mime/application/x-codex-custom-root-probe.xml -> 
+-rw-r--r-- root:root 38 /tmp/misc_cache_builders_probe_custom/mime/types -> 
+-rw-r--r-- root:root 4 /tmp/misc_cache_builders_probe_custom/mime/version -> 
+-rw-r--r-- root:root 440 /tmp/misc_cache_builders_probe_custom/mime/mime.cache -> 
+-rw-r--r-- root:root 446 /tmp/misc_cache_builders_probe_custom/victims/sgml-catalog -> 
+-rw-r--r-- root:root 601 /tmp/misc_cache_builders_probe_custom/info/dir -> 
+drwxr-xr-x attacker:attacker 100 /tmp/misc_cache_builders_probe_custom/root -> 
+drwxr-xr-x attacker:attacker 100 /tmp/misc_cache_builders_probe_custom/sgml -> 
+drwxr-xr-x attacker:attacker 180 /tmp/misc_cache_builders_probe_custom -> 
+drwxr-xr-x attacker:attacker 320 /tmp/misc_cache_builders_probe_custom/mime -> 
+drwxr-xr-x attacker:attacker 40 /tmp/misc_cache_builders_probe_custom/gio/modules -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/gio -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/mime/packages -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/root/etc -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/root/usr -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/root/usr/share -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/root/var -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/root/var/lib -> 
+drwxr-xr-x attacker:attacker 60 /tmp/misc_cache_builders_probe_custom/victims -> 
+drwxr-xr-x attacker:attacker 80 /tmp/misc_cache_builders_probe_custom/info -> 
+drwxr-xr-x attacker:attacker 80 /tmp/misc_cache_builders_probe_custom/root/usr/share/debianutils -> 
+drwxr-xr-x attacker:attacker 80 /tmp/misc_cache_builders_probe_custom/schemas -> 
+drwxr-xr-x root:root 60 /tmp/misc_cache_builders_probe_custom/mime/application -> 
+lrwxrwxrwx attacker:attacker 58 /tmp/misc_cache_builders_probe_custom/sgml/catalog-symlink -> /tmp/misc_cache_builders_probe_custom/victims/sgml-catalog
+note: these custom-path root writes require root to choose an attacker-owned directory; stock triggers use fixed root-owned directories.
+
+## default root trigger simulations after attacker setup
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== root trigger scripts with clean default-like env ==
+root_install_info_trigger_rc=0
+root_shared_mime_trigger_rc=0
+root_sgml_base_trigger_rc=0
+No schema files found: doing nothing.
+root_glib_trigger_rc=0
+root_debianutils_trigger_rc=0
+root_twisted_trigger_rc=0
+
+== root payload/hit check ==
+NO_HELPER_HITS_AFTER_DEFAULT_ROOT_TRIGGERS
+NO_ROOT_MARKER
+
+== restoring default cache files touched by trigger simulation ==
+
+## cleanup after probe and health check
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== remaining probe files ==
+== health ==
+running
+0

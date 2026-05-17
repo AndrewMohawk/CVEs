@@ -1,0 +1,238 @@
+## target
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+lvm2	2.03.16-3ubuntu3.2
+policykit-1	
+polkitd	124-2ubuntu1.24.04.3
+systemd	255.4-1ubuntu8.15
+udev	255.4-1ubuntu8.15
+udisks2	2.10.1-6ubuntu1.3
+
+## default units/actions
+enabled
+enabled
+enabled
+active
+active
+inactive
+9:  <action id="org.freedesktop.udisks2.filesystem-mount">
+97:  <action id="org.freedesktop.udisks2.filesystem-mount-system">
+185:  <action id="org.freedesktop.udisks2.filesystem-mount-other-seat">
+269:  <action id="org.freedesktop.udisks2.filesystem-mount-other-user">
+1143:  <action id="org.freedesktop.udisks2.loop-setup">
+
+## vulnerable-looking root udev/config lines
+    44	# Loop device:
+    45	LABEL="next"
+    46	KERNEL!="loop[0-9]*", GOTO="next"
+    47	ACTION=="add", ENV{LVM_LOOP_PV_ACTIVATED}=="1", GOTO="lvm_scan"
+    48	ACTION=="change", ENV{LVM_LOOP_PV_ACTIVATED}!="1", TEST=="loop/backing_file", ENV{LVM_LOOP_PV_ACTIVATED}="1", GOTO="lvm_scan"
+    49	ENV{LVM_LOOP_PV_ACTIVATED}!="1", ENV{SYSTEMD_READY}="0"
+    50	GOTO="lvm_end"
+    51	
+    52	LABEL="next"
+    53	ACTION!="add", GOTO="lvm_end"
+    54	
+    55	LABEL="lvm_scan"
+    56	
+    57	ENV{SYSTEMD_READY}="1"
+    58	
+    59	# pvscan will check if this device completes a VG,
+    60	# i.e. all PVs in the VG are now present with the
+    61	# arrival of this PV.  If so, it prints to stdout:
+    62	# LVM_VG_NAME_COMPLETE='foo'
+    63	#
+    64	# When the VG is complete it can be activated, so
+    65	# vgchange -aay <vgname> is run.  It is run via
+    66	# systemd since it can take longer to run than
+    67	# udev wants to block when processing rules.
+    68	# (if there are hundreds of LVs to activate,
+    69	# the vgchange can take many seconds.)
+    70	#
+    71	# pvscan only reads the single device specified,
+    72	# and uses temp files under /run/lvm to check if
+    73	# other PVs in the VG are present.
+    74	#
+    75	# If event_activation=0 in lvm.conf, this pvscan
+    76	# (using checkcomplete) will do nothing, so that
+    77	# no event-based autoactivation will be happen.
+    78	#
+    79	# TODO: adjust the output of vgchange -aay so that
+    80	# it's better suited to appearing in the journal.
+    81	
+    82	IMPORT{program}="/usr/sbin/lvm pvscan --cache --listvg --checkcomplete --vgonline --autoactivation event --udevoutput --journal=output $env{DEVNAME}"
+    83	TEST!="/run/systemd/system", GOTO="lvm_direct_vgchange"
+    84	
+    85	ENV{LVM_VG_NAME_COMPLETE}=="?*", RUN+="/usr/bin/systemd-run --no-block --property DefaultDependencies=no --unit lvm-activate-$env{LVM_VG_NAME_COMPLETE} /usr/sbin/lvm vgchange -aay --autoactivation event $env{LVM_VG_NAME_COMPLETE}"
+    86	GOTO="lvm_end"
+    87	
+    88	LABEL="lvm_direct_vgchange"
+    89	ENV{LVM_VG_NAME_COMPLETE}=="?*", RUN+="/usr/sbin/lvm vgchange -aay --autoactivation event $env{LVM_VG_NAME_COMPLETE}"
+    90	GOTO="lvm_end"
+
+## lvm name character gate
+name_test=bad\ space
+  Name contains invalid character, valid set includes: [a-zA-Z0-9.-_+].
+  New volume group name "bad space" is invalid.
+  Run `vgcreate --help' for more information.
+name_test_rc=3
+name_test=a/b
+  Name contains invalid character, valid set includes: [a-zA-Z0-9.-_+].
+  New volume group name "a/b" is invalid.
+  Run `vgcreate --help' for more information.
+name_test_rc=3
+name_test=a\;b
+  Name contains invalid character, valid set includes: [a-zA-Z0-9.-_+].
+  New volume group name "a;b" is invalid.
+  Run `vgcreate --help' for more information.
+name_test_rc=3
+name_test=$'a\nb'
+  Name contains invalid character, valid set includes: [a-zA-Z0-9.-_+].
+  New volume group name "a
+b" is invalid.
+  Run `vgcreate --help' for more information.
+name_test_rc=3
+name_test=--property=Environment=X=Y
+vgcreate: unrecognized option '--property=Environment=X=Y'
+  Error during parsing of command line.
+name_test_rc=3
+name_test=lvmprobe-a+b.c_d
+  Volume group "lvmprobe-a+b.c_d" successfully created
+name_test_rc=0
+name_test=lvmprobe.service
+  Volume group "lvmprobe.service" successfully created
+name_test_rc=0
+
+## build attacker-supplied lvm image fixtures
+total 384
+-rw-r--r-- 1 selfauth selfauth 67108864 May 16 16:16 lvmprobe-a+b.c_d.img
+-rw-r--r-- 1 selfauth selfauth 67108864 May 16 16:16 lvmprobe.service.img
+-rw-r--r-- 1 selfauth selfauth 67108864 May 16 16:16 lvmprobe_ok.img
+/home/selfauth/active-udisks-lvm-udev/lvmprobe-a+b.c_d.img:4608:lvmprobe
+/home/selfauth/active-udisks-lvm-udev/lvmprobe-a+b.c_d.img:5165:lvmprobe
+/home/selfauth/active-udisks-lvm-udev/lvmprobe.service.img:4608:lvmprobe
+/home/selfauth/active-udisks-lvm-udev/lvmprobe.service.img:5165:lvmprobe
+/home/selfauth/active-udisks-lvm-udev/lvmprobe_ok.img:4608:lvmprobe
+/home/selfauth/active-udisks-lvm-udev/lvmprobe_ok.img:5160:lvmprobe
+
+## active selfauth trigger
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/tty1
+XDG_SESSION_ID=29
+Id=29
+Seat=seat0
+TTY=tty1
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+## loop setup /home/selfauth/active-udisks-lvm-udev/lvmprobe-a+b.c_d.img
+Mapped file /home/selfauth/active-udisks-lvm-udev/lvmprobe-a+b.c_d.img as /dev/loop0.
+## loop setup /home/selfauth/active-udisks-lvm-udev/lvmprobe.service.img
+Mapped file /home/selfauth/active-udisks-lvm-udev/lvmprobe.service.img as /dev/loop1.
+## loop setup /home/selfauth/active-udisks-lvm-udev/lvmprobe_ok.img
+Mapped file /home/selfauth/active-udisks-lvm-udev/lvmprobe_ok.img as /dev/loop2.
+NAME="loop0" TYPE="loop" FSTYPE="LVM2_member" LABEL="" UUID="a8hDL6-E7Hl-sqFy-Z0pc-L1gr-FwpH-85ureu" MOUNTPOINT="" PATH="/dev/loop0"
+NAME="loop1" TYPE="loop" FSTYPE="LVM2_member" LABEL="" UUID="eSt9nQ-BLEw-5IbL-PS41-y205-WGQr-bfNS9u" MOUNTPOINT="" PATH="/dev/loop1"
+NAME="loop2" TYPE="loop" FSTYPE="LVM2_member" LABEL="" UUID="IevFv2-B3hv-kgfz-FD2y-wiBv-YhKn-gETtFc" MOUNTPOINT="" PATH="/dev/loop2"
+NAME="nbd0" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd0"
+NAME="nbd1" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd1"
+NAME="nbd2" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd2"
+NAME="nbd3" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd3"
+NAME="nbd4" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd4"
+NAME="nbd5" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd5"
+NAME="nbd6" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd6"
+NAME="nbd7" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd7"
+NAME="vda" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/vda"
+NAME="vda1" TYPE="part" FSTYPE="ext4" LABEL="" UUID="55897b87-5d1f-4f12-8931-37b6e249877b" MOUNTPOINT="/etc/hosts" PATH="/dev/vda1"
+NAME="vdb" TYPE="disk" FSTYPE="erofs" LABEL="" UUID="27685418-1790-40c3-bbc1-ea2342957362" MOUNTPOINT="" PATH="/dev/vdb"
+NAME="nbd8" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd8"
+NAME="nbd9" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd9"
+NAME="nbd10" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd10"
+NAME="nbd11" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd11"
+NAME="nbd12" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd12"
+NAME="nbd13" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd13"
+NAME="nbd14" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd14"
+NAME="nbd15" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd15"
+
+## resulting lvm/systemd state
+  PV         VG               Fmt  Attr PSize  PFree 
+  /dev/loop0 lvmprobe-a+b.c_d lvm2 a--  60.00m 60.00m
+  /dev/loop1 lvmprobe.service lvm2 a--  60.00m 60.00m
+  /dev/loop2 lvmprobe_ok      lvm2 a--  60.00m 60.00m
+  VG               #PV #LV #SN Attr   VSize  VFree 
+  lvmprobe-a+b.c_d   1   0   0 wz--n- 60.00m 60.00m
+  lvmprobe.service   1   0   0 wz--n- 60.00m 60.00m
+  lvmprobe_ok        1   0   0 wz--n- 60.00m 60.00m
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.
+To show all installed unit files use 'systemctl list-unit-files'.
+May 16 16:11:08 4f5b414436ae systemd[1]: Started lvm-activate-good.service - /usr/sbin/lvm vgchange -aay --autoactivation event good.
+May 16 16:11:08 4f5b414436ae lvm[11112]:   Volume group "good" not found
+May 16 16:11:08 4f5b414436ae lvm[11112]:   Cannot process volume group good
+May 16 16:11:08 4f5b414436ae systemd[1]: lvm-activate-good.service: Main process exited, code=exited, status=5/NOTINSTALLED
+May 16 16:11:08 4f5b414436ae systemd[1]: lvm-activate-good.service: Failed with result 'exit-code'.
+May 16 16:11:08 4f5b414436ae systemd[1]: Started lvm-activate-lvmprobe-x.service - /usr/sbin/lvm vgchange -aay --autoactivation event lvmprobe-x.
+May 16 16:11:08 4f5b414436ae lvm[11127]:   Volume group "lvmprobe-x" not found
+May 16 16:11:08 4f5b414436ae lvm[11127]:   Cannot process volume group lvmprobe-x
+May 16 16:11:08 4f5b414436ae systemd[1]: lvm-activate-lvmprobe-x.service: Main process exited, code=exited, status=5/NOTINSTALLED
+May 16 16:11:08 4f5b414436ae systemd[1]: lvm-activate-lvmprobe-x.service: Failed with result 'exit-code'.
+May 16 16:11:22 4f5b414436ae systemd[1]: Started lvm-activate-aaaaaa.service - /usr/sbin/lvm vgchange -aay --autoactivation event aaaaaa.
+May 16 16:11:22 4f5b414436ae lvm[11155]:   0 logical volume(s) in volume group "aaaaaa" now active
+May 16 16:11:22 4f5b414436ae systemd[1]: lvm-activate-aaaaaa.service: Deactivated successfully.
+May 16 16:12:01 4f5b414436ae systemd[1]: Started lvm-activate-zzzzzz.service - /usr/sbin/lvm vgchange -aay --autoactivation event zzzzzz.
+May 16 16:12:01 4f5b414436ae lvm[11380]:   0 logical volume(s) in volume group "zzzzzz" now active
+May 16 16:12:01 4f5b414436ae systemd[1]: lvm-activate-zzzzzz.service: Deactivated successfully.
+May 16 16:14:15 4f5b414436ae systemd[1]: Started lvm-activate-vglpe.service - /usr/sbin/lvm vgchange -aay --autoactivation event vglpe.
+May 16 16:14:15 4f5b414436ae lvm[11859]:   0 logical volume(s) in volume group "vglpe" now active
+May 16 16:14:15 4f5b414436ae systemd[1]: lvm-activate-vglpe.service: Deactivated successfully.
+May 16 16:16:22 4f5b414436ae systemd[1]: Started lvm-activate-lvmprobe-a\x2bb.c_d.service - /usr/sbin/lvm vgchange -aay --autoactivation event lvmprobe-a+b.c_d.
+May 16 16:16:22 4f5b414436ae lvm[115459]:   Volume group "lvmprobe-a+b.c_d" not found
+May 16 16:16:22 4f5b414436ae lvm[115459]:   Cannot process volume group lvmprobe-a+b.c_d
+May 16 16:16:22 4f5b414436ae systemd[1]: lvm-activate-lvmprobe-a\x2bb.c_d.service: Main process exited, code=exited, status=5/NOTINSTALLED
+May 16 16:16:22 4f5b414436ae systemd[1]: lvm-activate-lvmprobe-a\x2bb.c_d.service: Failed with result 'exit-code'.
+May 16 16:16:22 4f5b414436ae systemd[1]: Started lvm-activate-lvmprobe.service - /usr/sbin/lvm vgchange -aay --autoactivation event lvmprobe.service.
+May 16 16:16:22 4f5b414436ae lvm[115470]:   Volume group "lvmprobe.service" not found
+May 16 16:16:22 4f5b414436ae lvm[115470]:   Cannot process volume group lvmprobe.service
+May 16 16:16:22 4f5b414436ae systemd[1]: lvm-activate-lvmprobe.service: Main process exited, code=exited, status=5/NOTINSTALLED
+May 16 16:16:22 4f5b414436ae systemd[1]: lvm-activate-lvmprobe.service: Failed with result 'exit-code'.
+May 16 16:16:22 4f5b414436ae systemd[1]: Started lvm-activate-lvmprobe_ok.service - /usr/sbin/lvm vgchange -aay --autoactivation event lvmprobe_ok.
+May 16 16:16:22 4f5b414436ae lvm[115493]:   0 logical volume(s) in volume group "lvmprobe_ok" now active
+May 16 16:16:22 4f5b414436ae systemd[1]: lvm-activate-lvmprobe_ok.service: Deactivated successfully.
+May 16 16:16:23 4f5b414436ae systemd[1]: Started lvm-activate-lvmprobe-a\x2bb.c_d.service - /usr/sbin/lvm vgchange -aay --autoactivation event lvmprobe-a+b.c_d.
+May 16 16:16:23 4f5b414436ae lvm[115629]:   0 logical volume(s) in volume group "lvmprobe-a+b.c_d" now active
+May 16 16:16:23 4f5b414436ae systemd[1]: lvm-activate-lvmprobe-a\x2bb.c_d.service: Deactivated successfully.
+May 16 16:16:23 4f5b414436ae systemd[1]: Started lvm-activate-lvmprobe.service - /usr/sbin/lvm vgchange -aay --autoactivation event lvmprobe.service.
+May 16 16:16:23 4f5b414436ae lvm[115642]:   0 logical volume(s) in volume group "lvmprobe.service" now active
+May 16 16:16:23 4f5b414436ae systemd[1]: lvm-activate-lvmprobe.service: Deactivated successfully.
+May 16 16:16:23 4f5b414436ae systemd[1]: Started lvm-activate-lvmprobe_ok.service - /usr/sbin/lvm vgchange -aay --autoactivation event lvmprobe_ok.
+May 16 16:16:23 4f5b414436ae lvm[115654]:   0 logical volume(s) in volume group "lvmprobe_ok" now active
+May 16 16:16:23 4f5b414436ae systemd[1]: lvm-activate-lvmprobe_ok.service: Deactivated successfully.
+May 16 16:16:51 4f5b414436ae systemd[1]: Started lvm-activate-lvmprobe-a\x2bb.c_d.service - /usr/sbin/lvm vgchange -aay --autoactivation event lvmprobe-a+b.c_d.
+May 16 16:16:51 4f5b414436ae lvm[116161]:   0 logical volume(s) in volume group "lvmprobe-a+b.c_d" now active
+May 16 16:16:51 4f5b414436ae systemd[1]: lvm-activate-lvmprobe-a\x2bb.c_d.service: Deactivated successfully.
+May 16 16:16:51 4f5b414436ae systemd[1]: Started lvm-activate-lvmprobe.service - /usr/sbin/lvm vgchange -aay --autoactivation event lvmprobe.service.
+May 16 16:16:51 4f5b414436ae lvm[116174]:   0 logical volume(s) in volume group "lvmprobe.service" now active
+May 16 16:16:51 4f5b414436ae systemd[1]: lvm-activate-lvmprobe.service: Deactivated successfully.
+May 16 16:16:51 4f5b414436ae systemd[1]: Started lvm-activate-lvmprobe_ok.service - /usr/sbin/lvm vgchange -aay --autoactivation event lvmprobe_ok.
+May 16 16:16:51 4f5b414436ae lvm[116186]:   0 logical volume(s) in volume group "lvmprobe_ok" now active
+May 16 16:16:51 4f5b414436ae systemd[1]: lvm-activate-lvmprobe_ok.service: Deactivated successfully.
+
+## root marker
+ls: cannot access '/root/active_udisks_lvm_udev_root': No such file or directory
+ls: cannot access '/tmp/active_udisks_lvm_udev_root': No such file or directory
+
+## cleanup health before cleanup
+running
+
+## cleanup verification
+running

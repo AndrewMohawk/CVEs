@@ -1,0 +1,71 @@
+
+== package hook/import path boundary rerun ==
+tmp_pythonpath_hook_result False
+marker_exists False
+slash_package_hook_result False
+slash_unreportable invalid Package: ../../tmp/apport_core_ns
+slash_marker_exists False
+hook_probe_rc=0
+regular file -rw-r--r-- 644 attacker attacker 100 '/tmp/apport-core-ns-forward-20260517/python3.12-minimal.py'
+MISSING /root/apport_core_ns_hook_marker
+MISSING /usr/share/apport/package-hooks/python3.12-minimal.py
+
+== default whoopsie/autoreport gates for root hook consumer ==
+MISSING /var/lib/apport/autoreport
+MISSING /usr/bin/whoopsie
+socket srw------- 600 root root 0 '/run/apport.socket'
+Id=apport-autoreport.path
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apport-autoreport.path
+UnitFileState=enabled
+
+Id=apport-autoreport.timer
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apport-autoreport.timer
+UnitFileState=enabled
+
+Id=apport-autoreport.service
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apport-autoreport.service
+UnitFileState=static
+
+Id=apport-forward.socket
+ActiveState=active
+SubState=listening
+FragmentPath=/usr/lib/systemd/system/apport-forward.socket
+UnitFileState=enabled
+attacker_systemctl_start_rc=1
+Failed to start apport-autoreport.service: Interactive authentication required.
+See system logs and 'systemctl status apport-autoreport.service' for details.
+
+== namespace forwarding to attacker-owned /run/apport.socket ==
+inner_sleeper=5
+ns_launcher=23364 ns_global_pid=23371 ns_inner_pid=5
+uid_map=         0       1001          1;
+gid_map=         0       1001          1;
+mnt_ns self=mnt:[4026532563] target=mnt:[4026532707]
+pid_ns self=pid:[4026532566] target=pid:[4026532708]
+socket=socket srw------- uid=1001 gid=1001 /proc/23371/root/run/apport.socket
+exe=regular file -rwxr-xr-x uid=1001 gid=1001 /proc/23371/exe
+namespace_forward_apport_rc=0
+-- apport.log delta --
+-- attacker socket received --
+msg=5 11 0 1
+creds=None
+fds=[5]
+payload=NS-FORWARD-CORE
+
+== dump_mode=2 namespace forward gate without pidfd ==
+namespace_forward_dump2_rc=0
+ERROR: apport (pid 23400) 2026-05-17 19:23:34,103: Not forwarding crash with dump mode of 2 to container due to security concerns. Please provide --pidfd.
+
+== final cleanup/health ==
+Terminated
+degraded
+● udisks2.service loaded failed failed Disk Manager
+MISSING /root/apport_core_ns_hook_marker
+MISSING /root/apport_core_ns_symlink_target
+MISSING /root/apport_core_ns_env_marker

@@ -1,0 +1,641 @@
+
+## target identity
+
+$ sed -n 1\,12p /etc/os-release
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+rc=0
+
+$ uname -a
+Linux bf51bb670420 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+rc=0
+
+$ id
+uid=0(root) gid=0(root) groups=0(root)
+rc=0
+
+$ id attacker
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+rc=0
+
+$ getent passwd attacker
+attacker:x:1001:1001::/home/attacker:/bin/bash
+rc=0
+
+$ getent group attacker
+attacker:x:1001:
+rc=0
+
+## package and default enablement proof
+
+$ dpkg-query -W -f=\$\{binary:Package\}\\t\$\{Version\}\\t\$\{db:Status-Abbrev\}\\n rsyslog debianutils systemd
+debianutils	5.17build1	ii 
+rsyslog	8.2312.0-3ubuntu9.2	ii 
+systemd	255.4-1ubuntu8.15	ii 
+rc=0
+
+$ dpkg -S /lib/systemd/system/dmesg.service /usr/bin/savelog /usr/bin/journalctl /usr/bin/chgrp /usr/bin/chmod
+rsyslog: /lib/systemd/system/dmesg.service
+debianutils: /usr/bin/savelog
+systemd: /usr/bin/journalctl
+coreutils: /usr/bin/chgrp
+coreutils: /usr/bin/chmod
+rc=0
+
+$ ls -ld /bin /lib /usr/lib /lib/systemd/system/dmesg.service /usr/lib/systemd/system/dmesg.service /usr/bin/savelog /bin/journalctl /bin/chgrp /bin/chmod
+lrwxrwxrwx 1 root root      7 Apr 22  2024 /bin -> usr/bin
+-rwxr-xr-x 1 root root  67944 Jan 23 13:30 /bin/chgrp
+-rwxr-xr-x 1 root root  67952 Jan 23 13:30 /bin/chmod
+-rwxr-xr-x 1 root root 133824 Mar 24 13:45 /bin/journalctl
+lrwxrwxrwx 1 root root      7 Apr 22  2024 /lib -> usr/lib
+-rw-r--r-- 1 root root    409 Aug 21  2025 /lib/systemd/system/dmesg.service
+-rwxr-xr-x 1 root root  10487 Mar 31  2024 /usr/bin/savelog
+drwxr-xr-x 1 root root   4096 May 17 19:03 /usr/lib
+-rw-r--r-- 1 root root    409 Aug 21  2025 /usr/lib/systemd/system/dmesg.service
+rc=0
+
+$ systemctl list-unit-files dmesg.service --no-pager
+UNIT FILE     STATE   PRESET
+dmesg.service enabled enabled
+
+1 unit files listed.
+rc=0
+
+$ systemctl show dmesg.service -p Id -p LoadState -p ActiveState -p SubState -p UnitFileState -p UnitFilePreset -p FragmentPath -p User -p Group -p StandardOutput -p ExecStartPre -p ExecStart -p ExecStartPost -p Result
+Result=success
+ExecStartPre={ path=/usr/bin/savelog ; argv[]=/usr/bin/savelog -m640 -q -p -n -c 5 /var/log/dmesg ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/bin/journalctl ; argv[]=/bin/journalctl --boot 0 --dmesg --output short-monotonic --quiet --no-pager --no-hostname ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStartPost={ path=/bin/chgrp ; argv[]=/bin/chgrp adm /var/log/dmesg ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStartPost={ path=/bin/chmod ; argv[]=/bin/chmod 0640 /var/log/dmesg ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+StandardOutput=file
+User=
+Group=
+Id=dmesg.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/dmesg.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+rc=0
+
+$ systemctl status dmesg.service --no-pager
+○ dmesg.service - Save initial kernel messages after boot
+     Loaded: loaded (/usr/lib/systemd/system/dmesg.service; enabled; preset: enabled)
+     Active: inactive (dead) since Sun 2026-05-17 18:21:20 UTC; 1h 45min ago
+   Duration: 1.425s
+   Main PID: 367 (code=exited, status=0/SUCCESS)
+        CPU: 171ms
+
+May 17 18:21:19 bf51bb670420 systemd[1]: Started dmesg.service - Save initial kernel messages after boot.
+May 17 18:21:20 bf51bb670420 systemd[1]: dmesg.service: Deactivated successfully.
+rc=3
+
+$ journalctl -u dmesg.service --no-pager -o short-iso
+2026-05-16T22:51:03+00:00 bf51bb670420 systemd[1]: Started dmesg.service - Save initial kernel messages after boot.
+2026-05-16T22:51:07+00:00 bf51bb670420 systemd[1]: dmesg.service: Deactivated successfully.
+-- Boot 96caf4622a634ac080c0ac1044cba492 --
+2026-05-17T18:21:19+00:00 bf51bb670420 systemd[1]: Started dmesg.service - Save initial kernel messages after boot.
+2026-05-17T18:21:20+00:00 bf51bb670420 systemd[1]: dmesg.service: Deactivated successfully.
+rc=0
+
+## unit and savelog behavior
+
+$ nl -ba /usr/lib/systemd/system/dmesg.service
+     1	[Unit]
+     2	Description=Save initial kernel messages after boot
+     3	
+     4	[Service]
+     5	Type=idle
+     6	StandardOutput=file:/var/log/dmesg
+     7	ExecStartPre=-/usr/bin/savelog -m640 -q -p -n -c 5 /var/log/dmesg
+     8	ExecStart=/bin/journalctl --boot 0 --dmesg --output short-monotonic --quiet --no-pager --no-hostname
+     9	ExecStartPost=/bin/chgrp adm /var/log/dmesg
+    10	ExecStartPost=/bin/chmod 0640 /var/log/dmesg
+    11	
+    12	[Install]
+    13	WantedBy=multi-user.target
+rc=0
+
+### /usr/bin/savelog header and usage comments
+     1	#! /bin/sh
+     2	# savelog - save a log file
+     3	#    Copyright (C) 1987, 1988 Ronald S. Karr and Landon Curt Noll
+     4	#    Copyright (C) 1992  Ronald S. Karr
+     5	# Slight modifications by Ian A. Murdock <imurdock@gnu.ai.mit.edu>:
+     6	#	* uses `gzip' rather than `compress'
+     7	#	* doesn't use $savedir; keeps saved log files in the same directory
+     8	#	* reports successful rotation of log files
+     9	#	* for the sake of consistency, files are rotated even if they are
+    10	#	  empty
+    11	# More modifications by Guy Maor <maor@debian.org>:
+    12	#       * cleanup.
+    13	#       * -p (preserve) option
+    14	# 
+    15	# usage: savelog [-m mode] [-u user] [-g group] [-t] [-p] [-c cycle]
+    16	#		 [-j] [-C] [-d] [-l] [-r rolldir] [-n] [-q] file...
+    17	#	-m mode	  - chmod log files to mode
+    18	#	-u user	  - chown log files to user
+    19	#	-g group  - chgrp log files to group
+    20	#	-c cycle  - save cycle versions of the logfile	(default: 7)
+    21	#	-r rolldir- use rolldir instead of . to roll files
+    22	#	-C	  - force cleanup of cycled logfiles
+    23	#	-d	  - use standard date for rolling
+    24	#	-D	  - override date format for -d 
+    25	#	-t	  - touch file
+    26	#	-l	  - don't compress any log files	(default: compress)
+    27	#       -p        - preserve mode/user/group of original file
+    28	#	-j        - use bzip2 instead of gzip
+    29	#	-J        - use xz instead of gzip
+    30	#	-1 .. -9  - compression strength or memory usage (default: 9, except for xz)
+    31	#	-x script - invoke script with rotated log file in $FILE
+    32	#	-n	  - do not rotate empty files
+    33	#	-q	  - be quiet
+    34	#	file 	  - log file names
+    35	#
+    36	# The savelog command saves and optionally compresses old copies of files.
+    37	# Older version of 'file' are named:
+    38	#
+    39	#		'file'.<number><compress_suffix>
+    40	#
+    41	# where <number> is the version number, 0 being the newest.  By default,
+    42	# version numbers > 0 are compressed (unless -l prevents it). The
+    43	# version number 0 is never compressed on the off chance that a process
+    44	# still has 'file' opened for I/O.
+    45	#
+    46	# if the '-d' option is specified, <number> will be YYMMDDhhmmss
+    47	#
+    48	# If the 'file' does not exist and -t was given, it will be created.
+    49	#
+    50	# For files that do exist and have lengths greater than zero, the following 
+    51	# actions are performed.
+    52	#
+    53	#	1) Version numered files are cycled.  That is version 6 is moved to
+    54	#	   version 7, version is moved to becomes version 6, ... and finally
+    55	#	   version 0 is moved to version 1.  Both compressed names and
+    56	#	   uncompressed names are cycled, regardless of -t.  Missing version 
+    57	#	   files are ignored.
+    58	#
+    59	#	2) The new file.1 is compressed and is changed subject to 
+    60	#	   the -m, -u and -g flags.  This step is skipped if the -t flag 
+    61	#	   was given.
+    62	#
+    63	#	3) The main file is moved to file.0.
+    64	#
+    65	#	4) If the -m, -u, -g, -t, or -p flags are given, then the file is
+    66	#          touched into existence subject to the given flags.  The -p flag
+    67	#          will preserve the original owner, group, and permissions.
+    68	#
+    69	#	5) The new file.0 is changed subject to the -m, -u and -g flags.
+    70	#
+    71	# Note: If no -m, -u, -g, -t, or -p is given, then the primary log file is 
+    72	#	not created.
+    73	#
+    74	# Note: Since the version numbers start with 0, version number <cycle>
+    75	#       is never formed.  The <cycle> count must be at least 2.
+    76	#
+    77	# Bugs: If a process is still writing to the file.0 and savelog
+    78	#	moved it to file.1 and compresses it, data could be lost.
+    79	#	Smail does not have this problem in general because it
+    80	#	restats files often.
+
+### /usr/bin/savelog argument parsing and file checks
+   145	while getopts m:u:g:c:r:CdD:tlphjJ123456789x:nq opt ; do
+   146		case "$opt" in
+   147		m) mode="$OPTARG" ;;
+   148		u) user="$OPTARG" ;;
+   149		g) group="$OPTARG" ;;
+   150		c) count="$OPTARG" ;;
+   151		r) rolldir="$OPTARG" ;;
+   152		C) forceclean=1 ;;
+   153		d) datum=1 ;;
+   154		D) DATUM=$(date +$OPTARG) ;;
+   155		t) touch=1 ;;
+   156		j) COMPRESS="bzip2"; COMPRESS_OPTS="-f"; COMPRESS_STRENGTH_DEF="-9"; DOT_Z=".bz2" ;;
+   157		J) COMPRESS="xz"; COMPRESS_OPTS="-f"; COMPRESS_STRENGTH_DEF=""; DOT_Z=".xz" ;;
+   158		[1-9]) COMPRESS_STRENGTH="-$opt" ;;
+   159		x) hookscript="$OPTARG" ;;
+   160		l) COMPRESS="" ;;
+   161		p) preserve=1 ;;
+   162		n) rotateifempty="no" ;;
+   163		q) quiet=1 ;;
+   164		h) usage; exit 0 ;;
+   165		*) usage; exit 1 ;;
+   166		esac
+   167	done
+   168	
+   169	shift $(($OPTIND - 1))
+   170	
+   171	if [ "$count" -lt 2 ]; then
+   172		echo "$prog: count must be at least 2" 1>&2
+   173		exit 2
+   174	fi
+   175	
+   176	if [ -n "$COMPRESS" ] && [ -z "$(command -v $COMPRESS)"  ]; then
+   177	       echo "$prog: Compression binary not available, please make sure '$COMPRESS' is installed" 1>&2
+   178	       exit 2
+   179	fi
+   180	
+   181	if [ -n "$COMPRESS_STRENGTH" ]; then
+   182		COMPRESS_OPTS="$COMPRESS_OPTS $COMPRESS_STRENGTH"
+   183	else
+   184		COMPRESS_OPTS="$COMPRESS_OPTS $COMPRESS_STRENGTH_DEF"
+   185	fi
+   186	
+   187	# cycle thru filenames
+   188	while [ $# -gt 0 ]; do
+   189	
+   190		# get the filename
+   191		filename="$1"
+   192		shift
+   193	
+   194		# catch bogus files
+   195		if [ -e "$filename" ] && [ ! -f "$filename" ]; then
+   196			echo "$prog: $filename is not a regular file" 1>&2
+   197			exitcode=3
+   198			continue
+   199		fi
+   200	
+   201		# if file does not exist or is empty, and we've been told to not rotate
+   202		# empty files, create if requested and skip to the next file.
+   203		if [ ! -s "$filename" ] && [ "$rotateifempty" = "no" ]; then
+   204			# if -t was given and it does not exist, create it
+   205			if test -n "$touch" && [ ! -f "$filename" ]; then 
+   206				touch -- "$filename"
+   207				if [ "$?" -ne 0 ]; then
+   208					echo "$prog: could not touch $filename" 1>&2
+   209					exitcode=4
+   210					continue
+   211				fi
+   212				fixfile "$filename"
+   213			fi
+   214			continue
+   215		# otherwise if the file does not exist and we've been told to rotate it
+   216		# anyway, create an empty file to rotate.
+   217		elif [ ! -e "$filename" ]; then
+   218			touch -- "$filename"
+   219			if [ "$?" -ne 0 ]; then
+   220				echo "$prog: could not touch $filename" 1>&2
+   221				exitcode=4
+   222				continue
+   223			fi
+   224			fixfile "$filename"
+   225		fi
+
+### /usr/bin/savelog directory/rotation/recreate logic
+   227	 	# be sure that the savedir exists and is writable
+   228		# (Debian default: $savedir is . and not ./OLD)
+   229	 	savedir=`dirname -- "$filename"`
+   230	 	if [ -z "$savedir" ]; then
+   231	 		savedir=.
+   232	 	fi
+   233		case "$rolldir" in
+   234			(/*)
+   235			savedir="$rolldir"
+   236			;;
+   237			(*)
+   238			savedir="$savedir/$rolldir"
+   239			;;
+   240		esac
+   241	 	if [ ! -d "$savedir" ]; then
+   242	 		mkdir -p -- "$savedir"
+   243	 		if [ "$?" -ne 0 ]; then
+   244	 			echo "$prog: could not mkdir $savedir" 1>&2
+   245	 			exitcode=5
+   246	 			continue
+   247	 		fi
+   248	 		chmod 0755 -- "$savedir"
+   249	 	fi
+   250	 	if [ ! -w "$savedir" ]; then
+   251	 		echo "$prog: directory $savedir is not writable" 1>&2
+   252	 		exitcode=7
+   253	 		continue
+   254	 	fi
+   255	 
+   256		# determine our uncompressed file names
+   257		newname=`basename -- "$filename"`
+   258		newname="$savedir/$newname"
+   259	
+   260		# cycle the old compressed log files
+   261		cycle=$(( $count - 1))
+   262		rm -f -- "$newname.$cycle" "$newname.$cycle$DOT_Z"
+   263		while [ $cycle -gt 1 ]; do
+   264			# --cycle
+   265			oldcycle=$cycle
+   266			cycle=$(( $cycle - 1 ))
+   267			# cycle log
+   268			if [ -f "$newname.$cycle$DOT_Z" ]; then
+   269				mv -f -- "$newname.$cycle$DOT_Z" \
+   270				    "$newname.$oldcycle$DOT_Z"
+   271			fi
+   272			if [ -f "$newname.$cycle" ]; then
+   273				# file was not compressed. move it anyway
+   274				mv -f -- "$newname.$cycle" "$newname.$oldcycle"
+   275			fi
+   276		done
+   277	
+   278		# compress the old uncompressed log if needed
+   279		if [ -f "$newname.0" ]; then
+   280			if [ -z "$COMPRESS" ]; then
+   281				newfile="$newname.1"
+   282				mv -f -- "$newname.0" "$newfile"
+   283			else
+   284				newfile="$newname.1$DOT_Z"
+   285	#			$COMPRESS $COMPRESS_OPTS < $newname.0 > $newfile
+   286	#			rm -f $newname.0
+   287				$COMPRESS $COMPRESS_OPTS "$newname.0"
+   288				mv -f -- "$newname.0$DOT_Z" "$newfile"
+   289			fi
+   290			fixfile "$newfile"
+   291		fi
+   292	
+   293		# compress the old uncompressed log if needed
+   294		if test -n "$datum" && test -n "$COMPRESS"; then
+   295			$COMPRESS $COMPRESS_OPTS -- "$newname".[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]
+   296		fi
+   297	
+   298		# remove old files if so desired
+   299		if [ -n "$forceclean" ]; then
+   300			cycle=$(( $count - 1))
+   301			if [ -z "$COMPRESS" ]; then
+   302				list=$(ls -t -- $newname.[0-9]* 2>/dev/null | sed -e 1,${cycle}d)
+   303				if [ -n "$list" ]; then
+   304					rm -f -- $list
+   305				fi
+   306			else
+   307				list=$(ls -t -- $newname.[0-9]*$DOT_Z 2>/dev/null | sed -e 1,${cycle}d)
+   308				if [ -n "$list" ]; then
+   309					rm -f -- $list
+   310				fi
+   311			fi
+   312		fi
+   313	
+   314		# create new file if needed
+   315		if [ -n "$preserve" ]; then
+   316			(umask 077
+   317			 touch -- "$filename.new"
+   318			 chown --reference="$filename" -- "$filename.new"
+   319			 chmod --reference="$filename" -- "$filename.new")
+   320			filenew=1
+   321		elif [ -n "$touch$user$group$mode" ]; then
+   322			touch -- "$filename.new"
+   323			fixfile "$filename.new"
+   324			filenew=1
+   325		fi
+   326	
+   327		newfilename="$newname.0"
+   328		# link the file into the file.0 holding place
+   329		if [ -f "$filename" ]; then
+   330			if [ -n "$filenew" ]; then
+   331				if ln -f -- "$filename" "$newfilename"; then
+   332					mv -f -- "$filename.new" "$filename"
+   333				else
+   334					echo "Error hardlinking $filename to $newfilename" >&2
+   335					exitcode=8
+   336					continue
+   337				fi
+   338			else
+   339				mv -f -- "$filename" "$newfilename"
+   340			fi
+   341		fi
+   342		[ ! -f "$newfilename" ] && touch -- "$newfilename"
+   343		fixfile "$newfilename"
+
+### savelog runtime help
+Usage: savelog [-m mode] [-u user] [-g group] [-t] [-c cycle] [-p]
+             [-j] [-C] [-d] [-l] [-r rolldir] [-n] [-q] file ...
+	-m mode	   - chmod log files to mode
+	-u user	   - chown log files to user
+	-g group   - chgrp log files to group
+	-c cycle   - save cycle versions of the logfile (default: 7)
+	-r rolldir - use rolldir instead of . to roll files
+	-C	   - force cleanup of cycled logfiles
+	-d	   - use standard date for rolling
+	-D	   - override date format for -d
+	-t	   - touch file
+	-l	   - don't compress any log files (default: compress)
+	-p         - preserve mode/user/group of original file
+	-j         - use bzip2 instead of gzip
+	-J         - use xz instead of gzip
+	-1 .. -9   - compression strength or memory usage (default: 9, except for xz)
+	-x script  - invoke script with rotated log file in $FILE
+	-n         - do not rotate empty files
+	-q         - suppress rotation message
+	file 	   - log file names
+rc=0
+
+## default dmesg path ownership
+
+$ stat -Lc %A\ %a\ %U:%G\ %F\ %n /var /var/log /var/log/dmesg /var/log/dmesg.0
+drwxr-xr-x 755 root:root directory /var
+drwxrwxr-x 775 root:syslog directory /var/log
+-rw-r----- 640 root:adm regular file /var/log/dmesg
+-rw-r----- 640 root:adm regular file /var/log/dmesg.0
+rc=0
+
+$ ls -lan /var /var/log /var/log/dmesg /var/log/dmesg.0
+-rw-r----- 1 0   4 42145 May 17 18:21 /var/log/dmesg
+-rw-r----- 1 0   4 62319 May 16 22:51 /var/log/dmesg.0
+
+/var:
+total 72
+drwxr-xr-x 1 0   0 4096 May 16 22:51 .
+drwxr-xr-x 1 0   0 4096 May 17 19:32 ..
+-rw-r--r-- 1 0   0  208 Apr 10 02:23 .updated
+drwxr-xr-x 1 0   0 4096 May 17 19:49 backups
+drwxr-xr-x 1 0   0 4096 May 17 19:17 cache
+drwxrwsrwt 1 0   0 4096 May 17 19:51 crash
+drwxr-xr-x 1 0   0 4096 May 17 18:43 lib
+drwxrwsr-x 2 0  50 4096 Apr 22  2024 local
+lrwxrwxrwx 1 0   0    9 Apr 10 02:23 lock -> /run/lock
+drwxrwxr-x 1 0 104 4096 May 17 19:14 log
+drwxrwsr-x 2 0   8 4096 Apr 10 02:23 mail
+drwxr-xr-x 2 0   0 4096 Apr 10 02:23 opt
+lrwxrwxrwx 1 0   0    4 Apr 10 02:23 run -> /run
+drwxr-xr-x 2 0   0 4096 Apr  2 06:44 snap
+drwxr-xr-x 1 0   0 4096 May 16 10:22 spool
+drwxrwxrwt 1 0   0 4096 May 17 19:56 tmp
+
+/var/log:
+total 2828
+drwxrwxr-x  1   0 104    4096 May 17 19:14 .
+drwxr-xr-x  1   0   0    4096 May 16 22:51 ..
+lrwxrwxrwx  1   0   0      39 May 16 10:22 README -> ../../usr/share/doc/systemd/README.logs
+-rw-r--r--  1   0   0   21413 May 16 10:22 alternatives.log
+-rw-r-----  1   0   4     155 May 17 19:23 apport.log
+drwxr-xr-x  1   0   0    4096 May 17 19:02 apt
+-rw-r-----  1 103   4  272239 May 17 20:06 auth.log
+-rw-r--r--  1   0   0   61237 Apr 10 02:23 bootstrap.log
+-rw-rw----  1   0  43     800 May 17 19:18 btmp
+drwxr-xr-x  2   0   0    4096 Jan 19 15:31 dist-upgrade
+-rw-r-----  1   0   4   42145 May 17 18:21 dmesg
+-rw-r-----  1   0   4   62319 May 16 22:51 dmesg.0
+-rw-r--r--  1   0   0  444084 May 17 19:46 dpkg.log
+-rw-r--r--  1   0   0       0 Apr 10 02:23 faillog
+drwxr-sr-x+ 1   0 999    4096 May 16 22:51 journal
+-rw-r-----  1 103   4  506253 May 17 20:06 kern.log
+drwxr-xr-x  1 106 108    4096 May 16 10:22 landscape
+-rw-rw-r--  1   0  43       0 Apr 10 02:23 lastlog
+drwx------  2   0   0    4096 May 16 10:22 private
+-rw-r-----  1 103   4 1339996 May 17 20:06 syslog
+drwxr-xr-x  1   0   0    4096 May 17 01:13 sysstat
+-rw-r-----  1   0   0    7671 May 17 19:02 ubuntu-advantage.log
+drwxr-x---  1   0   4    4096 May 17 17:54 unattended-upgrades
+-rw-rw-r--  1   0  43   36000 May 17 19:53 wtmp
+rc=0
+
+$ sh -lc command\ -v\ namei\ \>/dev/null\ \&\&\ namei\ -om\ /var/log/dmesg\ \|\|\ true
+f: /var/log/dmesg
+ drwxr-xr-x root root   /
+ drwxr-xr-x root root   var
+ drwxrwxr-x root syslog log
+ -rw-r----- root adm    dmesg
+rc=0
+
+$ sh -lc command\ -v\ getfacl\ \>/dev/null\ \&\&\ getfacl\ -p\ /var/log\ /var/log/dmesg\ \|\|\ true
+rc=0
+
+## attacker-only path and service tests
+
+attacker$ id
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+rc=0
+
+attacker$ groups
+attacker
+rc=0
+
+attacker$ stat -Lc %A\ %a\ %U:%G\ %F\ %n /var /var/log /var/log/dmesg /var/log/dmesg.0
+drwxr-xr-x 755 root:root directory /var
+drwxrwxr-x 775 root:syslog directory /var/log
+-rw-r----- 640 root:adm regular file /var/log/dmesg
+-rw-r----- 640 root:adm regular file /var/log/dmesg.0
+rc=0
+
+attacker$ ls -lan /var/log/dmesg /var/log/dmesg.0
+-rw-r----- 1 0 4 42145 May 17 18:21 /var/log/dmesg
+-rw-r----- 1 0 4 62319 May 16 22:51 /var/log/dmesg.0
+rc=0
+
+attacker$ test -r /var/log/dmesg
+rc=1
+
+attacker$ test -w /var/log/dmesg
+rc=1
+
+attacker$ test -w /var/log
+rc=1
+
+attacker$ head -n 1 /var/log/dmesg
+head: cannot open '/var/log/dmesg' for reading: Permission denied
+rc=1
+
+attacker$ bash -lc printf\ attacker-append-test\ \>\>\ /var/log/dmesg
+bash: line 1: /var/log/dmesg: Permission denied
+rc=1
+
+attacker$ touch /var/log/dmesg.new
+touch: cannot touch '/var/log/dmesg.new': Permission denied
+rc=1
+
+attacker$ mv /var/log/dmesg /var/log/dmesg.attacker-mv
+mv: cannot move '/var/log/dmesg' to '/var/log/dmesg.attacker-mv': Permission denied
+rc=1
+
+attacker$ rm -f /var/log/dmesg
+rm: cannot remove '/var/log/dmesg': Permission denied
+rc=1
+
+attacker$ ln -s /etc/sudoers /var/log/dmesg.attacker-symlink
+ln: failed to create symbolic link '/var/log/dmesg.attacker-symlink': Permission denied
+rc=1
+
+attacker$ ln -s /etc/sudoers /var/log/dmesg
+ln: failed to create symbolic link '/var/log/dmesg': File exists
+rc=1
+
+attacker$ ln /etc/passwd /var/log/dmesg.attacker-hardlink
+ln: failed to create hard link '/var/log/dmesg.attacker-hardlink' => '/etc/passwd': Operation not permitted
+rc=1
+
+attacker$ /usr/bin/savelog -m640 -q -p -n -c 5 /var/log/dmesg
+savelog: directory /var/log/ is not writable
+rc=7
+
+attacker$ systemctl start dmesg.service
+Failed to start dmesg.service: Interactive authentication required.
+See system logs and 'systemctl status dmesg.service' for details.
+rc=1
+
+attacker$ systemctl restart dmesg.service
+Failed to restart dmesg.service: Interactive authentication required.
+See system logs and 'systemctl status dmesg.service' for details.
+rc=1
+
+attacker$ busctl call --system org.freedesktop.systemd1 /org/freedesktop/systemd1 org.freedesktop.systemd1.Manager StartUnit ss dmesg.service replace
+Call failed: Interactive authentication required.
+rc=1
+
+attacker$tmp=/tmp/dmesg-savelog-attacker.PlL13x
+
+attacker$ ls -lan /tmp/dmesg-savelog-attacker.PlL13x /tmp/dmesg-savelog-attacker.PlL13x/file
+-rw-r--r-- 1 1001 1001    5 May 17 20:06 /tmp/dmesg-savelog-attacker.PlL13x/file
+
+/tmp/dmesg-savelog-attacker.PlL13x:
+total 20
+drwx------ 2 1001 1001  4096 May 17 20:06 .
+drwxrwxrwt 1    0    0 12288 May 17 20:06 ..
+-rw-r--r-- 1 1001 1001     5 May 17 20:06 file
+rc=0
+
+attacker$ /usr/bin/savelog -m640 -q -p -n -c 2 /tmp/dmesg-savelog-attacker.PlL13x/file
+rc=0
+
+attacker$ find /tmp/dmesg-savelog-attacker.PlL13x -maxdepth 1 -ls
+ 16042940      4 drwx------   2 attacker attacker     4096 May 17 20:06 /tmp/dmesg-savelog-attacker.PlL13x
+ 16042950      0 -rw-r--r--   1 attacker attacker        0 May 17 20:06 /tmp/dmesg-savelog-attacker.PlL13x/file
+ 16042949      4 -rw-r-----   1 attacker attacker        5 May 17 20:06 /tmp/dmesg-savelog-attacker.PlL13x/file.0
+rc=0
+
+attacker$ rm -rf /tmp/dmesg-savelog-attacker.PlL13x
+rc=0
+
+attacker$ test \! -e /tmp/dmesg-savelog-attacker.PlL13x
+rc=0
+
+## post-test cleanup and health
+
+$ find /tmp -maxdepth 1 -name dmesg-savelog-attacker.\* -ls
+rc=0
+
+$ stat -Lc %A\ %a\ %U:%G\ %F\ %n /var/log /var/log/dmesg /var/log/dmesg.0
+drwxrwxr-x 775 root:syslog directory /var/log
+-rw-r----- 640 root:adm regular file /var/log/dmesg
+-rw-r----- 640 root:adm regular file /var/log/dmesg.0
+rc=0
+
+$ ls -lan /var/log/dmesg /var/log/dmesg.0
+-rw-r----- 1 0 4 42145 May 17 18:21 /var/log/dmesg
+-rw-r----- 1 0 4 62319 May 16 22:51 /var/log/dmesg.0
+rc=0
+
+$ systemctl is-system-running
+running
+rc=0
+
+$ systemctl --failed --no-legend
+rc=0
+
+## conclusion marker
+ROOT_PROOF=no
+No uid1001-controlled write, rotate, service start, or uid=0 execution was reached through the default dmesg.service/savelog path.

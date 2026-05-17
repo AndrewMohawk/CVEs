@@ -1,0 +1,553 @@
+
+## target baseline and default reachability
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux bf51bb670420 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+running
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+attacker L 2026-05-16 0 99999 7 -1
+selfauth P 2026-05-17 0 99999 7 -1
+dbus	1.14.10-4ubuntu4.1	ii 
+gdb	15.1-1ubuntu1~24.04.1	ii 
+libpolkit-agent-1-0:arm64	124-2ubuntu1.24.04.3	ii 
+libpolkit-gobject-1-0:arm64	124-2ubuntu1.24.04.3	ii 
+login	1:4.13+dfsg1-4ubuntu3.2	ii 
+passwd	1:4.13+dfsg1-4ubuntu3.2	ii 
+polkitd	124-2ubuntu1.24.04.3	ii 
+python3-dbus	1.3.2-5build3	ii 
+systemd	255.4-1ubuntu8.15	ii 
+core_pattern=core
+suid_dumpable=0
+# /usr/lib/systemd/system/polkit.service
+[Unit]
+Description=Authorization Manager
+Documentation=man:polkit(8)
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.PolicyKit1
+CapabilityBoundingSet=CAP_SETUID CAP_SETGID
+DeviceAllow=/dev/null rw
+DevicePolicy=strict
+ExecStart=/usr/lib/polkit-1/polkitd --no-debug
+User=polkitd
+LimitMEMLOCK=0
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectControlGroups=yes
+ProtectHome=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectKernelTunables=yes
+ProtectSystem=strict
+ProtectClock=yes
+ProtectHostname=yes
+RemoveIPC=yes
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+UMask=0077
+NAME                                    TYPE      SIGNATURE        RESULT/VALUE      FLAGS
+.AuthenticationAgentResponse            method    s(sa{sv})        -                 -
+.AuthenticationAgentResponse2           method    us(sa{sv})       -                 -
+.CancelCheckAuthorization               method    s                -                 -
+.CheckAuthorization                     method    (sa{sv})sa{ss}us (bba{ss})         -
+.EnumerateActions                       method    s                a(ssssssuuua{ss}) -
+.EnumerateTemporaryAuthorizations       method    (sa{sv})         a(ss(sa{sv})tt)   -
+.RegisterAuthenticationAgent            method    (sa{sv})ss       -                 -
+.RegisterAuthenticationAgentWithOptions method    (sa{sv})ssa{sv}  -                 -
+.RevokeTemporaryAuthorizationById       method    s                -                 -
+.RevokeTemporaryAuthorizations          method    (sa{sv})         -                 -
+.UnregisterAuthenticationAgent          method    (sa{sv})s        -                 -
+.BackendFeatures                        property  u                1                 emits-change
+.BackendName                            property  s                "js"              emits-change
+.BackendVersion                         property  s                "124"             emits-change
+.Changed                                signal    -                -                 -
+
+## ubuntu source snippets
+Source package fetch is analysis tooling only; installed runtime package proof is above.
+apt_get_source_rc=0
+dpkg-source: info: extracting policykit-1 in policykit-1-124
+dpkg-source: info: unpacking policykit-1_124.orig.tar.gz
+dpkg-source: info: unpacking policykit-1_124.orig-polkit-pkla-compat.tar.gz
+dpkg-source: info: unpacking policykit-1_124-2ubuntu1.24.04.3.debian.tar.xz
+dpkg-source: info: using patch list from debian/patches/series
+dpkg-source: info: applying 02_gettext.patch
+dpkg-source: info: applying 08_chdir_root.patch
+dpkg-source: info: applying Turn-local-modifications-of-mocklibc-into-patches-and-app.patch
+dpkg-source: info: applying debian/01_pam_polkit.patch
+dpkg-source: info: applying debian/50-default.rules-Replace-wheel-group-with-sudo-group.patch
+dpkg-source: info: applying debian/Don-t-use-PrivateNetwork-yes-for-the-systemd-unit.patch
+dpkg-source: info: applying git-action-directories.patch
+dpkg-source: info: applying CVE-2025-7519.patch
+dpkg-source: info: applying CVE-2026-4897.patch
+W: Download is performed unsandboxed as root as file 'policykit-1_124.orig-polkit-pkla-compat.tar.gz' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)
+--- src/polkit/polkitsubject.c:485-498 parses client-supplied unix-session ---
+   485	  else if (g_strcmp0 (kind, "unix-session") == 0)
+   486	    {
+   487	      GVariant *v;
+   488	      const gchar *session_id;
+   489	
+   490	      v = lookup_asv (details_gvariant, "session-id", G_VARIANT_TYPE_STRING, error);
+   491	      if (v == NULL)
+   492	        {
+   493	          g_prefix_error (error, "Error parsing unix-session subject: ");
+   494	          goto out;
+   495	        }
+   496	      session_id = g_variant_get_string (v, NULL);
+   497	      ret = polkit_unix_session_new (session_id);
+   498	      g_variant_unref (v);
+--- src/polkitbackend/polkitbackendauthority.c:736-798 handles CheckAuthorization ---
+   736	  g_variant_get (parameters,
+   737	                 "(@(sa{sv})&s@a{ss}u&s)",
+   738	                 &subject_gvariant,
+   739	                 &action_id,
+   740	                 &details_gvariant,
+   741	                 &flags,
+   742	                 &cancellation_id);
+   743	
+   744	  error = NULL;
+   745	  subject = polkit_subject_new_for_gvariant_invocation (subject_gvariant, invocation, &error);
+   746	  if (subject == NULL)
+   747	    {
+   748	      g_prefix_error (&error, "Error getting subject: ");
+   749	      g_dbus_method_invocation_return_gerror (invocation, error);
+   750	      g_error_free (error);
+   751	      goto out;
+   752	    }
+   753	
+   754	  details = polkit_details_new_for_gvariant (details_gvariant);
+   755	
+   756	  CheckAuthData *data;
+   757	  data = g_new0 (CheckAuthData, 1);
+   758	
+   759	  data->server = server;
+   760	  data->caller = g_object_ref (caller);
+   761	  data->subject = g_object_ref (subject);
+   762	  data->invocation = g_object_ref (invocation);
+   763	
+   764	  if (strlen (cancellation_id) > 0)
+   765	    {
+   766	      data->cancellation_id = g_strdup_printf ("%s-%s",
+   767	                                               g_dbus_method_invocation_get_sender (invocation),
+   768	                                               cancellation_id);
+   769	      if (g_hash_table_lookup (server->cancellation_id_to_check_auth_data, data->cancellation_id) != NULL)
+   770	        {
+   771	          gchar *message;
+   772	          message = g_strdup_printf ("Given cancellation_id %s is already in use for name %s",
+   773	                                     cancellation_id,
+   774	                                     g_dbus_method_invocation_get_sender (invocation));
+   775	          /* Don't want this error in our GError enum since libpolkit-gobject-1 users will never see it */
+   776	          g_dbus_method_invocation_return_dbus_error (invocation,
+   777	                                                      "org.freedesktop.PolicyKit1.Error.CancellationIdNotUnique",
+   778	                                                      message);
+   779	          g_free (message);
+   780	          check_auth_data_free (data);
+   781	          goto out;
+   782	        }
+   783	
+   784	      data->cancellable = g_cancellable_new ();
+   785	      g_hash_table_insert (server->cancellation_id_to_check_auth_data,
+   786	                           data->cancellation_id,
+   787	                           data);
+   788	    }
+   789	
+   790	  polkit_backend_authority_check_authorization (server->authority,
+   791	                                                caller,
+   792	                                                subject,
+   793	                                                action_id,
+   794	                                                details,
+   795	                                                flags,
+   796	                                                data->cancellable,
+   797	                                                check_auth_cb,
+   798	                                                data);
+--- src/polkitbackend/polkitbackendinteractiveauthority.c:920-999 validates caller then checks subject ---
+   920	  user_of_subject = polkit_backend_session_monitor_get_user_for_subject (priv->session_monitor,
+   921	                                                                         subject, &user_of_subject_matches,
+   922	                                                                         &error);
+   923	  if (error != NULL)
+   924	    {
+   925	      g_simple_async_result_set_from_error (simple, error);
+   926	      g_simple_async_result_complete (simple);
+   927	      g_object_unref (simple);
+   928	      g_error_free (error);
+   929	      goto out;
+   930	    }
+   931	
+   932	  user_of_subject_str = polkit_identity_to_string (user_of_subject);
+   933	  g_debug (" user of subject is %s", user_of_subject_str);
+   934	
+   935	  has_details = FALSE;
+   936	  if (details != NULL)
+   937	    {
+   938	      detail_keys = polkit_details_get_keys (details);
+   939	      if (detail_keys != NULL)
+   940	        {
+   941	          if (g_strv_length (detail_keys) > 0)
+   942	            has_details = TRUE;
+   943	          g_strfreev (detail_keys);
+   944	        }
+   945	    }
+   946	
+   947	  /* Not anyone is allowed to check that process XYZ is allowed to do ABC.
+   948	   * We allow this if, and only if,
+   949	   *
+   950	   *  - processes may check for another process owned by the *same* user but not
+   951	   *    if details are passed (otherwise you'd be able to spoof the dialog);
+   952	   *    the caller supplies the user_of_subject value, so we additionally
+   953	   *    require it to match at least at one point in time (via
+   954	   *    user_of_subject_matches).
+   955	   *
+   956	   *  - processes running as uid 0 may check anything and pass any details
+   957	   *
+   958	   *  - if the action_id has the "org.freedesktop.policykit.owner" annotation
+   959	   *    then any uid referenced by that annotation is also allowed to check
+   960	   *    anything and pass any details
+   961	   */
+   962	  if (!user_of_subject_matches
+   963	      || !polkit_identity_equal (user_of_caller, user_of_subject)
+   964	      || has_details)
+   965	    {
+   966	      if (!may_identity_check_authorization (interactive_authority, action_id, user_of_caller))
+   967	        {
+   968	          if (has_details)
+   969	            {
+   970	              g_simple_async_result_set_error (simple,
+   971	                                               POLKIT_ERROR,
+   972	                                               POLKIT_ERROR_NOT_AUTHORIZED,
+   973	                                               "Only trusted callers (e.g. uid 0 or an action owner) can use CheckAuthorization() and "
+   974	                                               "pass details");
+   975	            }
+   976	          else
+   977	            {
+   978	              g_simple_async_result_set_error (simple,
+   979	                                               POLKIT_ERROR,
+   980	                                               POLKIT_ERROR_NOT_AUTHORIZED,
+   981	                                               "Only trusted callers (e.g. uid 0 or an action owner) can use CheckAuthorization() for "
+   982	                                               "subjects belonging to other identities");
+   983	            }
+   984	          g_simple_async_result_complete (simple);
+   985	          g_object_unref (simple);
+   986	          goto out;
+   987	        }
+   988	    }
+   989	
+   990	  implicit_authorization = POLKIT_IMPLICIT_AUTHORIZATION_NOT_AUTHORIZED;
+   991	  result = check_authorization_sync (authority,
+   992	                                     caller,
+   993	                                     subject,
+   994	                                     action_id,
+   995	                                     details,
+   996	                                     flags,
+   997	                                     &implicit_authorization,
+   998	                                     FALSE, /* checking_imply */
+   999	                                     &error);
+--- src/polkitbackend/polkitbackendinteractiveauthority.c:1131-1158 asks for subject session ---
+  1131	  user_of_subject = polkit_backend_session_monitor_get_user_for_subject (priv->session_monitor,
+  1132	                                                                         subject, NULL,
+  1133	                                                                         error);
+  1134	  if (user_of_subject == NULL)
+  1135	      goto out;
+  1136	
+  1137	  /* special case: uid 0, root, is _always_ authorized for anything */
+  1138	  if (identity_is_root_user (user_of_subject))
+  1139	    {
+  1140	      result = polkit_authorization_result_new (TRUE, FALSE, NULL);
+  1141	      goto out;
+  1142	    }
+  1143	
+  1144	  /* a subject *may* be in a session */
+  1145	  session_for_subject = polkit_backend_session_monitor_get_session_for_subject (priv->session_monitor,
+  1146	                                                                                subject,
+  1147	                                                                                NULL);
+  1148	  g_debug ("  %p", session_for_subject);
+  1149	  if (session_for_subject != NULL)
+  1150	    {
+  1151	      session_is_local = polkit_backend_session_monitor_is_session_local (priv->session_monitor, session_for_subject);
+  1152	      session_is_active = polkit_backend_session_monitor_is_session_active (priv->session_monitor, session_for_subject);
+  1153	
+  1154	      g_debug (" subject is in session %s (local=%d active=%d)",
+  1155	               polkit_unix_session_get_session_id (POLKIT_UNIX_SESSION (session_for_subject)),
+  1156	               session_is_local,
+  1157	               session_is_active);
+  1158	    }
+--- src/polkitbackend/polkitbackendsessionmonitor-systemd.c:306-321 resolves unix-session user ---
+   306	  else if (POLKIT_IS_UNIX_SESSION (subject))
+   307	    {
+   308	      uid_t uid;
+   309	
+   310	      if (sd_session_get_uid (polkit_unix_session_get_session_id (POLKIT_UNIX_SESSION (subject)), &uid) < 0)
+   311	        {
+   312	          g_set_error (error,
+   313	                       POLKIT_ERROR,
+   314	                       POLKIT_ERROR_FAILED,
+   315	                       "Error getting uid for session");
+   316	          goto out;
+   317	        }
+   318	
+   319	      ret = polkit_unix_user_new (uid);
+   320	      matches = TRUE;
+   321	    }
+--- src/polkitbackend/polkitbackendsessionmonitor-systemd.c:358-392 unsupported unix-session falls into assert ---
+   358	  if (POLKIT_IS_UNIX_PROCESS (subject))
+   359	    process = POLKIT_UNIX_PROCESS (subject); /* We already have a process */
+   360	  else if (POLKIT_IS_SYSTEM_BUS_NAME (subject))
+   361	    {
+   362	      /* Convert bus name to process */
+   363	      tmp_process = (PolkitUnixProcess*)polkit_system_bus_name_get_process_sync (POLKIT_SYSTEM_BUS_NAME (subject), NULL, error);
+   364	      if (!tmp_process)
+   365		goto out;
+   366	      process = tmp_process;
+   367	    }
+   368	  else
+   369	    {
+   370	      g_set_error (error,
+   371	                   POLKIT_ERROR,
+   372	                   POLKIT_ERROR_NOT_SUPPORTED,
+   373	                   "Cannot get session for subject of type %s",
+   374	                   g_type_name (G_TYPE_FROM_INSTANCE (subject)));
+   375	    }
+   376	
+   377	#if HAVE_SD_PIDFD_GET_SESSION
+   378	  /* First try to get the session from the pidfd (systemd version 253) */
+   379	  pidfd = polkit_unix_process_get_pidfd (process);
+   380	  if (pidfd >= 0)
+   381	    {
+   382	      if (sd_pidfd_get_session (pidfd, &session_id) >= 0)
+   383	        {
+   384	          session = polkit_unix_session_new (session_id);
+   385	          goto out;
+   386	        }
+   387	    }
+   388	#endif
+   389	
+   390	  /* Now do process -> pid -> same session */
+   391	  g_assert (process != NULL);
+   392	  pid = polkit_unix_process_get_pid (process);
+
+## gdb-attached crash reproduction
+polkit_service_pid=84980
+--- openvt gdb rc/output ---
+8
+openvt: Couldn't deallocate console 8
+--- active gdb output ---
+ACTIVE_IDENTITY
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/tty8
+XDG_SESSION_ID=151
+Id=151
+User=1002
+Name=selfauth
+Seat=seat0
+TTY=tty8
+Remote=no
+Type=tty
+Active=yes
+State=active
+TRIGGER uid=1002 gid=1002 pid=85088 sid='151'
+control-own-unix-process: authorized=True challenge=False details={}
+crash-actual-unix-session: EXC DBusException: org.freedesktop.DBus.Error.NoReply: Message recipient disconnected from message bus without replying
+POST_CRASH_ROOT_ACTION_ATTEMPT
+Call failed: Interactive authentication required.
+--- gdb backtrace ---
+[New LWP 84991]
+[New LWP 84984]
+[New LWP 84983]
+[New LWP 84982]
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/aarch64-linux-gnu/libthread_db.so.1".
+0x0000ffff92750c1c in __GI___poll (fds=0xaaaacf7d2bc0, nfds=2, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:41
+
+warning: 41	../sysdeps/unix/sysv/linux/poll.c: No such file or directory
+[New Thread 0xffff8b40efe0 (LWP 85089)]
+[Thread 0xffff8b40efe0 (LWP 85089) exited]
+
+Thread 1 "polkitd" received signal SIGABRT, Aborted.
+__pthread_kill_implementation (threadid=281473146396704, signo=signo@entry=6, no_tid=no_tid@entry=0) at ./nptl/pthread_kill.c:44
+warning: 44	./nptl/pthread_kill.c: No such file or directory
+#0  __pthread_kill_implementation (threadid=281473146396704, signo=signo@entry=6, no_tid=no_tid@entry=0) at ./nptl/pthread_kill.c:44
+        tid = 84980
+        ret = 0
+        pd = 0xffff92e7a020
+        old_mask = {__val = {281473139762928}}
+        ret = <optimized out>
+#1  0x0000ffff926f7670 in __pthread_kill_internal (signo=6, threadid=<optimized out>) at ./nptl/pthread_kill.c:78
+No locals.
+#2  0x0000ffff926acb3c in __GI_raise (sig=sig@entry=6) at ../sysdeps/posix/raise.c:26
+        ret = <optimized out>
+#3  0x0000ffff92697e00 in __GI_abort () at ./stdlib/abort.c:79
+        save_stage = 1
+        act = {__sigaction_handler = {sa_handler = 0x20, sa_sigaction = 0x20}, sa_mask = {__val = {281473142437544, 2387034741965811570, 281473143144448, 18446462603011031040, 18446744073709551360, 18446744009268326400, 3087007744, 281474672468656, 281473138585496, 281472829240448, 281473146398560, 281473139762928, 256, 25, 187650602108656, 187650399636088}}, sa_flags = -1016501288, sa_restorer = 0xffffeddda340}
+#4  0x0000ffff92a7bf84 in g_assertion_message () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+No symbol table info available.
+#5  0x0000ffff92a7bfe8 [PAC] in g_assertion_message_expr () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+No symbol table info available.
+#6  0x0000aaaac369161c [PAC] in ?? ()
+No symbol table info available.
+#7  0x0000aaaac3692b64 [PAC] in ?? ()
+No symbol table info available.
+#8  0x0000aaaac36933b8 [PAC] in ?? ()
+No symbol table info available.
+#9  0x0000aaaac3689ce8 [PAC] in ?? ()
+No symbol table info available.
+#10 0x0000ffff92d223e0 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libgio-2.0.so.0
+No symbol table info available.
+#11 0x0000ffff92a4f7f0 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+No symbol table info available.
+#12 0x0000ffff92ab1ae8 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+No symbol table info available.
+#13 0x0000ffff92a502b0 [PAC] in g_main_loop_run () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+No symbol table info available.
+#14 0x0000aaaac3688af8 [PAC] in ?? ()
+No symbol table info available.
+#15 0x0000ffff926984c4 [PAC] in __libc_start_call_main (main=main@entry=0xaaaac3688780, argc=argc@entry=2, argv=argv@entry=0xffffedddab38) at ../sysdeps/nptl/libc_start_call_main.h:58
+        self = <optimized out>
+        result = <optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {281474672470840, 2, 187650399727752, 187650399569792, 281474672470864, 281473146669912, 0, 281473146671104, 187650399727752, 0, 281474672470720, 3563102123056932136, 281474672470688, 3563102123347118188, 0, 0, 0, 0, 0, 0, 0, 0}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0xffff92698540 <__libc_start_main_impl+64>, 0xffffedddaac0}, data = {prev = 0x0, cleanup = 0x0, canceltype = -1838578368}}}
+        not_first_call = <optimized out>
+#16 0x0000ffff92698598 in __libc_start_main_impl (main=0xaaaac3688780, argc=2, argv=0xffffedddab38, init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, stack_end=<optimized out>) at ../csu/libc-start.c:360
+No locals.
+#17 0x0000aaaac3688cb0 in ?? ()
+No symbol table info available.
+
+Thread 5 (Thread 0xffff9200efe0 (LWP 84982) "gmain"):
+#0  0x0000ffff92750c1c in __GI___poll (fds=0xaaaacf79eda0, nfds=2, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:41
+#1  0x0000ffff92ab1a2c in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffff92a4ebc8 [PAC] in g_main_context_iteration () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffff92a4ec24 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#4  0x0000ffff92a7f4c8 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffff926f595c [PAC] in start_thread (arg=0x0) at ./nptl/pthread_create.c:447
+#6  0x0000ffff9275b8dc in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone.S:79
+
+Thread 4 (Thread 0xffff9160efe0 (LWP 84983) "pool-spawner"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+#1  0x0000ffff92aab4e0 in g_cond_wait () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffff92a178d8 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffff92a8036c [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#4  0x0000ffff92a7f4c8 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffff926f595c [PAC] in start_thread (arg=0x0) at ./nptl/pthread_create.c:447
+#6  0x0000ffff9275b8dc in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone.S:79
+
+Thread 3 (Thread 0xffff90c0efe0 (LWP 84984) "gdbus"):
+#0  0x0000ffff92750c1c in __GI___poll (fds=0xffff80000b90, nfds=2, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:41
+#1  0x0000ffff92ab1a2c in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffff92a502b0 [PAC] in g_main_loop_run () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffff92d2efd4 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libgio-2.0.so.0
+#4  0x0000ffff92a7f4c8 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffff926f595c [PAC] in start_thread (arg=0x0) at ./nptl/pthread_create.c:447
+#6  0x0000ffff9275b8dc in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone.S:79
+
+Thread 2 (Thread 0xffff8be0efe0 (LWP 84991) "pool-polkitd"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+#1  0x0000ffff92aabee4 in g_cond_wait_until () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffff92a1789c [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffff92a17a30 [PAC] in g_async_queue_timeout_pop () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#4  0x0000ffff92a85784 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffff92a7f4c8 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#6  0x0000ffff926f595c [PAC] in start_thread (arg=0x0) at ./nptl/pthread_create.c:447
+#7  0x0000ffff9275b8dc in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone.S:79
+
+Thread 1 (Thread 0xffff92e7a020 (LWP 84980) "polkitd"):
+#0  __pthread_kill_implementation (threadid=281473146396704, signo=signo@entry=6, no_tid=no_tid@entry=0) at ./nptl/pthread_kill.c:44
+#1  0x0000ffff926f7670 in __pthread_kill_internal (signo=6, threadid=<optimized out>) at ./nptl/pthread_kill.c:78
+#2  0x0000ffff926acb3c in __GI_raise (sig=sig@entry=6) at ../sysdeps/posix/raise.c:26
+#3  0x0000ffff92697e00 in __GI_abort () at ./stdlib/abort.c:79
+#4  0x0000ffff92a7bf84 in g_assertion_message () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffff92a7bfe8 [PAC] in g_assertion_message_expr () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#6  0x0000aaaac369161c [PAC] in ?? ()
+#7  0x0000aaaac3692b64 [PAC] in ?? ()
+#8  0x0000aaaac36933b8 [PAC] in ?? ()
+#9  0x0000aaaac3689ce8 [PAC] in ?? ()
+#10 0x0000ffff92d223e0 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libgio-2.0.so.0
+#11 0x0000ffff92a4f7f0 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#12 0x0000ffff92ab1ae8 [PAC] in ?? () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#13 0x0000ffff92a502b0 [PAC] in g_main_loop_run () from target:/lib/aarch64-linux-gnu/libglib-2.0.so.0
+#14 0x0000aaaac3688af8 [PAC] in ?? ()
+#15 0x0000ffff926984c4 [PAC] in __libc_start_call_main (main=main@entry=0xaaaac3688780, argc=argc@entry=2, argv=argv@entry=0xffffedddab38) at ../sysdeps/nptl/libc_start_call_main.h:58
+#16 0x0000ffff92698598 in __libc_start_main_impl (main=0xaaaac3688780, argc=2, argv=0xffffedddab38, init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, stack_end=<optimized out>) at ../csu/libc-start.c:360
+#17 0x0000aaaac3688cb0 in ?? ()
+[Inferior 1 (process 84980) detached]
+--- root marker after gdb trigger ---
+ls: cannot access '/root/polkit_unix_session_abrt_triage_root': No such file or directory
+
+## systemd-managed crash and journal reproduction
+before_polkit_pid=85117
+--- openvt journal rc/output ---
+8
+openvt: Couldn't deallocate console 8
+--- active journal output ---
+ACTIVE_IDENTITY
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/tty8
+XDG_SESSION_ID=153
+Id=153
+User=1002
+Name=selfauth
+Seat=seat0
+TTY=tty8
+Remote=no
+Type=tty
+Active=yes
+State=active
+TRIGGER uid=1002 gid=1002 pid=85189 sid='153'
+control-own-unix-process: authorized=True challenge=False details={}
+crash-actual-unix-session: EXC DBusException: org.freedesktop.DBus.Error.NoReply: Message recipient disconnected from message bus without replying
+POST_CRASH_ROOT_ACTION_ATTEMPT
+Call failed: Interactive authentication required.
+after_polkit_pid=85194
+--- polkit journal since 2026-05-17 20:42:42 UTC ---
+May 17 20:42:42.470390 bf51bb670420 systemd[1]: polkit.service: Main process exited, code=killed, status=6/ABRT
+May 17 20:42:42.470478 bf51bb670420 systemd[1]: polkit.service: Failed with result 'signal'.
+May 17 20:42:42.504324 bf51bb670420 systemd[1]: Starting polkit.service - Authorization Manager...
+May 17 20:42:42.543650 bf51bb670420 polkitd[85093]: Started polkitd version 124
+May 17 20:42:42.546323 bf51bb670420 polkitd[85093]: Loading rules from directory /etc/polkit-1/rules.d
+May 17 20:42:42.546391 bf51bb670420 polkitd[85093]: Loading rules from directory /usr/share/polkit-1/rules.d
+May 17 20:42:42.548663 bf51bb670420 polkitd[85093]: Finished loading, compiling and executing 6 rules
+May 17 20:42:42.549664 bf51bb670420 polkitd[85093]: Acquired the name org.freedesktop.PolicyKit1 on the system bus
+May 17 20:42:42.549678 bf51bb670420 systemd[1]: Started polkit.service - Authorization Manager.
+May 17 20:42:42.594046 bf51bb670420 systemd[1]: Stopping polkit.service - Authorization Manager...
+May 17 20:42:42.603261 bf51bb670420 systemd[1]: polkit.service: Deactivated successfully.
+May 17 20:42:42.603417 bf51bb670420 systemd[1]: Stopped polkit.service - Authorization Manager.
+May 17 20:42:42.625046 bf51bb670420 systemd[1]: Starting polkit.service - Authorization Manager...
+May 17 20:42:42.660707 bf51bb670420 polkitd[85117]: Started polkitd version 124
+May 17 20:42:42.663234 bf51bb670420 polkitd[85117]: Loading rules from directory /etc/polkit-1/rules.d
+May 17 20:42:42.663297 bf51bb670420 polkitd[85117]: Loading rules from directory /usr/share/polkit-1/rules.d
+May 17 20:42:42.665700 bf51bb670420 polkitd[85117]: Finished loading, compiling and executing 6 rules
+May 17 20:42:42.666831 bf51bb670420 systemd[1]: Started polkit.service - Authorization Manager.
+May 17 20:42:42.666857 bf51bb670420 polkitd[85117]: Acquired the name org.freedesktop.PolicyKit1 on the system bus
+May 17 20:42:42.839072 bf51bb670420 systemd[1]: polkit.service: Main process exited, code=killed, status=6/ABRT
+May 17 20:42:42.839138 bf51bb670420 systemd[1]: polkit.service: Failed with result 'signal'.
+May 17 20:42:42.871136 bf51bb670420 systemd[1]: Starting polkit.service - Authorization Manager...
+May 17 20:42:42.907652 bf51bb670420 polkitd[85194]: Started polkitd version 124
+May 17 20:42:42.911194 bf51bb670420 polkitd[85194]: Loading rules from directory /etc/polkit-1/rules.d
+May 17 20:42:42.911262 bf51bb670420 polkitd[85194]: Loading rules from directory /usr/share/polkit-1/rules.d
+May 17 20:42:42.912537 bf51bb670420 polkitd[85194]: Finished loading, compiling and executing 6 rules
+May 17 20:42:42.913376 bf51bb670420 polkitd[85194]: Acquired the name org.freedesktop.PolicyKit1 on the system bus
+May 17 20:42:42.913392 bf51bb670420 systemd[1]: Started polkit.service - Authorization Manager.
+--- root marker after journal trigger ---
+ls: cannot access '/root/polkit_unix_session_abrt_triage_root': No such file or directory
+--- attacker root action after restart ---
+Call failed: Interactive authentication required.
+attacker_startunit_rc=1
+ls: cannot access '/root/polkit_unix_session_abrt_triage_root': No such file or directory
+
+## final cleanup and health
+running
+active
+ls: cannot access '/tmp/polkit-unix-session-abrt-triage': No such file or directory
+ls: cannot access '/run/systemd/system/polkit-unix-session-abrt-triage-marker.service': No such file or directory
+ls: cannot access '/root/polkit_unix_session_abrt_triage_root': No such file or directory
+selfauth_profile_absent

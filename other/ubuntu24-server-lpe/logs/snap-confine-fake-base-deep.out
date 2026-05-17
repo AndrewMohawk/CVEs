@@ -1,0 +1,662 @@
+
+===== pre-clean =====
+
+===== target identity package version and default snap state =====
+uid=0(root) gid=0(root) groups=0(root)
+attacker:x:1001:1001::/home/attacker:/bin/bash
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+snapd	2.74.1+ubuntu24.04.4
+systemd	255.4-1ubuntu8.15
+snap          2.74.1+ubuntu24.04.4
+snapd         2.74.1+ubuntu24.04.4
+series        16
+ubuntu        24.04
+kernel        6.10.14-linuxkit
+architecture  arm64
+No snaps are installed yet. Try 'snap install hello-world'.
+/usr/lib/snapd/snap-confine root:root 755 -rwxr-xr-x 0:0 199752
+/usr/lib/snapd/snap-update-ns root:root 755 -rwxr-xr-x 0:0 5653152
+/snap root:root 755 drwxr-xr-x 0:0 4096
+/var/lib/snapd root:root 755 drwxr-xr-x 0:0 4096
+/var/lib/snapd/snaps root:root 755 drwxr-xr-x 0:0 4096
+/run/snapd root:root 755 drwxr-xr-x 0:0 80
+/run/snapd/ns root:root 755 drwxr-xr-x 0:0 40
+/usr/lib/snapd/snap-confine cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+/usr/lib/snapd/snap-update-ns
+-r--r--r-- root:root /snap/README
+-rw------- root:root /run/snapd/lock/.lock
+-rw------- root:root /var/lib/snapd/state.json
+-rw-r--r-- root:root /var/lib/snapd/features/classic-preserves-xdg-runtime-dir
+-rw-r--r-- root:root /var/lib/snapd/features/refresh-app-awareness
+-rw-r--r-- root:root /var/lib/snapd/state.lock
+-rw-r--r-- root:root /var/lib/snapd/system-key
+d--x--x--x root:root /var/lib/snapd/void
+drwx------ root:root /var/lib/snapd/cookie
+drwxr-xr-x root:root /run/snapd
+drwxr-xr-x root:root /run/snapd/lock
+drwxr-xr-x root:root /run/snapd/ns
+drwxr-xr-x root:root /snap
+drwxr-xr-x root:root /var/lib/snapd
+drwxr-xr-x root:root /var/lib/snapd/apparmor
+drwxr-xr-x root:root /var/lib/snapd/apparmor/snap-confine
+drwxr-xr-x root:root /var/lib/snapd/assertions
+drwxr-xr-x root:root /var/lib/snapd/assertions/asserts-v0
+drwxr-xr-x root:root /var/lib/snapd/assertions/private-keys-v1
+drwxr-xr-x root:root /var/lib/snapd/auto-import
+drwxr-xr-x root:root /var/lib/snapd/dbus-1
+drwxr-xr-x root:root /var/lib/snapd/dbus-1/services
+drwxr-xr-x root:root /var/lib/snapd/dbus-1/system-services
+drwxr-xr-x root:root /var/lib/snapd/desktop
+drwxr-xr-x root:root /var/lib/snapd/desktop/applications
+drwxr-xr-x root:root /var/lib/snapd/environment
+drwxr-xr-x root:root /var/lib/snapd/features
+drwxr-xr-x root:root /var/lib/snapd/firstboot
+drwxr-xr-x root:root /var/lib/snapd/hostfs
+drwxr-xr-x root:root /var/lib/snapd/inhibit
+drwxr-xr-x root:root /var/lib/snapd/lib
+drwxr-xr-x root:root /var/lib/snapd/lib/gl
+drwxr-xr-x root:root /var/lib/snapd/lib/gl32
+drwxr-xr-x root:root /var/lib/snapd/lib/glvnd
+drwxr-xr-x root:root /var/lib/snapd/lib/vulkan
+drwxr-xr-x root:root /var/lib/snapd/snaps
+drwxr-xr-x root:root /var/lib/snapd/snaps/partial
+drwxr-xr-x root:root /var/lib/snapd/ssl
+drwxr-xr-x root:root /var/lib/snapd/ssl/store-certs
+
+===== root-owned state is not attacker writable =====
+test -w /snap                          -> 1
+touch: cannot touch '/snap/scfbd_uid1001_write_probe': Permission denied
+touch /snap                            rc=1
+test -w /snap/bin                      -> 1
+touch: cannot touch '/snap/bin/scfbd_uid1001_write_probe': No such file or directory
+touch /snap/bin                        rc=1
+test -w /var/lib/snapd                 -> 1
+touch: cannot touch '/var/lib/snapd/scfbd_uid1001_write_probe': Permission denied
+touch /var/lib/snapd                   rc=1
+test -w /var/lib/snapd/snaps           -> 1
+touch: cannot touch '/var/lib/snapd/snaps/scfbd_uid1001_write_probe': Permission denied
+touch /var/lib/snapd/snaps             rc=1
+test -w /var/lib/snapd/mount           -> 1
+touch: cannot touch '/var/lib/snapd/mount/scfbd_uid1001_write_probe': No such file or directory
+touch /var/lib/snapd/mount             rc=1
+test -w /run/snapd                     -> 1
+touch: cannot touch '/run/snapd/scfbd_uid1001_write_probe': Permission denied
+touch /run/snapd                       rc=1
+test -w /run/snapd/ns                  -> 1
+touch: cannot touch '/run/snapd/ns/scfbd_uid1001_write_probe': Permission denied
+touch /run/snapd/ns                    rc=1
+test -w /run/snapd/lock                -> 1
+touch: cannot touch '/run/snapd/lock/scfbd_uid1001_write_probe': Permission denied
+touch /run/snapd/lock                  rc=1
+test -w /tmp                           -> 0
+touch /tmp                             rc=0
+test -w /var/tmp                       -> 0
+touch /var/tmp                         rc=0
+
+===== prior gating as uid1001 =====
+No snaps are installed yet. Try 'snap install hello-world'.
+error: access denied (try with sudo)
+snap_install_rc=1
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 20:53:03 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sat, 16 May 2026 20:53:03 GMT
+Content-Length: 155
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"could not determine snap name for pid: not supported","kind":"login-required"}}
+===== create attacker fake snap base app and namespace inputs =====
+-rw-r--r-- attacker:attacker /tmp/scfbd-work/fake-snap/core/1/meta/snap.yaml -> 
+-rw-r--r-- attacker:attacker /tmp/scfbd-work/fake-snap/scfbd/1/meta/snap.yaml -> 
+-rw-r--r-- attacker:attacker /tmp/scfbd-work/fake-snap/snapd/1/meta/snap.yaml -> 
+-rw-r--r-- attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd/mount/snap.scfbd.fstab -> 
+-rwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/scfbd/1/bin/payload.sh -> 
+-rwxr-xr-x attacker:attacker /tmp/scfbd-work/pathbin/snap-discard-ns -> 
+-rwxr-xr-x attacker:attacker /tmp/scfbd-work/pathbin/snap-update-ns -> 
+-rwxr-xr-x attacker:attacker /tmp/scfbd-work/payload.sh -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/common -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/data -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-run-snapd -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-run-snapd/lock -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-run-snapd/ns -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/core -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/core/1 -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/core/1/meta -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/scfbd -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/scfbd/1 -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/scfbd/1/bin -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/scfbd/1/meta -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/snapd -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/snapd/1 -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/snapd/1/meta -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd/cookie -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd/mount -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd/sequence -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd/snaps -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/pathbin -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/private-target -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/user-common -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/user-data -> 
+lrwxrwxrwx attacker:attacker /tmp/scfbd-work/fake-snap/core/current -> 1
+lrwxrwxrwx attacker:attacker /tmp/scfbd-work/fake-snap/scfbd/current -> 1
+lrwxrwxrwx attacker:attacker /tmp/scfbd-work/fake-snap/snapd/current -> 1
+
+===== direct no environment =====
+SNAP_INSTANCE_NAME is not set
+[rc=1] direct no environment
+
+===== payload artifacts after direct no environment =====
+MISSING /tmp/scfbd-work/payload.out
+MISSING /tmp/scfbd-work/sh_p_id.out
+MISSING /tmp/scfbd-work/root_write.out
+MISSING /root/scfbd-root-proof
+MISSING /tmp/scfbd-host-root-proof
+MISSING /tmp/scfbd-host-root-proof.suid
+
+===== direct full fake snap environment =====
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.328737"}
+DEBUG: caps at startup: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: ruid: 1001, euid: 1001, suid: 1001
+DEBUG: rgid: 1001, egid: 1001, sgid: 1001
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: after setting privileged caps: cap_chown,cap_dac_override,cap_sys_admin=eip cap_dac_read_search,cap_fowner,cap_sys_chroot,cap_sys_ptrace,cap_sys_resource+ep
+DEBUG: snap-confine found at /proc/1/root/usr/lib/snapd/snap-confine
+DEBUG: host snap-confine is owned by root
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+DEBUG: security tag: snap.scfbd.app
+DEBUG: executable:   /tmp/scfbd-work/payload.sh
+DEBUG: confinement:  non-classic
+DEBUG: base snap:    core
+DEBUG: umask reset, old umask was  022
+DEBUG: -- snap startup {"stage":"snap-confine mount namespace start", "time":"1778964783.328939"}
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope (global), uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: ensuring that snap mount directory is shared
+DEBUG: unsharing snap namespace directory
+DEBUG: releasing lock 5
+DEBUG: opened snap-update-ns executable as file descriptor 5
+DEBUG: opened snap-discard-ns executable as file descriptor 6
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/scfbd.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope scfbd, uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: initializing mount namespace: scfbd
+cannot locate base snap core: No such file or directory
+[rc=1] direct full fake snap environment
+
+===== payload artifacts after direct full fake snap environment =====
+MISSING /tmp/scfbd-work/payload.out
+MISSING /tmp/scfbd-work/sh_p_id.out
+MISSING /tmp/scfbd-work/root_write.out
+MISSING /root/scfbd-root-proof
+MISSING /tmp/scfbd-host-root-proof
+MISSING /tmp/scfbd-host-root-proof.suid
+
+===== direct full env with fake SNAP_MOUNT_DIR and fake helper PATH =====
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.344785"}
+DEBUG: caps at startup: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: ruid: 1001, euid: 1001, suid: 1001
+DEBUG: rgid: 1001, egid: 1001, sgid: 1001
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: after setting privileged caps: cap_chown,cap_dac_override,cap_sys_admin=eip cap_dac_read_search,cap_fowner,cap_sys_chroot,cap_sys_ptrace,cap_sys_resource+ep
+DEBUG: snap-confine found at /proc/1/root/usr/lib/snapd/snap-confine
+DEBUG: host snap-confine is owned by root
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+DEBUG: security tag: snap.scfbd.app
+DEBUG: executable:   /tmp/scfbd-work/payload.sh
+DEBUG: confinement:  non-classic
+DEBUG: base snap:    core
+DEBUG: umask reset, old umask was  022
+DEBUG: -- snap startup {"stage":"snap-confine mount namespace start", "time":"1778964783.344995"}
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope (global), uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: ensuring that snap mount directory is shared
+DEBUG: unsharing snap namespace directory
+DEBUG: releasing lock 5
+DEBUG: opened snap-update-ns executable as file descriptor 5
+DEBUG: opened snap-discard-ns executable as file descriptor 6
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/scfbd.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope scfbd, uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: initializing mount namespace: scfbd
+cannot locate base snap core: No such file or directory
+fake-update-ns=MISSING
+[rc=0] direct full env with fake SNAP_MOUNT_DIR and fake helper PATH
+
+===== payload artifacts after direct full env with fake SNAP_MOUNT_DIR and fake helper PATH =====
+MISSING /tmp/scfbd-work/payload.out
+MISSING /tmp/scfbd-work/sh_p_id.out
+MISSING /tmp/scfbd-work/root_write.out
+MISSING /root/scfbd-root-proof
+MISSING /tmp/scfbd-host-root-proof
+MISSING /tmp/scfbd-host-root-proof.suid
+
+===== direct env attempts to change base and component semantics =====
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.356695"}
+DEBUG: caps at startup: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: ruid: 1001, euid: 1001, suid: 1001
+DEBUG: rgid: 1001, egid: 1001, sgid: 1001
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: after setting privileged caps: cap_chown,cap_dac_override,cap_sys_admin=eip cap_dac_read_search,cap_fowner,cap_sys_chroot,cap_sys_ptrace,cap_sys_resource+ep
+DEBUG: snap-confine found at /proc/1/root/usr/lib/snapd/snap-confine
+DEBUG: host snap-confine is owned by root
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+DEBUG: security tag: snap.scfbd+comp.hook.configure
+DEBUG: executable:   /tmp/scfbd-work/payload.sh
+DEBUG: confinement:  non-classic
+DEBUG: base snap:    core
+DEBUG: umask reset, old umask was  022
+DEBUG: -- snap startup {"stage":"snap-confine mount namespace start", "time":"1778964783.356878"}
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope (global), uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: ensuring that snap mount directory is shared
+DEBUG: unsharing snap namespace directory
+DEBUG: releasing lock 5
+DEBUG: opened snap-update-ns executable as file descriptor 5
+DEBUG: opened snap-discard-ns executable as file descriptor 6
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/scfbd.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope scfbd, uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: initializing mount namespace: scfbd
+cannot locate base snap core: No such file or directory
+[rc=1] direct env attempts to change base and component semantics
+
+===== payload artifacts after direct env attempts to change base and component semantics =====
+MISSING /tmp/scfbd-work/payload.out
+MISSING /tmp/scfbd-work/sh_p_id.out
+MISSING /tmp/scfbd-work/root_write.out
+MISSING /root/scfbd-root-proof
+MISSING /tmp/scfbd-host-root-proof
+MISSING /tmp/scfbd-host-root-proof.suid
+
+===== direct traversal and malformed semantic tags =====
+--- tag=snap.scfbd/../../tmp.x
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.369064"}
+DEBUG: caps at startup: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: ruid: 1001, euid: 1001, suid: 1001
+DEBUG: rgid: 1001, egid: 1001, sgid: 1001
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: after setting privileged caps: cap_chown,cap_dac_override,cap_sys_admin=eip cap_dac_read_search,cap_fowner,cap_sys_chroot,cap_sys_ptrace,cap_sys_resource+ep
+DEBUG: snap-confine found at /proc/1/root/usr/lib/snapd/snap-confine
+DEBUG: host snap-confine is owned by root
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+security tag snap.scfbd/../../tmp.x not allowed
+tag_rc=1
+--- tag=snap..app
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.370373"}
+DEBUG: caps at startup: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: ruid: 1001, euid: 1001, suid: 1001
+DEBUG: rgid: 1001, egid: 1001, sgid: 1001
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: after setting privileged caps: cap_chown,cap_dac_override,cap_sys_admin=eip cap_dac_read_search,cap_fowner,cap_sys_chroot,cap_sys_ptrace,cap_sys_resource+ep
+DEBUG: snap-confine found at /proc/1/root/usr/lib/snapd/snap-confine
+DEBUG: host snap-confine is owned by root
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+security tag snap..app not allowed
+tag_rc=1
+--- tag=snap.scfbd..app
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.371593"}
+DEBUG: caps at startup: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: ruid: 1001, euid: 1001, suid: 1001
+DEBUG: rgid: 1001, egid: 1001, sgid: 1001
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: after setting privileged caps: cap_chown,cap_dac_override,cap_sys_admin=eip cap_dac_read_search,cap_fowner,cap_sys_chroot,cap_sys_ptrace,cap_sys_resource+ep
+DEBUG: snap-confine found at /proc/1/root/usr/lib/snapd/snap-confine
+DEBUG: host snap-confine is owned by root
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+security tag snap.scfbd..app not allowed
+tag_rc=1
+--- tag=snap.scfbd_../../x.app
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.372672"}
+DEBUG: caps at startup: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: ruid: 1001, euid: 1001, suid: 1001
+DEBUG: rgid: 1001, egid: 1001, sgid: 1001
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: after setting privileged caps: cap_chown,cap_dac_override,cap_sys_admin=eip cap_dac_read_search,cap_fowner,cap_sys_chroot,cap_sys_ptrace,cap_sys_resource+ep
+DEBUG: snap-confine found at /proc/1/root/usr/lib/snapd/snap-confine
+DEBUG: host snap-confine is owned by root
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+security tag snap.scfbd_../../x.app not allowed
+tag_rc=1
+--- tag=snap.scfbd.hook.configure
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.373641"}
+DEBUG: caps at startup: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: ruid: 1001, euid: 1001, suid: 1001
+DEBUG: rgid: 1001, egid: 1001, sgid: 1001
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+DEBUG: after setting privileged caps: cap_chown,cap_dac_override,cap_sys_admin=eip cap_dac_read_search,cap_fowner,cap_sys_chroot,cap_sys_ptrace,cap_sys_resource+ep
+DEBUG: snap-confine found at /proc/1/root/usr/lib/snapd/snap-confine
+DEBUG: host snap-confine is owned by root
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+DEBUG: security tag: snap.scfbd.hook.configure
+DEBUG: executable:   /tmp/scfbd-work/payload.sh
+DEBUG: confinement:  non-classic
+DEBUG: base snap:    core
+DEBUG: umask reset, old umask was  022
+DEBUG: -- snap startup {"stage":"snap-confine mount namespace start", "time":"1778964783.373822"}
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope (global), uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: ensuring that snap mount directory is shared
+DEBUG: unsharing snap namespace directory
+DEBUG: releasing lock 5
+DEBUG: opened snap-update-ns executable as file descriptor 5
+DEBUG: opened snap-discard-ns executable as file descriptor 6
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/scfbd.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope scfbd, uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: initializing mount namespace: scfbd
+cannot locate base snap core: No such file or directory
+tag_rc=1
+[rc=0] direct traversal and malformed semantic tags
+
+===== payload artifacts after direct traversal and malformed semantic tags =====
+MISSING /tmp/scfbd-work/payload.out
+MISSING /tmp/scfbd-work/sh_p_id.out
+MISSING /tmp/scfbd-work/root_write.out
+MISSING /root/scfbd-root-proof
+MISSING /tmp/scfbd-host-root-proof
+MISSING /tmp/scfbd-host-root-proof.suid
+
+===== direct snap-update-ns helper as uid1001 =====
+cannot update snap namespace: CAP_SYS_ADMIN capability not in effective set: operation not permitted
+[rc=1] direct snap-update-ns helper as uid1001
+
+===== payload artifacts after direct snap-update-ns helper as uid1001 =====
+MISSING /tmp/scfbd-work/payload.out
+MISSING /tmp/scfbd-work/sh_p_id.out
+MISSING /tmp/scfbd-work/root_write.out
+MISSING /root/scfbd-root-proof
+MISSING /tmp/scfbd-host-root-proof
+MISSING /tmp/scfbd-host-root-proof.suid
+
+===== user namespace root without fake bind mounts =====
+uid=0(root) gid=0(root) groups=0(root)
+uid_map= 0 1001 1;
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.406095"}
+DEBUG: caps at startup: =ep
+DEBUG: ruid: 0, euid: 0, suid: 0
+DEBUG: rgid: 0, egid: 0, sgid: 0
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: =ep
+DEBUG: after setting privileged caps: =ep cap_chown,cap_dac_override,cap_sys_admin+i cap_setgid,cap_setuid-ep
+DEBUG: the user is member of root group
+cannot fstatat canonical snap directory: Permission denied
+ns_rc=1
+-rw-r--r-- 1 0 0 12 May 16 20:53 /tmp/scfbd-userns-owner-proof
+outside_owner
+-rw-r--r-- 1 1001 1001 12 May 16 20:53 /tmp/scfbd-userns-owner-proof
+[rc=0] user namespace root without fake bind mounts
+
+===== payload artifacts after user namespace root without fake bind mounts =====
+MISSING /tmp/scfbd-work/payload.out
+MISSING /tmp/scfbd-work/sh_p_id.out
+MISSING /tmp/scfbd-work/root_write.out
+MISSING /root/scfbd-root-proof
+MISSING /tmp/scfbd-host-root-proof
+MISSING /tmp/scfbd-host-root-proof.suid
+
+===== user and mount namespace with fake /snap bind only =====
+uid=0(root) gid=0(root) groups=0(root)
+uid_map= 0 1001 1;
+bind_snap_rc=0
+TARGET SOURCE                             FSTYPE  OPTIONS
+/snap  overlay[/snap]                     overlay rw,relatime,lowerdir=/var/lib/docker/overlay2/l/UW65ESKXB6G3NJ4PEVFZC33CJB:/var/lib/docker/overlay2/l/NP6PGATZGY73PBLSEXXLG46J37:/var/lib/docker/overlay2/l/YGP5TEZ6MXA64GPTXXF5HEEMPK:/var/lib/docker/overlay2/l/WDFNRTS7YCBQQKYP33UALPWY6Z,upperdir=/var/lib/docker/overlay2/5660b90b773f7207f1b5e9a9dac7697efbed2f8ae813aeea13fe60824ce7f39a/diff,workdir=/var/lib/docker/overlay2/5660b90b773f7207f1b5e9a9dac7697efbed2f8ae813aeea13fe60824ce7f39a/work
+/snap  overlay[/tmp/scfbd-work/fake-snap] overlay rw,relatime,lowerdir=/var/lib/docker/overlay2/l/UW65ESKXB6G3NJ4PEVFZC33CJB:/var/lib/docker/overlay2/l/NP6PGATZGY73PBLSEXXLG46J37:/var/lib/docker/overlay2/l/YGP5TEZ6MXA64GPTXXF5HEEMPK:/var/lib/docker/overlay2/l/WDFNRTS7YCBQQKYP33UALPWY6Z,upperdir=/var/lib/docker/overlay2/5660b90b773f7207f1b5e9a9dac7697efbed2f8ae813aeea13fe60824ce7f39a/diff,workdir=/var/lib/docker/overlay2/5660b90b773f7207f1b5e9a9dac7697efbed2f8ae813aeea13fe60824ce7f39a/work
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.426094"}
+DEBUG: caps at startup: =ep
+DEBUG: ruid: 0, euid: 0, suid: 0
+DEBUG: rgid: 0, egid: 0, sgid: 0
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: =ep
+DEBUG: after setting privileged caps: =ep cap_chown,cap_dac_override,cap_sys_admin+i cap_setgid,cap_setuid-ep
+DEBUG: the user is member of root group
+cannot fstatat canonical snap directory: Permission denied
+ns_rc=1
+[rc=0] user and mount namespace with fake /snap bind only
+
+===== payload artifacts after user and mount namespace with fake /snap bind only =====
+MISSING /tmp/scfbd-work/payload.out
+MISSING /tmp/scfbd-work/sh_p_id.out
+MISSING /tmp/scfbd-work/root_write.out
+MISSING /root/scfbd-root-proof
+MISSING /tmp/scfbd-host-root-proof
+MISSING /tmp/scfbd-host-root-proof.suid
+
+===== user mount pid namespace with fake /snap so /proc/1/root/snap is fake =====
+uid=0(root) gid=0(root) groups=0(root)
+self=1
+uid_map= 0 1001 1;
+bind_snap_rc=0
+total 20
+drwxr-xr-x 5 root   root    4096 May 16 20:53 .
+drwxr-xr-x 1 nobody nogroup 4096 May 16 20:04 ..
+drwxr-xr-x 3 root   root    4096 May 16 20:53 core
+drwxr-xr-x 3 root   root    4096 May 16 20:53 scfbd
+drwxr-xr-x 3 root   root    4096 May 16 20:53 snapd
+TARGET SOURCE                             FSTYPE  OPTIONS
+/snap  overlay[/snap]                     overlay rw,relatime,lowerdir=/var/lib/docker/overlay2/l/UW65ESKXB6G3NJ4PEVFZC33CJB:/var/lib/docker/overlay2/l/NP6PGATZGY73PBLSEXXLG46J37:/var/lib/docker/overlay2/l/YGP5TEZ6MXA64GPTXXF5HEEMPK:/var/lib/docker/overlay2/l/WDFNRTS7YCBQQKYP33UALPWY6Z,upperdir=/var/lib/docker/overlay2/5660b90b773f7207f1b5e9a9dac7697efbed2f8ae813aeea13fe60824ce7f39a/diff,workdir=/var/lib/docker/overlay2/5660b90b773f7207f1b5e9a9dac7697efbed2f8ae813aeea13fe60824ce7f39a/work
+/snap  overlay[/tmp/scfbd-work/fake-snap] overlay rw,relatime,lowerdir=/var/lib/docker/overlay2/l/UW65ESKXB6G3NJ4PEVFZC33CJB:/var/lib/docker/overlay2/l/NP6PGATZGY73PBLSEXXLG46J37:/var/lib/docker/overlay2/l/YGP5TEZ6MXA64GPTXXF5HEEMPK:/var/lib/docker/overlay2/l/WDFNRTS7YCBQQKYP33UALPWY6Z,upperdir=/var/lib/docker/overlay2/5660b90b773f7207f1b5e9a9dac7697efbed2f8ae813aeea13fe60824ce7f39a/diff,workdir=/var/lib/docker/overlay2/5660b90b773f7207f1b5e9a9dac7697efbed2f8ae813aeea13fe60824ce7f39a/work
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.456758"}
+DEBUG: caps at startup: =ep
+DEBUG: ruid: 0, euid: 0, suid: 0
+DEBUG: rgid: 0, egid: 0, sgid: 0
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: =ep
+DEBUG: after setting privileged caps: =ep cap_chown,cap_dac_override,cap_sys_admin+i cap_setgid,cap_setuid-ep
+DEBUG: the user is member of root group
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+DEBUG: security tag: snap.scfbd.app
+DEBUG: executable:   /tmp/scfbd-work/payload.sh
+DEBUG: confinement:  non-classic
+DEBUG: base snap:    core
+DEBUG: umask reset, old umask was  022
+DEBUG: -- snap startup {"stage":"snap-confine mount namespace start", "time":"1778964783.456927"}
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/.lock
+cannot open lock file: /run/snapd/lock/.lock: Permission denied
+ns_rc=1
+[rc=0] user mount pid namespace with fake /snap so /proc/1/root/snap is fake
+
+===== payload artifacts after user mount pid namespace with fake /snap so /proc/1/root/snap is fake =====
+MISSING /tmp/scfbd-work/payload.out
+MISSING /tmp/scfbd-work/sh_p_id.out
+MISSING /tmp/scfbd-work/root_write.out
+MISSING /root/scfbd-root-proof
+MISSING /tmp/scfbd-host-root-proof
+MISSING /tmp/scfbd-host-root-proof.suid
+
+===== user mount pid namespace with fake /snap /var/lib/snapd and /run/snapd =====
+uid=0(root) gid=0(root) groups=0(root)
+uid_map= 0 1001 1;
+bind_snap_rc=0
+bind_varlib_rc=0
+bind_run_rc=0
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964783.479667"}
+DEBUG: caps at startup: =ep
+DEBUG: ruid: 0, euid: 0, suid: 0
+DEBUG: rgid: 0, egid: 0, sgid: 0
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: =ep
+DEBUG: after setting privileged caps: =ep cap_chown,cap_dac_override,cap_sys_admin+i cap_setgid,cap_setuid-ep
+DEBUG: the user is member of root group
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+DEBUG: security tag: snap.scfbd.app
+DEBUG: executable:   /tmp/scfbd-work/payload.sh
+DEBUG: confinement:  non-classic
+DEBUG: base snap:    core
+DEBUG: umask reset, old umask was  022
+DEBUG: -- snap startup {"stage":"snap-confine mount namespace start", "time":"1778964783.479889"}
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope (global), uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: ensuring that snap mount directory is shared
+DEBUG: performing operation: (disabled) use debug build to see details
+DEBUG: performing operation: (disabled) use debug build to see details
+DEBUG: unsharing snap namespace directory
+DEBUG: releasing lock 5
+DEBUG: opened snap-update-ns executable as file descriptor 5
+DEBUG: opened snap-discard-ns executable as file descriptor 6
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/scfbd.lock
+DEBUG: sanity timeout initialized and set for 30 seconds
+DEBUG: acquiring exclusive lock (scope scfbd, uid 0)
+DEBUG: sanity timeout reset and disabled
+DEBUG: initializing mount namespace: scfbd
+Terminated
+ns_rc=143
+[rc=124] user mount pid namespace with fake /snap /var/lib/snapd and /run/snapd
+
+===== payload artifacts after user mount pid namespace with fake /snap /var/lib/snapd and /run/snapd =====
+MISSING /tmp/scfbd-work/payload.out
+MISSING /tmp/scfbd-work/sh_p_id.out
+MISSING /tmp/scfbd-work/root_write.out
+MISSING /root/scfbd-root-proof
+MISSING /tmp/scfbd-host-root-proof
+MISSING /tmp/scfbd-host-root-proof.suid
+
+===== user mount pid namespace direct app path under fake snap =====
+uid=0(root) gid=0(root) groups=0(root)
+bind_snap_rc=0
+DEBUG: -- snap startup {"stage":"snap-confine enter", "time":"1778964805.501228"}
+DEBUG: caps at startup: =ep
+DEBUG: ruid: 0, euid: 0, suid: 0
+DEBUG: rgid: 0, egid: 0, sgid: 0
+DEBUG: apparmor extensions to the system are not available
+DEBUG: initial caps: =ep
+DEBUG: after setting privileged caps: =ep cap_chown,cap_dac_override,cap_sys_admin+i cap_setgid,cap_setuid-ep
+DEBUG: the user is member of root group
+DEBUG: SNAP_MOUNT_DIR (probed): /snap
+DEBUG: security tag: snap.scfbd.app
+DEBUG: executable:   /snap/scfbd/current/bin/payload.sh
+DEBUG: confinement:  non-classic
+DEBUG: base snap:    core
+DEBUG: umask reset, old umask was  022
+DEBUG: -- snap startup {"stage":"snap-confine mount namespace start", "time":"1778964805.501404"}
+DEBUG: creating lock directory /run/snapd/lock (if missing)
+DEBUG: opening lock directory /run/snapd/lock
+DEBUG: opening lock file: /run/snapd/lock/.lock
+cannot open lock file: /run/snapd/lock/.lock: Permission denied
+ns_rc=1
+[rc=0] user mount pid namespace direct app path under fake snap
+
+===== payload artifacts after user mount pid namespace direct app path under fake snap =====
+MISSING /tmp/scfbd-work/payload.out
+MISSING /tmp/scfbd-work/sh_p_id.out
+MISSING /tmp/scfbd-work/root_write.out
+MISSING /root/scfbd-root-proof
+MISSING /tmp/scfbd-host-root-proof
+MISSING /tmp/scfbd-host-root-proof.suid
+
+===== post-probe host root proof check =====
+ROOT_PROOF_CANDIDATE=NO
+ls: cannot access '/root/scfbd-root-proof': No such file or directory
+ls: cannot access '/tmp/scfbd-host-root-proof': No such file or directory
+ls: cannot access '/tmp/scfbd-host-root-proof.suid': No such file or directory
+ls: cannot access '/tmp/scfbd-work/payload.out': No such file or directory
+ls: cannot access '/tmp/scfbd-work/sh_p_id.out': No such file or directory
+ls: cannot access '/tmp/scfbd-work/root_write.out': No such file or directory
+
+===== snapd state side effects before cleanup =====
+-rw------- root:root /run/snapd/lock/scfbd.lock 0
+-rw------- attacker:attacker /tmp/scfbd-work/fake-run-snapd/lock/.lock -> 
+-rw------- attacker:attacker /tmp/scfbd-work/fake-run-snapd/lock/scfbd.lock -> 
+-rw-r--r-- attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd/mount/snap.scfbd.fstab -> 
+-rwxr-xr-x attacker:attacker /tmp/scfbd-work/pathbin/snap-discard-ns -> 
+-rwxr-xr-x attacker:attacker /tmp/scfbd-work/pathbin/snap-update-ns -> 
+-rwxr-xr-x attacker:attacker /tmp/scfbd-work/payload.sh -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/common -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/data -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-run-snapd -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-run-snapd/lock -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-run-snapd/ns -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/core -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/core/1 -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/core/1/meta -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/scfbd -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/scfbd/1 -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/scfbd/1/bin -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/scfbd/1/meta -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/snapd -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/snapd/1 -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-snap/snapd/1/meta -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd/cookie -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd/mount -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd/sequence -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/fake-var-lib-snapd/snaps -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/pathbin -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/private-target -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/user-common -> 
+drwxr-xr-x attacker:attacker /tmp/scfbd-work/user-data -> 
+lrwxrwxrwx attacker:attacker /tmp/scfbd-work/fake-snap/core/current -> 1
+lrwxrwxrwx attacker:attacker /tmp/scfbd-work/fake-snap/scfbd/current -> 1
+lrwxrwxrwx attacker:attacker /tmp/scfbd-work/fake-snap/snapd/current -> 1
+
+===== cleanup =====
+ls: cannot access '/tmp/scfbd-work': No such file or directory
+ls: cannot access '/root/scfbd-root-proof': No such file or directory
+ls: cannot access '/tmp/scfbd-host-root-proof': No such file or directory
+ls: cannot access '/tmp/scfbd-host-root-proof.suid': No such file or directory
+ls: cannot access '/tmp/scfbd-userns-owner-proof': No such file or directory
+
+===== final snap health =====
+active
+inactive
+active
+No snaps are installed yet. Try 'snap install hello-world'.

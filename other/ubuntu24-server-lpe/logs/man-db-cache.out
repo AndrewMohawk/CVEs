@@ -1,0 +1,584 @@
+
+### default package and service proof
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+cron	3.0pl1-184ubuntu2
+cron-daemon-common	3.0pl1-184ubuntu2
+groff-base	1.23.0-3build2
+man-db	2.12.0-4build2
+attacker_identity=uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+system_state_before=running
+failed_units_before=0
+cron.service   enabled enabled
+man-db.service static  -
+man-db.timer   enabled enabled
+  cron.service                             loaded active running Regular background program processing daemon
+  man-db.timer                             loaded active waiting Daily man-db regeneration
+
+### default code and config lines
+     1	[Unit]
+     2	Description=Daily man-db regeneration
+     3	Documentation=man:mandb(8)
+     4	ConditionACPower=true
+     5	
+     6	[Service]
+     7	Type=oneshot
+     8	# Recover from deletion, per FHS.
+     9	ExecStart=+/usr/bin/install -d -o man -g man -m 0755 /var/cache/man
+    10	# Regenerate man database.
+    11	ExecStart=/usr/bin/mandb --quiet
+    12	User=man
+    13	Nice=19
+    14	IOSchedulingClass=idle
+    15	IOSchedulingPriority=7
+    16	
+    17	LockPersonality=true
+    18	PrivateDevices=true
+    19	PrivateTmp=true
+    20	ProtectClock=true
+    21	ProtectControlGroups=true
+    22	ProtectHome=true
+    23	ProtectHostname=true
+    24	ProtectKernelLogs=true
+    25	ProtectKernelModules=true
+    26	ProtectKernelTunables=true
+    27	ProtectSystem=full
+    28	RestrictRealtime=true
+     1	[Unit]
+     2	Description=Daily man-db regeneration
+     3	Documentation=man:mandb(8)
+     4	
+     5	[Timer]
+     6	OnCalendar=daily
+     7	RandomizedDelaySec=12h
+     8	Persistent=true
+     9	
+    10	[Install]
+    11	WantedBy=timers.target
+     1	#!/bin/sh
+     2	#
+     3	# man-db cron daily
+     4	
+     5	set -e
+     6	
+     7	if [ -d /run/systemd/system ]; then
+     8	    # Skip in favour of systemd timer.
+     9	    exit 0
+    10	fi
+    11	
+    12	# This should be set by cron, but apparently isn't always; see
+    13	# https://bugs.debian.org/209185.  Add fallbacks so that start-stop-daemon
+    14	# can be found.
+    15	export PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
+    16	
+    17	iosched_idle=
+    18	# Don't try to change I/O priority in a vserver or OpenVZ.
+    19	if ! grep -Eq '(envID|VxID):.*[1-9]' /proc/self/status && \
+    20	   { [ ! -d /proc/vz ] || [ -d /proc/bc ]; }; then
+    21	    iosched_idle='--iosched idle'
+    22	fi
+    23	
+    24	if ! [ -d /var/cache/man ]; then
+    25	    # Recover from deletion, per FHS.
+    26	    install -d -o man -g man -m 0755 /var/cache/man
+    27	fi
+    28	
+    29	# expunge old catman pages which have not been read in a week
+    30	if [ -d /var/cache/man ]; then
+    31	  cd /
+    32	  # shellcheck disable=SC2086
+    33	  start-stop-daemon --start --pidfile /dev/null --startas /bin/sh \
+    34		--oknodo --chuid man $iosched_idle -- -c \
+    35		"find /var/cache/man -type f -name '*.gz' -atime +6 -print0 | \
+    36		 xargs -r0 rm -f"
+    37	fi
+    38	
+    39	# regenerate man database
+    40	if [ -x /usr/bin/mandb ]; then
+    41	    # --pidfile /dev/null so it always starts; mandb isn't really a daemon,
+    42	    # but we want to start it like one.
+    43	    # shellcheck disable=SC2086
+    44	    start-stop-daemon --start --pidfile /dev/null \
+    45			      --startas /usr/bin/mandb --oknodo --chuid man \
+    46			      $iosched_idle \
+    47			      -- --no-purge --quiet
+    48	fi
+    49	
+    50	exit 0
+     1	#!/bin/sh
+     2	#
+     3	# man-db cron weekly
+     4	
+     5	set -e
+     6	
+     7	if [ -d /run/systemd/system ]; then
+     8	    # Skip in favour of systemd timer.
+     9	    exit 0
+    10	fi
+    11	
+    12	# This should be set by cron, but apparently isn't always; see
+    13	# https://bugs.debian.org/209185.  Add fallbacks so that start-stop-daemon
+    14	# can be found.
+    15	export PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
+    16	
+    17	iosched_idle=
+    18	# Don't try to change I/O priority in a vserver or OpenVZ.
+    19	if ! grep -Eq '(envID|VxID):.*[1-9]' /proc/self/status && \
+    20	   { [ ! -d /proc/vz ] || [ -d /proc/bc ]; }; then
+    21	    iosched_idle='--iosched idle'
+    22	fi
+    23	
+    24	if ! [ -d /var/cache/man ]; then
+    25	    # Recover from deletion, per FHS.
+    26	    install -d -o man -g man -m 0755 /var/cache/man
+    27	fi
+    28	
+    29	# regenerate man database
+    30	if [ -x /usr/bin/mandb ]; then
+    31	    # --pidfile /dev/null so it always starts; mandb isn't really a daemon,
+    32	    # but we want to start it like one.
+    33	    # shellcheck disable=SC2086
+    34	    start-stop-daemon --start --pidfile /dev/null \
+    35			      --startas /usr/bin/mandb --oknodo --chuid man \
+    36			      $iosched_idle \
+    37			      -- --quiet
+    38	fi
+    39	
+    40	exit 0
+     1	d /var/cache/man 0755 man man 1w
+    20	MANDATORY_MANPATH			/usr/man
+    21	MANDATORY_MANPATH			/usr/share/man
+    22	MANDATORY_MANPATH			/usr/local/share/man
+    23	#---------------------------------------------------------
+    24	# set up PATH to MANPATH mapping
+    25	# ie. what man tree holds man pages for what binary directory.
+    26	#
+    27	#		*PATH*        ->	*MANPATH*
+    28	#
+    29	MANPATH_MAP	/bin			/usr/share/man
+    30	MANPATH_MAP	/usr/bin		/usr/share/man
+    31	MANPATH_MAP	/sbin			/usr/share/man
+    32	MANPATH_MAP	/usr/sbin		/usr/share/man
+    33	MANPATH_MAP	/usr/local/bin		/usr/local/man
+    34	MANPATH_MAP	/usr/local/bin		/usr/local/share/man
+    35	MANPATH_MAP	/usr/local/sbin		/usr/local/man
+    36	MANPATH_MAP	/usr/local/sbin		/usr/local/share/man
+    37	MANPATH_MAP	/usr/X11R6/bin		/usr/X11R6/man
+    38	MANPATH_MAP	/usr/bin/X11		/usr/X11R6/man
+    39	MANPATH_MAP	/usr/games		/usr/share/man
+    40	MANPATH_MAP	/opt/bin		/opt/man
+    41	MANPATH_MAP	/opt/sbin		/opt/man
+    42	#---------------------------------------------------------
+    43	# For a manpath element to be treated as a system manpath (as most of those
+    44	# above should normally be), it must be mentioned below. Each line may have
+    45	# an optional extra string indicating the catpath associated with the
+    46	# manpath. If no catpath string is used, the catpath will default to the
+    47	# given manpath.
+    48	#
+    49	# You *must* provide all system manpaths, including manpaths for alternate
+    50	# operating systems, locale specific manpaths, and combinations of both, if
+    51	# they exist, otherwise the permissions of the user running man/mandb will
+    52	# be used to manipulate the manual pages. Also, mandb will not initialise
+    53	# the database cache for any manpaths not mentioned below unless explicitly
+    54	# requested to do so.
+    55	#
+    56	# In a per-user configuration file, this directive only controls the
+    57	# location of catpaths and the creation of database caches; it has no effect
+    58	# on privileges.
+    59	#
+    60	# Any manpaths that are subdirectories of other manpaths must be mentioned
+    61	# *before* the containing manpath. E.g. /usr/man/preformat must be listed
+    62	# before /usr/man.
+    63	#
+    64	#		*MANPATH*     ->	*CATPATH*
+    65	#
+    66	MANDB_MAP	/usr/man		/var/cache/man/fsstnd
+    67	MANDB_MAP	/usr/share/man		/var/cache/man
+    68	MANDB_MAP	/usr/local/man		/var/cache/man/oldlocal
+    69	MANDB_MAP	/usr/local/share/man	/var/cache/man/local
+    70	MANDB_MAP	/usr/X11R6/man		/var/cache/man/X11R6
+    71	MANDB_MAP	/opt/man		/var/cache/man/opt
+    72	MANDB_MAP	/snap/man		/var/cache/man/snap
+
+### default permissions
+-rwxr-xr-x 1 root root  68104 Apr  8  2024 /usr/bin/catman
+-rwxr-xr-x 1 root root 205024 Mar 31  2024 /usr/bin/eqn
+-rwxr-xr-x 1 root root 133416 Mar 31  2024 /usr/bin/groff
+-rwxr-xr-x 1 root root    320 Apr 10 02:30 /usr/bin/man
+-rwxr-xr-x 1 root root 200104 Apr  8  2024 /usr/bin/mandb
+-rwxr-xr-x 1 root root 200520 Mar 31  2024 /usr/bin/pic
+-rwxr-xr-x 1 root root  67848 Mar 31  2024 /usr/bin/preconv
+-rwxr-xr-x 1 root root  67848 Mar 31  2024 /usr/bin/soelim
+-rwxr-xr-x 1 root root 133384 Mar 31  2024 /usr/bin/tbl
+-rwxr-xr-x 1 root root 788904 Mar 31  2024 /usr/bin/troff
+drwxr-xr-x  2 root root 4096 May 16 10:22 /etc/groff
+-rw-r--r--  1 root root 5230 Apr  8  2024 /etc/manpath.config
+drwxrwxrwt 27 root root 1720 May 16 18:59 /tmp
+lrwxrwxrwx  1 root root    9 Apr 10 02:23 /usr/local/man -> share/man
+drwxr-xr-x  2 root root 4096 Apr 10 02:23 /usr/local/share/man
+drwxr-xr-x  3 root root 4096 May 16 10:22 /usr/share/groff
+drwxr-xr-x 27 root root 4096 Apr 10 02:30 /usr/share/man
+drwxr-xr-x  1 man  man  4096 May 16 18:25 /var/cache/man
+drwxrwxrwt  1 root root 4096 May 16 18:51 /var/tmp
+ 19027921      8 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man
+ 19041323      4 -rw-r--r--   1 man      man           190 May 16 10:22 /var/cache/man/CACHEDIR.TAG
+ 19041324      4 drwxr-xr-x   2 man      man          4096 May 16 10:22 /var/cache/man/cat1
+ 19041325      4 drwxr-xr-x   2 man      man          4096 May 16 10:22 /var/cache/man/cat5
+ 19041326      4 drwxr-xr-x   2 man      man          4096 May 16 10:22 /var/cache/man/cat7
+ 19041327      4 drwxr-xr-x   2 man      man          4096 May 16 10:22 /var/cache/man/cat8
+ 19041328      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/it
+ 19041329     16 -rw-r--r--   1 man      man         16384 May 16 10:22 /var/cache/man/index.db
+ 19041333      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/hu
+ 19041336      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/sl
+ 19041339      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/tr
+ 19041345      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/es
+ 19041359      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/pt
+ 19041364      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/id
+ 19041368      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/ru
+ 19041373      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/da
+ 19041378      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/pl
+ 19041383      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/zh_CN
+ 19041388      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/ja
+ 19041393      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/sv
+ 19041398      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/pt_BR
+ 19041403      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/cs
+ 19041407      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/zh_TW
+ 19041410      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/fr
+ 19041415      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/nl
+ 19041420      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/uk
+ 19041425      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/ko
+ 19041428      4 drwxr-xr-x   1 man      man          4096 May 16 18:25 /var/cache/man/de
+
+### attacker-controlled man page, config, payloads
+     7918      0 drwxr-xr-x   4 attacker attacker      160 May 16 19:00 /tmp/man_db_cache_probe
+     7919      0 drwxr-xr-x   2 attacker attacker      400 May 16 19:00 /tmp/man_db_cache_probe/bin
+     7920      0 drwxr-xr-x   2 attacker attacker       40 May 16 19:00 /tmp/man_db_cache_probe/hits
+     7921      4 -rwxr-xr-x   1 attacker attacker      781 May 16 19:00 /tmp/man_db_cache_probe/bin/payload
+     7922      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/groff -> payload
+     7923      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/nroff -> payload
+     7924      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/troff -> payload
+     7925      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/tbl -> payload
+     7926      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/eqn -> payload
+     7927      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/neqn -> payload
+     7928      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/pic -> payload
+     7929      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/refer -> payload
+     7930      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/preconv -> payload
+     7931      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/soelim -> payload
+     7932      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/col -> payload
+     7933      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/gzip -> payload
+     7934      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/pager -> payload
+     7935      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/less -> payload
+     7936      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/lessopen -> payload
+     7937      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/zsoelim -> payload
+     7938      0 lrwxrwxrwx   1 attacker attacker        7 May 16 19:00 /tmp/man_db_cache_probe/bin/manconv -> payload
+     7939      4 -rw-r--r--   1 attacker attacker       45 May 16 19:00 /tmp/man_db_cache_probe/include.roff
+     7940      4 -rw-r--r--   1 attacker attacker      365 May 16 19:00 /tmp/man_db_cache_probe/manpath.config
+     7941      4 -rw-r--r--   1 attacker attacker      341 May 16 19:00 /tmp/man_db_cache_probe/manpath-rootcache.config
+     7942      0 lrwxrwxrwx   1 attacker attacker       39 May 16 19:00 /tmp/man_db_cache_probe/root-symlink -> /root/man_db_cache_probe_symlink_target
+-rw-r--r-- 1 attacker attacker 263 May 16 19:00 /home/attacker/.local/share/man/man1/man_db_cache_probe.1
+-rw-r--r-- 1 attacker attacker 341 May 16 19:00 /tmp/man_db_cache_probe/manpath-rootcache.config
+-rw-r--r-- 1 attacker attacker 365 May 16 19:00 /tmp/man_db_cache_probe/manpath.config
+
+### attacker write and trigger attempts
++ attacker$ id; groups
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+attacker
+[rc=0]
++ attacker$ for p in /etc/manpath.config /etc/groff /usr/share/groff /usr/share/man /usr/local/share/man /var/cache/man /var/cache/man/local /usr/lib/systemd/system/man-db.service /etc/cron.daily/man-db; do if [ -e "$p" ]; then [ -w "$p" ] && echo "WRITABLE $p" || echo "not_writable $p"; else parent=$(dirname "$p"); [ -w "$parent" ] && echo "parent_writable_missing $p" || echo "missing_not_creatable $p"; fi; done
+not_writable /etc/manpath.config
+not_writable /etc/groff
+not_writable /usr/share/groff
+not_writable /usr/share/man
+not_writable /usr/local/share/man
+not_writable /var/cache/man
+missing_not_creatable /var/cache/man/local
+not_writable /usr/lib/systemd/system/man-db.service
+not_writable /etc/cron.daily/man-db
+[rc=0]
++ attacker$ touch /var/cache/man/man_db_cache_probe_touch
+touch: cannot touch '/var/cache/man/man_db_cache_probe_touch': Permission denied
+[rc=1]
++ attacker$ mkdir /usr/local/share/man/man_db_cache_probe_dir
+mkdir: cannot create directory '/usr/local/share/man/man_db_cache_probe_dir': Permission denied
+[rc=1]
++ attacker$ ln -s /root/man_db_cache_probe_symlink_target /var/cache/man/man_db_cache_probe_link
+ln: failed to create symbolic link '/var/cache/man/man_db_cache_probe_link': Permission denied
+[rc=1]
++ attacker$ PATH=/tmp/man_db_cache_probe/bin:$PATH MANPATH=$HOME/.local/share/man MANROFFOPT=-U PAGER=/tmp/man_db_cache_probe/bin/pager LESSOPEN="|/tmp/man_db_cache_probe/bin/lessopen %s" mandb -C /tmp/man_db_cache_probe/manpath.config --user-db -d "$HOME/.local/share/man" >/tmp/man_db_cache_probe/mandb-user.out 2>&1; rc=$?; echo "mandb_user_rc=$rc"; tail -80 /tmp/man_db_cache_probe/mandb-user.out; exit 0
+mandb_user_rc=0
+ruid=1001, euid=1001
+rgid=1001, egid=1001
+From the config file /tmp/man_db_cache_probe/manpath.config:
+  Mandatory mandir `/home/attacker/.local/share/man'.
+  User mandir `/home/attacker/.local/share/man', catdir `/home/attacker/.cache/man_db_cache_probe'.
+  Defined `troff' as `troff'.
+  Defined `nroff' as `nroff'.
+  Defined `eqn' as `eqn'.
+  Defined `neqn' as `neqn'.
+  Defined `tbl' as `tbl'.
+  Defined `pic' as `pic'.
+  Defined `refer' as `refer'.
+  Defined `grap' as `grap'.
+  Defined `preconv' as `preconv'.
+  Defined `soelim' as `soelim'.
+  Defined `col' as `col'.
+  Defined `compressor' as `gzip -c7'.
+  Added sections: `1'.
+From the config file /etc/manpath.config:
+  Mandatory mandir `/usr/man'.
+  Mandatory mandir `/usr/share/man'.
+  Mandatory mandir `/usr/local/share/man'.
+  Path `/bin' mapped to mandir `/usr/share/man'.
+  Path `/usr/bin' mapped to mandir `/usr/share/man'.
+  Path `/sbin' mapped to mandir `/usr/share/man'.
+  Path `/usr/sbin' mapped to mandir `/usr/share/man'.
+  Path `/usr/local/bin' mapped to mandir `/usr/local/man'.
+  Path `/usr/local/bin' mapped to mandir `/usr/local/share/man'.
+  Path `/usr/local/sbin' mapped to mandir `/usr/local/man'.
+  Path `/usr/local/sbin' mapped to mandir `/usr/local/share/man'.
+  Path `/usr/X11R6/bin' mapped to mandir `/usr/X11R6/man'.
+  Path `/usr/bin/X11' mapped to mandir `/usr/X11R6/man'.
+  Path `/usr/games' mapped to mandir `/usr/share/man'.
+  Path `/opt/bin' mapped to mandir `/opt/man'.
+  Path `/opt/sbin' mapped to mandir `/opt/man'.
+  Global mandir `/usr/man', catdir `/var/cache/man/fsstnd'.
+  Global mandir `/usr/share/man', catdir `/var/cache/man'.
+  Global mandir `/usr/local/man', catdir `/var/cache/man/oldlocal'.
+  Global mandir `/usr/local/share/man', catdir `/var/cache/man/local'.
+  Global mandir `/usr/X11R6/man', catdir `/var/cache/man/X11R6'.
+  Global mandir `/opt/man', catdir `/var/cache/man/opt'.
+  Global mandir `/snap/man', catdir `/var/cache/man/snap'.
+  Added sections: `1', `n', `l', `8', `3', `0', `2', `3type', `3posix', `3pm', `3perl', `3am', `5', `4', `9', `6', `7'.
+mandb: warning: $MANPATH set, ignoring /etc/manpath.config
+adding /home/attacker/.local/share/man to manpathlist
+final search path = /home/attacker/.local/share/man
+failed to open /home/attacker/.cache/man_db_cache_probe/800340 O_RDONLY
+create_db(/home/attacker/.local/share/man): /home/attacker/.cache/man_db_cache_probe/800340
+Testing /home/attacker/.local/share/man for new files
+Examining man1
+	subdirectory man1 has been 'modified'
+creating catdir hierarchy /home/attacker/.cache/man_db_cache_probe	 cat1
+Updating index cache for path `/home/attacker/.local/share/man/man1'. Wait...
+
+test_manfile: considering /home/attacker/.local/share/man/man1/man_db_cache_probe.1
+ult_src: File /home/attacker/.local/share/man/man1/man_db_cache_probe.1 in mantree /home/attacker/.local/share/man
+Processing manual pages under /home/attacker/.local/share/man...
+loading seccomp filter (permissive: 0)
+seccomp already enabled
+trying encoding UTF-8 -> UTF-8//IGNORE
+"man_db_cache_probe - cache builder trust-boundary probe"
+record = 'man_db_cache_probe - cache builder trust-boundary probe'
+trace: '/home/attacker/.local/share/man/man1/man_db_cache_probe.1'
+trace: '/home/attacker/.local/share/man/man1/man_db_cache_probe.1'
+name = 'man_db_cache_probe', ext = '1', id = A
+done.
+catpath: /home/attacker/.cache/man_db_cache_probe, manpath: /home/attacker/.local/share/man
+Checking for stray cats under /home/attacker/.local/share/man...
+Checking for stray cats under /home/attacker/.cache/man_db_cache_probe...
+1 man subdirectory contained newer manual pages.
+1 manual page was added.
+0 stray cats were added.
+0 old database entries were purged.
+[rc=0]
++ attacker$ PATH=/tmp/man_db_cache_probe/bin:$PATH MANPATH=$HOME/.local/share/man MANROFFOPT=-U PAGER=/tmp/man_db_cache_probe/bin/pager LESSOPEN="|/tmp/man_db_cache_probe/bin/lessopen %s" catman -C /tmp/man_db_cache_probe/manpath.config -M "$HOME/.local/share/man" >/tmp/man_db_cache_probe/catman-user.out 2>&1; rc=$?; echo "catman_user_rc=$rc"; tail -80 /tmp/man_db_cache_probe/catman-user.out; exit 0
+catman_user_rc=0
+
+Updating cat files for section 1 of man hierarchy /home/attacker/.local/share/man
+This system has been minimized by removing packages and content that are
+not required on a system that users do not log into.
+
+To restore this content, including manpages, you can run the 'unminimize'
+command. You will still need to ensure the 'man-db' package is installed.
+[rc=0]
++ attacker$ PATH=/tmp/man_db_cache_probe/bin:$PATH MANROFFOPT=-U /usr/bin/groff -U -t -e -p -mandoc "$HOME/.local/share/man/man1/man_db_cache_probe.1" >/tmp/man_db_cache_probe/groff-user.out 2>&1; rc=$?; echo "groff_user_rc=$rc"; tail -80 /tmp/man_db_cache_probe/groff-user.out; exit 0
+groff_user_rc=0
+}if
+newpath
+/CNT countdictstack def
+userdict begin
+/showpage{}def
+%
+%  Any included setpagedevice should be ignored.
+%  See: http://www.w-beer.de/doc/ps/.
+%
+/setpagedevice{}def
+mark
+}bind def
+/PEND{
+cleartomark
+countdictstack CNT sub{end}repeat
+level1 restore
+}bind def
+end def
+/setpacking where{
+pop
+setpacking
+}if
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%BeginFeature: *PageSize Default
+<< /PageSize [ 595 842 ] /ImagingBBox null >> setpagedevice
+%%EndFeature
+%%IncludeResource: font Times-Italic
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Times-Bold
+%%IncludeResource: font Symbol
+grops begin/DEFS 1 dict def DEFS begin/u{.001 mul}bind def end/RES 72
+def/PL 841.89 def/LS false def/ENC0[/asciicircum/asciitilde/Scaron
+/Zcaron/scaron/zcaron/Ydieresis/trademark/quotesingle/Euro/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/space/exclam/quotedbl/numbersign/dollar/percent
+/ampersand/quoteright/parenleft/parenright/asterisk/plus/comma/hyphen
+/period/slash/zero/one/two/three/four/five/six/seven/eight/nine/colon
+/semicolon/less/equal/greater/question/at/A/B/C/D/E/F/G/H/I/J/K/L/M/N/O
+/P/Q/R/S/T/U/V/W/X/Y/Z/bracketleft/backslash/bracketright/circumflex
+/underscore/quoteleft/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u/v/w/x/y
+/z/braceleft/bar/braceright/tilde/.notdef/quotesinglbase/guillemotleft
+/guillemotright/bullet/florin/fraction/perthousand/dagger/daggerdbl
+/endash/emdash/ff/fi/fl/ffi/ffl/dotlessi/dotlessj/grave/hungarumlaut
+/dotaccent/breve/caron/ring/ogonek/quotedblleft/quotedblright/oe/lslash
+/quotedblbase/OE/Lslash/.notdef/exclamdown/cent/sterling/currency/yen
+/brokenbar/section/dieresis/copyright/ordfeminine/guilsinglleft
+/logicalnot/minus/registered/macron/degree/plusminus/twosuperior
+/threesuperior/acute/mu/paragraph/periodcentered/cedilla/onesuperior
+/ordmasculine/guilsinglright/onequarter/onehalf/threequarters
+/questiondown/Agrave/Aacute/Acircumflex/Atilde/Adieresis/Aring/AE
+/Ccedilla/Egrave/Eacute/Ecircumflex/Edieresis/Igrave/Iacute/Icircumflex
+/Idieresis/Eth/Ntilde/Ograve/Oacute/Ocircumflex/Otilde/Odieresis
+/multiply/Oslash/Ugrave/Uacute/Ucircumflex/Udieresis/Yacute/Thorn
+/germandbls/agrave/aacute/acircumflex/atilde/adieresis/aring/ae/ccedilla
+/egrave/eacute/ecircumflex/edieresis/igrave/iacute/icircumflex/idieresis
+/eth/ntilde/ograve/oacute/ocircumflex/otilde/odieresis/divide/oslash
+/ugrave/uacute/ucircumflex/udieresis/yacute/thorn/ydieresis]def
+/Times-Bold@0 ENC0/Times-Bold RE/Times-Roman@0 ENC0/Times-Roman RE
+/Times-Italic@0 ENC0/Times-Italic RE
+%%EndSetup
+%%Page: 1 1
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 10/Times-Italic@0 SF(MAN_DB_CA)72.68 48 Q(CHE_PR)-.3 E(OBE)-.4 E/F1
+10/Times-Roman@0 SF 48.87(\(1\) General).73 F(Commands Manual)2.5 E F0
+(MAN_DB_CA)52.05 E(CHE_PR)-.3 E(OBE)-.4 E F1(\(1\)).73 E/F2 10.95
+/Times-Bold@0 SF -.219(NA)72 84 S(ME).219 E F1
+(man_db_cache_probe \255 cache b)108 96 Q(uilder trust-boundary probe)
+-.2 E F2(DESCRIPTION)72 112.8 Q .4 LW 140.77 117.3 108 117.3 DL F1
+(probe)113 126.8 Q 140.77 131.3 108 131.3 DL 140.77 117.3 140.77 131.3
+DL 108 117.3 108 131.3 DL F0(x)108.77 138.8 Q/F3 10/Symbol SF(=)3.33 E
+F0(y)3.54 E 162 186.8 MT 0 -36 RL -54 0 RL 0 36 RL CL ST F1(1)535 768 Q
+0 Cg EP
+%%Trailer
+end
+%%EOF
+[rc=0]
++ attacker$ PATH=/tmp/man_db_cache_probe/bin:$PATH MANPATH=$HOME/.local/share/man MANROFFOPT=-U mandb -C /tmp/man_db_cache_probe/manpath-rootcache.config "$HOME/.local/share/man" >/tmp/man_db_cache_probe/mandb-rootcache.out 2>&1; rc=$?; echo "mandb_rootcache_rc=$rc"; tail -80 /tmp/man_db_cache_probe/mandb-rootcache.out; exit 0
+mandb_rootcache_rc=2
+Only the 'man' user can create or update system-wide databases; acting as if the --user-db option was used.
+mandb: warning: $MANPATH set, ignoring /etc/manpath.config
+Processing manual pages under /home/attacker/.local/share/man...
+mandb: warning: cannot create catdir /var/cache/man/man_db_cache_probe
+mandb: can't create index cache /var/cache/man/man_db_cache_probe/800381: No such file or directory
+[rc=0]
++ attacker$ PATH=/tmp/man_db_cache_probe/bin:$PATH MANROFFOPT=-U PAGER=/tmp/man_db_cache_probe/bin/pager LESSOPEN="|/tmp/man_db_cache_probe/bin/lessopen %s" /usr/bin/man -l "$HOME/.local/share/man/man1/man_db_cache_probe.1" >/tmp/man_db_cache_probe/man-stub.out 2>&1; rc=$?; echo "man_stub_rc=$rc"; cat /tmp/man_db_cache_probe/man-stub.out; exit 0
+man_stub_rc=0
+This system has been minimized by removing packages and content that are
+not required on a system that users do not log into.
+
+To restore this content, including manpages, you can run the 'unminimize'
+command. You will still need to ensure the 'man-db' package is installed.
+[rc=0]
++ attacker$ systemctl set-environment PATH=/tmp/man_db_cache_probe/bin:$PATH MANPATH=$HOME/.local/share/man MANROFFOPT=-U PAGER=/tmp/man_db_cache_probe/bin/pager
+Failed to set environment: Access denied
+[rc=1]
++ attacker$ systemctl start man-db.service
+Failed to start man-db.service: Interactive authentication required.
+See system logs and 'systemctl status man-db.service' for details.
+[rc=1]
++ attacker$ systemd-run --unit=man-db-cache-probe /usr/bin/id
+Failed to start transient service unit: Interactive authentication required.
+[rc=1]
+
+### attacker-controlled helper hits before root service
+---
+---
+/tmp/man_db_cache_probe/hits/payload.800360
+/tmp/man_db_cache_probe/hits/payload.800369
+HOME=/home/attacker
+HOME=/home/attacker
+MANROFFOPT=-U
+MANROFFOPT=-U
+PATH=/tmp/man_db_cache_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+PATH=/tmp/man_db_cache_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+USER=attacker
+USER=attacker
+argv= <pso_request>
+argv= <sy_request>
+helper=payload
+helper=payload
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+
+### root default timer/service and cron simulation after attacker setup
++ root# systemctl reset-failed man-db.service; systemctl start man-db.service; systemctl status --no-pager -l man-db.service | sed -n "1,80p"
+○ man-db.service - Daily man-db regeneration
+     Loaded: loaded (/usr/lib/systemd/system/man-db.service; static)
+     Active: inactive (dead) since Sat 2026-05-16 19:00:07 UTC; 4ms ago
+TriggeredBy: ● man-db.timer
+       Docs: man:mandb(8)
+    Process: 800410 ExecStart=/usr/bin/install -d -o man -g man -m 0755 /var/cache/man (code=exited, status=0/SUCCESS)
+    Process: 800412 ExecStart=/usr/bin/mandb --quiet (code=exited, status=0/SUCCESS)
+   Main PID: 800412 (code=exited, status=0/SUCCESS)
+        CPU: 23ms
+
+May 16 19:00:07 4f5b414436ae systemd[1]: Starting man-db.service - Daily man-db regeneration...
+May 16 19:00:07 4f5b414436ae systemd[1]: man-db.service: Deactivated successfully.
+May 16 19:00:07 4f5b414436ae systemd[1]: Finished man-db.service - Daily man-db regeneration.
+[rc=0]
++ root# env -i PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin SHELL=/bin/sh HOME=/root /etc/cron.daily/man-db
+[rc=0]
++ root# env -i PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin SHELL=/bin/sh HOME=/root /etc/cron.weekly/man-db
+[rc=0]
++ root# systemd-tmpfiles --create /usr/lib/tmpfiles.d/man-db.conf; ls -ld /var/cache/man
+drwxr-xr-x 1 man man 4096 May 16 19:00 /var/cache/man
+[rc=0]
+
+### root marker and post-trigger cache state
+NO_ROOT_PAYLOAD_MARKER
+---
+---
+/tmp/man_db_cache_probe/hits/payload.800360
+/tmp/man_db_cache_probe/hits/payload.800369
+HOME=/home/attacker
+HOME=/home/attacker
+MANROFFOPT=-U
+MANROFFOPT=-U
+PATH=/tmp/man_db_cache_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+PATH=/tmp/man_db_cache_probe/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+USER=attacker
+USER=attacker
+argv= <pso_request>
+argv= <sy_request>
+helper=payload
+helper=payload
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+drwxr-xr-x 1 man man 4096 May 16 19:00 /var/cache/man
+
+### cleanup
+system_state_after=running
+failed_units_after=0
+NO_PROBE_LEFTOVERS

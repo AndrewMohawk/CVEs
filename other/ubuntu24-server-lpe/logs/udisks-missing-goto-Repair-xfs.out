@@ -1,0 +1,92 @@
+udisksd_pid=24328
+=== root.log ===
+udisksd_pid=24328
+openvt_rc=0
+=== user.log ===
+identity=uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+session:
+selfauth (1002)
+   Since: Sun 2026-05-17 19:24:25 UTC; 1min 5s ago
+   State: active
+Sessions: *83
+  Linger: no
+    Unit: user-1002.slice
+          ├─session-83.scope
+          │ ├─24366 /bin/login -f
+          │ ├─24435 -bash
+          │ ├─24441 bash /tmp/udisks-missing-goto-strace-trigger.sh Repair xfs
+          │ ├─24444 loginctl user-status 1002 --no-pager
+          │ └─24445 sed -n 1,35p
+          └─user@1002.service
+            └─init.scope
+              ├─24423 /usr/lib/systemd/systemd --user
+              └─24424 "(sd-pam)"
+
+May 17 19:25:31 bf51bb670420 systemd[24423]: Listening on gpg-agent.socket - GnuPG cryptographic agent and passphrase cache.
+May 17 19:25:31 bf51bb670420 systemd[24423]: Listening on keyboxd.socket - GnuPG public key management service.
+May 17 19:25:31 bf51bb670420 systemd[24423]: Listening on pk-debconf-helper.socket - debconf communication socket.
+May 17 19:25:31 bf51bb670420 systemd[24423]: Listening on snapd.session-agent.socket - REST API socket for snapd user session agent.
+May 17 19:25:31 bf51bb670420 systemd[24423]: Listening on dbus.socket - D-Bus User Message Bus Socket.
+May 17 19:25:31 bf51bb670420 systemd[24423]: Listening on gpg-agent-ssh.socket - GnuPG cryptographic agent (ssh-agent emulation).
+May 17 19:25:31 bf51bb670420 systemd[24423]: Reached target sockets.target - Sockets.
+May 17 19:25:31 bf51bb670420 systemd[24423]: Reached target basic.target - Basic System.
+May 17 19:25:31 bf51bb670420 systemd[24423]: Reached target default.target - Main User Target.
+May 17 19:25:31 bf51bb670420 systemd[24423]: Startup finished in 171ms.
+image=/home/selfauth/udisks-missing-goto-active/xfs-Repair.img
+Mapped file /home/selfauth/udisks-missing-goto-active/xfs-Repair.img as /dev/loop0.
+loop_setup_rc=0
+dev=/dev/loop0
+obj=/org/freedesktop/UDisks2/block_devices/loop0
+()
+Mounted /dev/loop0 at /media/selfauth/f2ffb5e6-3503-464b-af8d-97fc9f418739
+mount_rc=0
+TARGET                                               SOURCE     FSTYPE OPTIONS
+/media/selfauth/f2ffb5e6-3503-464b-af8d-97fc9f418739 /dev/loop0 xfs    rw,nosuid,nodev,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota
+unique_name=:1.728
+exception=DBusException: org.freedesktop.UDisks2.Error.NotSupported: Cannot repair filesystem filesystem on /dev/loop0 if mounted
+holding_system_bus_name=20s
+method_rc=0
+=== exec trace ===
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0xffff82ad90f0) = 24460
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0xffff82ad90f0) = 24492
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0xffff80a0f010) = 24500
+execve("/usr/local/sbin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop0"], 0xaaaae634a140 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/local/bin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop0"], 0xaaaae634a140 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/sbin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop0"], 0xaaaae634a140 /* 10 vars */) = 0
+execve("/usr/local/sbin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop0"], 0xffff68003720 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/local/bin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop0"], 0xffff68003720 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/sbin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop0"], 0xffff68003720 /* 10 vars */) = 0
+execve("/usr/local/sbin/xfs_repair", ["xfs_repair", "/dev/loop0"], 0xffff6c009010 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/local/bin/xfs_repair", ["xfs_repair", "/dev/loop0"], 0xffff6c009010 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/sbin/xfs_repair", ["xfs_repair", "/dev/loop0"], 0xffff6c009010 /* 10 vars */) = 0
+=== journal crash lines ===
+May 17 19:24:57 bf51bb670420 udisksd[24093]: Error statting /var/lib/swap: No such file or directory
+May 17 19:24:58 bf51bb670420 udisksd[24093]: Set up loop device /dev/loop0 (backed by /home/selfauth/udisks-missing-goto-active/xfs-Check.img)
+May 17 19:25:01 bf51bb670420 udisksd[24093]: Error statting /var/lib/swap: No such file or directory
+May 17 19:25:01 bf51bb670420 udisksd[24093]: Mounted /dev/loop0 at /media/selfauth/8eefcb34-ecff-4cbe-866b-31a80961d257 on behalf of uid 1002
+May 17 19:25:02 bf51bb670420 systemd[1]: udisks2.service: Main process exited, code=killed, status=11/SEGV
+May 17 19:25:02 bf51bb670420 systemd[1]: udisks2.service: Failed with result 'signal'.
+May 17 19:25:15 bf51bb670420 systemd[1]: Starting udisks2.service - Disk Manager...
+May 17 19:25:15 bf51bb670420 udisksd[24253]: udisks daemon version 2.10.1 starting
+May 17 19:25:15 bf51bb670420 udisksd[24253]: Error statting /var/lib/swap: No such file or directory
+May 17 19:25:15 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:25:15 bf51bb670420 udisksd[24253]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+May 17 19:25:25 bf51bb670420 udisksd[24253]: Error statting /var/lib/swap: No such file or directory
+May 17 19:25:25 bf51bb670420 udisksd[24253]: Error statting /var/lib/swap: No such file or directory
+May 17 19:25:25 bf51bb670420 udisksd[24253]: Cleaning up mount point /media/selfauth/8eefcb34-ecff-4cbe-866b-31a80961d257 (device 7:0 is not mounted)
+May 17 19:25:25 bf51bb670420 udisksd[24253]: No longer watching loop device /dev/loop0
+May 17 19:25:27 bf51bb670420 systemd[1]: Stopping udisks2.service - Disk Manager...
+May 17 19:25:27 bf51bb670420 udisksd[24253]: udisks daemon version 2.10.1 exiting
+May 17 19:25:27 bf51bb670420 systemd[1]: udisks2.service: Deactivated successfully.
+May 17 19:25:27 bf51bb670420 systemd[1]: Stopped udisks2.service - Disk Manager.
+May 17 19:25:27 bf51bb670420 systemd[1]: Starting udisks2.service - Disk Manager...
+May 17 19:25:27 bf51bb670420 udisksd[24328]: udisks daemon version 2.10.1 starting
+May 17 19:25:27 bf51bb670420 udisksd[24328]: Error statting /var/lib/swap: No such file or directory
+May 17 19:25:27 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:25:27 bf51bb670420 udisksd[24328]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+May 17 19:25:31 bf51bb670420 udisksd[24328]: Error statting /var/lib/swap: No such file or directory
+May 17 19:25:31 bf51bb670420 udisksd[24328]: Set up loop device /dev/loop0 (backed by /home/selfauth/udisks-missing-goto-active/xfs-Repair.img)
+May 17 19:25:34 bf51bb670420 udisksd[24328]: Error statting /var/lib/swap: No such file or directory
+May 17 19:25:34 bf51bb670420 udisksd[24328]: Mounted /dev/loop0 at /media/selfauth/f2ffb5e6-3503-464b-af8d-97fc9f418739 on behalf of uid 1002
+May 17 19:25:35 bf51bb670420 systemd[1]: udisks2.service: Main process exited, code=killed, status=11/SEGV
+May 17 19:25:35 bf51bb670420 systemd[1]: udisks2.service: Failed with result 'signal'.

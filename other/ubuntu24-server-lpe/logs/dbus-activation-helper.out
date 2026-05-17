@@ -1,0 +1,723 @@
+D-Bus activation helper boundary probe
+target=ubuntu24-server-lpe-target attacker=attacker
+2026-05-16T14:51:20-0400
+
+## cleanup before probe
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+
+## target identity and default package proof
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== identity ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+      1 root     systemd         /sbin/init
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+attacker
+sudo: a password is required
+sudo_rc=1
+
+== dbus package versions ==
+dbus	1.14.10-4ubuntu4.1	arm64	ii 
+dbus-bin	1.14.10-4ubuntu4.1	arm64	ii 
+dbus-daemon	1.14.10-4ubuntu4.1	arm64	ii 
+dbus-session-bus-common	1.14.10-4ubuntu4.1	all	ii 
+dbus-system-bus-common	1.14.10-4ubuntu4.1	all	ii 
+libdbus-1-3:arm64	1.14.10-4ubuntu4.1	arm64	ii 
+polkitd	124-2ubuntu1.24.04.3	arm64	ii 
+python3-dbus	1.3.2-5build3	arm64	ii 
+systemd	255.4-1ubuntu8.15	arm64	ii 
+
+== system bus service state ==
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/dbus.service
+UnitFileState=static
+
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/dbus.socket
+UnitFileState=static
+NAME                             PID PROCESS         USER            CONNECTION    UNIT                        SESSION DESCRIPTION
+:1.0                               1 systemd         root            :1.0          init.scope                  -       -
+:1.3                             263 systemd-logind  root            :1.3          systemd-logind.service      -       -
+:1.4                             258 polkitd         polkitd         :1.4          polkit.service              -       -
+:1.5                             293 unattended-upgr root            :1.5          unattended-upgrades.service -       -
+:1.58                           1528 netplan-dbus    root            :1.58         dbus.service                -       -
+:1.97175                      729973 udisksd         root            :1.97175      udisks2.service             -       -
+:1.98609                      771164 systemd-resolve systemd-resolve :1.98609      systemd-resolved.service    -       -
+:1.98896                      798837 busctl          root            :1.98896      init.scope                  -       -
+com.ubuntu.SoftwareProperties      - -               -               (activatable) -                           -       -
+io.netplan.Netplan              1528 netplan-dbus    root            :1.58         dbus.service                -       -
+org.freedesktop.DBus               1 systemd         root            -             init.scope                  -       -
+org.freedesktop.ModemManager1      - -               -               (activatable) -                           -       -
+org.freedesktop.PackageKit         - -               -               (activatable) -                           -       -
+org.freedesktop.PolicyKit1       258 polkitd         polkitd         :1.4          polkit.service              -       -
+org.freedesktop.UDisks2       729973 udisksd         root            :1.97175      udisks2.service             -       -
+org.freedesktop.bolt               - -               -               (activatable) -                           -       -
+org.freedesktop.fwupd              - -               -               (activatable) -                           -       -
+org.freedesktop.hostname1          - -               -               (activatable) -                           -       -
+org.freedesktop.locale1            - -               -               (activatable) -                           -       -
+org.freedesktop.login1           263 systemd-logind  root            :1.3          systemd-logind.service      -       -
+org.freedesktop.network1           - -               -               (activatable) -                           -       -
+org.freedesktop.resolve1      771164 systemd-resolve systemd-resolve :1.98609      systemd-resolved.service    -       -
+org.freedesktop.systemd1           1 systemd         root            :1.0          init.scope                  -       -
+org.freedesktop.timedate1          - -               -               (activatable) -                           -       -
+org.freedesktop.timesync1          - -               -               (activatable) -                           -       -
+
+## default activation files, helper, and policy
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== launch helper and dbus tools ==
+-rwsr-xr-- 4754 root:messagebus regular file /usr/lib/dbus-1.0/dbus-daemon-launch-helper -> '/usr/lib/dbus-1.0/dbus-daemon-launch-helper'
+-rwxr-xr-x 755 root:root regular file /usr/bin/dbus-daemon -> '/usr/bin/dbus-daemon'
+-rwxr-xr-x 755 root:root regular file /usr/bin/dbus-send -> '/usr/bin/dbus-send'
+-rwxr-xr-x 755 root:root regular file /usr/bin/busctl -> '/usr/bin/busctl'
+-rwxr-xr-x 755 root:root regular file /usr/bin/dbus-update-activation-environment -> '/usr/bin/dbus-update-activation-environment'
+messagebus:x:103:
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+
+== dbus config and service directories ==
+-rw-r--r-- 644 root:root regular file /usr/share/dbus-1/system.conf -> '/usr/share/dbus-1/system.conf'
+MISSING /etc/dbus-1/system.conf
+drwxr-xr-x 755 root:root directory /usr/share/dbus-1/system-services -> '/usr/share/dbus-1/system-services'
+MISSING /etc/dbus-1/system-services
+MISSING /usr/local/share/dbus-1/system-services
+drwxr-xr-x 755 root:root directory /usr/share/dbus-1/system.d -> '/usr/share/dbus-1/system.d'
+drwxr-xr-x 755 root:root directory /etc/dbus-1/system.d -> '/etc/dbus-1/system.d'
+drwxr-xr-x 755 root:root directory /usr/share/dbus-1/services -> '/usr/share/dbus-1/services'
+MISSING /usr/local/share/dbus-1/services
+drwxr-xr-x 755 root:root directory /etc/dbus-1/session.d -> '/etc/dbus-1/session.d'
+drwxr-xr-x 755 root:root directory /var/lib/dbus -> '/var/lib/dbus'
+-rw-r--r-- 644 root:root regular file /var/lib/dbus/machine-id -> '/var/lib/dbus/machine-id'
+-rw-r--r-- 644 root:root regular file /etc/machine-id -> '/etc/machine-id'
+drwxr-xr-x 755 root:root directory /run/dbus -> '/run/dbus'
+srw-rw-rw- 666 root:root socket /run/dbus/system_bus_socket -> '/run/dbus/system_bus_socket'
+
+== system.conf activation boundary excerpts ==
+    20	  <!-- Fork into daemon mode -->
+    21	  <fork/>
+    22	
+    23	  <!-- We use system service launching using a helper -->
+    24	  <standard_system_servicedirs/>
+    25	
+    26	  <!-- This is a setuid helper that is used to launch system services -->
+    27	  <servicehelper>/usr/lib/dbus-1.0/dbus-daemon-launch-helper</servicehelper>
+    28	
+    29	  <!-- Write a pid file -->
+    30	  <pidfile>/run/dbus/pid</pidfile>
+    31	
+    32	  <!-- Enable logging to syslog -->
+    33	  <syslog/>
+    34	
+    35	  <!-- Only allow socket-credentials-based authentication -->
+    36	  <auth>EXTERNAL</auth>
+    37	
+    38	  <!-- Only listen on a local socket. (abstract=/path/to/socket 
+    39	       means use abstract namespace, don't really create filesystem 
+    40	       file; only Linux supports this. Use path=/whatever on other 
+    41	       systems.) -->
+    42	  <listen>unix:path=/run/dbus/system_bus_socket</listen>
+    43	
+    44	  <policy context="default">
+    45	    <!-- All users can connect to system bus -->
+    46	    <allow user="*"/>
+    47	
+    48	    <!-- Holes must be punched in service configuration files for
+    49	         name ownership and sending method calls -->
+    50	    <deny own="*"/>
+    51	    <deny send_type="method_call"/>
+    52	
+    53	    <!-- Signals and reply messages (method returns, errors) are allowed
+    54	         by default -->
+    55	    <allow send_type="signal"/>
+    56	    <allow send_requested_reply="true" send_type="method_return"/>
+    57	    <allow send_requested_reply="true" send_type="error"/>
+    58	
+    59	    <!-- All messages may be received by default -->
+    60	    <allow receive_type="method_call"/>
+    61	    <allow receive_type="method_return"/>
+    62	    <allow receive_type="error"/>
+    63	    <allow receive_type="signal"/>
+    64	
+    65	    <!-- Allow anyone to talk to the message bus -->
+    66	    <allow send_destination="org.freedesktop.DBus"
+    67	           send_interface="org.freedesktop.DBus" />
+    68	    <allow send_destination="org.freedesktop.DBus"
+    69	           send_interface="org.freedesktop.DBus.Introspectable"/>
+    70	    <allow send_destination="org.freedesktop.DBus"
+    71	           send_interface="org.freedesktop.DBus.Properties"/>
+    72	    <allow send_destination="org.freedesktop.DBus"
+    73	           send_interface="org.freedesktop.DBus.Containers1"/>
+    74	    <!-- But disallow some specific bus services -->
+    75	    <deny send_destination="org.freedesktop.DBus"
+    76	          send_interface="org.freedesktop.DBus"
+    77	          send_member="UpdateActivationEnvironment"/>
+    78	    <deny send_destination="org.freedesktop.DBus"
+    79	          send_interface="org.freedesktop.DBus.Debug.Stats"/>
+    80	    <deny send_destination="org.freedesktop.DBus"
+    81	          send_interface="org.freedesktop.systemd1.Activator"/>
+    82	  </policy>
+    83	
+    84	  <!-- Only systemd, which runs as root, may report activation failures. -->
+    85	  <policy user="root">
+    86	    <allow send_destination="org.freedesktop.DBus"
+    87	           send_interface="org.freedesktop.systemd1.Activator"/>
+    88	  </policy>
+    89	
+    90	  <!-- root may monitor the system bus. -->
+   120	  <!-- <limit name="auth_timeout">5000</limit> -->
+   121	  <!-- <limit name="pending_fd_timeout">150000</limit> -->
+   122	  <!-- <limit name="max_completed_connections">2048</limit> -->
+   123	  <!-- <limit name="max_incomplete_connections">64</limit> -->
+   124	  <!-- <limit name="max_connections_per_user">256</limit> -->
+   125	  <!-- <limit name="max_pending_service_starts">512</limit> -->
+   126	  <!-- <limit name="max_names_per_connection">512</limit> -->
+   127	  <!-- <limit name="max_match_rules_per_connection">512</limit> -->
+   128	  <!-- <limit name="max_replies_per_connection">128</limit> -->
+   129	
+   130	  <!-- Config files are placed here that among other things, punch 
+   131	       holes in the above policy for specific services. -->
+   132	  <includedir>system.d</includedir>
+   133	
+   134	  <includedir>/etc/dbus-1/system.d</includedir>
+   135	
+   136	  <!-- This is included last so local configuration can override what's 
+   137	       in this standard file -->
+   138	  <include ignore_missing="yes">/etc/dbus-1/system-local.conf</include>
+   139	
+   140	  <include if_selinux_enabled="yes" selinux_root_relative="yes">contexts/dbus_contexts</include>
+
+== system bus service files ==
+### /usr/share/dbus-1/system-services/com.ubuntu.SoftwareProperties.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/com.ubuntu.SoftwareProperties.service
+     1	[D-BUS Service]
+     2	Name=com.ubuntu.SoftwareProperties
+     3	Exec=/usr/lib/software-properties/software-properties-dbus
+     4	User=root
+### /usr/share/dbus-1/system-services/io.netplan.Netplan.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/io.netplan.Netplan.service
+     1	[D-BUS Service]
+     2	Name=io.netplan.Netplan
+     3	Exec=/usr/libexec/netplan/netplan-dbus
+     4	User=root
+     5	AssumedAppArmorLabel=unconfined
+### /usr/share/dbus-1/system-services/org.freedesktop.ModemManager1.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.ModemManager1.service
+     1	# This D-Bus service activation file is only for systemd support since
+     2	# an auto-activated ModemManager would be quite surprising for those people
+     3	# who have MM installed but turned off.  Thus the Exec path available to
+     4	# D-Bus is /bin/false, but systemd knows the real Exec path due to the MM
+     5	# systemd .service file.
+     6	
+     7	[D-BUS Service]
+     8	Name=org.freedesktop.ModemManager1
+     9	Exec=/usr/sbin/ModemManager
+    10	User=root
+    11	SystemdService=dbus-org.freedesktop.ModemManager1.service
+### /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service
+     1	[D-BUS Service]
+     2	Name=org.freedesktop.PackageKit
+     3	Exec=/usr/libexec/packagekitd
+     4	User=root
+     5	SystemdService=packagekit.service
+     6	
+### /usr/share/dbus-1/system-services/org.freedesktop.PolicyKit1.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.PolicyKit1.service
+     1	[D-BUS Service]
+     2	Name=org.freedesktop.PolicyKit1
+     3	Exec=/usr/lib/polkit-1/polkitd --no-debug
+     4	User=root
+     5	SystemdService=polkit.service
+### /usr/share/dbus-1/system-services/org.freedesktop.UDisks2.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.UDisks2.service
+     1	[D-BUS Service]
+     2	Name=org.freedesktop.UDisks2
+     3	Exec=/usr/libexec/udisks2/udisksd
+     4	User=root
+     5	SystemdService=udisks2.service
+### /usr/share/dbus-1/system-services/org.freedesktop.bolt.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.bolt.service
+     1	[D-BUS Service]
+     2	Name=org.freedesktop.bolt
+     3	Exec=/usr/libexec/boltd
+     4	User=root
+     5	SystemdService=bolt.service
+### /usr/share/dbus-1/system-services/org.freedesktop.fwupd.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.fwupd.service
+     1	[D-BUS Service]
+     2	Name=org.freedesktop.fwupd
+     3	Documentation=https://fwupd.org/
+     4	Exec=/usr/libexec/fwupd/fwupd
+     5	User=root
+     6	SystemdService=fwupd.service
+     7	AssumedAppArmorLabel=unconfined
+### /usr/share/dbus-1/system-services/org.freedesktop.hostname1.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.hostname1.service
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  systemd is free software; you can redistribute it and/or modify it
+     4	#  under the terms of the GNU Lesser General Public License as published by
+     5	#  the Free Software Foundation; either version 2.1 of the License, or
+     6	#  (at your option) any later version.
+     7	
+     8	[D-BUS Service]
+     9	Name=org.freedesktop.hostname1
+    10	Exec=/bin/false
+    11	User=root
+    12	SystemdService=dbus-org.freedesktop.hostname1.service
+### /usr/share/dbus-1/system-services/org.freedesktop.locale1.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.locale1.service
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[D-BUS Service]
+    11	Name=org.freedesktop.locale1
+    12	Exec=/bin/false
+    13	User=root
+    14	SystemdService=dbus-org.freedesktop.locale1.service
+### /usr/share/dbus-1/system-services/org.freedesktop.login1.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.login1.service
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[D-BUS Service]
+    11	Name=org.freedesktop.login1
+    12	Exec=/bin/false
+    13	User=root
+    14	SystemdService=dbus-org.freedesktop.login1.service
+### /usr/share/dbus-1/system-services/org.freedesktop.network1.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.network1.service
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[D-BUS Service]
+    11	Name=org.freedesktop.network1
+    12	Exec=/bin/false
+    13	User=root
+    14	SystemdService=dbus-org.freedesktop.network1.service
+### /usr/share/dbus-1/system-services/org.freedesktop.resolve1.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.resolve1.service
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[D-BUS Service]
+    11	Name=org.freedesktop.resolve1
+    12	Exec=/bin/false
+    13	User=root
+    14	SystemdService=dbus-org.freedesktop.resolve1.service
+### /usr/share/dbus-1/system-services/org.freedesktop.systemd1.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.systemd1.service
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[D-BUS Service]
+    11	Name=org.freedesktop.systemd1
+    12	Exec=/bin/false
+    13	User=root
+### /usr/share/dbus-1/system-services/org.freedesktop.timedate1.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.timedate1.service
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[D-BUS Service]
+    11	Name=org.freedesktop.timedate1
+    12	Exec=/bin/false
+    13	User=root
+    14	SystemdService=dbus-org.freedesktop.timedate1.service
+    15	AssumedAppArmorLabel=unconfined
+### /usr/share/dbus-1/system-services/org.freedesktop.timesync1.service
+-rw-r--r-- 644 root:root /usr/share/dbus-1/system-services/org.freedesktop.timesync1.service
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[D-BUS Service]
+    11	Name=org.freedesktop.timesync1
+    12	Exec=/bin/false
+    13	User=root
+    14	SystemdService=dbus-org.freedesktop.timesync1.service
+
+== system bus policy files ==
+-rw-r--r-- root:root /etc/dbus-1/system.d/com.ubuntu.SoftwareProperties.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/io.netplan.Netplan.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.ModemManager1.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.PackageKit.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.PolicyKit1.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.UDisks2.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.bolt.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.fwupd.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.hostname1.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.locale1.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.login1.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.network1.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.resolve1.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.systemd1.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.timedate1.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/org.freedesktop.timesync1.conf
+-rw-r--r-- root:root /usr/share/dbus-1/system.d/snapd.system-services.conf
+/usr/share/dbus-1/system.conf:50:    <deny own="*"/>
+/usr/share/dbus-1/system.conf:66:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:68:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:70:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:72:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:75:    <deny send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:77:          send_member="UpdateActivationEnvironment"/>
+/usr/share/dbus-1/system.conf:78:    <deny send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:80:    <deny send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:86:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:92:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:100:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.d/org.freedesktop.ModemManager1.conf:364:    <allow own="org.freedesktop.ModemManager1"/>
+/usr/share/dbus-1/system.d/org.freedesktop.hostname1.conf:19:                <allow own="org.freedesktop.hostname1"/>
+/usr/share/dbus-1/system.d/org.freedesktop.PackageKit.conf:13:    <allow own="org.freedesktop.PackageKit"/>
+/usr/share/dbus-1/system.d/org.freedesktop.bolt.conf:10:    <allow own="org.freedesktop.bolt"/>
+/usr/share/dbus-1/system.d/org.freedesktop.network1.conf:17:                <allow own="org.freedesktop.network1"/>
+/usr/share/dbus-1/system.d/org.freedesktop.resolve1.conf:17:                <allow own="org.freedesktop.resolve1"/>
+/usr/share/dbus-1/system.d/org.freedesktop.UDisks2.conf:9:    <allow own="org.freedesktop.UDisks2"/>
+/usr/share/dbus-1/system.d/io.netplan.Netplan.conf:7:    <allow own="io.netplan.Netplan"/>
+/usr/share/dbus-1/system.d/org.freedesktop.timesync1.conf:17:                <allow own="org.freedesktop.timesync1"/>
+/usr/share/dbus-1/system.d/org.freedesktop.PolicyKit1.conf:8:    <allow own="org.freedesktop.PolicyKit1"/>
+/usr/share/dbus-1/system.d/org.freedesktop.fwupd.conf:13:    <allow own="org.freedesktop.fwupd"/>
+/usr/share/dbus-1/system.d/org.freedesktop.timedate1.conf:19:                <allow own="org.freedesktop.timedate1"/>
+/usr/share/dbus-1/system.d/org.freedesktop.systemd1.conf:19:                <allow own="org.freedesktop.systemd1"/>
+/usr/share/dbus-1/system.d/org.freedesktop.login1.conf:19:                <allow own="org.freedesktop.login1"/>
+/usr/share/dbus-1/system.d/org.freedesktop.locale1.conf:19:                <allow own="org.freedesktop.locale1"/>
+/etc/dbus-1/system.d/com.ubuntu.SoftwareProperties.conf:7:    <allow own="com.ubuntu.SoftwareProperties"/>
+
+== Exec path classification ==
+/usr/share/dbus-1/system-services/com.ubuntu.SoftwareProperties.service name=com.ubuntu.SoftwareProperties exec=/usr/lib/software-properties/software-properties-dbus class=absolute
+/usr/share/dbus-1/system-services/com.ubuntu.SoftwareProperties.service name=com.ubuntu.SoftwareProperties user=root
+/usr/share/dbus-1/system-services/io.netplan.Netplan.service name=io.netplan.Netplan exec=/usr/libexec/netplan/netplan-dbus class=absolute
+/usr/share/dbus-1/system-services/io.netplan.Netplan.service name=io.netplan.Netplan user=root
+/usr/share/dbus-1/system-services/org.freedesktop.ModemManager1.service name=org.freedesktop.ModemManager1 exec=/usr/sbin/ModemManager class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.ModemManager1.service name=org.freedesktop.ModemManager1 systemd_service=dbus-org.freedesktop.ModemManager1.service
+/usr/share/dbus-1/system-services/org.freedesktop.ModemManager1.service name=org.freedesktop.ModemManager1 user=root
+/usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service name=org.freedesktop.PackageKit exec=/usr/libexec/packagekitd class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service name=org.freedesktop.PackageKit systemd_service=packagekit.service
+/usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service name=org.freedesktop.PackageKit user=root
+/usr/share/dbus-1/system-services/org.freedesktop.PolicyKit1.service name=org.freedesktop.PolicyKit1 exec=/usr/lib/polkit-1/polkitd --no-debug class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.PolicyKit1.service name=org.freedesktop.PolicyKit1 systemd_service=polkit.service
+/usr/share/dbus-1/system-services/org.freedesktop.PolicyKit1.service name=org.freedesktop.PolicyKit1 user=root
+/usr/share/dbus-1/system-services/org.freedesktop.UDisks2.service name=org.freedesktop.UDisks2 exec=/usr/libexec/udisks2/udisksd class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.UDisks2.service name=org.freedesktop.UDisks2 systemd_service=udisks2.service
+/usr/share/dbus-1/system-services/org.freedesktop.UDisks2.service name=org.freedesktop.UDisks2 user=root
+/usr/share/dbus-1/system-services/org.freedesktop.bolt.service name=org.freedesktop.bolt exec=/usr/libexec/boltd class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.bolt.service name=org.freedesktop.bolt systemd_service=bolt.service
+/usr/share/dbus-1/system-services/org.freedesktop.bolt.service name=org.freedesktop.bolt user=root
+/usr/share/dbus-1/system-services/org.freedesktop.fwupd.service name=org.freedesktop.fwupd exec=/usr/libexec/fwupd/fwupd class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.fwupd.service name=org.freedesktop.fwupd systemd_service=fwupd.service
+/usr/share/dbus-1/system-services/org.freedesktop.fwupd.service name=org.freedesktop.fwupd user=root
+/usr/share/dbus-1/system-services/org.freedesktop.hostname1.service name=org.freedesktop.hostname1 exec=/bin/false class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.hostname1.service name=org.freedesktop.hostname1 systemd_service=dbus-org.freedesktop.hostname1.service
+/usr/share/dbus-1/system-services/org.freedesktop.hostname1.service name=org.freedesktop.hostname1 user=root
+/usr/share/dbus-1/system-services/org.freedesktop.locale1.service name=org.freedesktop.locale1 exec=/bin/false class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.locale1.service name=org.freedesktop.locale1 systemd_service=dbus-org.freedesktop.locale1.service
+/usr/share/dbus-1/system-services/org.freedesktop.locale1.service name=org.freedesktop.locale1 user=root
+/usr/share/dbus-1/system-services/org.freedesktop.login1.service name=org.freedesktop.login1 exec=/bin/false class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.login1.service name=org.freedesktop.login1 systemd_service=dbus-org.freedesktop.login1.service
+/usr/share/dbus-1/system-services/org.freedesktop.login1.service name=org.freedesktop.login1 user=root
+/usr/share/dbus-1/system-services/org.freedesktop.network1.service name=org.freedesktop.network1 exec=/bin/false class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.network1.service name=org.freedesktop.network1 systemd_service=dbus-org.freedesktop.network1.service
+/usr/share/dbus-1/system-services/org.freedesktop.network1.service name=org.freedesktop.network1 user=root
+/usr/share/dbus-1/system-services/org.freedesktop.resolve1.service name=org.freedesktop.resolve1 exec=/bin/false class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.resolve1.service name=org.freedesktop.resolve1 systemd_service=dbus-org.freedesktop.resolve1.service
+/usr/share/dbus-1/system-services/org.freedesktop.resolve1.service name=org.freedesktop.resolve1 user=root
+/usr/share/dbus-1/system-services/org.freedesktop.systemd1.service name=org.freedesktop.systemd1 exec=/bin/false class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.systemd1.service name=org.freedesktop.systemd1 user=root
+/usr/share/dbus-1/system-services/org.freedesktop.timedate1.service name=org.freedesktop.timedate1 exec=/bin/false class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.timedate1.service name=org.freedesktop.timedate1 systemd_service=dbus-org.freedesktop.timedate1.service
+/usr/share/dbus-1/system-services/org.freedesktop.timedate1.service name=org.freedesktop.timedate1 user=root
+/usr/share/dbus-1/system-services/org.freedesktop.timesync1.service name=org.freedesktop.timesync1 exec=/bin/false class=absolute
+/usr/share/dbus-1/system-services/org.freedesktop.timesync1.service name=org.freedesktop.timesync1 systemd_service=dbus-org.freedesktop.timesync1.service
+/usr/share/dbus-1/system-services/org.freedesktop.timesync1.service name=org.freedesktop.timesync1 user=root
+
+== systemd-mediated D-Bus activation units ==
+### bolt.service
+ExecStart={ path=/usr/libexec/boltd ; argv[]=/usr/libexec/boltd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/bolt.service
+### dbus-org.freedesktop.ModemManager1.service
+ExecStart={ path=/usr/sbin/ModemManager ; argv[]=/usr/sbin/ModemManager ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+User=root
+Group=
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/ModemManager.service
+### dbus-org.freedesktop.hostname1.service
+ExecStart={ path=/usr/lib/systemd/systemd-hostnamed ; argv[]=/usr/lib/systemd/systemd-hostnamed ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/systemd-hostnamed.service
+### dbus-org.freedesktop.locale1.service
+ExecStart={ path=/usr/lib/systemd/systemd-localed ; argv[]=/usr/lib/systemd/systemd-localed ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/systemd-localed.service
+### dbus-org.freedesktop.login1.service
+ExecStart={ path=/usr/lib/systemd/systemd-logind ; argv[]=/usr/lib/systemd/systemd-logind ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+User=
+Group=
+LoadState=loaded
+ActiveState=active
+FragmentPath=/usr/lib/systemd/system/systemd-logind.service
+### dbus-org.freedesktop.network1.service
+Environment=
+User=
+Group=
+LoadState=not-found
+ActiveState=inactive
+FragmentPath=
+### dbus-org.freedesktop.resolve1.service
+ExecStart={ path=/usr/lib/systemd/systemd-resolved ; argv[]=/usr/lib/systemd/systemd-resolved ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:07:57 UTC] ; stop_time=[n/a] ; pid=771164 ; code=(null) ; status=0/0 }
+Environment=
+User=systemd-resolve
+Group=
+LoadState=loaded
+ActiveState=active
+FragmentPath=/usr/lib/systemd/system/systemd-resolved.service
+### dbus-org.freedesktop.timedate1.service
+ExecStart={ path=/usr/lib/systemd/systemd-timedated ; argv[]=/usr/lib/systemd/systemd-timedated ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/systemd-timedated.service
+### dbus-org.freedesktop.timesync1.service
+ExecStart={ path=/usr/lib/systemd/systemd-timesyncd ; argv[]=/usr/lib/systemd/systemd-timesyncd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=SYSTEMD_NSS_RESOLVE_VALIDATE=0
+User=systemd-timesync
+Group=
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/systemd-timesyncd.service
+### fwupd.service
+ExecStart={ path=/usr/libexec/fwupd/fwupd ; argv[]=/usr/libexec/fwupd/fwupd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=GLIBC_TUNABLES=glibc.cpu.hwcaps=SHSTK
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/fwupd.service
+### packagekit.service
+ExecStart={ path=/usr/libexec/packagekitd ; argv[]=/usr/libexec/packagekitd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+User=root
+Group=
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/packagekit.service
+### polkit.service
+ExecStart={ path=/usr/lib/polkit-1/polkitd ; argv[]=/usr/lib/polkit-1/polkitd --no-debug ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+User=polkitd
+Group=
+LoadState=loaded
+ActiveState=active
+FragmentPath=/usr/lib/systemd/system/polkit.service
+### udisks2.service
+ExecStart={ path=/usr/libexec/udisks2/udisksd ; argv[]=/usr/libexec/udisks2/udisksd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+User=
+Group=
+LoadState=loaded
+ActiveState=active
+FragmentPath=/usr/lib/systemd/system/udisks2.service
+
+## attacker writability and direct helper boundary
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash -s
+== attacker identity and ambient D-Bus env ==
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+attacker
+DBUS_SESSION_BUS_ADDRESS=unset
+DBUS_SYSTEM_BUS_ADDRESS=unset
+
+== attacker access to root activation paths ==
+NO_W /usr/share/dbus-1/system-services
+X /usr/share/dbus-1/system-services
+MISSING /etc/dbus-1/system-services
+MISSING /usr/local/share/dbus-1/system-services
+NO_W /usr/share/dbus-1/system.d
+X /usr/share/dbus-1/system.d
+NO_W /etc/dbus-1/system.d
+X /etc/dbus-1/system.d
+NO_W /usr/share/dbus-1/system.conf
+NO_X /usr/share/dbus-1/system.conf
+NO_W /var/lib/dbus
+X /var/lib/dbus
+NO_W /var/lib/dbus/machine-id
+NO_X /var/lib/dbus/machine-id
+NO_W /run/dbus
+X /run/dbus
+W /run/dbus/system_bus_socket
+NO_X /run/dbus/system_bus_socket
+NO_W /usr/lib/dbus-1.0/dbus-daemon-launch-helper
+NO_X /usr/lib/dbus-1.0/dbus-daemon-launch-helper
+
+== direct writes to root activation roots ==
+write /usr/share/dbus-1/system-services/com.example.DbusActivationProbe.service -> bash: line 1: /usr/share/dbus-1/system-services/com.example.DbusActivationProbe.service: Permission denied
+write /etc/dbus-1/system.d/com.example.DbusActivationProbe.conf -> bash: line 1: /etc/dbus-1/system.d/com.example.DbusActivationProbe.conf: Permission denied
+write /usr/share/dbus-1/system.conf -> bash: line 1: /usr/share/dbus-1/system.conf: Permission denied
+write /var/lib/dbus/machine-id -> bash: line 1: /var/lib/dbus/machine-id: Permission denied
+write /run/dbus/system_bus_socket -> bash: line 1: /run/dbus/system_bus_socket: No such device or address
+
+== direct launch-helper execution ==
+bash: line 48: /usr/lib/dbus-1.0/dbus-daemon-launch-helper: Permission denied
+helper_rc=126
+
+== owning names on system bus ==
+Call failed: Access denied
+request_reserved_rc=1
+Call failed: Access denied
+request_arbitrary_rc=1
+
+## prepare inactive services for activation attempts
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+software-properties pids before activation:
+systemd-hostnamed state before activation:
+ActiveState=inactive
+SubState=dead
+
+## system bus environment injection and activation attempts
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash -s
+== deny system bus activation environment updates ==
+Call failed: Access denied
+update_activation_environment_rc=1
+
+== direct D-Bus helper activation: com.ubuntu.SoftwareProperties ==
+u 1
+start_softwareproperties_rc=0
+
+== systemd-mediated activation: org.freedesktop.hostname1 ==
+u 1
+start_hostname1_rc=0
+
+== user-local system-services file ignored by real system bus ==
+Call failed: The name com.example.DbusActivationProbe was not provided by any .service files
+start_user_local_system_service_rc=1
+
+== attacker-observed fake PATH hits ==
+NO_FAKE_PATH_HITS
+ls: cannot access '/tmp/dbus_activation_helper_probe_fake_path_hit_*': No such file or directory
+
+## root-side activation result inspection
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== root processes after activation ==
+798999 python3 /usr/lib/software-properties/software-properties-dbus
+799032 /usr/lib/systemd/systemd-hostnamed
+
+== activated process environments ==
+### pid=798999 root     python3         python3 /usr/lib/software-properties/software-properties-dbus
+DBUS_STARTER_ADDRESS=unix:path=/run/dbus/system_bus_socket
+DBUS_STARTER_BUS_TYPE=system
+### pid=799032 root     systemd-hostnam /usr/lib/systemd/systemd-hostnamed
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin
+
+== root marker checks ==
+NO_ROOT_MARKERS
+NO_HOME_FAKE_PATH_HITS
+
+## user-controlled fake system bus address
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash -s
+== start a user-owned bus with system.conf and a user socket ==
+custom_system_bus_rc=0
+unix:path=/home/attacker/dbus_activation_helper_probe/fake-system-bus/custom-system.sock,guid=e8cf86890e04fe49ad4b08906a08bcaa
+799063
+custom_system_bus_pid=799063
+ 799063  1001 attacker dbus-daemon     dbus-daemon --config-file=/usr/share/dbus-1/system.conf --address=unix:path=/home/attacker/dbus_activation_helper_probe/fake-system-bus/custom-system.sock --fork --nopidfile --print-address=1 --print-pid=1
+Error org.freedesktop.DBus.Error.Spawn.ExecFailed: Failed to execute program com.ubuntu.SoftwareProperties: Permission denied
+fake_system_bus_start_rc=1
+
+## session bus activation contrast
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash -s
+dbus-daemon[799085]: [session uid=1001 pid=799085] Activating service name='com.example.DbusActivationProbe' requested by ':1.1' (uid=1001 pid=799090 comm="dbus-send --session --dest=org.freedesktop.DBus --")
+dbus-daemon[799085]: [session uid=1001 pid=799085] Successfully activated service 'com.example.DbusActivationProbe'
+method return time=1778957482.822224 sender=org.freedesktop.DBus -> destination=:1.1 serial=3 reply_serial=2
+   uint32 1
+session_activation_rc=0
+== session activation marker ==
+id=uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+DBUS_ACTIVATION_PROBE=session_env
+TMPDIR=/home/attacker/dbus_activation_helper_probe/session/tmp
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+DBUS_STARTER_BUS_TYPE=session
+DBUS_SESSION_BUS_ADDRESS=unix:path=/tmp/dbus-lPDGH1ojqr,guid=d7645e7fbfbc7ad6850e1f296a08bcaa
+method return time=1778957482.822206 sender=org.freedesktop.DBus -> destination=:1.2 serial=4 reply_serial=2
+   uint32 1
+
+## cleanup after probe and final health
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== leftover check ==
+
+== target health ==
+running
+
+Probe complete. Log: /Users/andrewmohawk/Documents/UbuntuLPE/ubuntu24-server-lpe/logs/dbus-activation-helper.out

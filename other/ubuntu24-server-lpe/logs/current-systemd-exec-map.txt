@@ -1,0 +1,2148 @@
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/apport-autoreport.path
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-ask-password-console.path
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-ask-password-plymouth.path
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-ask-password-wall.path
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/lib/apparmor/apparmor.systemd ; argv[]=/lib/apparmor/apparmor.systemd reload ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecReload={ path=/lib/apparmor/apparmor.systemd ; argv[]=/lib/apparmor/apparmor.systemd reload ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/apparmor.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/share/apport/whoopsie-upload-all ; argv[]=/usr/share/apport/whoopsie-upload-all --timeout 20 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/apport-autoreport.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/share/apport/apport ; argv[]=/usr/share/apport/apport --start ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/apport.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=/usr/lib/apt/apt-helper ; argv[]=/usr/lib/apt/apt-helper wait-online ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/lib/apt/apt.systemd.daily ; argv[]=/usr/lib/apt/apt.systemd.daily install ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/apt-daily-upgrade.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=/usr/lib/apt/apt-helper ; argv[]=/usr/lib/apt/apt-helper wait-online ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/lib/apt/apt.systemd.daily ; argv[]=/usr/lib/apt/apt.systemd.daily update ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/apt-daily.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/lib/ubuntu-advantage/apt_news.py ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/apt-news.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/blk-availability.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/libexec/boltd ; argv[]=/usr/libexec/boltd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/bolt.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/sbin/agetty ; argv[]=/sbin/agetty -o -p -- \u --noclear --keep-baud - 115200,38400,9600 $TERM ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/console-getty.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/lib/console-setup/console-setup.sh ; argv[]=/lib/console-setup/console-setup.sh ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=77 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/console-setup.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/sbin/cron ; argv[]=/usr/sbin/cron -f -P $EXTRA_OPTS ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[n/a] ; pid=254 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/cron.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=masked
+FragmentPath=/usr/lib/systemd/system/cryptdisks-early.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=masked
+FragmentPath=/usr/lib/systemd/system/cryptdisks.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-hostnamed ; argv[]=/usr/lib/systemd/systemd-hostnamed ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:27:12 UTC] ; stop_time=[n/a] ; pid=1351 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-hostnamed.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-localed ; argv[]=/usr/lib/systemd/systemd-localed ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:27:12 UTC] ; stop_time=[n/a] ; pid=1357 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-localed.service
+DropInPaths=/usr/lib/systemd/system/systemd-localed.service.d/x11-keyboard.conf
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-logind ; argv[]=/usr/lib/systemd/systemd-logind ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[n/a] ; pid=263 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-logind.service
+DropInPaths=/usr/lib/systemd/system/systemd-logind.service.d/dbus.conf
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/sbin/ModemManager ; argv[]=/usr/sbin/ModemManager ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=root
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/ModemManager.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-resolved ; argv[]=/usr/lib/systemd/systemd-resolved ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[n/a] ; pid=97 ; code=(null) ; status=0/0 }
+User=systemd-resolve
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-resolved.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-timedated ; argv[]=/usr/lib/systemd/systemd-timedated ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:27:12 UTC] ; stop_time=[n/a] ; pid=1361 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-timedated.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-timesyncd ; argv[]=/usr/lib/systemd/systemd-timesyncd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=systemd-timesync
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-timesyncd.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/dbus-daemon ; argv[]=@dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[n/a] ; pid=255 ; code=(null) ; status=0/0 }
+ExecReload={ path=/usr/bin/dbus-send ; argv[]=/usr/bin/dbus-send --print-reply --system --type=method_call --dest=org.freedesktop.DBus / org.freedesktop.DBus.ReloadConfig ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/dbus.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/bin/bash ; argv[]=/usr/bin/bash ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/debug-shell.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/dmeventd ; argv[]=/usr/sbin/dmeventd -f ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/dm-event.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=/usr/bin/savelog ; argv[]=/usr/bin/savelog -m640 -q -p -n -c 5 /var/log/dmesg ; ignore_errors=yes ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:52 UTC] ; pid=256 ; code=exited ; status=0 }
+ExecStart={ path=/bin/journalctl ; argv[]=/bin/journalctl --boot 0 --dmesg --output short-monotonic --quiet --no-pager --no-hostname ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:52 UTC] ; stop_time=[Sat 2026-05-16 15:18:52 UTC] ; pid=395 ; code=exited ; status=0 }
+ExecStartPost={ path=/bin/chgrp ; argv[]=/bin/chgrp adm /var/log/dmesg ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:52 UTC] ; stop_time=[Sat 2026-05-16 15:18:52 UTC] ; pid=396 ; code=exited ; status=0 }
+ExecStartPost={ path=/bin/chmod ; argv[]=/bin/chmod 0640 /var/log/dmesg ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:52 UTC] ; stop_time=[Sat 2026-05-16 15:18:52 UTC] ; pid=397 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/dmesg.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/libexec/dpkg/dpkg-db-backup ; argv[]=/usr/libexec/dpkg/dpkg-db-backup ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/dpkg-db-backup.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/sbin/e2scrub_all ; argv[]=/sbin/e2scrub_all ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/e2scrub_all.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/sbin/e2scrub_all ; argv[]=/sbin/e2scrub_all -A -r ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:51 UTC] ; pid=257 ; code=exited ; status=0 }
+User=root
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/e2scrub_reap.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStartPre={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth --wait quit ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/lib/systemd/systemd-sulogin-shell ; argv[]=/usr/lib/systemd/systemd-sulogin-shell emergency ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/emergency.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/lib/ubuntu-advantage/esm_cache.py ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/esm-cache.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/bin/true ; argv[]=/bin/true ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=78 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/finalrd.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStartPre={ path=/bin/dmesg ; argv[]=/bin/dmesg --console-off ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStartPre={ path=/bin/plymouth ; argv[]=/bin/plymouth quit ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/lib/recovery-mode/recovery-menu ; argv[]=/lib/recovery-mode/recovery-menu ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/friendly-recovery.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/sbin/fstrim ; argv[]=/sbin/fstrim --listed-in /etc/fstab:/proc/self/mountinfo --verbose --quiet-unsupported ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/fstrim.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/libexec/fwupd/fwupdoffline ; argv[]=/usr/libexec/fwupd/fwupdoffline ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/fwupd-offline-update.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/fwupdmgr ; argv[]=/usr/bin/fwupdmgr refresh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=fwupd-refresh
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/fwupd-refresh.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/libexec/fwupd/fwupd ; argv[]=/usr/libexec/fwupd/fwupd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/fwupd.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=systemctl ; argv[]=systemctl --no-block start getty@tty2.service getty@tty3.service getty@tty4.service getty@tty5.service getty@tty6.service ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/getty-static.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=masked
+FragmentPath=/usr/lib/systemd/system/hwclock.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=systemctl ; argv[]=systemctl --no-block isolate initrd-switch-root.target ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/initrd-cleanup.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/system-generators/systemd-fstab-generator ; argv[]=systemd-sysroot-fstab-check ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=systemctl ; argv[]=systemctl --no-block start initrd-cleanup.service ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/initrd-parse-etc.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=systemctl ; argv[]=systemctl --no-block switch-root ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/initrd-switch-root.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=udevadm ; argv[]=udevadm info --cleanup-db ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/initrd-udevadm-cleanup-db.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/iscsiadm ; argv[]=/usr/sbin/iscsiadm -m node --loginall=automatic ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/lib/open-iscsi/activate-storage.sh ; argv[]=/usr/lib/open-iscsi/activate-storage.sh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/open-iscsi.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=/usr/lib/open-iscsi/startup-checks.sh ; argv[]=/usr/lib/open-iscsi/startup-checks.sh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/sbin/iscsid ; argv[]=/usr/sbin/iscsid ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/iscsid.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/lib/console-setup/keyboard-setup.sh ; argv[]=/lib/console-setup/keyboard-setup.sh ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=30 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/keyboard-setup.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/bin/kmod ; argv[]=/usr/bin/kmod static-nodes --format=tmpfiles --output=/run/tmpfiles.d/static-nodes.conf ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/kmod-static-nodes.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-modules-load ; argv[]=/usr/lib/systemd/systemd-modules-load ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=39 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-modules-load.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/sbin/ldconfig ; argv[]=/sbin/ldconfig -X ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:51 UTC] ; pid=79 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/ldconfig.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/sbin/logrotate ; argv[]=/usr/sbin/logrotate /etc/logrotate.conf ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/logrotate.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/lvmpolld ; argv[]=/usr/sbin/lvmpolld -t 60 -f ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/lvm2-lvmpolld.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/lvm ; argv[]=/usr/sbin/lvm vgchange --monitor y ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/lvm2-monitor.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=/lib/systemd/lxd-agent-setup ; argv[]=/lib/systemd/lxd-agent-setup ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/run/lxd_agent/lxd-agent ; argv[]=/run/lxd_agent/lxd-agent ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/lxd-agent.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/bin/install ; argv[]=/usr/bin/install -d -o man -g man -m 0755 /var/cache/man ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/bin/mandb ; argv[]=/usr/bin/mandb --quiet ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=man
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/man-db.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/share/mdadm/mdcheck ; argv[]=/usr/share/mdadm/mdcheck --continue --duration ${MDADM_CHECK_DURATION} ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/mdcheck_continue.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/share/mdadm/mdcheck ; argv[]=/usr/share/mdadm/mdcheck --duration ${MDADM_CHECK_DURATION} ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/mdcheck_start.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=sh ; argv[]=sh -c [ "$AUTOSCAN" != "true" ] || /sbin/mdadm --monitor --oneshot --scan ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/mdmonitor-oneshot.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/sbin/mdadm ; argv[]=/sbin/mdadm --monitor --scan ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/mdmonitor.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/ModemManager ; argv[]=/usr/sbin/ModemManager ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=root
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/ModemManager.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/etc/update-motd.d/50-motd-news ; argv[]=/etc/update-motd.d/50-motd-news --force ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/motd-news.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=masked
+FragmentPath=/usr/lib/systemd/system/multipath-tools-boot.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=/sbin/modprobe ; argv[]=/sbin/modprobe dm-multipath ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/sbin/multipathd ; argv[]=/sbin/multipathd -d -s ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecReload={ path=/sbin/multipathd ; argv[]=/sbin/multipathd reconfigure ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/multipathd.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=/sbin/modprobe ; argv[]=/sbin/modprobe dm-multipath ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/sbin/multipathd ; argv[]=/sbin/multipathd -d -s ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecReload={ path=/sbin/multipathd ; argv[]=/sbin/multipathd reconfigure ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/multipathd.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/netplan ; argv[]=/usr/sbin/netplan apply --only-ovs-cleanup ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/run/systemd/system/netplan-ovs-cleanup.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/networkd-dispatcher ; argv[]=/usr/bin/networkd-dispatcher $networkd_dispatcher_args ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/networkd-dispatcher.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/nft ; argv[]=/usr/sbin/nft -f /etc/nftables.conf ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecReload={ path=/usr/sbin/nft ; argv[]=/usr/sbin/nft -f /etc/nftables.conf ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/nftables.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/iscsiadm ; argv[]=/usr/sbin/iscsiadm -m node --loginall=automatic ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/lib/open-iscsi/activate-storage.sh ; argv[]=/usr/lib/open-iscsi/activate-storage.sh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/open-iscsi.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/vmtoolsd ; argv[]=/usr/bin/vmtoolsd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/open-vm-tools.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/libexec/pk-offline-update ; argv[]=/usr/libexec/pk-offline-update ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/packagekit-offline-update.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/libexec/packagekitd ; argv[]=/usr/libexec/packagekitd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=root
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/packagekit.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/pam_namespace_helper ; argv[]=/usr/sbin/pam_namespace_helper ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/pam_namespace.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/plymouthd ; argv[]=/usr/sbin/plymouthd --mode=shutdown --attach-to-session ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStartPost={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth show-splash ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-halt.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/plymouthd ; argv[]=/usr/sbin/plymouthd --mode=shutdown --attach-to-session ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStartPost={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth show-splash ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-kexec.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth update-root-fs --read-write ; ignore_errors=yes ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=80 ; code=exited ; status=1 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-read-write.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/sbin/plymouthd ; argv[]=/usr/sbin/plymouthd --mode=shutdown --attach-to-session ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStartPost={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth show-splash ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-poweroff.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth --wait ; ignore_errors=yes ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:51 UTC] ; pid=267 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-quit-wait.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth quit ; ignore_errors=yes ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:51 UTC] ; pid=268 ; code=exited ; status=1 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-quit.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth update-root-fs --read-write ; ignore_errors=yes ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=80 ; code=exited ; status=1 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-read-write.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/sbin/plymouthd ; argv[]=/usr/sbin/plymouthd --mode=reboot --attach-to-session ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStartPost={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth show-splash ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-reboot.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/sbin/plymouthd ; argv[]=/usr/sbin/plymouthd --mode=boot --pid-file=/run/plymouth/pid --attach-to-session ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStartPost={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth show-splash ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-start.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth message --text= ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth update-root-fs --new-root-dir=/run/initramfs ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-switch-root-initramfs.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth update-root-fs --new-root-dir=/sysroot ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-switch-root.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth quit ; ignore_errors=yes ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:51 UTC] ; pid=268 ; code=exited ; status=1 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/plymouth-quit.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/polkit-1/polkitd ; argv[]=/usr/lib/polkit-1/polkitd --no-debug ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[n/a] ; pid=258 ; code=(null) ; status=0/0 }
+User=polkitd
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/polkit.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/bin/pollinate ; argv[]=/usr/bin/pollinate ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=pollinate
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/pollinate.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-sysctl ; argv[]=/usr/lib/systemd/systemd-sysctl ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=49 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-sysctl.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/sbin/quotaon ; argv[]=/usr/sbin/quotaon -aug ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/quotaon.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/etc/rc.local ; argv[]=/etc/rc.local start ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/rc-local.service
+DropInPaths=/usr/lib/systemd/system/rc-local.service.d/debian.conf
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=/usr/bin/plymouth ; argv[]=/usr/bin/plymouth --wait quit ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/lib/systemd/systemd-sulogin-shell ; argv[]=/usr/lib/systemd/systemd-sulogin-shell rescue ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/rescue.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/rsync ; argv[]=/usr/bin/rsync --daemon --no-detach ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/rsync.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=/usr/lib/rsyslog/reload-apparmor-profile ; argv[]=/usr/lib/rsyslog/reload-apparmor-profile ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:51 UTC] ; pid=259 ; code=exited ; status=0 }
+ExecStart={ path=/usr/sbin/rsyslogd ; argv[]=/usr/sbin/rsyslogd -n -iNONE ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[n/a] ; pid=273 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/rsyslog.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=masked
+FragmentPath=/usr/lib/systemd/system/screen-cleanup.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=/usr/bin/chattr ; argv[]=/usr/bin/chattr -i /sys/firmware/efi/efivars/KEK-8be4df61-93ca-11d2-aa0d-00e098032b8c ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStartPre={ path=/usr/bin/chattr ; argv[]=/usr/bin/chattr -i /sys/firmware/efi/efivars/db-d719b2cb-3d3a-4596-a3bc-dad00e67656f ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStartPre={ path=/usr/bin/chattr ; argv[]=/usr/bin/chattr -i /sys/firmware/efi/efivars/dbx-d719b2cb-3d3a-4596-a3bc-dad00e67656f ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/bin/sbkeysync ; argv[]=/usr/bin/sbkeysync --no-default-keystores --keystore /usr/share/secureboot/updates --verbose ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/secureboot-db.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/sbin/setvtrgb ; argv[]=/sbin/setvtrgb /etc/vtrgb ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:51 UTC] ; pid=270 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/setvtrgb.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/snapd/snapd-apparmor ; argv[]=/usr/lib/snapd/snapd-apparmor start ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/snapd.apparmor.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/snap ; argv[]=/usr/bin/snap auto-import ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/snapd.autoimport.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/snapd/snapd.core-fixup.sh ; argv[]=/usr/lib/snapd/snapd.core-fixup.sh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/snapd.core-fixup.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/snapd/snap-failure ; argv[]=/usr/lib/snapd/snap-failure snapd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/snapd.failure.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/snapd/snap-bootstrap ; argv[]=/usr/lib/snapd/snap-bootstrap recovery-chooser-trigger ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/snapd.recovery-chooser-trigger.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/snap ; argv[]=/usr/bin/snap wait system seed.loaded ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:52 UTC] ; pid=260 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/snapd.seeded.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/snapd/snapd ; argv[]=/usr/lib/snapd/snapd ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:59 UTC] ; pid=261 ; code=exited ; status=42 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/snapd.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/snapd/snap-repair ; argv[]=/usr/lib/snapd/snap-repair run ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/snapd.snap-repair.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/bin/mount ; argv[]=/bin/mount /run -o remount,exec ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/bin/mkdir ; argv[]=/bin/mkdir -p /run/initramfs ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/bin/cp ; argv[]=/bin/cp /usr/lib/snapd/system-shutdown /run/initramfs/shutdown ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/snapd.system-shutdown.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=masked
+FragmentPath=/usr/lib/systemd/system/sudo.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=/usr/lib/rsyslog/reload-apparmor-profile ; argv[]=/usr/lib/rsyslog/reload-apparmor-profile ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:51 UTC] ; pid=259 ; code=exited ; status=0 }
+ExecStart={ path=/usr/sbin/rsyslogd ; argv[]=/usr/sbin/rsyslogd -n -iNONE ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[n/a] ; pid=273 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/rsyslog.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/sysstat/sa1 ; argv[]=/usr/lib/sysstat/sa1 1 1 ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:20:16 UTC] ; stop_time=[Sat 2026-05-16 15:20:16 UTC] ; pid=478 ; code=exited ; status=0 }
+User=root
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/sysstat-collect.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/sysstat/sa2 ; argv[]=/usr/lib/sysstat/sa2 -A ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=root
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/sysstat-summary.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/sysstat/sa1 ; argv[]=/usr/lib/sysstat/sa1 --boot ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:51 UTC] ; pid=262 ; code=exited ; status=0 }
+User=root
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/sysstat.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=rm ; argv[]=rm -fv /system-update /etc/system-update ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/system-update-cleanup.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=systemd-tty-ask-password-agent ; argv[]=systemd-tty-ask-password-agent --watch --console ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-ask-password-console.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/systemd-tty-ask-password-agent ; argv[]=/usr/bin/systemd-tty-ask-password-agent --watch --plymouth ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-ask-password-plymouth.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStartPre={ path=systemctl ; argv[]=systemctl stop systemd-ask-password-console.path systemd-ask-password-console.service systemd-ask-password-plymouth.path systemd-ask-password-plymouth.service ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=systemd-tty-ask-password-agent ; argv[]=systemd-tty-ask-password-agent --wall ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-ask-password-wall.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-battery-check ; argv[]=/usr/lib/systemd/systemd-battery-check ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-battery-check.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-binfmt ; argv[]=/usr/lib/systemd/systemd-binfmt ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=82 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-binfmt.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-boot-check-no-failures ; argv[]=/usr/lib/systemd/systemd-boot-check-no-failures ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-boot-check-no-failures.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-bsod ; argv[]=/usr/lib/systemd/systemd-bsod --continuous ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-bsod.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=systemd-confext ; argv[]=systemd-confext refresh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecReload={ path=systemd-confext ; argv[]=systemd-confext refresh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-confext.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-exit.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=systemd-firstboot ; argv[]=systemd-firstboot --prompt-locale --prompt-timezone --prompt-root-password ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-firstboot.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-fsck ; argv[]=/usr/lib/systemd/systemd-fsck ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-fsck-root.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-fsckd ; argv[]=/usr/lib/systemd/systemd-fsckd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-fsckd.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-growfs ; argv[]=/usr/lib/systemd/systemd-growfs / ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-growfs-root.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-halt.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-hibernate-resume ; argv[]=/usr/lib/systemd/systemd-hibernate-resume ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-hibernate-resume.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-sleep ; argv[]=/usr/lib/systemd/systemd-sleep hibernate ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-hibernate.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-hostnamed ; argv[]=/usr/lib/systemd/systemd-hostnamed ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:27:12 UTC] ; stop_time=[n/a] ; pid=1351 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-hostnamed.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=systemd-hwdb ; argv[]=systemd-hwdb update ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-hwdb-update.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-sleep ; argv[]=/usr/lib/systemd/systemd-sleep hybrid-sleep ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-hybrid-sleep.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-initctl ; argv[]=/usr/lib/systemd/systemd-initctl ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-initctl.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=journalctl ; argv[]=journalctl --update-catalog ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=96 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-journal-catalog-update.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=journalctl ; argv[]=journalctl --flush ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=66 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-journal-flush.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-journald ; argv[]=/usr/lib/systemd/systemd-journald ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[n/a] ; pid=29 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-journald.service
+DropInPaths=/usr/lib/systemd/system/systemd-journald.service.d/nice.conf
+ConditionResult=yes
+---UNIT---
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-kexec.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-localed ; argv[]=/usr/lib/systemd/systemd-localed ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:27:12 UTC] ; stop_time=[n/a] ; pid=1357 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-localed.service
+DropInPaths=/usr/lib/systemd/system/systemd-localed.service.d/x11-keyboard.conf
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-logind ; argv[]=/usr/lib/systemd/systemd-logind ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[n/a] ; pid=263 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-logind.service
+DropInPaths=/usr/lib/systemd/system/systemd-logind.service.d/dbus.conf
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=systemd-machine-id-setup ; argv[]=systemd-machine-id-setup --commit ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-machine-id-commit.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-modules-load ; argv[]=/usr/lib/systemd/systemd-modules-load ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=39 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-modules-load.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-network-generator ; argv[]=/usr/lib/systemd/systemd-network-generator ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-network-generator.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-networkd-wait-online ; argv[]=/usr/lib/systemd/systemd-networkd-wait-online ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-networkd-wait-online.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-networkd ; argv[]=/usr/lib/systemd/systemd-networkd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=systemd-network
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-networkd.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrextend ; argv[]=/usr/lib/systemd/systemd-pcrextend --graceful --file-system=/ ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrfs-root.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrlock ; argv[]=/usr/lib/systemd/systemd-pcrlock lock-file-system ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrlock-file-system.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrlock ; argv[]=/usr/lib/systemd/systemd-pcrlock lock-firmware-code ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrlock-firmware-code.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrlock ; argv[]=/usr/lib/systemd/systemd-pcrlock lock-firmware-config ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrlock-firmware-config.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrlock ; argv[]=/usr/lib/systemd/systemd-pcrlock lock-machine-id ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrlock-machine-id.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrlock ; argv[]=/usr/lib/systemd/systemd-pcrlock make-policy --location=770 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrlock-make-policy.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrlock ; argv[]=/usr/lib/systemd/systemd-pcrlock lock-secureboot-authority ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrlock-secureboot-authority.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrlock ; argv[]=/usr/lib/systemd/systemd-pcrlock lock-secureboot-policy ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrlock-secureboot-policy.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrextend ; argv[]=/usr/lib/systemd/systemd-pcrextend --graceful --machine-id ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrmachine.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrextend ; argv[]=/usr/lib/systemd/systemd-pcrextend --graceful enter-initrd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrphase-initrd.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrextend ; argv[]=/usr/lib/systemd/systemd-pcrextend --graceful sysinit ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrphase-sysinit.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pcrextend ; argv[]=/usr/lib/systemd/systemd-pcrextend --graceful ready ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrphase.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-poweroff.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-pstore ; argv[]=/usr/lib/systemd/systemd-pstore ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pstore.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-quotacheck ; argv[]=/usr/lib/systemd/systemd-quotacheck ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-quotacheck.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-random-seed ; argv[]=/usr/lib/systemd/systemd-random-seed load ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-random-seed.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-reboot.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-remount-fs ; argv[]=/usr/lib/systemd/systemd-remount-fs ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=41 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-remount-fs.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/bin/systemd-repart ; argv[]=/usr/bin/systemd-repart --dry-run=no ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-repart.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-resolved ; argv[]=/usr/lib/systemd/systemd-resolved ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[n/a] ; pid=97 ; code=(null) ; status=0/0 }
+User=systemd-resolve
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-resolved.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-rfkill ; argv[]=/usr/lib/systemd/systemd-rfkill ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-rfkill.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-soft-reboot.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-storagetm ; argv[]=/usr/lib/systemd/systemd-storagetm --all ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-storagetm.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-sleep ; argv[]=/usr/lib/systemd/systemd-sleep suspend-then-hibernate ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-suspend-then-hibernate.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-sleep ; argv[]=/usr/lib/systemd/systemd-sleep suspend ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-suspend.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-sysctl ; argv[]=/usr/lib/systemd/systemd-sysctl ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=49 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-sysctl.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=systemd-sysext ; argv[]=systemd-sysext refresh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecReload={ path=systemd-sysext ; argv[]=systemd-sysext refresh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-sysext.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-sysupdate ; argv[]=/usr/lib/systemd/systemd-sysupdate reboot ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-sysupdate-reboot.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-sysupdate ; argv[]=/usr/lib/systemd/systemd-sysupdate update ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-sysupdate.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=systemd-sysusers ; argv[]=systemd-sysusers ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=67 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-sysusers.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-time-wait-sync ; argv[]=/usr/lib/systemd/systemd-time-wait-sync ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-time-wait-sync.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-timedated ; argv[]=/usr/lib/systemd/systemd-timedated ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:27:12 UTC] ; stop_time=[n/a] ; pid=1361 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-timedated.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-timesyncd ; argv[]=/usr/lib/systemd/systemd-timesyncd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=systemd-timesync
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-timesyncd.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=systemd-tmpfiles ; argv[]=systemd-tmpfiles --clean ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-tmpfiles-clean.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=systemd-tmpfiles ; argv[]=systemd-tmpfiles --prefix=/dev --create --boot --graceful ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=42 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-tmpfiles-setup-dev-early.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=systemd-tmpfiles ; argv[]=systemd-tmpfiles --prefix=/dev --create --boot ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=71 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-tmpfiles-setup-dev.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=systemd-tmpfiles ; argv[]=systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=83 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-tmpfiles-setup.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-tpm2-setup ; argv[]=/usr/lib/systemd/systemd-tpm2-setup --early=yes ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-tpm2-setup-early.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-tpm2-setup ; argv[]=/usr/lib/systemd/systemd-tpm2-setup ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-tpm2-setup.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=udevadm ; argv[]=udevadm settle ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-udev-settle.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=udevadm ; argv[]=udevadm trigger --type=all --action=add --prioritized-subsystem=module,block,tpmrm,net,tty,input ; ignore_errors=yes ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=43 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-udev-trigger.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-udevd ; argv[]=/usr/lib/systemd/systemd-udevd ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[n/a] ; pid=84 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-udevd.service
+DropInPaths=/usr/lib/systemd/system/systemd-udevd.service.d/syscall-architecture.conf
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-update-done ; argv[]=/usr/lib/systemd/systemd-update-done ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:51 UTC] ; pid=250 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-update-done.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-update-utmp ; argv[]=/usr/lib/systemd/systemd-update-utmp runlevel ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:52 UTC] ; stop_time=[Sat 2026-05-16 15:18:52 UTC] ; pid=389 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-update-utmp-runlevel.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-update-utmp ; argv[]=/usr/lib/systemd/systemd-update-utmp reboot ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=98 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-update-utmp.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-user-sessions ; argv[]=/usr/lib/systemd/systemd-user-sessions start ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[Sat 2026-05-16 15:18:51 UTC] ; pid=264 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-user-sessions.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-volatile-root ; argv[]=/usr/lib/systemd/systemd-volatile-root yes /sysroot ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-volatile-root.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/lib/ubuntu-advantage/reboot_cmds.py ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/ua-reboot-cmds.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/lib/ubuntu-advantage/timer.py ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/ua-timer.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/lib/ubuntu-advantage/daemon.py ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/ubuntu-advantage.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/lib/systemd/systemd-udevd ; argv[]=/usr/lib/systemd/systemd-udevd ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[n/a] ; pid=84 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-udevd.service
+DropInPaths=/usr/lib/systemd/system/systemd-udevd.service.d/syscall-architecture.conf
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/libexec/udisks2/udisksd ; argv[]=/usr/libexec/udisks2/udisksd ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[n/a] ; pid=265 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/udisks2.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/ufw/ufw-init ; argv[]=/usr/lib/ufw/ufw-init start quiet ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:50 UTC] ; stop_time=[Sat 2026-05-16 15:18:50 UTC] ; pid=86 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/ufw.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/share/unattended-upgrades/unattended-upgrade-shutdown ; argv[]=/usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:18:51 UTC] ; stop_time=[n/a] ; pid=293 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/unattended-upgrades.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/update-notifier/package-data-downloader ; argv[]=/usr/lib/update-notifier/package-data-downloader ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:24:11 UTC] ; stop_time=[Sat 2026-05-16 15:24:11 UTC] ; pid=959 ; code=exited ; status=0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/update-notifier-download.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/lib/ubuntu-release-upgrader/release-upgrade-motd ; argv[]=/usr/lib/ubuntu-release-upgrader/release-upgrade-motd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/update-notifier-motd.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/sbin/uuidd ; argv[]=/usr/sbin/uuidd --socket-activation ; ignore_errors=no ; start_time=[Sat 2026-05-16 15:26:44 UTC] ; stop_time=[n/a] ; pid=1243 ; code=(null) ; status=0/0 }
+User=uuidd
+Group=uuidd
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/uuidd.service
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+ExecStart={ path=/usr/bin/VGAuthService ; argv[]=/usr/bin/VGAuthService ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/vgauth.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+ExecStart={ path=/usr/bin/vmtoolsd ; argv[]=/usr/bin/vmtoolsd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/open-vm-tools.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=masked
+FragmentPath=/usr/lib/systemd/system/x11-common.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+ExecStart={ path=/usr/sbin/xfs_scrub_all ; argv[]=/usr/sbin/xfs_scrub_all ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/xfs_scrub_all.service
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/apport-forward.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/dbus.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/dm-event.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/iscsid.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/lvm2-lvmpolld.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/lxd-installer.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/multipathd.socket
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/snapd.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/syslog.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-fsckd.socket
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-initctl.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-journald-audit.socket
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-journald-dev-log.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-journald.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-networkd.socket
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-pcrextend.socket
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-rfkill.socket
+DropInPaths=
+ConditionResult=no
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-sysext.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-udevd-control.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-udevd-kernel.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+User=
+Group=
+DynamicUser=no
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/uuidd.socket
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/apport-autoreport.timer
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/apt-daily-upgrade.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/apt-daily.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/dpkg-db-backup.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/e2scrub_all.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/fstrim.timer
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/fwupd-refresh.timer
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/logrotate.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/man-db.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/mdcheck_continue.timer
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/mdcheck_start.timer
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/mdmonitor-oneshot.timer
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/motd-news.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/snapd.snap-repair.timer
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/sysstat-collect.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/sysstat-summary.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-sysupdate-reboot.timer
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-sysupdate.timer
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/systemd-tmpfiles-clean.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/ua-timer.timer
+DropInPaths=
+ConditionResult=no
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/update-notifier-download.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/update-notifier-motd.timer
+DropInPaths=
+ConditionResult=yes
+---UNIT---
+LoadState=loaded
+FragmentPath=/usr/lib/systemd/system/xfs_scrub_all.timer
+DropInPaths=
+ConditionResult=no
+---UNIT---
+---UNIT---

@@ -1,0 +1,17 @@
+FROM fedora:38
+
+RUN dnf -y update
+RUN dnf -y install \
+	dnf-plugins-core \
+	libdnf-devel \
+	redhat-rpm-config \
+	meson \
+	gcc \
+	ninja-build \
+	dbus-daemon \
+	appstream \
+	appstream-devel
+RUN dnf -y builddep PackageKit
+
+RUN mkdir /build
+WORKDIR /build

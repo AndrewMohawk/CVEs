@@ -1,0 +1,121 @@
+D-Bus Containers1 runtime probe
+2026-05-16T21:10:04+00:00
+
+## target/default proof
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 508d797cbad0 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+dbus	1.14.10-4ubuntu4.1	ii 
+dbus-daemon	1.14.10-4ubuntu4.1	ii 
+polkitd	124-2ubuntu1.24.04.3	ii 
+systemd	255.4-1ubuntu8.15	ii 
+active
+active
+drwxr-xr-x 755 root:root directory /run/dbus
+srw-rw-rw- 666 root:root socket /run/dbus/system_bus_socket
+drwxr-xr-x 755 messagebus:root directory /run/dbus/containers
+
+## default config paths
+     1	# Fields: type; path; mode; uid; gid; age; argument (symlink target)
+     2	
+     3	# Make ${localstatedir}/lib/dbus (required for systemd < 237)
+     4	# Adjust mode and ownership if it already exists.
+     5	d /var/lib/dbus 0755 - - -
+     6	
+     7	# Make ${localstatedir}/lib/dbus/machine-id a symlink to /etc/machine-id
+     8	# if it does not already exist
+     9	L /var/lib/dbus/machine-id - - - - /etc/machine-id
+    10	
+    11	# Create ${runstatedir}/dbus/containers owned by the system bus user.
+    12	# org.freedesktop.DBus.Containers1 uses this to create sockets.
+    13	d /run/dbus/containers 0755 messagebus - - -
+    65	    <!-- Allow anyone to talk to the message bus -->
+    66	    <allow send_destination="org.freedesktop.DBus"
+    67	           send_interface="org.freedesktop.DBus" />
+    68	    <allow send_destination="org.freedesktop.DBus"
+    69	           send_interface="org.freedesktop.DBus.Introspectable"/>
+    70	    <allow send_destination="org.freedesktop.DBus"
+    71	           send_interface="org.freedesktop.DBus.Properties"/>
+    72	    <allow send_destination="org.freedesktop.DBus"
+    73	           send_interface="org.freedesktop.DBus.Containers1"/>
+    74	    <!-- But disallow some specific bus services -->
+    75	    <deny send_destination="org.freedesktop.DBus"
+    76	          send_interface="org.freedesktop.DBus"
+    77	          send_member="UpdateActivationEnvironment"/>
+    78	    <deny send_destination="org.freedesktop.DBus"
+    79	          send_interface="org.freedesktop.DBus.Debug.Stats"/>
+    80	    <deny send_destination="org.freedesktop.DBus"
+
+## runtime D-Bus interfaces
+as 2 "org.freedesktop.DBus.Monitoring" "org.freedesktop.DBus.Debug.Stats"
+as 3 "ActivatableServicesChanged" "HeaderFiltering" "SystemdActivation"
+NAME                                  TYPE      SIGNATURE RESULT/VALUE                                                           FLAGS
+org.freedesktop.DBus                  interface -         -                                                                      -
+.AddMatch                             method    s         -                                                                      -
+.GetAdtAuditSessionData               method    s         ay                                                                     -
+.GetConnectionAppArmorSecurityContext method    s         s                                                                      -
+.GetConnectionCredentials             method    s         a{sv}                                                                  -
+.GetConnectionSELinuxSecurityContext  method    s         ay                                                                     -
+.GetConnectionUnixProcessID           method    s         u                                                                      -
+.GetConnectionUnixUser                method    s         u                                                                      -
+.GetId                                method    -         s                                                                      -
+.GetNameOwner                         method    s         s                                                                      -
+.Hello                                method    -         s                                                                      -
+.ListActivatableNames                 method    -         as                                                                     -
+.ListNames                            method    -         as                                                                     -
+.ListQueuedOwners                     method    s         as                                                                     -
+.NameHasOwner                         method    s         b                                                                      -
+.ReleaseName                          method    s         u                                                                      -
+.ReloadConfig                         method    -         -                                                                      -
+.RemoveMatch                          method    s         -                                                                      -
+.RequestName                          method    su        u                                                                      -
+.StartServiceByName                   method    su        u                                                                      -
+.UpdateActivationEnvironment          method    a{ss}     -                                                                      -
+.Features                             property  as        3 "ActivatableServicesChanged" "HeaderFiltering" "SystemdActivation"   const
+.Interfaces                           property  as        2 "org.freedesktop.DBus.Monitoring" "org.freedesktop.DBus.Debug.Stats" const
+.ActivatableServicesChanged           signal    -         -                                                                      -
+.NameAcquired                         signal    s         -                                                                      -
+.NameLost                             signal    s         -                                                                      -
+.NameOwnerChanged                     signal    sss       -                                                                      -
+org.freedesktop.DBus.Debug.Stats      interface -         -                                                                      -
+.GetAllMatchRules                     method    -         a{sas}                                                                 -
+.GetConnectionStats                   method    s         a{sv}                                                                  -
+.GetStats                             method    -         a{sv}                                                                  -
+org.freedesktop.DBus.Introspectable   interface -         -                                                                      -
+.Introspect                           method    -         s                                                                      -
+org.freedesktop.DBus.Monitoring       interface -         -                                                                      -
+.BecomeMonitor                        method    asu       -                                                                      -
+org.freedesktop.DBus.Peer             interface -         -                                                                      -
+.GetMachineId                         method    -         s                                                                      -
+.Ping                                 method    -         -                                                                      -
+org.freedesktop.DBus.Properties       interface -         -                                                                      -
+.Get                                  method    ss        v                                                                      -
+.GetAll                               method    s         a{sv}                                                                  -
+.Set                                  method    ssv       -                                                                      -
+.PropertiesChanged                    signal    sa{sv}as  -                                                                      -
+
+## attacker directory and method attempts
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+touch: cannot touch '/run/dbus/containers/dbus_containers1_touch': Permission denied
+touch_rc=1
+ln: failed to create symbolic link '/run/dbus/containers/dbus_containers1_link': Permission denied
+symlink_rc=1
+Call failed: org.freedesktop.DBus does not understand message AddServer
+addserver_rc=1
+Call failed: org.freedesktop.DBus does not understand message StopListening
+stoplistening_rc=1
+
+## postcheck
+drwxr-xr-x messagebus:root /run/dbus/containers -> 
+ls: cannot access '/root/dbus_containers1_root': No such file or directory
+ls: cannot access '/tmp/dbus_containers1_*': No such file or directory
+ROOT_PROOF=no
+running
+0

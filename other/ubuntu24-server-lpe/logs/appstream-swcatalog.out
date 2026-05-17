@@ -1,0 +1,456 @@
+
+== target ==
+utc=2026-05-16T17:16:07Z
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+
+== package versions ==
+appstream	1.0.2-1build6
+apt	2.8.3
+libappstream5:arm64	1.0.2-1build6
+packagekit	1.2.8-2ubuntu1.5
+packagekit-tools	1.2.8-2ubuntu1.5
+AppStream version: 1.0.2
+
+== apt appstream hook ==
+-rw-r--r-- 1 root root 2569 Feb 24  2024 /etc/apt/apt.conf.d/50appstream
+## This file is provided by appstreamcli(1) to download DEP-11
+## metadata files.
+
+Acquire::IndexTargets {
+    # The YAML metadata files
+    deb::DEP-11  {
+        MetaKey "$(COMPONENT)/dep11/Components-$(NATIVE_ARCHITECTURE).yml";
+        ShortDescription "Components-$(NATIVE_ARCHITECTURE)";
+        Description "$(RELEASE)/$(COMPONENT) $(NATIVE_ARCHITECTURE) Components";
+
+        KeepCompressed "true";
+        KeepCompressedAs "gz";
+    };
+
+    # Small icons for GUI components described in the DEP-11
+    # YAML metadata.
+    deb::DEP-11-icons-small  {
+        MetaKey "$(COMPONENT)/dep11/icons-48x48.tar";
+        ShortDescription "icons-48x48";
+        Description "$(RELEASE)/$(COMPONENT) Icons (48x48)";
+
+        KeepCompressed "true";
+        KeepCompressedAs "gz";
+        DefaultEnabled "false";
+    };
+
+    # Normal-sized icons for GUI components described in the DEP-11
+    # YAML metadata.
+    deb::DEP-11-icons  {
+        MetaKey "$(COMPONENT)/dep11/icons-64x64.tar";
+        ShortDescription "icons-64x64";
+        Description "$(RELEASE)/$(COMPONENT) Icons (64x64)";
+
+        KeepCompressed "true";
+        KeepCompressedAs "gz";
+        DefaultEnabled "false";
+    };
+
+    # Icons suitable for HiDPI displays, for GUI components described in
+    # the DEP-11 YAML metadata.
+    deb::DEP-11-icons-hidpi  {
+        MetaKey "$(COMPONENT)/dep11/icons-64x64@2.tar";
+        ShortDescription "icons-64x64@2";
+        Description "$(RELEASE)/$(COMPONENT) Icons (64x64@2)";
+
+        KeepCompressed "true";
+        KeepCompressedAs "gz";
+        DefaultEnabled "false";
+    };
+
+    # Larger icons that are often used on HiDPI displays as fallback.
+    deb::DEP-11-icons-large  {
+        MetaKey "$(COMPONENT)/dep11/icons-128x128.tar";
+        ShortDescription "icons-128x128";
+        Description "$(RELEASE)/$(COMPONENT) Icons (128x128)";
+
+        KeepCompressed "true";
+        KeepCompressedAs "gz";
+        DefaultEnabled "false";
+    };
+
+    # Even larger icons that are used on HiDPI displays.
+    deb::DEP-11-icons-large-hidpi {
+        MetaKey "$(COMPONENT)/dep11/icons-128x128@2.tar";
+        ShortDescription "icons-128x128@2";
+        Description "$(RELEASE)/$(COMPONENT) Icons (128x128@2)";
+
+        KeepCompressed "true";
+        KeepCompressedAs "gz";
+        DefaultEnabled "false";
+    };
+};
+
+# Refresh AppStream cache when APT's cache is updated (i.e. apt update)
+APT::Update::Post-Invoke-Success {
+    "if /usr/bin/test -w /var/cache/swcatalog -a -e /usr/bin/appstreamcli; then appstreamcli refresh --source=os > /dev/null || true; fi";
+};
+
+== appstream config and status ==
+-rw-r--r-- 1 root root 370 Feb 24  2024 /usr/share/appstream/appstream.conf
+#
+# This file contains distribution-specific configuration for AppStream.
+# If data for your distribution is missing, you can submit
+# a patch to include it upstream.
+# The distribution identifier from /etc/os-release is used as key.
+#
+
+[general]
+
+#
+# Distribution specific settings
+#
+[debian]
+FreeRepos=debian-*-main
+
+[ubuntu]
+FreeRepos=ubuntu-*-main;ubuntu-*-universe
+** (appstreamcli:744301): DEBUG: 17:16:07.691: run appstreamcli: status
+AppStream Status:
+Version: 1.0.2
+
+OS metadata sources:
+** (appstreamcli:744301): DEBUG: 17:16:07.691: Not adding metadata catalog location '/usr/share/swcatalog': Not a directory, or does not exist.
+ Software catalog data
+ Group: os-catalog
+  /var/lib/swcatalog/yaml
+(appstreamcli:744301): GLib-GIO-DEBUG: 17:16:07.691: _g_io_module_get_default: Found default implementation local (GLocalVfs) for ?gio-vfs?
+    ? YAML:  15
+
+ Data from locally installed software
+ Group: local-metainfo
+  /usr/share/applications
+    ? Desktop Entry:  7
+  /usr/share/metainfo
+    ? MetaInfo XML:  3
+
+Other metadata sources:
+? No metadata.
+Summary:
+** (appstreamcli:744301): DEBUG: 17:16:07.691: run AsPool:load
+** (appstreamcli:744301): DEBUG: 17:16:07.692: Pruning old cache data.
+** (appstreamcli:744301): DEBUG: 17:16:07.692: Not adding metadata catalog location '/usr/share/swcatalog': Not a directory, or does not exist.
+** (appstreamcli:744301): DEBUG: 17:16:07.692: Using cached metadata: os-catalog
+** (appstreamcli:744301): DEBUG: 17:16:07.692: Using cache file: /var/cache/swcatalog/cache/C-os-catalog.xb
+** (appstreamcli:744301): DEBUG: 17:16:07.692: Using cached metadata: local-metainfo
+** (appstreamcli:744301): DEBUG: 17:16:07.692: Using cache file: /var/cache/swcatalog/cache/C-local-metainfo.xb
+** (appstreamcli:744301): DEBUG: 17:16:07.692: run AsPool:get_components
+** (appstreamcli:744301): DEBUG: 17:16:07.692: Querying `components/component` in system:C-os-catalog
+** (appstreamcli:744301): DEBUG: 17:16:07.817: Querying `components/component` in system:C-local-metainfo
+? We have information on 2584 software components.
+
+== system path permissions ==
+f: /var/cache/swcatalog
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root cache
+drwxr-xr-x root root swcatalog
+f: /var/cache/swcatalog/cache
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root cache
+drwxr-xr-x root root swcatalog
+drwxr-xr-x root root cache
+f: /usr/share/metainfo
+drwxr-xr-x root root /
+drwxr-xr-x root root usr
+drwxr-xr-x root root share
+drwxr-xr-x root root metainfo
+f: /usr/share/applications
+drwxr-xr-x root root /
+drwxr-xr-x root root usr
+drwxr-xr-x root root share
+drwxr-xr-x root root applications
+missing /usr/share/swcatalog
+f: /var/lib/swcatalog
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root swcatalog
+f: /var/lib/apt/lists
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root apt
+drwxr-xr-x root root lists
+f: /var/lib/apt/lists/partial
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root apt
+drwxr-xr-x root root lists
+drwx------ _apt root partial
+f: /etc/apt/apt.conf.d
+drwxr-xr-x root root /
+drwxr-xr-x root root etc
+drwxr-xr-x root root apt
+drwxr-xr-x root root apt.conf.d
+f: /usr/local/sbin
+drwxr-xr-x root root /
+drwxr-xr-x root root usr
+drwxr-xr-x root root local
+drwxr-xr-x root root sbin
+f: /usr/local/bin
+drwxr-xr-x root root /
+drwxr-xr-x root root usr
+drwxr-xr-x root root local
+drwxr-xr-x root root bin
+f: /usr/sbin
+drwxr-xr-x root root /
+drwxr-xr-x root root usr
+drwxr-xr-x root root sbin
+f: /usr/bin
+drwxr-xr-x root root /
+drwxr-xr-x root root usr
+drwxr-xr-x root root bin
+f: /usr/bin/appstreamcli
+drwxr-xr-x root root /
+drwxr-xr-x root root usr
+drwxr-xr-x root root bin
+-rwxr-xr-x root root appstreamcli
+f: /usr/libexec/packagekitd
+drwxr-xr-x root root /
+drwxr-xr-x root root usr
+drwxr-xr-x root root libexec
+-rwxr-xr-x root root packagekitd
+f: /usr/bin/pkcon
+drwxr-xr-x root root /
+drwxr-xr-x root root usr
+drwxr-xr-x root root bin
+-rwxr-xr-x root root pkcon
+
+== swcatalog and metainfo contents ==
+-rw-r--r-- root root 39943 /var/cache/swcatalog/cache/C-local-metainfo.xb -> 
+-rw-r--r-- root root 7749411 /var/cache/swcatalog/cache/C-os-catalog.xb -> 
+drwxr-xr-x root root 4096 /var/cache/swcatalog -> 
+drwxr-xr-x root root 4096 /var/cache/swcatalog/cache -> 
+-rw-r--r-- root root 1619 /usr/share/metainfo/org.freedesktop.packagekit.metainfo.xml -> 
+-rw-r--r-- root root 53023 /usr/share/metainfo/org.freedesktop.appstream.cli.metainfo.xml -> 
+-rw-r--r-- root root 6517 /usr/share/metainfo/org.freedesktop.fwupd.metainfo.xml -> 
+drwxr-xr-x root root 4096 /usr/share/metainfo -> 
+
+== apt dep11 inputs ==
+-rw-r--r-- root root 11366 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-backports_universe_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 156 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-security_restricted_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 157 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-security_multiverse_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 159 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-updates_multiverse_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 159 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-updates_restricted_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 160 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-backports_restricted_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 161 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-backports_multiverse_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 22022 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-security_main_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 234425 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-updates_main_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 3709 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-backports_main_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 37742 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble_multiverse_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 530316 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-updates_universe_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 5467165 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble_universe_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 657672 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble_main_dep11_Components-arm64.yml.gz -> 
+-rw-r--r-- root root 95478 /var/lib/apt/lists/ports.ubuntu.com_ubuntu-ports_dists_noble-security_universe_dep11_Components-arm64.yml.gz -> 
+
+== user writability ==
+attacker /var/cache/swcatalog writable=no
+attacker /var/cache/swcatalog/cache writable=no
+attacker /usr/share/metainfo writable=no
+attacker /var/lib/apt/lists writable=no
+attacker /etc/apt/apt.conf.d writable=no
+attacker /usr/local/bin writable=no
+selfauth /var/cache/swcatalog writable=no
+selfauth /var/cache/swcatalog/cache writable=no
+selfauth /usr/share/metainfo writable=no
+selfauth /var/lib/apt/lists writable=no
+selfauth /etc/apt/apt.conf.d writable=no
+selfauth /usr/local/bin writable=no
+
+== attacker write and symlink placement attempts ==
+attacker ln /var/cache/swcatalog/.probe rc=1 ln: failed to create symbolic link '/var/cache/swcatalog/.probe': Permission denied
+attacker ln /var/cache/swcatalog/cache/C-local-metainfo.xb rc=1 ln: failed to create symbolic link '/var/cache/swcatalog/cache/C-local-metainfo.xb': Permission denied
+attacker ln /var/cache/swcatalog/cache/C-codex-probe.xb rc=1 ln: failed to create symbolic link '/var/cache/swcatalog/cache/C-codex-probe.xb': Permission denied
+attacker ln /usr/share/metainfo/codex-probe.metainfo.xml rc=1 ln: failed to create symbolic link '/usr/share/metainfo/codex-probe.metainfo.xml': Permission denied
+attacker ln /var/lib/apt/lists/codex-probe_dep11_Components-arm64.yml.gz rc=1 ln: failed to create symbolic link '/var/lib/apt/lists/codex-probe_dep11_Components-arm64.yml.gz': Permission denied
+attacker ln /usr/local/bin/appstreamcli rc=1 ln: failed to create symbolic link '/usr/local/bin/appstreamcli': Permission denied
+
+== attacker appstream user-cache refresh ==
++ HOME=/tmp/as-swcatalog-home-attacker
++ XDG_CACHE_HOME=/tmp/as-swcatalog-home-attacker/.cache
++ appstreamcli refresh --source=os --force
+? Only refreshing metadata cache specific to the current user.
+? Updating software metadata cache for the operating system.
+? Metadata cache was updated successfully.
+-rw-r--r-- attacker attacker 39943 /tmp/as-swcatalog-home-attacker/.cache/appstream/C-local-metainfo.xb -> 
+-rw-r--r-- attacker attacker 7749411 /tmp/as-swcatalog-home-attacker/.cache/appstream/C-os-catalog.xb -> 
+drwxr-xr-x attacker attacker 60 /tmp/as-swcatalog-home-attacker -> 
+drwxr-xr-x attacker attacker 60 /tmp/as-swcatalog-home-attacker/.cache -> 
+drwxr-xr-x attacker attacker 80 /tmp/as-swcatalog-home-attacker/.cache/appstream -> 
+
+== attacker custom XML datapath refresh ==
++ appstreamcli refresh --source=os --force --datapath=/tmp/as-swcatalog-probe/data --cachepath=/tmp/as-swcatalog-probe/cache
+? Only refreshing metadata cache specific to the current user.
+? Updating software metadata cache for the operating system.
+? Metadata cache was updated successfully.
+-rw-r--r-- attacker attacker 482 /tmp/as-swcatalog-probe/data/codex-probe.metainfo.xml -> 
+-rw-r--r-- attacker attacker 759 /tmp/as-swcatalog-probe/cache/C-c401b45699846227048e7ec33034d472.xb -> 
+drwxr-xr-x attacker attacker 60 /tmp/as-swcatalog-probe/cache -> 
+drwxr-xr-x attacker attacker 60 /tmp/as-swcatalog-probe/data -> 
+drwxr-xr-x attacker attacker 80 /tmp/as-swcatalog-probe -> 
+
+== attacker apt and packagekit triggers ==
++ HOME=/tmp/as-swcatalog-apt-home
++ timeout 20s apt-get update
+Reading package lists...
+E: Could not open lock file /var/lib/apt/lists/lock - open (13: Permission denied)
+E: Unable to lock directory /var/lib/apt/lists/
++ HOME=/tmp/as-swcatalog-home-attacker
++ timeout 25s pkcon refresh force
+Transaction:	Refreshing cache
+Status: 	Waiting in queue
+Status: 	Waiting for authentication
+Status: 	Finished
+Results:
+Fatal error: Failed to obtain authentication.
++ HOME=/tmp/as-swcatalog-home-selfauth
++ timeout 25s pkcon refresh force
+Transaction:	Refreshing cache
+Status: 	Waiting in queue
+Status: 	Waiting for authentication
+Status: 	Finished
+Results:
+Fatal error: Failed to obtain authentication.
+
+== packagekit policy and daemon environment ==
+  <action id="org.freedesktop.packagekit.system-sources-refresh">
+    <!-- SECURITY:
+          - Normal users do not require admin authentication to refresh the
+            cache, as this doesn't actually install or remove software.
+     -->
+    <description>Refresh system repositories</description>
+    <description xml:lang="zh_TW">重整系統軟體庫</description>
+    <description xml:lang="zh_CN">刷新系统仓库</description>
+    <description xml:lang="uk">Оновлення списків сховищ системи</description>
+    <description xml:lang="tr">Sistem depolarını yenile</description>
+    <description xml:lang="sv">Uppdatera systemprogramförråden</description>
+    <description xml:lang="sr">Освежи системске ризнице</description>
+    <description xml:lang="sq">Rifresko depo sistemi</description>
+    <description xml:lang="sl">Osveži sistemska skladišča</description>
+    <description xml:lang="sk">Obnoviť systémové repozitáre</description>
+    <description xml:lang="si">පද්ධති ගබඩාවන් නැවුම් කරන්න</description>
+    <description xml:lang="ru">Обновить системные репозитории</description>
+    <description xml:lang="ro">Împrospătează depozitele sistemului</description>
+    <description xml:lang="pt">Atualizar fontes do sistema</description>
+    <description xml:lang="pt_BR">Atualizar repositórios de sistema</description>
+    <description xml:lang="pl">Odświeżenie repozytoriów systemu</description>
+    <description xml:lang="pa">ਸਿਸਟਮ ਰਿਪੋਜ਼ਟਰੀਆਂ ਤਾਜ਼ਾ ਕਰੋ</description>
+    <description xml:lang="ko">시스템 저장소 새로 고침</description>
+    <description xml:lang="ka">სისტემური რეპოზიტორიების განახლება</description>
+    <description xml:lang="ja">システムリポジトリの更新</description>
+    <description xml:lang="it">Aggiorna repository di sistema</description>
+    <description xml:lang="id">Segarkan repositori sistem</description>
+    <description xml:lang="hu">Rendszertárolók frissítése</description>
+    <description xml:lang="hr">Osvježi repozitorije sustava</description>
+    <description xml:lang="he">רענון מאגרי המערכת</description>
+    <description xml:lang="fr">Actualiser les dépôts du système</description>
+    <description xml:lang="fi">Päivitä järjestelmän ohjelmistolähteet</description>
+    <description xml:lang="eu">Freskatu sistemaren biltegiak</description>
+    <description xml:lang="es">Recargar repositorios del sistema</description>
+    <description xml:lang="eo">Aktualigi sistem-deponejojn</description>
+    <description xml:lang="en_GB">Refresh system repositories</description>
+    <description xml:lang="de">System-Repositorien aktualisieren</description>
+    <description xml:lang="da">Opdater systempakkearkiver</description>
+    <description xml:lang="cs">Aktualizovat systémové repozitáře</description>
+    <description xml:lang="ca">Refresca els dipòsits del sistema</description>
+    <message>Authentication is required to refresh the system repositories</message>
+    <message xml:lang="zh_TW">必須先通過身份核對才能重新整理系統軟體庫</message>
+    <message xml:lang="zh_CN">刷新系统仓库需要认证</message>
+    <message xml:lang="uk">Для оновлення списку сховищ системи слід пройти розпізнавання</message>
+    <message xml:lang="tr">Sistem depolarını yenilemek için kimlik doğrulaması gerekiyor</message>
+    <message xml:lang="sv">Autentisering krävs för att uppdatera systemprogramförråden</message>
+    <message xml:lang="sr">Потребно је потврђивање идентитета за освежавање системских ризница</message>
+    <message xml:lang="sq">Që të rifreskohen depot e sistemit, lypset mirëfilltësim</message>
+    <message xml:lang="sl">Za osvežitev sistemskih skladišč je zahtevana overitev</message>
+    <message xml:lang="sk">Vyžaduje sa overenie totožnosti na obnovenie systémových repozitárov</message>
+    <message xml:lang="si">පද්ධති ගබඩාවන් නැවුම් කිරීමට සත්‍යාපනය අවශ්‍ය වේ</message>
+    <message xml:lang="ru">Для обновления системных репозиториев необходима аутентификация</message>
+    <message xml:lang="ro">Este necesară autentificarea pentru a împrospăta depozitele sistemului</message>
+    <message xml:lang="pt">Autenticação é necessária para atualizar as fontes do sistema</message>
+    <message xml:lang="pt_BR">Autenticação é necessária para atualizar os repositórios de sistema</message>
+    <message xml:lang="pl">Wymagane jest uwierzytelnienie, aby odświeżyć repozytoria systemu</message>
+    <message xml:lang="pa">ਸਿਸਟਮ ਰਿਪੋਜ਼ਟਰੀਆਂ ਤਾਜ਼ਾ ਕਰਨ ਲਈ ਪਰਮਾਣਕਿਤਾ ਚਾਹੀਦੀ ਹੈ</message>
+    <message xml:lang="ko">시스템 저장소를 새로 고치려면 인증해야 합니다</message>
+    <message xml:lang="ja">システムリポジトリの更新には認証が必要です</message>
+    <message xml:lang="it">È richiesto autenticarsi per aggiornare i repository di sistema</message>
+    <message xml:lang="id">Otentikasi diperlukan untuk menyegarkan repositori sistem</message>
+    <message xml:lang="hu">Hitelesítés szükséges a rendszertárolók frissítéséhez</message>
+    <message xml:lang="hr">Potrebna je ovjera za osvježavanje repozitorija sustava</message>
+    <message xml:lang="he">נדרש אימות כדי לרענן את מאגרי המערכת</message>
+    <message xml:lang="fr">Une authentification est nécessaire pour rafraîchir les dépôts du système </message>
+    <message xml:lang="fi">Ohjelmistolähteiden päivittäminen vaatii tunnistautumisen</message>
+    <message xml:lang="eu">Autentifikazioa behar da sistemaren biltegiak freskatzeko</message>
+    <message xml:lang="es">Necesita autenticarse para actualizar los repositorios del sistema</message>
+    <message xml:lang="eo">Necesas aŭtentigo por aktualigi la sistem-deponejojn</message>
+    <message xml:lang="en_GB">Authentication is required to refresh the system repositories</message>
+    <message xml:lang="de">Legitimation ist zum Aktualisieren der System-Repositorien erforderlich</message>
+    <message xml:lang="da">Godkendelse kræves for at opdatere systempakkearkiverne</message>
+    <message xml:lang="cs">Pro aktualizaci systémových repozitářů je vyžadováno ověření</message>
+    <message xml:lang="ca">Es requereix autenticació per refrescar els dipòsits de sistema</message>
+    <message xml:lang="ar">الاستيثاق مطلوب لتحديث مستودعات النظام</message>
+    <icon_name>package-x-generic</icon_name>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>yes</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+[D-BUS Service]
+Name=org.freedesktop.PackageKit
+Exec=/usr/libexec/packagekitd
+User=root
+SystemdService=packagekit.service
+
+packagekitd pid=741295
+HOME=/root
+LOGNAME=root
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin
+SHELL=/usr/bin/bash
+USER=root
+
+== controlled root cache symlink sink ==
+preplaced cache symlink name=C-88b26d2848fb4b047ba94ecf3b4fdb2d.xb
+-rw-r--r-- attacker attacker 53023 /tmp/as-swcatalog-symlink/data/org.freedesktop.appstream.cli.metainfo.xml -> 
+drwxr-xr-x attacker attacker 60 /tmp/as-swcatalog-symlink/cache -> 
+drwxr-xr-x attacker attacker 60 /tmp/as-swcatalog-symlink/data -> 
+drwxr-xr-x attacker attacker 80 /tmp/as-swcatalog-symlink -> 
+lrwxrwxrwx attacker attacker 32 /tmp/as-swcatalog-symlink/cache/C-88b26d2848fb4b047ba94ecf3b4fdb2d.xb -> /tmp/as-swcatalog-symlink/victim
+? Updating software metadata cache for the operating system.
+? Metadata cache was updated successfully.
+-rw-r--r-- attacker attacker 53023 /tmp/as-swcatalog-symlink/data/org.freedesktop.appstream.cli.metainfo.xml -> 
+-rw-r--r-- root root 97785 /tmp/as-swcatalog-symlink/victim -> 
+drwxr-xr-x attacker attacker 100 /tmp/as-swcatalog-symlink -> 
+drwxr-xr-x attacker attacker 60 /tmp/as-swcatalog-symlink/cache -> 
+drwxr-xr-x attacker attacker 60 /tmp/as-swcatalog-symlink/data -> 
+lrwxrwxrwx attacker attacker 32 /tmp/as-swcatalog-symlink/cache/C-88b26d2848fb4b047ba94ecf3b4fdb2d.xb -> /tmp/as-swcatalog-symlink/victim
+note: this sink requires root to use an attacker-writable cachepath; default /var/cache/swcatalog/cache is not attacker-writable.
+
+== cleanup verification ==
+removed /tmp/as-swcatalog-probe
+removed /tmp/as-swcatalog-symlink
+removed /tmp/as-swcatalog-apt-home
+removed /tmp/as-swcatalog-source
+removed /tmp/as-swcatalog-home-attacker
+removed /tmp/as-swcatalog-home-selfauth

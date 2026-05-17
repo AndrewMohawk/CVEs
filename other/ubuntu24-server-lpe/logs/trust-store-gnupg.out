@@ -1,0 +1,1648 @@
+GnuPG/apt-key/ca-certificates trust-store update helper probe
+target=ubuntu24-server-lpe-target attacker=attacker apt_network_probe=1
+2026-05-16T14:37:41-0400
+
+## cleanup before probe
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+
+## target identity and default packages
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== identity ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+      1 root     systemd         /sbin/init
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+sudo:x:27:ubuntu
+adm:x:4:ubuntu,syslog
+staff:x:50:
+syslog:x:104:
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+attacker
+sudo: a password is required
+sudo_rc=1
+
+== package versions ==
+apt	2.8.3	arm64	ii 
+apt-utils	2.8.3	arm64	ii 
+ca-certificates	20240203	all	ii 
+debconf	1.5.86ubuntu1	all	ii 
+dirmngr	2.4.4-2ubuntu17.4	arm64	ii 
+gnupg	2.4.4-2ubuntu17.4	all	ii 
+gnupg-utils	2.4.4-2ubuntu17.4	arm64	ii 
+gpg	2.4.4-2ubuntu17.4	arm64	ii 
+gpg-agent	2.4.4-2ubuntu17.4	arm64	ii 
+gpg-wks-client	2.4.4-2ubuntu17.4	arm64	ii 
+gpgconf	2.4.4-2ubuntu17.4	arm64	ii 
+gpgv	2.4.4-2ubuntu17.4	arm64	ii 
+keyboxd	2.4.4-2ubuntu17.4	arm64	ii 
+openssl	3.0.13-0ubuntu3.9	arm64	ii 
+packagekit	1.2.8-2ubuntu1.5	arm64	ii 
+python3	3.12.3-0ubuntu2.1	arm64	ii 
+systemd	255.4-1ubuntu8.15	arm64	ii 
+ubuntu-keyring	2023.11.28.1	all	ii 
+
+== kernel link protections and temp roots ==
+fs.protected_symlinks = 1
+fs.protected_hardlinks = 1
+fs.protected_fifos = 1
+fs.protected_regular = 2
+drwxrwxrwt 1777 root:root directory /tmp -> '/tmp'
+drwxrwxrwt 1777 root:root directory /var/tmp -> '/var/tmp'
+drwxr-xr-x 755 root:root directory /run -> '/run'
+drwxr-xr-x 755 root:root directory /run/user -> '/run/user'
+MISSING /run/user/1001
+drwxr-xr-x 755 root:root directory /home -> '/home'
+drwx------ 700 root:root directory /root -> '/root'
+
+## default root consumers and trust-store configuration
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== apt hooks and keyring config ==
+APT::Update::Post-Invoke "";
+APT::Update::Post-Invoke-Success "";
+APT::Update::Post-Invoke-Success:: "/usr/bin/test -e /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service && /usr/bin/test -S /var/run/dbus/system_bus_socket && /usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update > /dev/null; /bin/echo > /dev/null";
+APT::Update::Post-Invoke-Success:: "/usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";
+APT::Update::Post-Invoke-Success:: "if /usr/bin/test -w /var/cache/swcatalog -a -e /usr/bin/appstreamcli; then appstreamcli refresh --source=os > /dev/null || true; fi";
+APT::Update::Post-Invoke-Success:: "if /usr/bin/test -w /var/lib/command-not-found/ -a -e /usr/lib/cnf-update-db; then /usr/lib/cnf-update-db > /dev/null; fi";
+APT::Update::Post-Invoke-Success:: "touch /var/lib/apt/periodic/update-success-stamp 2>/dev/null || true";
+APT::Update::Post-Invoke:: "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true";
+APT::Update::Pre-Invoke "";
+APT::Update::Pre-Invoke:: "[ ! -e /run/systemd/system ] || [ $(id -u) -ne 0 ] || systemctl start --no-block apt-news.service esm-cache.service >/dev/null 2>&1 || true";
+DPkg::Post-Invoke "";
+DPkg::Post-Invoke:: "/usr/bin/test -e /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service && /usr/bin/test -S /var/run/dbus/system_bus_socket && /usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update > /dev/null; /bin/echo > /dev/null";
+DPkg::Post-Invoke:: "if [ -d /var/lib/update-notifier ]; then touch /var/lib/update-notifier/dpkg-run-stamp; fi; /usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";
+DPkg::Post-Invoke:: "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true";
+DPkg::Post-Invoke:: "test -x /usr/lib/needrestart/apt-pinvoke && /usr/lib/needrestart/apt-pinvoke -m u || true";
+Dir::Etc "etc/apt";
+Dir::Etc::main "apt.conf";
+Dir::Etc::netrc "auth.conf";
+Dir::Etc::netrcparts "auth.conf.d";
+Dir::Etc::parts "apt.conf.d";
+Dir::Etc::preferences "preferences";
+Dir::Etc::preferencesparts "preferences.d";
+Dir::Etc::sourcelist "sources.list";
+Dir::Etc::sourceparts "sources.list.d";
+Dir::Etc::trusted "trusted.gpg";
+Dir::Etc::trustedparts "trusted.gpg.d";
+Dir::State "var/lib/apt";
+Dir::State::cdroms "cdroms.list";
+Dir::State::extended_states "extended_states";
+Dir::State::lists "lists/";
+Dir::State::status "/var/lib/dpkg/status";
+/etc/apt/apt.conf.d/01autoremove:5:	"^firmware-linux.*";
+/etc/apt/apt.conf.d/01autoremove:6:	"^linux-firmware$";
+/etc/apt/apt.conf.d/15update-stamp:1:APT::Update::Post-Invoke-Success {"touch /var/lib/apt/periodic/update-success-stamp 2>/dev/null || true";};
+/etc/apt/apt.conf.d/20apt-esm-hook.conf:1:APT::Update::Pre-Invoke {
+/etc/apt/apt.conf.d/20apt-esm-hook.conf:2:	"[ ! -e /run/systemd/system ] || [ $(id -u) -ne 0 ] || systemctl start --no-block apt-news.service esm-cache.service >/dev/null 2>&1 || true";
+/etc/apt/apt.conf.d/20packagekit:5:DPkg::Post-Invoke {
+/etc/apt/apt.conf.d/20packagekit:10:APT::Update::Post-Invoke-Success {
+/etc/apt/apt.conf.d/50appstream:1:## This file is provided by appstreamcli(1) to download DEP-11
+/etc/apt/apt.conf.d/50appstream:27:    # Normal-sized icons for GUI components described in the DEP-11
+/etc/apt/apt.conf.d/50appstream:75:APT::Update::Post-Invoke-Success {
+/etc/apt/apt.conf.d/50appstream:76:    "if /usr/bin/test -w /var/cache/swcatalog -a -e /usr/bin/appstreamcli; then appstreamcli refresh --source=os > /dev/null || true; fi";
+/etc/apt/apt.conf.d/50command-not-found:14:APT::Update::Post-Invoke-Success {
+/etc/apt/apt.conf.d/50unattended-upgrades:38:    // For more information about Python regular expressions, see
+/etc/apt/apt.conf.d/50unattended-upgrades:126:// Print debugging information both in unattended-upgrades and
+/etc/apt/apt.conf.d/70debconf:3:DPkg::Pre-Install-Pkgs {"/usr/sbin/dpkg-preconfigure --apt || true";};
+/etc/apt/apt.conf.d/99needrestart:8:DPkg::Post-Invoke {"test -x /usr/lib/needrestart/apt-pinvoke && /usr/lib/needrestart/apt-pinvoke -m u || true"; };
+/etc/apt/apt.conf.d/99update-notifier:1:DPkg::Post-Invoke {"if [ -d /var/lib/update-notifier ]; then touch /var/lib/update-notifier/dpkg-run-stamp; fi; /usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";};
+/etc/apt/apt.conf.d/99update-notifier:2:APT::Update::Post-Invoke-Success {"/usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";};
+/etc/apt/apt.conf.d/docker-clean:1:DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };
+/etc/apt/apt.conf.d/docker-clean:2:APT::Update::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };
+/etc/apt/sources.list.d/ubuntu.sources:36:Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+/etc/apt/sources.list.d/ubuntu.sources:44:Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+== root systemd environment and apt timers ==
+LANG=C.UTF-8
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin
+### apt-daily.service
+Result=success
+ExecStart={ path=/usr/lib/apt/apt.systemd.daily ; argv[]=/usr/lib/apt/apt.systemd.daily update ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:25:28 UTC] ; stop_time=[Sat 2026-05-16 18:25:28 UTC] ; pid=778943 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apt-daily.service
+UnitFileState=static
+### apt-daily-upgrade.service
+Result=success
+ExecStart={ path=/usr/lib/apt/apt.systemd.daily ; argv[]=/usr/lib/apt/apt.systemd.daily install ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:25:28 UTC] ; stop_time=[Sat 2026-05-16 18:25:28 UTC] ; pid=778909 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apt-daily-upgrade.service
+UnitFileState=static
+### apt-daily.timer
+Result=success
+LoadState=loaded
+ActiveState=active
+SubState=waiting
+FragmentPath=/usr/lib/systemd/system/apt-daily.timer
+UnitFileState=enabled
+### apt-daily-upgrade.timer
+Result=success
+LoadState=loaded
+ActiveState=active
+SubState=waiting
+FragmentPath=/usr/lib/systemd/system/apt-daily-upgrade.timer
+UnitFileState=enabled
+### apt-news.service
+Result=success
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/lib/ubuntu-advantage/apt_news.py ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+PassEnvironment=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apt-news.service
+UnitFileState=static
+### esm-cache.service
+Result=success
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/lib/ubuntu-advantage/esm_cache.py ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+PassEnvironment=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/esm-cache.service
+UnitFileState=static
+
+== ca-certificates dpkg consumers ==
+### /var/lib/dpkg/info/ca-certificates.postinst
+-rwxr-xr-x 755 root:root /var/lib/dpkg/info/ca-certificates.postinst
+#! /bin/sh
+# postinst script for ca-certificates
+#
+# see: dh_installdeb(1)
+
+# summary of how this script can be called:
+#        * <postinst> `configure' <most-recently-configured-version>
+#        * <old-postinst> `abort-upgrade' <new version>
+#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
+#          <new-version>
+#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
+#          <failed-install-package> <version> `removing'
+#          <conflicting-package> <version>
+# for details, see /usr/share/doc/packaging-manual/
+#
+# quoting from the policy:
+#     Any necessary prompting should almost always be confined to the
+#     post-installation script, and should be protected with a conditional
+#     so that unnecessary prompting doesn't happen if a package's
+#     installation fails and the `postinst' is called with `abort-upgrade',
+#     `abort-remove' or `abort-deconfigure'.
+
+set -e
+
+each_value() {
+ echo "$1" |tr ',' '\n' | sed -e 's/^[[:space:]]*//' 
+}
+
+memberp() {
+ m="$1"
+ l="$2"
+ each_value "$l" | grep -q "^$m\$"
+}
+
+delca() {
+ m="$1"
+ l="$2"
+ echo "$l" |sed -e 's|'"$m"', ||' -e 's|'"$m"'$||' -e 's/,[[:space:]]*,/, /' -e 's/^[[:space:]]*//' -e 's/,[[:space:]]*$//'
+}
+
+case "$1" in
+    configure)
+        if [ ! -e /usr/local/share/ca-certificates ]; then
+            if mkdir -m $(stat -L -c %a /usr/local) /usr/local/share/ca-certificates 2>/dev/null; then
+                chgrp $(stat -L -c %g /usr/local) /usr/local/share/ca-certificates
+            fi
+        # Handle upgrades and allow local admin to override:
+        # e.g. dpkg-statoverride --add root staff 2775 /usr/local/share/ca-certificates
+        elif ! dpkg-statoverride --list /usr/local/share/ca-certificates >/dev/null; then
+            chmod $(stat -L -c %a /usr/local) /usr/local/share/ca-certificates || true
+            chown $(stat -L -c %u /usr/local):$(stat -L -c %g /usr/local) /usr/local/share/ca-certificates || true
+        fi
+
+        . /usr/share/debconf/confmodule
+	db_version 2.0
+	db_capb multiselect
+	db_metaget ca-certificates/enable_crts choices
+	CERTS_AVAILABLE="$RET"
+	db_get ca-certificates/enable_crts
+	CERTS_ENABLED="$RET"
+	# XXX unmark seen for next configuration
+	db_fset ca-certificates/new_crts seen false
+	db_stop || true
+	if test -f /etc/ca-certificates.conf; then
+	  # XXX: while in subshell?
+	  while read line
+	  do
+	    if echo "$line" | grep -q '^#'; then
+	     echo "$line"
+	    else
+	     case "$line" in
+	     !*) ca=$(echo "$line" | sed -e 's/^!//');;
+	     *)   ca="$line";;
+	     esac
+	     if memberp "$ca" "$CERTS_ENABLED"; then
+	       echo "$ca"
+	       # CERTS_ENABLED=$(delca "$ca" "$CERTS_ENABLED")
+         elif memberp "$ca" "$CERTS_AVAILABLE" ||
+              echo "$line" | grep -q '^!'; then
+           echo "!$ca"
+         elif [ -f /usr/share/ca-certificates/"$ca" ] || \
+              [ -f /usr/local/share/ca-certificates/"$ca" ]; then
+           echo "$ca"
+	     else
+	       echo "!$ca"
+	     fi
+	     # CERTS_AVAILABLE=$(delca "$ca" "$CERTS_AVAILABLE")
+	    fi
+	  done < /etc/ca-certificates.conf > /etc/ca-certificates.conf.dpkg-new
+	  if echo "$CERTS_ENABLED" | egrep -q "^([[:space:]]*,)*[[:space:]]*$"; then
+	      :
+	  else
+	    each_value "$CERTS_ENABLED" | while read ca
+ 	    do
+	      if grep -q "^$ca" /etc/ca-certificates.conf.dpkg-new; then
+		  :
+	      else
+		  echo "$ca" >> /etc/ca-certificates.conf.dpkg-new
+	      fi
+            done
+	  fi
+	  each_value "$CERTS_AVAILABLE" | while read ca
+	  do
+	    if memberp "$ca" "$CERTS_ENABLED"; then
+		:
+	    elif grep -q "^!$ca" /etc/ca-certificates.conf.dpkg-new; then
+	        :
+	    else
+		echo "!$ca" >> /etc/ca-certificates.conf.dpkg-new
+	    fi
+	  done
+	  if cmp -s /etc/ca-certificates.conf /etc/ca-certificates.conf.dpkg-new; then
+	    rm -f /etc/ca-certificates.conf.dpkg-new
+	  else
+	    mv -f /etc/ca-certificates.conf /etc/ca-certificates.conf.dpkg-old
+	    mv /etc/ca-certificates.conf.dpkg-new /etc/ca-certificates.conf
+	  fi
+	else
+	  # new file
+	  cat > /etc/ca-certificates.conf <<EOF
+# This file lists certificates that you wish to use or to ignore to be
+# installed in /etc/ssl/certs.
+# update-ca-certificates(8) will update /etc/ssl/certs by reading this file.
+#
+# This is autogenerated by dpkg-reconfigure ca-certificates.
+# Certificates should be installed under /usr/share/ca-certificates
+# and files with extension '.crt' is recognized as available certs.
+#
+# line begins with # is comment.
+# line begins with ! is certificate filename to be deselected.
+#
+EOF
+	  (echo $CERTS_ENABLED | tr ',' '\n'; \
+	   echo $CERTS_AVAILABLE | tr ',' '\n') | \
+	    sed -e 's/^[[:space:]]*//' | \
+	    sort | uniq -c | \
+	    sed -e 's/^[[:space:]]*2[[:space:]]*//' \
+	        -e 's/^[[:space:]]*1[[:space:]]*/!/' \
+	    >> /etc/ca-certificates.conf
+	fi
+	# update /etc/ssl/certs without running the hooks
+	# fix bogus symlink to ca-certificates.crt on upgrades; see
+	# Debian #643667; drop after wheezy
+	if dpkg --compare-versions "$2" lt-nl 20111025; then
+	    update-ca-certificates --hooksdir "" --fresh
+	else
+	    update-ca-certificates --hooksdir ""
+	fi
+	# deferred update of /etc/ssl/certs including running the hooks
+	dpkg-trigger --no-await update-ca-certificates
+    ;;
+
+    triggered)
+	for trigger in $2; do
+	    case "$trigger" in
+		update-ca-certificates)
+		    update-ca-certificates
+		    ;;
+		update-ca-certificates-fresh)
+		    update-ca-certificates --fresh
+		    ;;
+		*)
+		    echo "postinst called with unknown trigger \`$2'">&2
+		    exit 1
+		    ;;
+	    esac;
+	done;
+	;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+# dh_installdeb will replace this with shell code automatically
+### /var/lib/dpkg/info/ca-certificates.triggers
+-rw-r--r-- 644 root:root /var/lib/dpkg/info/ca-certificates.triggers
+interest update-ca-certificates
+interest update-ca-certificates-fresh
+### /var/lib/dpkg/info/ca-certificates.config
+-rwxr-xr-x 755 root:root /var/lib/dpkg/info/ca-certificates.config
+#!/bin/sh
+# $1 = action ('configure' or 'reconfigure')
+# $2 = current-installed-version
+set -e
+
+action="$1"
+
+if test -f /etc/ca-certificates.conf; then
+  CERTSCONF=/etc/ca-certificates.conf
+else
+  CERTSCONF=/dev/null
+fi
+
+# CERTS_DISABLED: certs that user dont trust
+CERTS_DISABLED=$(sed -ne 's/^!\(.*\)/\1/p' $CERTSCONF)
+
+# CERTS_TRUST: certs that user already trust
+CERTS_TRUST=$(sed -e '/^#/d' -e '/^!/d' $CERTSCONF)
+
+
+# CERTS_AVAILABLE: certs that user can choices
+CERTS_AVAILABLE=""
+
+# CERTS_ENABLED: certs that user already trusted
+CERTS_ENABLED=""
+
+# CERTS_LIST: certs that will be installed
+CERTS_LIST="mozilla/ACCVRAIZ1.crt, mozilla/AC_RAIZ_FNMT-RCM.crt, mozilla/AC_RAIZ_FNMT-RCM_SERVIDORES_SEGUROS.crt, mozilla/ANF_Secure_Server_Root_CA.crt, mozilla/Actalis_Authentication_Root_CA.crt, mozilla/AffirmTrust_Commercial.crt, mozilla/AffirmTrust_Networking.crt, mozilla/AffirmTrust_Premium.crt, mozilla/AffirmTrust_Premium_ECC.crt, mozilla/Amazon_Root_CA_1.crt, mozilla/Amazon_Root_CA_2.crt, mozilla/Amazon_Root_CA_3.crt, mozilla/Amazon_Root_CA_4.crt, mozilla/Atos_TrustedRoot_2011.crt, mozilla/Atos_TrustedRoot_Root_CA_ECC_TLS_2021.crt, mozilla/Atos_TrustedRoot_Root_CA_RSA_TLS_2021.crt, mozilla/Autoridad_de_Certificacion_Firmaprofesional_CIF_A62634068.crt, mozilla/BJCA_Global_Root_CA1.crt, mozilla/BJCA_Global_Root_CA2.crt, mozilla/Baltimore_CyberTrust_Root.crt, mozilla/Buypass_Class_2_Root_CA.crt, mozilla/Buypass_Class_3_Root_CA.crt, mozilla/CA_Disig_Root_R2.crt, mozilla/CFCA_EV_ROOT.crt, mozilla/COMODO_Certification_Authority.crt, mozilla/COMODO_ECC_Certification_Authority.crt, mozilla/COMODO_RSA_Certification_Authority.crt, mozilla/Certainly_Root_E1.crt, mozilla/Certainly_Root_R1.crt, mozilla/Certigna.crt, mozilla/Certigna_Root_CA.crt, mozilla/Certum_EC-384_CA.crt, mozilla/Certum_Trusted_Network_CA.crt, mozilla/Certum_Trusted_Network_CA_2.crt, mozilla/Certum_Trusted_Root_CA.crt, mozilla/CommScope_Public_Trust_ECC_Root-01.crt, mozilla/CommScope_Public_Trust_ECC_Root-02.crt, mozilla/CommScope_Public_Trust_RSA_Root-01.crt, mozilla/CommScope_Public_Trust_RSA_Root-02.crt, mozilla/Comodo_AAA_Services_root.crt, mozilla/D-TRUST_BR_Root_CA_1_2020.crt, mozilla/D-TRUST_EV_Root_CA_1_2020.crt, mozilla/D-TRUST_Root_Class_3_CA_2_2009.crt, mozilla/D-TRUST_Root_Class_3_CA_2_EV_2009.crt, mozilla/DigiCert_Assured_ID_Root_CA.crt, mozilla/DigiCert_Assured_ID_Root_G2.crt, mozilla/DigiCert_Assured_ID_Root_G3.crt, mozilla/DigiCert_Global_Root_CA.crt, mozilla/DigiCert_Global_Root_G2.crt, mozilla/DigiCert_Global_Root_G3.crt, mozilla/DigiCert_High_Assurance_EV_Root_CA.crt, mozilla/DigiCert_TLS_ECC_P384_Root_G5.crt, mozilla/DigiCert_TLS_RSA4096_Root_G5.crt, mozilla/DigiCert_Trusted_Root_G4.crt, mozilla/Entrust.net_Premium_2048_Secure_Server_CA.crt, mozilla/Entrust_Root_Certification_Authority.crt, mozilla/Entrust_Root_Certification_Authority_-_EC1.crt, mozilla/Entrust_Root_Certification_Authority_-_G2.crt, mozilla/Entrust_Root_Certification_Authority_-_G4.crt, mozilla/GDCA_TrustAUTH_R5_ROOT.crt, mozilla/GLOBALTRUST_2020.crt, mozilla/GTS_Root_R1.crt, mozilla/GTS_Root_R2.crt, mozilla/GTS_Root_R3.crt, mozilla/GTS_Root_R4.crt, mozilla/GlobalSign_ECC_Root_CA_-_R4.crt, mozilla/GlobalSign_ECC_Root_CA_-_R5.crt, mozilla/GlobalSign_Root_CA.crt, mozilla/GlobalSign_Root_CA_-_R3.crt, mozilla/GlobalSign_Root_CA_-_R6.crt, mozilla/GlobalSign_Root_E46.crt, mozilla/GlobalSign_Root_R46.crt, mozilla/Go_Daddy_Class_2_CA.crt, mozilla/Go_Daddy_Root_Certificate_Authority_-_G2.crt, mozilla/HARICA_TLS_ECC_Root_CA_2021.crt, mozilla/HARICA_TLS_RSA_Root_CA_2021.crt, mozilla/Hellenic_Academic_and_Research_Institutions_ECC_RootCA_2015.crt, mozilla/Hellenic_Academic_and_Research_Institutions_RootCA_2015.crt, mozilla/HiPKI_Root_CA_-_G1.crt, mozilla/Hongkong_Post_Root_CA_3.crt, mozilla/ISRG_Root_X1.crt, mozilla/ISRG_Root_X2.crt, mozilla/IdenTrust_Commercial_Root_CA_1.crt, mozilla/IdenTrust_Public_Sector_Root_CA_1.crt, mozilla/Izenpe.com.crt, mozilla/Microsec_e-Szigno_Root_CA_2009.crt, mozilla/Microsoft_ECC_Root_Certificate_Authority_2017.crt, mozilla/Microsoft_RSA_Root_Certificate_Authority_2017.crt, mozilla/NAVER_Global_Root_Certification_Authority.crt, mozilla/NetLock_Arany_=Class_Gold=_Főtanúsítvány.crt, mozilla/OISTE_WISeKey_Global_Root_GB_CA.crt, mozilla/OISTE_WISeKey_Global_Root_GC_CA.crt, mozilla/QuoVadis_Root_CA_1_G3.crt, mozilla/QuoVadis_Root_CA_2.crt, mozilla/QuoVadis_Root_CA_2_G3.crt, mozilla/QuoVadis_Root_CA_3.crt, mozilla/QuoVadis_Root_CA_3_G3.crt, mozilla/SSL.com_EV_Root_Certification_Authority_ECC.crt, mozilla/SSL.com_EV_Root_Certification_Authority_RSA_R2.crt, mozilla/SSL.com_Root_Certification_Authority_ECC.crt, mozilla/SSL.com_Root_Certification_Authority_RSA.crt, mozilla/SSL.com_TLS_ECC_Root_CA_2022.crt, mozilla/SSL.com_TLS_RSA_Root_CA_2022.crt, mozilla/SZAFIR_ROOT_CA2.crt, mozilla/Sectigo_Public_Server_Authentication_Root_E46.crt, mozilla/Sectigo_Public_Server_Authentication_Root_R46.crt, mozilla/SecureSign_RootCA11.crt, mozilla/SecureTrust_CA.crt, mozilla/Secure_Global_CA.crt, mozilla/Security_Communication_ECC_RootCA1.crt, mozilla/Security_Communication_RootCA2.crt, mozilla/Security_Communication_RootCA3.crt, mozilla/Security_Communication_Root_CA.crt, mozilla/Starfield_Class_2_CA.crt, mozilla/Starfield_Root_Certificate_Authority_-_G2.crt, mozilla/Starfield_Services_Root_Certificate_Authority_-_G2.crt, mozilla/SwissSign_Gold_CA_-_G2.crt, mozilla/SwissSign_Silver_CA_-_G2.crt, mozilla/T-TeleSec_GlobalRoot_Class_2.crt, mozilla/T-TeleSec_GlobalRoot_Class_3.crt, mozilla/TUBITAK_Kamu_SM_SSL_Kok_Sertifikasi_-_Surum_1.crt, mozilla/TWCA_Global_Root_CA.crt, mozilla/TWCA_Root_Certification_Authority.crt, mozilla/TeliaSonera_Root_CA_v1.crt, mozilla/Telia_Root_CA_v2.crt, mozilla/TrustAsia_Global_Root_CA_G3.crt, mozilla/TrustAsia_Global_Root_CA_G4.crt, mozilla/Trustwave_Global_Certification_Authority.crt, mozilla/Trustwave_Global_ECC_P256_Certification_Authority.crt, mozilla/Trustwave_Global_ECC_P384_Certification_Authority.crt, mozilla/TunTrust_Root_CA.crt, mozilla/UCA_Extended_Validation_Root.crt, mozilla/UCA_Global_G2_Root.crt, mozilla/USERTrust_ECC_Certification_Authority.crt, mozilla/USERTrust_RSA_Certification_Authority.crt, mozilla/XRamp_Global_CA_Root.crt, mozilla/certSIGN_ROOT_CA.crt, mozilla/certSIGN_Root_CA_G2.crt, mozilla/e-Szigno_Root_CA_2017.crt, mozilla/ePKI_Root_Certification_Authority.crt, mozilla/emSign_ECC_Root_CA_-_C3.crt, mozilla/emSign_ECC_Root_CA_-_G3.crt, mozilla/emSign_Root_CA_-_C1.crt, mozilla/emSign_Root_CA_-_G1.crt, mozilla/vTrus_ECC_Root_CA.crt, mozilla/vTrus_Root_CA.crt"
+
+# CERTS_NEW: new certificates that will be installed
+CERTS_NEW=""
+
+members()
+{
+  echo "$1" | tr ',' '\n' | sed -e 's/^[[:space:]]*//' | while read ca
+  do
+    if echo "$2" | grep -q "$ca" > /dev/null 2>&1; then
+      echo match
+    fi
+  done | grep -q match
+}
+
+. /usr/share/debconf/confmodule || exit
+db_version 2.0
+db_capb multiselect
+
+db_settitle ca-certificates/title
+db_input medium ca-certificates/trust_new_crts || true
+db_go
+
+trust_new="yes"
+if db_get ca-certificates/trust_new_crts; then
+  trust_new="$RET"
+fi
+
+seen=false
+if db_fget ca-certificates/enable_crts seen; then
+  seen="$RET"
+fi
+# XXX: in case reconfigure, force to select all available certificates
+if test "$action" = "reconfigure" || test "$DEBCONF_RECONFIGURE" = "1"; then
+  seen=false
+  trust_new=no
+fi
+
+if test -d /usr/share/ca-certificates; then
+  cd /usr/share/ca-certificates
+  crts=$( (find . -type f -name '*.crt' -print | sed -e 's/^\.\///'; \
+           echo "$CERTS_LIST" | tr ',' '\n' | sed -e 's/^[[:space:]]*//') | \
+           sort | uniq)
+  for crt in $crts
+  do
+   if test "$CERTS_AVAILABLE" = ""; then
+     CERTS_AVAILABLE="$crt"
+   else
+     CERTS_AVAILABLE="$CERTS_AVAILABLE, $crt"
+   fi
+   if (echo "$CERTS_DISABLED" | grep -F -q -x "$crt") > /dev/null 2>&1; then
+     : # echo "I: ignore $crt"
+   elif (echo "$CERTS_TRUST" | grep -F -q -x "$crt") > /dev/null 2>&1; then
+     # already trusted
+     if test "$CERTS_ENABLED" = ""; then
+       CERTS_ENABLED="$crt"
+     else
+       CERTS_ENABLED="$CERTS_ENABLED, $crt"
+     fi
+   else
+     # new certs?
+     if test "$trust_new" = "yes"; then
+       if test "$CERTS_ENABLED" = ""; then
+          CERTS_ENABLED="$crt"
+       else
+          CERTS_ENABLED="$CERTS_ENABLED, $crt"
+       fi
+     elif test "$trust_new" = "ask"; then
+       if test "$CERTS_NEW" = ""; then
+          CERTS_NEW="$crt"
+       else
+          CERTS_NEW="$CERTS_NEW, $crt"
+       fi
+     else
+	 : # trust_new=no, default disabled
+     fi
+   fi
+  done
+else
+  # initial installation
+  CERTS_AVAILABLE="$CERTS_LIST"
+  CERTS_ENABLED="$CERTS_AVAILABLE"
+  # XXX: ca-certificates/enable_crts should be used, so no need to ask new
+  #     in this session
+  trust_new="yes"
+  CERTS_NEW=""
+fi
+
+enable_crts=""
+if db_get ca-certificates/enable_crts; then
+ enable_crts="$RET"
+fi
+
+new_seen=false
+if db_fget ca-certificates/new_crts seen; then
+  new_seen="$RET"
+fi
+if members "$CERTS_NEW" "$enable_crts"; then
+    # already selected new_crts?
+    new_seen=true
+fi
+db_subst ca-certificates/new_crts new_crts "$CERTS_NEW"
+
+if test "$trust_new" = "ask" && test "$new_seen" = "true"; then
+ # XXX: run this again in postinst
+ CERTS_ENABLED="$enable_crts"
+fi
+
+if test "$trust_new" = "ask" && test "$CERTS_NEW" != "" && test "$new_seen" = "false"; then
+  # New certificates added
+  db_fset ca-certificates/new_crts seen false
+  db_input critical ca-certificates/new_crts || true
+  db_go
+  
+  if db_get ca-certificates/new_crts; then
+     if test "$CERTS_ENABLED" = ""; then
+        CERTS_ENABLED="$RET"
+     else
+        CERTS_ENABLED="$CERTS_ENABLED, $RET"
+     fi
+  fi
+  # XXX: old certificates keep current state?
+  seen=true
+fi
+# mark seen true, so that dont ask again while postinst 
+db_fset ca-certificates/new_crts seen true
+
+db_set ca-certificates/enable_crts "$CERTS_ENABLED"
+db_subst ca-certificates/enable_crts enable_crts "$CERTS_AVAILABLE"
+if test "$seen" != true; then
+  db_fset ca-certificates/enable_crts seen false
+fi
+db_input low ca-certificates/enable_crts || true
+db_go
+
+exit 0
+### /var/lib/dpkg/info/ca-certificates.postrm
+-rwxr-xr-x 755 root:root /var/lib/dpkg/info/ca-certificates.postrm
+#! /bin/sh
+# postrm script for ca-certificates
+#
+# see: dh_installdeb(1)
+
+set -e
+
+# summary of how this script can be called:
+#        * <postrm> `remove'
+#        * <postrm> `purge'
+#        * <old-postrm> `upgrade' <new-version>
+#        * <new-postrm> `failed-upgrade' <old-version>
+#        * <new-postrm> `abort-install'
+#        * <new-postrm> `abort-install' <old-version>
+#        * <new-postrm> `abort-upgrade' <old-version>
+#        * <disappearer's-postrm> `disappear' <r>overwrit>r> <new-version>
+# for details, see /usr/share/doc/packaging-manual/
+
+# Clear the debconf database as early as possible and signal debconf that
+# we are done with it.
+if [ "$1" = purge ] && [ -e /usr/share/debconf/confmodule ]; then
+    . /usr/share/debconf/confmodule
+    db_purge
+    db_stop
+fi
+
+remove_dangling_symlinks() {
+    if ! [ -d /etc/ssl/certs ]
+    then
+        return
+    fi
+    echo -n "Removing dangling symlinks from /etc/ssl/certs... "
+    find /etc/ssl/certs -type l -print | while read h
+    do
+        test -f "$h" || rm -f "$h"
+    done
+    echo "done."
+}
+
+case "$1" in
+    remove)
+        remove_dangling_symlinks
+        rmdir /usr/local/share/ca-certificates 2>/dev/null || true
+        ;;
+
+    purge)
+        rm -f /etc/ssl/certs/ca-certificates.crt
+        remove_dangling_symlinks
+        rm -f /etc/ca-certificates.conf*
+        ;;
+
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+        ;;
+
+    *)
+        echo "postrm called with unknown argument \`$1'" >&2
+        exit 1
+esac
+
+# dh_installdeb will replace this with shell code automatically
+# generated by other debhelper scripts.
+
+
+
+
+
+== ca-certificates hooks ==
+drwxr-xr-x root:root /etc/ca-certificates/update.d -> 
+
+== gnupg user services shipped by default ==
+dirmngr.service                  static   -
+gpg-agent.service                static   -
+keyboxd.service                  static   -
+dirmngr.socket                   enabled  enabled
+gpg-agent-browser.socket         enabled  enabled
+gpg-agent-extra.socket           enabled  enabled
+gpg-agent-ssh.socket             enabled  enabled
+gpg-agent.socket                 enabled  enabled
+keyboxd.socket                   enabled  enabled
+### gpg-agent.socket
+### gpg-agent-extra.socket
+### gpg-agent-browser.socket
+### gpg-agent-ssh.socket
+### gpg-agent.service
+### dirmngr.socket
+### dirmngr.service
+### keyboxd.socket
+### keyboxd.service
+
+== live gnupg processes and sockets ==
+
+## implementation excerpts for env, hook, tmp, and symlink boundaries
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== update-ca-certificates relevant lines ==
+    20	# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02111-1301,
+    21	# USA.
+    22	#
+    23	
+    24	verbose=0
+    25	fresh=0
+    26	default=0
+    27	CERTSCONF=/etc/ca-certificates.conf
+    28	CERTSDIR=/usr/share/ca-certificates
+    29	LOCALCERTSDIR=/usr/local/share/ca-certificates
+    30	CERTBUNDLE=ca-certificates.crt
+    31	ETCCERTSDIR=/etc/ssl/certs
+    32	HOOKSDIR=/etc/ca-certificates/update.d
+    33	
+    34	while [ $# -gt 0 ];
+    35	do
+    36	  case $1 in
+    37	    --verbose|-v)
+    38	      verbose=1;;
+    39	    --fresh|-f)
+    40	      fresh=1;;
+    41	    --default|-d)
+    42	      default=1
+    43	      fresh=1;;
+    44	    --certsconf)
+    45	      shift
+    46	      CERTSCONF="$1";;
+    47	    --certsdir)
+    48	      shift
+    49	      CERTSDIR="$1";;
+    50	    --localcertsdir)
+    51	      shift
+    52	      LOCALCERTSDIR="$1";;
+    53	    --certbundle)
+    54	      shift
+    55	      CERTBUNDLE="$1";;
+    56	    --etccertsdir)
+    57	      shift
+    58	      ETCCERTSDIR="$1";;
+    59	    --hooksdir)
+    60	      shift
+    61	      HOOKSDIR="$1";;
+    62	    --help|-h|*)
+    63	      echo "$0: [--verbose] [--fresh]"
+    64	      exit;;
+    65	  esac
+    66	  shift
+    67	done
+    68	
+    69	if [ ! -s "$CERTSCONF" ]
+    70	then
+    71	  fresh=1
+    72	fi
+    73	
+    74	cleanup() {
+    75	  rm -f "$TEMPBUNDLE"
+    76	  rm -f "$ADDED"
+    77	  rm -f "$REMOVED"
+    78	}
+    79	trap cleanup 0
+    80	
+    81	# Helper files.  (Some of them are not simple arrays because we spawn
+    82	# subshells later on.)
+    83	TEMPBUNDLE="${ETCCERTSDIR}/${CERTBUNDLE}.new"
+    84	ADDED="$(mktemp -p "${TMPDIR:-/tmp}" "ca-certificates.tmp.XXXXXX")"
+    85	REMOVED="$(mktemp -p "${TMPDIR:-/tmp}" "ca-certificates.tmp.XXXXXX")"
+    86	
+    87	# Adds a certificate to the list of trusted ones.  This includes a symlink
+    88	# in /etc/ssl/certs to the certificate file and its inclusion into the
+    89	# bundle.
+    90	add() {
+    91	  CERT="$1"
+    92	  PEM="$ETCCERTSDIR/$(basename "$CERT" .crt | sed -e 's/ /_/g' \
+    93	                                                  -e 's/[()]/=/g' \
+    94	                                                  -e 's/,/_/g').pem"
+    95	  if ! test -e "$PEM" || [ "$(readlink "$PEM")" != "$CERT" ]
+    96	  then
+    97	    ln -sf "$CERT" "$PEM"
+    98	    echo "+$PEM" >> "$ADDED"
+    99	  fi
+   100	  # Add trailing newline to certificate, if it is missing (#635570)
+   101	  sed -e '$a\' "$CERT" >> "$TEMPBUNDLE"
+   102	}
+   103	
+   104	remove() {
+   105	  CERT="$1"
+   106	  PEM="$ETCCERTSDIR/$(basename "$CERT" .crt).pem"
+   107	  if test -L "$PEM"
+   108	  then
+   109	    rm -f "$PEM"
+   110	    echo "-$PEM" >> "$REMOVED"
+   111	  fi
+   112	}
+   113	
+   114	cd "$ETCCERTSDIR"
+   115	if [ "$fresh" = 1 ]; then
+   116	  echo "Clearing symlinks in $ETCCERTSDIR..."
+   117	  find . -type l -print | while read -r symlink
+   118	  do
+   119	    case $(readlink "$symlink") in
+   120	      $CERTSDIR*|$LOCALCERTSDIR*) rm -f "$symlink";;
+   121	    esac
+   122	  done
+   123	  find . -type l -print | while read -r symlink
+   124	  do
+   125	    test -f "$symlink" || rm -f "$symlink"
+   126	  done
+   127	  echo "done."
+   128	fi
+   129	
+   130	echo "Updating certificates in $ETCCERTSDIR..."
+   131	
+   132	# Add default certificate authorities if requested
+   133	if [ "$default" = 1 ]; then
+   134	  find -L "$CERTSDIR" -type f -name '*.crt' | sort | while read -r crt
+   135	  do
+   136	    add "$crt"
+   137	  done
+   138	fi
+   139	
+   140	# Handle certificates that should be removed.  This is an explicit act
+   141	# by prefixing lines in the configuration files with exclamation marks (!).
+   142	sed -n -e '/^$/d' -e 's/^!//p' "$CERTSCONF" | while read -r crt
+   143	do
+   144	  remove "$CERTSDIR/$crt"
+   145	done
+   146	
+   147	sed -e '/^$/d' -e '/^#/d' -e '/^!/d' "$CERTSCONF" | while read -r crt
+   148	do
+   149	  if ! test -f "$CERTSDIR/$crt"
+   150	  then
+   151	    echo "W: $CERTSDIR/$crt not found, but listed in $CERTSCONF." >&2
+   152	    continue
+   153	  fi
+   154	  add "$CERTSDIR/$crt"
+   155	done
+   156	
+   157	# Now process certificate authorities installed by the local system
+   158	# administrator.
+   159	if [ -d "$LOCALCERTSDIR" ]
+   160	then
+   161	  find -L "$LOCALCERTSDIR" -type f -name '*.crt' | sort | while read -r crt
+   162	  do
+   163	    add "$crt"
+   164	  done
+   165	fi
+   166	
+   167	ADDED_CNT=$(wc -l < "$ADDED")
+   168	REMOVED_CNT=$(wc -l < "$REMOVED")
+   169	
+   170	if [ "$ADDED_CNT" -gt 0 ] || [ "$REMOVED_CNT" -gt 0 ]
+   171	then
+   172	  # only run if set of files has changed
+   173	  # Remove orphan symlinks found in ETCCERTSDIR to prevent `openssl rehash`
+   174	  # from exiting with an error. See #895482, #895473.
+   175	  find "$ETCCERTSDIR" -type l ! -exec test -e {} \; -print | while read -r orphan
+   176	  do
+   177	    rm -f "$orphan"
+   178	    if [ "$verbose" = 1 ]; then
+   179	      echo "Removed orphan symlink $orphan"
+   180	    fi
+   181	  done
+   182	  if [ "$verbose" = 0 ]
+   183	  then
+   184	    openssl rehash . > /dev/null
+   185	  else
+   186	    openssl rehash -v .
+   187	  fi
+   188	fi
+   189	
+   190	# chmod and mv only if TEMPBUNDLE exists or install may fail, #996005
+
+== apt-key relevant lines ==
+    60	}
+    61	
+    62	# gpg needs (in different versions more or less) files to function correctly,
+    63	# so we give it its own homedir and generate some valid content for it later on
+    64	create_gpg_home() {
+    65	    # for cases in which we want to cache a homedir due to expensive setup
+    66	    if [ -n "$GPGHOMEDIR" ]; then
+    67		return
+    68	    fi
+    69	    if [ -n "$TMPDIR" ]; then
+    70		# tmpdir is a directory and current user has rwx access to it
+    71		# same tests as in apt-pkg/contrib/fileutl.cc GetTempDir()
+    72		if [ ! -d "$TMPDIR" ] || [ ! -r "$TMPDIR" ] || [ ! -w "$TMPDIR" ] || [ ! -x "$TMPDIR" ]; then
+    73		    unset TMPDIR
+    74		fi
+    75	    fi
+    76	    GPGHOMEDIR="$(mktemp --directory --tmpdir 'apt-key-gpghome.XXXXXXXXXX')"
+    77	    CURRENTTRAP="${CURRENTTRAP} cleanup_gpg_home;"
+    78	    trap "${CURRENTTRAP}" 0 HUP INT QUIT ILL ABRT FPE SEGV PIPE TERM
+    79	    if [ -z "$GPGHOMEDIR" ]; then
+    80		apt_error "Could not create temporary gpg home directory in $TMPDIR (wrong permissions?)"
+    81		exit 28
+    82	    fi
+    83	    chmod 700 "$GPGHOMEDIR"
+    84	}
+    85	
+    86	requires_root() {
+    87		if [ "$(id -u)" -ne 0 ]; then
+    88			apt_error "This command can only be used by root."
+    89			exit 1
+    90		fi
+   309	is_supported_keyring() {
+   310	    # empty files are always supported
+   311	    if ! test -s "$1"; then
+   312		return 0
+   313	    fi
+   314	    local FILEEXT="${1##*.}"
+   315	    if [ "$FILEEXT" = 'gpg' ]; then
+   316		# 0x98, 0x99 and 0xC6 via octal as hex isn't supported by dashs printf
+   317		if printf '\231' | cmp -s -n 1 - "$1"; then
+   318		    true
+   319		elif printf '\230' | cmp -s -n 1 - "$1"; then
+   320		    true
+   321		elif printf '\306' | cmp -s -n 1 - "$1"; then
+   322		    true
+   323		else
+   324		    apt_warn "The key(s) in the keyring $1 are ignored as the file has an unsupported filetype."
+   325		    return 1
+   326		fi
+   327	    elif [ "$FILEEXT" = 'asc' ]; then
+   328		true #dearmor_filename will deal with them
+   329	    else
+   330		# most callers ignore unsupported extensions silently
+   331		apt_warn "The key(s) in the keyring $1 are ignored as the file has an unsupported filename extension."
+   332		return 1
+   333	    fi
+   334	    return 0
+   335	}
+   336	
+   337	foreach_keyring_do() {
+   338	   local ACTION="$1"
+   339	   shift
+   340	   # if a --keyring was given, just work on this one
+   341	   if [ -n "$FORCED_KEYRING" ]; then
+   342		$ACTION "$FORCED_KEYRING" "$@"
+   343	   else
+   344		# otherwise all known keyrings are up for inspection
+   345		if accessible_file_exists "$TRUSTEDFILE" && is_supported_keyring "$TRUSTEDFILE"; then
+   346		    $ACTION "$TRUSTEDFILE" "$@"
+   347		fi
+   348		local TRUSTEDPARTS="/etc/apt/trusted.gpg.d"
+   349		eval "$(apt-config shell TRUSTEDPARTS Dir::Etc::TrustedParts/d)"
+   350		if [ -d "$TRUSTEDPARTS" ]; then
+   351		    TRUSTEDPARTS="$(readlink -f "$TRUSTEDPARTS")"
+   352		    local TRUSTEDPARTSLIST="$(cd /; find "$TRUSTEDPARTS" -mindepth 1 -maxdepth 1 \( -name '*.gpg' -o -name '*.asc' \))"
+   353		    for trusted in $(echo "$TRUSTEDPARTSLIST" | sort); do
+   354			if accessible_file_exists "$trusted" && is_supported_keyring "$trusted"; then
+   355			    $ACTION "$trusted" "$@"
+   356			fi
+   357		    done
+   358		fi
+   359	   fi
+   360	}
+   361	
+   362	list_keys_in_keyring() {
+   363	    local KEYRINGFILE="$1"
+   364	    shift
+   365	    # fingerprint and co will fail if key isn't in this keyring
+   366	    aptkey_execute "$GPG_SH" --keyring "$(dearmor_filename "$KEYRINGFILE")" "$@" > "${GPGHOMEDIR}/gpgoutput.log" 2> "${GPGHOMEDIR}/gpgoutput.err" || true
+   367	    if [ ! -s "${GPGHOMEDIR}/gpgoutput.log" ]; then
+   368		return
+   369	    fi
+   370	    # we fake gpg header here to refer to the real asc file rather than a temp file
+   647	   eval $(apt-config shell TRUSTEDFILE Apt::GPGV::TrustedKeyring)
+   648	   eval $(apt-config shell TRUSTEDFILE Dir::Etc::Trusted/f)
+   649	   if [ "$APT_KEY_NO_LEGACY_KEYRING" ]; then
+   650	        TRUSTEDFILE="/dev/null"
+   651	   fi
+   652	fi
+   653	
+   654	command="$1"
+   655	if [ -z "$command" ]; then
+   656	    usage
+   657	    exit 1
+   658	fi
+   659	shift
+   660	
+   661	prepare_gpg_home() {
+   662	    # crude detection if we are called from a maintainerscript where the
+   663	    # package depends on gnupg or not. We accept recommends here as
+   664	    # well as the script hopefully uses apt-key optionally then like e.g.
+   665	    # debian-archive-keyring for (upgrade) cleanup did
+   666	    if [ -n "$DPKG_MAINTSCRIPT_PACKAGE" ] && [ -z "$APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE" ]; then
+   667		if ! dpkg-query --show --showformat '${Pre-Depends}${Depends}${Recommends}\n' "$DPKG_MAINTSCRIPT_PACKAGE" 2>/dev/null | grep -E -q 'gpg|gnupg'; then
+   668		    cat >&2 <<EOF
+   669	Warning: The $DPKG_MAINTSCRIPT_NAME maintainerscript of the package $DPKG_MAINTSCRIPT_PACKAGE
+   670	Warning: seems to use apt-key (provided by apt) without depending on gpg, gnupg, or gnupg2.
+   671	Warning: This will BREAK in the future and should be fixed by the package maintainer(s).
+   672	Note: Check first if apt-key functionality is needed at all - it probably isn't!
+   673	EOF
+   674		fi
+   675	    fi
+   676	    eval "$(apt-config shell GPG_EXE Apt::Key::gpgcommand)"
+   677	    if [ -n "$GPG_EXE" ] && command_available "$GPG_EXE"; then
+   678		true
+   679	    elif command_available 'gpg'; then
+   680		GPG_EXE="gpg"
+   681	    elif command_available 'gpg2'; then
+   682		GPG_EXE="gpg2"
+   683	    elif command_available 'gpg1'; then
+   684		GPG_EXE="gpg1"
+   685	    else
+   686		apt_error 'gnupg, gnupg2 and gnupg1 do not seem to be installed, but one of them is required for this operation'
+   687		exit 255
+   688	    fi
+   689	
+   690	    create_gpg_home
+   691	
+   692	    # now tell gpg that it shouldn't try to maintain this trustdb file
+   693	    echo "#!/bin/sh
+   694	exec '$(escape_shell "${GPG_EXE}")' --ignore-time-conflict --no-options --no-default-keyring \\
+   695	--homedir '$(escape_shell "${GPGHOMEDIR}")' --no-auto-check-trustdb --trust-model always \"\$@\"" > "${GPGHOMEDIR}/gpg.0.sh"
+   696	    GPG_SH="${GPGHOMEDIR}/gpg.0.sh"
+   697	    GPG="$GPG_SH"
+   698	
+   699	    # create the trustdb with an (empty) dummy keyring
+   700	    # older gpgs required it, newer gpgs even warn that it isn't needed,
+   701	    # but require it nonetheless for some commands, so we just play safe
+   702	    # here for the foreseeable future and create a dummy one
+   703	    touch "${GPGHOMEDIR}/empty.gpg"
+   704	    if ! "$GPG_EXE" --ignore-time-conflict --no-options --no-default-keyring \
+   705	       --homedir "$GPGHOMEDIR" --quiet --check-trustdb --keyring "${GPGHOMEDIR}/empty.gpg" >"${GPGHOMEDIR}/gpgoutput.log" 2>&1; then
+   706	       cat >&2 "${GPGHOMEDIR}/gpgoutput.log"
+   707	       false
+   708	    fi
+   709	
+   710	    # We don't usually need a secret keyring, of course, but
+   711	    # for advanced operations, we might really need a secret keyring after all
+   712	    if [ -n "$FORCED_SECRET_KEYRING" ] && [ -r "$FORCED_SECRET_KEYRING" ]; then
+   713		if ! aptkey_execute "$GPG" -v --batch --import "$FORCED_SECRET_KEYRING" >"${GPGHOMEDIR}/gpgoutput.log" 2>&1; then
+   714		    # already imported keys cause gpg1 to fail for some reason… ignore this error
+   715		    if ! grep -q 'already in secret keyring' "${GPGHOMEDIR}/gpgoutput.log"; then
+   716			cat >&2 "${GPGHOMEDIR}/gpgoutput.log"
+   717			false
+   718		    fi
+   719		fi
+   720	    else
+   721	       # and then, there are older versions of gpg which panic and implode
+   722	       # if there isn't one available - and writeable for imports
+   723	       # and even if not output is littered with the creation of a secring,
+   724	       # so lets call import once to have it create what it wants in silence
+   725	       echo -n | aptkey_execute "$GPG" --batch --import >/dev/null 2>&1 || true
+   726	    fi
+   727	}
+   728	
+   729	warn_on_script_usage() {
+   730	    if [ -n "$APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE" ]; then
+   731		return
+   732	    fi
+   733	    # (Maintainer) scripts should not be using apt-key
+   734	    if [ -n "$DPKG_MAINTSCRIPT_PACKAGE" ]; then
+   735		echo >&2 "Warning: apt-key should not be used in scripts (called from $DPKG_MAINTSCRIPT_NAME maintainerscript of the package ${DPKG_MAINTSCRIPT_PACKAGE})"
+   736	    fi
+   737	
+   738	    echo >&2 "Warning: apt-key is deprecated. Manage keyring files in trusted.gpg.d instead (see apt-key(8))."
+   739	}
+   740	
+   741	warn_outside_maintscript() {
+   742	    # In del, we want to warn in interactive use, but not inside maintainer
+   743	    # scripts, so as to give people a chance to migrate keyrings.
+   744	    #
+   745	    # FIXME: We should always warn starting in 2022.
+   746	    if [ -z "$DPKG_MAINTSCRIPT_PACKAGE" ]; then
+   747		echo >&2 "Warning: apt-key is deprecated. Manage keyring files in trusted.gpg.d instead (see apt-key(8))."
+   748	    fi
+   749	}
+   750	
+   751	if [ "$command" != 'help' ] && [ "$command" != 'verify' ]; then
+   752	    prepare_gpg_home
+   753	fi
+   754	
+   755	case "$command" in
+   756	    add)
+   757		warn_on_script_usage
+   758		requires_root
+   759		setup_merged_keyring
+   760		aptkey_execute "$GPG" --quiet --batch --import "$@"
+   801	    verify)
+   802		GPGV=''
+   803		ASSERT_PUBKEY_ALGO=''
+   804		eval $(apt-config shell GPGV Apt::Key::gpgvcommand ASSERT_PUBKEY_ALGO Apt::Key::assert-pubkey-algo)
+   805		if [ -n "$GPGV" ] && command_available "$GPGV"; then true;
+   806		elif command_available 'gpgv'; then GPGV='gpgv';
+   807		elif command_available 'gpgv2'; then GPGV='gpgv2';
+   808		elif command_available 'gpgv1'; then GPGV='gpgv1';
+   809		else
+   810		   apt_error 'gpgv, gpgv2 or gpgv1 required for verification, but neither seems installed'
+   811		   exit 29
+   812		fi
+   813		GPGV_ARGS=""
+   814		if [ "$ASSERT_PUBKEY_ALGO" ]; then
+   815			test="$(LC_ALL=C.UTF-8 "$GPGV" --assert-pubkey-algo 2>&1 || :)"
+   816			case "$test" in
+   817				*"missing argument"*)
+   818					GPGV_ARGS="--assert-pubkey-algo=$ASSERT_PUBKEY_ALGO"
+   819					;;
+   820				*[Ii]"nvalid option"*"assert-pubkey-algo"*)
+   821					;;
+   822				*)
+   823					apt_warn "Unknown response from gpgv to --assert-pubkey-algo check: $test"
+   824					;;
+   825			esac
+   826		fi
+   827		# for a forced keyid we need gpg --export, so full wrapping required
+   828		if [ -n "$FORCED_KEYID" ]; then
+   829		    prepare_gpg_home
+   830		else
+   831		    create_gpg_home
+   832		fi
+   833		setup_merged_keyring
+   834		if [ -n "$FORCED_KEYRING" ]; then
+   835		    "$GPGV" $GPGV_ARGS --homedir "${GPGHOMEDIR}" --keyring "$(dearmor_filename "${FORCED_KEYRING}")" --ignore-time-conflict "$@"
+   836		else
+   837		    "$GPGV" $GPGV_ARGS --homedir "${GPGHOMEDIR}" --keyring "${GPGHOMEDIR}/pubring.gpg" --ignore-time-conflict "$@"
+   838		fi
+
+== debconf apt preconfigure relevant lines ==
+     1	#!/usr/bin/perl
+     2	# This file was preprocessed, do not edit!
+     3	
+     4	
+     5	
+     6	use warnings;
+     7	use strict;
+     8	
+     9	BEGIN {
+    10		eval qq{
+    11			use File::Path qw(make_path remove_tree);
+    12			use FileHandle;
+    13			use Debconf::Log qw(:all);
+    14			use Debconf::Db;
+    15			use Debconf::Template;
+    16			use Debconf::Config;
+    17			use Debconf::AutoSelect qw(:all);
+    18			use Debconf::Gettext;
+    19			use Debconf::Path;
+    20		};
+    21		if ($@) {
+    22			print STDERR "debconf: Perl may be unconfigured ($@) -- aborting\n";
+    23			exit 0;
+    24		}
+    25	}
+    26	
+    27	if (exists $ENV{DEBCONF_USE_CDEBCONF} and $ENV{DEBCONF_USE_CDEBCONF} ne '') {
+    28	    exec "/usr/lib/cdebconf/dpkg-preconfigure", @ARGV;
+    29	}
+    30	
+    31	Debconf::Db->load;
+    32	
+    33	my $apt=0;
+    34	Debconf::Config->getopt(
+    35	qq{Usage: dpkg-preconfigure [options] [debs]
+    36	       --apt			Apt mode.},
+    37		"apt"			=> \$apt,
+    38	);
+    39	
+    40	$|=1;
+    41	
+    42	my @debs=@ARGV;
+    43	@ARGV=();
+    44	
+    45	my $have_tty=1;
+    46	
+    47	if ($apt) {
+    48		while (<STDIN>) {
+    49			chomp;
+    50			push @debs, $_ if length $_;
+    51		}
+    52	
+    53		exit unless @debs;
+    54	
+    55		$have_tty=0 unless open (STDIN, "<", "/dev/tty");
+    56	}
+    57	elsif (! @debs) {
+    58		print STDERR sprintf("dpkg-preconfigure: ".gettext("must specify some debs to preconfigure")), "\n";
+    59		exit(1);
+    60	}
+    61	
+    62	if (! Debconf::Path::find("apt-extracttemplates")) {
+    63		warn gettext("delaying package configuration, since apt-utils is not installed");
+    64		exit;
+    65	}
+    66	
+    67	my $frontend=make_frontend();
+    68	
+    69	if (! $have_tty && $frontend->need_tty) {
+    70		print STDERR sprintf("dpkg-preconfigure: ".gettext("unable to re-open stdin: %s"), $!)."\n";
+    71		exit 0;
+    72	}
+    73	
+    74	my $tempdir='/var/cache/debconf/tmp.ci';
+    75	remove_tree($tempdir, { safe => 1, keep_root => 1 });
+    76	make_path($tempdir);
+    77	
+    78	my ($package, $version, $template, $config);
+    79	pipe(my $info_reader, my $info_writer) or die "debconf: pipe failed: $!";
+    80	my $pid = fork();
+    81	defined $pid or die "fork failed: $!";
+    82	unless ($pid) {
+    83		close($info_reader);
+    84	
+    85		my $command_max=20000; # LINUX SPECIFIC!!
+    86		my $static_len=length("apt-extracttemplates");
+    87		my $len=$static_len;
+    88		my @collect;
+    89		my $progress=0;
+    90		my $show_progress=($apt && @debs > 30 && -t STDERR);
+    91	
+    92		sub apt_extracttemplates {
+    93			my $apt_extracttemplates_pid = fork();
+    94			my $error;
+    95			if (not defined $apt_extracttemplates_pid) {
+    96				$error = $!;
+    97			} elsif (not $apt_extracttemplates_pid) {
+    98				open(STDOUT, ">&", $info_writer)
+    99					or die "debconf: redirect stdout failed: $!";
+   100				exec("apt-extracttemplates", "--tempdir", $tempdir, @collect)
+   101					or die "debconf: exec apt-extracttemplates failed: $!";
+   102			} else {
+   103				my $child = waitpid($apt_extracttemplates_pid, 0);
+   104				if ($child == -1) {
+   105					$error = $!;
+   106				} elsif ($?) {
+   107					$error = $?;
+   108				}
+   109			}
+   110			print STDERR sprintf("debconf: ".gettext("apt-extracttemplates failed: %s")."\n", $error) if defined $error;
+   156	
+   157	foreach my $line (@buffer) {
+   158		($package, $version, $template, $config)=split /\s/, $line;
+   159	
+   160		if (defined $config && length $config && -e $config) {
+   161			debug user => sprintf("preconfiguring %s (%s)",$package,$version);
+   162			chmod(0755, $config) or
+   163				die sprintf(gettext("debconf: can't chmod: %s"), $!);
+   164			$frontend->default_title($package);
+   165			$frontend->info(undef);
+   166			my $confmodule=make_confmodule($config, 'configure', $version);
+   167			$confmodule->owner($package);
+   168			1 while ($confmodule->communicate);
+   169			if ($confmodule->exitcode > 0) {
+   170				print STDERR sprintf(
+   171					gettext("%s failed to preconfigure, with exit status %s"),
+   172					$package, $confmodule->exitcode)."\n";
+   173			}
+   174			unlink $config;
+   175		}
+   176	}
+   177	
+   178	$frontend->shutdown;
+   179	
+   180	Debconf::Db->save;
+   181	
+   182	remove_tree($tempdir, { safe => 1, keep_root => 1 });
+   183	
+
+## ownership and writable boundary map
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== root trust-store paths ==
+drwxr-xr-x 755 root:root directory /etc/ca-certificates -> '/etc/ca-certificates'
+drwxr-xr-x 755 root:root directory /etc/ca-certificates/update.d -> '/etc/ca-certificates/update.d'
+drwxr-xr-x 755 root:root directory /etc/ssl -> '/etc/ssl'
+drwxr-xr-x 755 root:root directory /etc/ssl/certs -> '/etc/ssl/certs'
+-rw-r--r-- 644 root:root regular file /etc/ssl/certs/ca-certificates.crt -> '/etc/ssl/certs/ca-certificates.crt'
+drwxr-xr-x 755 root:root directory /usr/share/ca-certificates -> '/usr/share/ca-certificates'
+drwxr-xr-x 755 root:root directory /usr/local -> '/usr/local'
+drwxr-xr-x 755 root:root directory /usr/local/share -> '/usr/local/share'
+drwxr-xr-x 755 root:root directory /usr/local/share/ca-certificates -> '/usr/local/share/ca-certificates'
+drwxr-xr-x 755 root:root directory /etc/apt -> '/etc/apt'
+drwxr-xr-x 755 root:root directory /etc/apt/apt.conf.d -> '/etc/apt/apt.conf.d'
+MISSING /etc/apt/trusted.gpg
+drwxr-xr-x 755 root:root directory /etc/apt/trusted.gpg.d -> '/etc/apt/trusted.gpg.d'
+drwxr-xr-x 755 root:root directory /etc/apt/keyrings -> '/etc/apt/keyrings'
+drwxr-xr-x 755 root:root directory /usr/share/keyrings -> '/usr/share/keyrings'
+MISSING /etc/gnupg
+drwxr-xr-x 755 root:root directory /usr/lib/gnupg -> '/usr/lib/gnupg'
+drwxr-xr-x 755 root:root directory /usr/lib/systemd/user -> '/usr/lib/systemd/user'
+drwxr-xr-x 755 root:root directory /etc/systemd/user -> '/etc/systemd/user'
+drwxr-xr-x 755 root:root directory /var/cache/debconf -> '/var/cache/debconf'
+MISSING /var/cache/debconf/tmp.ci
+drwxr-xr-x 755 root:root directory /var/lib/dpkg/info -> '/var/lib/dpkg/info'
+drwxr-xr-x 755 root:root directory /var/lib/apt/lists -> '/var/lib/apt/lists'
+drwx------ 700 _apt:root directory /var/lib/apt/lists/partial -> '/var/lib/apt/lists/partial'
+
+== keyring files ==
+-rw-r--r-- root:root /etc/apt/trusted.gpg.d/ubuntu-keyring-2012-cdimage.gpg -> 
+-rw-r--r-- root:root /etc/apt/trusted.gpg.d/ubuntu-keyring-2018-archive.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-archive-keyring.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-archive-removed-keys.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-cloudimage-keyring.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-cloudimage-removed-keys.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-master-keyring.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-pro-anbox-cloud.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-pro-cc-eal.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-pro-cis.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-pro-esm-apps-legacy.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-pro-esm-apps.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-pro-esm-infra-legacy.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-pro-esm-infra.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-pro-fips-preview.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-pro-fips.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-pro-realtime-kernel.gpg -> 
+-rw-r--r-- root:root /usr/share/keyrings/ubuntu-pro-ros.gpg -> 
+drwxr-xr-x root:root /etc/apt/keyrings -> 
+drwxr-xr-x root:root /etc/apt/trusted.gpg.d -> 
+drwxr-xr-x root:root /usr/share/keyrings -> 
+
+== sample cert symlinks ==
+lrwxrwxrwx root:root /etc/ssl/certs/002c0b4f.0 -> GlobalSign_Root_R46.pem
+lrwxrwxrwx root:root /etc/ssl/certs/0179095f.0 -> BJCA_Global_Root_CA1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/02265526.0 -> Entrust_Root_Certification_Authority_-_G2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/062cdee6.0 -> GlobalSign_Root_CA_-_R3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/064e0aa9.0 -> QuoVadis_Root_CA_2_G3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/06dc52d5.0 -> SSL.com_EV_Root_Certification_Authority_RSA_R2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/08063a00.0 -> Security_Communication_RootCA3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/09789157.0 -> Starfield_Services_Root_Certificate_Authority_-_G2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/0a775a30.0 -> GTS_Root_R3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/0b1b94ef.0 -> CFCA_EV_ROOT.pem
+lrwxrwxrwx root:root /etc/ssl/certs/0b9bc432.0 -> ISRG_Root_X2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/0bf05006.0 -> SSL.com_Root_Certification_Authority_ECC.pem
+lrwxrwxrwx root:root /etc/ssl/certs/0f5dc4f3.0 -> UCA_Extended_Validation_Root.pem
+lrwxrwxrwx root:root /etc/ssl/certs/0f6fa695.0 -> GDCA_TrustAUTH_R5_ROOT.pem
+lrwxrwxrwx root:root /etc/ssl/certs/1001acf7.0 -> GTS_Root_R1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/106f3e4d.0 -> Entrust_Root_Certification_Authority_-_EC1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/14bc7599.0 -> emSign_ECC_Root_CA_-_G3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/18856ac4.0 -> SecureSign_RootCA11.pem
+lrwxrwxrwx root:root /etc/ssl/certs/1cef98f5.0 -> TrustAsia_Global_Root_CA_G4.pem
+lrwxrwxrwx root:root /etc/ssl/certs/1d3472b9.0 -> GlobalSign_ECC_Root_CA_-_R5.pem
+lrwxrwxrwx root:root /etc/ssl/certs/1e08bfd1.0 -> IdenTrust_Public_Sector_Root_CA_1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/1e09d511.0 -> T-TeleSec_GlobalRoot_Class_2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/228f89db.0 -> CommScope_Public_Trust_ECC_Root-01.pem
+lrwxrwxrwx root:root /etc/ssl/certs/244b5494.0 -> DigiCert_High_Assurance_EV_Root_CA.pem
+lrwxrwxrwx root:root /etc/ssl/certs/2923b3f9.0 -> emSign_Root_CA_-_G1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/2ae6433e.0 -> CA_Disig_Root_R2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/2b349938.0 -> AffirmTrust_Commercial.pem
+lrwxrwxrwx root:root /etc/ssl/certs/32888f65.0 -> Hellenic_Academic_and_Research_Institutions_RootCA_2015.pem
+lrwxrwxrwx root:root /etc/ssl/certs/3513523f.0 -> DigiCert_Global_Root_CA.pem
+lrwxrwxrwx root:root /etc/ssl/certs/3bde41ac.0 -> Autoridad_de_Certificacion_Firmaprofesional_CIF_A62634068.pem
+lrwxrwxrwx root:root /etc/ssl/certs/3e359ba6.0 -> BJCA_Global_Root_CA2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/3fb36b73.0 -> NAVER_Global_Root_Certification_Authority.pem
+lrwxrwxrwx root:root /etc/ssl/certs/40193066.0 -> Certum_Trusted_Network_CA_2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/4042bcee.0 -> ISRG_Root_X1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/40547a79.0 -> COMODO_Certification_Authority.pem
+lrwxrwxrwx root:root /etc/ssl/certs/406c9bb1.0 -> emSign_Root_CA_-_C1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/48bec511.0 -> Certum_Trusted_Network_CA.pem
+lrwxrwxrwx root:root /etc/ssl/certs/4b718d9b.0 -> emSign_ECC_Root_CA_-_C3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/4bfab552.0 -> Starfield_Root_Certificate_Authority_-_G2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/4f316efb.0 -> SwissSign_Gold_CA_-_G2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/4fd49c6c.0 -> CommScope_Public_Trust_RSA_Root-02.pem
+lrwxrwxrwx root:root /etc/ssl/certs/5443e9e3.0 -> T-TeleSec_GlobalRoot_Class_3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/54657681.0 -> Buypass_Class_2_Root_CA.pem
+lrwxrwxrwx root:root /etc/ssl/certs/57bcb2da.0 -> SwissSign_Silver_CA_-_G2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/5860aaa6.0 -> Security_Communication_ECC_RootCA1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/5931b5bc.0 -> D-TRUST_EV_Root_CA_1_2020.pem
+lrwxrwxrwx root:root /etc/ssl/certs/5ad8a5d6.0 -> GlobalSign_Root_CA.pem
+lrwxrwxrwx root:root /etc/ssl/certs/5cd81ad7.0 -> TeliaSonera_Root_CA_v1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/5e98733a.0 -> Entrust_Root_Certification_Authority_-_G4.pem
+lrwxrwxrwx root:root /etc/ssl/certs/5f15c80c.0 -> TWCA_Global_Root_CA.pem
+lrwxrwxrwx root:root /etc/ssl/certs/5f618aec.0 -> certSIGN_Root_CA_G2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/607986c7.0 -> DigiCert_Global_Root_G2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/626dceaf.0 -> GTS_Root_R2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/653b494a.0 -> Baltimore_CyberTrust_Root.pem
+lrwxrwxrwx root:root /etc/ssl/certs/68dd7389.0 -> Hongkong_Post_Root_CA_3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/6b99d060.0 -> Entrust_Root_Certification_Authority.pem
+lrwxrwxrwx root:root /etc/ssl/certs/6d41d539.0 -> Amazon_Root_CA_2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/6fa5da56.0 -> SSL.com_Root_Certification_Authority_RSA.pem
+lrwxrwxrwx root:root /etc/ssl/certs/706f604c.0 -> XRamp_Global_CA_Root.pem
+lrwxrwxrwx root:root /etc/ssl/certs/749e9e03.0 -> QuoVadis_Root_CA_1_G3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/75d1b2ed.0 -> DigiCert_Trusted_Root_G4.pem
+lrwxrwxrwx root:root /etc/ssl/certs/76faf6c0.0 -> QuoVadis_Root_CA_3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/7719f463.0 -> Hellenic_Academic_and_Research_Institutions_ECC_RootCA_2015.pem
+lrwxrwxrwx root:root /etc/ssl/certs/773e07ad.0 -> OISTE_WISeKey_Global_Root_GC_CA.pem
+lrwxrwxrwx root:root /etc/ssl/certs/7a3adc42.0 -> vTrus_Root_CA.pem
+lrwxrwxrwx root:root /etc/ssl/certs/7a780d93.0 -> Certainly_Root_R1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/7f3d5d1d.0 -> DigiCert_Assured_ID_Root_G3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/8160b96c.0 -> Microsec_e-Szigno_Root_CA_2009.pem
+lrwxrwxrwx root:root /etc/ssl/certs/81f2d2b1.0 -> CommScope_Public_Trust_ECC_Root-02.pem
+lrwxrwxrwx root:root /etc/ssl/certs/8312c4c1.0 -> CommScope_Public_Trust_RSA_Root-01.pem
+lrwxrwxrwx root:root /etc/ssl/certs/8508e720.0 -> Certainly_Root_E1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/865fbdf9.0 -> SSL.com_TLS_ECC_Root_CA_2022.pem
+lrwxrwxrwx root:root /etc/ssl/certs/8cb5ee0f.0 -> Amazon_Root_CA_3.pem
+lrwxrwxrwx root:root /etc/ssl/certs/8d86cdd1.0 -> certSIGN_ROOT_CA.pem
+lrwxrwxrwx root:root /etc/ssl/certs/8d89cda1.0 -> Microsoft_ECC_Root_Certificate_Authority_2017.pem
+lrwxrwxrwx root:root /etc/ssl/certs/8f103249.0 -> Telia_Root_CA_v2.pem
+lrwxrwxrwx root:root /etc/ssl/certs/9046744a.0 -> Sectigo_Public_Server_Authentication_Root_R46.pem
+lrwxrwxrwx root:root /etc/ssl/certs/90c5a3c8.0 -> HiPKI_Root_CA_-_G1.pem
+lrwxrwxrwx root:root /etc/ssl/certs/930ac5d2.0 -> Actalis_Authentication_Root_CA.pem
+lrwxrwxrwx root:root /etc/ssl/certs/93bc0acc.0 -> AffirmTrust_Networking.pem
+
+== attacker writability ==
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+NO_W /etc/ca-certificates/update.d
+NO_W /usr/share/ca-certificates
+NO_W /usr/local/share/ca-certificates
+NO_W /etc/ssl/certs
+NO_W /etc/apt/apt.conf.d
+NO_W /etc/apt/trusted.gpg.d
+NO_W /etc/apt/keyrings
+NO_W /usr/share/keyrings
+MISSING /etc/gnupg
+NO_W /usr/lib/gnupg
+NO_W /usr/lib/systemd/user
+NO_W /etc/systemd/user
+NO_W /var/cache/debconf
+MISSING /var/cache/debconf/tmp.ci
+NO_W /var/lib/dpkg/info
+NO_W /var/lib/apt/lists
+NO_W /var/lib/apt/lists/partial
+W /tmp
+W /var/tmp
+
+## attacker write, symlink, and trigger attempts
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash -s
+== write attempts into root trust/code directories ==
+write /etc/ca-certificates/update.d/zz-trust-store-gnupg-probe -> bash: line 1: /etc/ca-certificates/update.d/zz-trust-store-gnupg-probe: Permission denied
+write /usr/local/share/ca-certificates/trust-store-gnupg-probe.crt -> bash: line 1: /usr/local/share/ca-certificates/trust-store-gnupg-probe.crt: Permission denied
+write /usr/share/ca-certificates/trust-store-gnupg-probe.crt -> bash: line 1: /usr/share/ca-certificates/trust-store-gnupg-probe.crt: Permission denied
+write /etc/apt/apt.conf.d/01trust-store-gnupg-probe -> bash: line 1: /etc/apt/apt.conf.d/01trust-store-gnupg-probe: Permission denied
+write /etc/apt/trusted.gpg.d/trust-store-gnupg-probe.gpg -> bash: line 1: /etc/apt/trusted.gpg.d/trust-store-gnupg-probe.gpg: Permission denied
+write /etc/apt/keyrings/trust-store-gnupg-probe.gpg -> bash: line 1: /etc/apt/keyrings/trust-store-gnupg-probe.gpg: Permission denied
+write /usr/share/keyrings/trust-store-gnupg-probe.gpg -> bash: line 1: /usr/share/keyrings/trust-store-gnupg-probe.gpg: Permission denied
+write /var/cache/debconf/tmp.ci/trust-store-gnupg-probe -> bash: line 1: /var/cache/debconf/tmp.ci/trust-store-gnupg-probe: No such file or directory
+symlink /etc/ssl/certs/ca-certificates.crt.new -> ln: failed to create symbolic link '/etc/ssl/certs/ca-certificates.crt.new': Permission denied
+symlink /etc/ssl/certs/trust-store-gnupg-probe.pem -> ln: failed to create symbolic link '/etc/ssl/certs/trust-store-gnupg-probe.pem': Permission denied
+symlink /etc/apt/trusted.gpg.d/trust-store-gnupg-probe.gpg -> ln: failed to create symbolic link '/etc/apt/trusted.gpg.d/trust-store-gnupg-probe.gpg': Permission denied
+symlink /var/cache/debconf/tmp.ci -> ln: failed to create symbolic link '/var/cache/debconf/tmp.ci': Permission denied
+
+== plant hostile PATH/GnuPG payloads in attacker-owned tree ==
+total 4
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 apt-config -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 apt-extracttemplates -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 apt-key -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 awk -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 base64 -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 basename -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 cat -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 chmod -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 cmp -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 command -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 cut -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 date -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 dirmngr -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 dirname -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 dpkg-preconfigure -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 find -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 gpg -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 gpg-agent -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 gpgconf -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 gpgv -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 grep -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 head -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 id -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 keyboxd -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 ln -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 mktemp -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 mv -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 openssl -> payload
+-rwxr-xr-x 1 attacker attacker 458 May 16 18:37 payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 readlink -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 rm -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 run-parts -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 sed -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 sh -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 sort -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 stat -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 systemctl -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 test -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 touch -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 tr -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 uname -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 wc -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 wget -> payload
+lrwxrwxrwx 1 attacker attacker   7 May 16 18:37 xargs -> payload
+
+== user-scoped env hijacks stay uid1001 ==
+apt_key_list_rc=127
+apt_key_add_default_path_rc=1
+Warning: apt-key is deprecated. Manage keyring files in trusted.gpg.d instead (see apt-key(8)).
+E: This command can only be used by root.
+apt_key_add_rc=127
+user_update_ca_rc=127
+
+== attacker GnuPG socket scope ==
+sysconfdir:/etc/gnupg
+bindir:/usr/bin
+libexecdir:/usr/lib/gnupg
+libdir:/usr/lib/aarch64-linux-gnu/gnupg
+datadir:/usr/share/gnupg
+localedir:/usr/share/locale
+socketdir:/home/attacker/trust_store_gnupg_probe/gnupg
+dirmngr-socket:/home/attacker/trust_store_gnupg_probe/gnupg/S.dirmngr
+keyboxd-socket:/home/attacker/trust_store_gnupg_probe/gnupg/S.keyboxd
+agent-ssh-socket:/home/attacker/trust_store_gnupg_probe/gnupg/S.gpg-agent.ssh
+agent-extra-socket:/home/attacker/trust_store_gnupg_probe/gnupg/S.gpg-agent.extra
+agent-browser-socket:/home/attacker/trust_store_gnupg_probe/gnupg/S.gpg-agent.browser
+agent-socket:/home/attacker/trust_store_gnupg_probe/gnupg/S.gpg-agent
+homedir:/home/attacker/trust_store_gnupg_probe/gnupg
+user_gpg_list_rc=0
+gpg: keybox '/home/attacker/trust_store_gnupg_probe/gnupg/pubring.kbx' created
+gpg: /home/attacker/trust_store_gnupg_probe/gnupg/trustdb.gpg: trustdb created
+-rw------- attacker:attacker /home/attacker/trust_store_gnupg_probe/gnupg/pubring.kbx -> 
+-rw------- attacker:attacker /home/attacker/trust_store_gnupg_probe/gnupg/trustdb.gpg -> 
+drwx------ attacker:attacker /home/attacker/trust_store_gnupg_probe/gnupg -> 
+
+== unprivileged attempts to poison root systemd/apt env ==
+Failed to set environment: Access denied
+set_path_rc=1
+Failed to set environment: Access denied
+set_tmpdir_rc=1
+Failed to import environment: Access denied
+import_env_rc=1
+Failed to start apt-daily.service: Interactive authentication required.
+See system logs and 'systemctl status apt-daily.service' for details.
+start_apt_daily_rc=1
+E: Could not open lock file /var/lib/apt/lists/lock - open (13: Permission denied)
+E: Unable to lock directory /var/lib/apt/lists/
+user_apt_update_rc=100
+
+== payload hits after user-only actions ==
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell MASTER_KEYRING APT::Key::MasterKeyring 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell REMOVED_KEYS APT::Key::RemovedKeys 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell TRUSTEDFILE Apt::GPGV::TrustedKeyring 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell TRUSTEDFILE Dir::Etc::Trusted/f 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell GPG_EXE Apt::Key::gpgcommand 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=mktemp euid=1001 ruid=1001 argv=--directory --tmpdir apt-key-gpghome.XXXXXXXXXX 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell MASTER_KEYRING APT::Key::MasterKeyring 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell ARCHIVE_KEYRING APT::Key::ArchiveKeyring 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell REMOVED_KEYS APT::Key::RemovedKeys 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell ARCHIVE_KEYRING_URI APT::Key::ArchiveKeyringURI 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell TRUSTEDFILE Apt::GPGV::TrustedKeyring 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell TRUSTEDFILE Dir::Etc::Trusted/f 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=apt-config euid=1001 ruid=1001 argv=shell GPG_EXE Apt::Key::gpgcommand 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=mktemp euid=1001 ruid=1001 argv=--directory --tmpdir apt-key-gpghome.XXXXXXXXXX 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=mktemp euid=1001 ruid=1001 argv=-p /home/attacker/trust_store_gnupg_probe/tmp ca-certificates.tmp.XXXXXX 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PAYLOAD cmd=rm euid=1001 ruid=1001 argv=-f /home/attacker/trust_store_gnupg_probe/etcssl/certs/ca-certificates.crt.new 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+
+## root default trigger checks after hostile user state is planted
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== root environment before default triggers ==
+uid=0(root) gid=0(root) groups=0(root)
+APT_NETWORK_PROBE=1
+ATTACKER=attacker
+DEBIAN_FRONTEND=noninteractive
+HOME=/root
+HOSTNAME=4f5b414436ae
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PWD=/
+SHLVL=1
+_=/usr/bin/env
+LANG=C.UTF-8
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin
+
+== root ca-certificates trigger path ==
+root_update_ca_rc=0
+Updating certificates in /etc/ssl/certs...
+0 added, 0 removed; done.
+Running hooks in /etc/ca-certificates/update.d...
+done.
+
+== root apt-key list path ==
+root_apt_key_list_rc=0
+apt_key_gpghome_tmp_count before=0 after=0
+/etc/apt/trusted.gpg.d/ubuntu-keyring-2012-cdimage.gpg
+------------------------------------------------------
+pub   rsa4096 2012-05-11 [SC]
+      8439 38DF 228D 22F7 B374  2BC0 D94A A3F0 EFE2 1092
+uid           [ unknown] Ubuntu CD Image Automatic Signing Key (2012) <cdimage@ubuntu.com>
+
+/etc/apt/trusted.gpg.d/ubuntu-keyring-2018-archive.gpg
+------------------------------------------------------
+pub   rsa4096 2018-09-17 [SC]
+      F6EC B376 2474 EDA9 D21B  7022 8719 20D1 991B C93C
+uid           [ unknown] Ubuntu Archive Automatic Signing Key (2018) <ftpmaster@ubuntu.com>
+
+
+== root apt update/gpgv consumer ==
+root_apt_update_rc=0
+Preparing to exec:  /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.zcOUds /tmp/apt.data.4tkiHp
+Read: [GNUPG:] GOODSIG 871920D1991BC93C Ubuntu Archive Automatic Signing Key (2018) <ftpmaster@ubuntu.com>
+Got GOODSIG 871920D1991BC93C !
+Read: [GNUPG:] VALIDSIG F6ECB3762474EDA9D21B7022871920D1991BC93C 2024-04-25 1714057881 0 4 0 1 10 01 F6ECB3762474EDA9D21B7022871920D1991BC93C
+Got trusted VALIDSIG, key ID: F6ECB3762474EDA9D21B7022871920D1991BC93C
+gpgv exited with status 0
+  Good: GOODSIG 871920D1991BC93C
+  Signed-By: F6ECB3762474EDA9D21B7022871920D1991BC93C!
+apt-key succeeded
+Preparing to exec:  /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.hfMLrj /tmp/apt.data.qZBpwE
+Read: [GNUPG:] GOODSIG 871920D1991BC93C Ubuntu Archive Automatic Signing Key (2018) <ftpmaster@ubuntu.com>
+Got GOODSIG 871920D1991BC93C !
+Read: [GNUPG:] VALIDSIG F6ECB3762474EDA9D21B7022871920D1991BC93C 2026-05-16 1778894569 0 4 0 1 10 01 F6ECB3762474EDA9D21B7022871920D1991BC93C
+Got trusted VALIDSIG, key ID: F6ECB3762474EDA9D21B7022871920D1991BC93C
+gpgv exited with status 0
+  Good: GOODSIG 871920D1991BC93C
+  Signed-By: F6ECB3762474EDA9D21B7022871920D1991BC93C!
+apt-key succeeded
+Preparing to exec:  /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.iMQSNB /tmp/apt.data.bcJEpG
+Read: [GNUPG:] GOODSIG 871920D1991BC93C Ubuntu Archive Automatic Signing Key (2018) <ftpmaster@ubuntu.com>
+Got GOODSIG 871920D1991BC93C !
+Read: [GNUPG:] VALIDSIG F6ECB3762474EDA9D21B7022871920D1991BC93C 2026-05-15 1778884184 0 4 0 1 10 01 F6ECB3762474EDA9D21B7022871920D1991BC93C
+Got trusted VALIDSIG, key ID: F6ECB3762474EDA9D21B7022871920D1991BC93C
+gpgv exited with status 0
+  Good: GOODSIG 871920D1991BC93C
+  Signed-By: F6ECB3762474EDA9D21B7022871920D1991BC93C!
+apt-key succeeded
+Preparing to exec:  /usr/bin/apt-key --quiet --readonly --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg verify --status-fd 3 /tmp/apt.sig.yLxZaH /tmp/apt.data.uaHbRr
+Read: [GNUPG:] GOODSIG 871920D1991BC93C Ubuntu Archive Automatic Signing Key (2018) <ftpmaster@ubuntu.com>
+Got GOODSIG 871920D1991BC93C !
+Read: [GNUPG:] VALIDSIG F6ECB3762474EDA9D21B7022871920D1991BC93C 2026-05-15 1778884127 0 4 0 1 10 01 F6ECB3762474EDA9D21B7022871920D1991BC93C
+Got trusted VALIDSIG, key ID: F6ECB3762474EDA9D21B7022871920D1991BC93C
+gpgv exited with status 0
+  Good: GOODSIG 871920D1991BC93C
+  Signed-By: F6ECB3762474EDA9D21B7022871920D1991BC93C!
+apt-key succeeded
+
+== root marker check ==
+NO_PAYLOAD_HITS_FROM_ROOT_TRIGGERS
+NO_ROOT_PAYLOAD_MARKER
+
+== post-trigger trust-store state ==
+-rw-r--r-- 644 root:root regular file /etc/ssl/certs/ca-certificates.crt -> '/etc/ssl/certs/ca-certificates.crt'
+MISSING /etc/ssl/certs/ca-certificates.crt.new
+drwxr-xr-x 755 root:root directory /etc/ca-certificates/update.d -> '/etc/ca-certificates/update.d'
+drwxr-xr-x 755 root:root directory /usr/local/share/ca-certificates -> '/usr/local/share/ca-certificates'
+drwxr-xr-x 755 root:root directory /etc/apt/trusted.gpg.d -> '/etc/apt/trusted.gpg.d'
+drwxr-xr-x 755 root:root directory /etc/apt/keyrings -> '/etc/apt/keyrings'
+drwxr-xr-x 755 root:root directory /usr/share/keyrings -> '/usr/share/keyrings'
+MISSING /root/.gnupg
+drwxr-xr-x 755 attacker:attacker directory /home/attacker/trust_store_gnupg_probe -> '/home/attacker/trust_store_gnupg_probe'
+-rw------- attacker:attacker /home/attacker/trust_store_gnupg_probe/gnupg/pubring.kbx -> 
+-rw------- attacker:attacker /home/attacker/trust_store_gnupg_probe/gnupg/trustdb.gpg -> 
+-rwxr-xr-x attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/payload -> 
+drwx------ attacker:attacker /home/attacker/trust_store_gnupg_probe/gnupg -> 
+drwxr-xr-x attacker:attacker /home/attacker/trust_store_gnupg_probe -> 
+drwxr-xr-x attacker:attacker /home/attacker/trust_store_gnupg_probe/bin -> 
+drwxr-xr-x attacker:attacker /home/attacker/trust_store_gnupg_probe/etcssl -> 
+drwxr-xr-x attacker:attacker /home/attacker/trust_store_gnupg_probe/etcssl/certs -> 
+drwxr-xr-x attacker:attacker /home/attacker/trust_store_gnupg_probe/hooks -> 
+drwxr-xr-x attacker:attacker /home/attacker/trust_store_gnupg_probe/localcerts -> 
+drwxr-xr-x attacker:attacker /home/attacker/trust_store_gnupg_probe/tmp -> 
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/apt-config -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/apt-extracttemplates -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/apt-key -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/awk -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/base64 -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/basename -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/cat -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/chmod -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/cmp -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/command -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/cut -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/date -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/dirmngr -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/dirname -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/dpkg-preconfigure -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/find -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/gpg -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/gpg-agent -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/gpgconf -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/gpgv -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/grep -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/head -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/id -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/keyboxd -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/ln -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/mktemp -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/mv -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/openssl -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/readlink -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/rm -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/run-parts -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/sed -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/sh -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/sort -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/stat -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/systemctl -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/test -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/touch -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/tr -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/uname -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/wc -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/wget -> payload
+lrwxrwxrwx attacker:attacker /home/attacker/trust_store_gnupg_probe/bin/xargs -> payload
+
+## cleanup after probe
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+cleanup_done

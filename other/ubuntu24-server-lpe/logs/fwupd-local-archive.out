@@ -1,0 +1,240 @@
+
+## host/container
+utc=2026-05-16T17:00:52Z
+container=ubuntu24-server-lpe-target image=ubuntu24-server-default-lpe:20260516-standard status=Up 2 hours
+
+## target identity and package proof
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+sudo:x:27:ubuntu
+adm:x:4:ubuntu,syslog
+plugdev:x:46:ubuntu
+dbus	1.14.10-4ubuntu4.1	ii 
+fwupd	1.9.34-0ubuntu1~24.04.1	ii 
+fwupd-signed	1.52+1.4-1	ii 
+libarchive13		un 
+libfwupd2	1.9.34-0ubuntu1~24.04.1	ii 
+libjcat1	0.2.0-2build3	ii 
+polkitd	124-2ubuntu1.24.04.3	ii 
+systemd	255.4-1ubuntu8.15	ii 
+
+## default fwupd service and policy proof
+org.freedesktop.PolicyKit1       258 polkitd         polkitd         :1.4          polkit.service              -       -
+org.freedesktop.fwupd              - -               -               (activatable) -                           -       -
+Result=success
+Id=fwupd.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/fwupd.service
+UnitFileState=static
+ConditionResult=no
+
+Result=success
+Id=fwupd-refresh.timer
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/fwupd-refresh.timer
+UnitFileState=enabled
+ConditionResult=no
+
+[dbus service]
+[D-BUS Service]
+Name=org.freedesktop.fwupd
+Documentation=https://fwupd.org/
+Exec=/usr/libexec/fwupd/fwupd
+User=root
+SystemdService=fwupd.service
+AssumedAppArmorLabel=unconfined
+
+[systemd unit]
+[Unit]
+Description=Firmware update daemon
+Documentation=https://fwupd.org/
+After=dbus.service
+Before=display-manager.service
+ConditionVirtualization=!container
+
+[Service]
+Type=dbus
+TimeoutSec=180
+RuntimeDirectory=motd.d
+RuntimeDirectoryPreserve=yes
+BusName=org.freedesktop.fwupd
+ExecStart=/usr/libexec/fwupd/fwupd
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=full
+SystemCallFilter=~@mount
+Environment="GLIBC_TUNABLES=glibc.cpu.hwcaps=SHSTK"
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+RestrictRealtime=yes
+ReadWritePaths=-/boot/efi -/boot/EFI -/boot/grub -/efi/EFI -/sys/firmware/efi/efivars
+ConfigurationDirectory=fwupd
+StateDirectory=fwupd
+CacheDirectory=fwupd
+RestrictAddressFamilies=AF_NETLINK AF_UNIX AF_INET AF_INET6
+
+[fwupd polkit actions]
+org.freedesktop.fwupd.update-internal-trusted	any=auth_admin	inactive=no	active=yes
+org.freedesktop.fwupd.update-internal	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.downgrade-internal-trusted	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.downgrade-internal	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.update-hotplug-trusted	any=auth_admin	inactive=no	active=yes
+org.freedesktop.fwupd.update-hotplug	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.downgrade-hotplug-trusted	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.downgrade-hotplug	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.device-unlock	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.modify-config	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.device-activate	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.verify-update	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.modify-remote	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.set-approved-firmware	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.self-sign	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.get-bios-settings	any=auth_admin	inactive=no	active=auth_admin_keep
+org.freedesktop.fwupd.set-bios-settings	any=auth_admin	inactive=no	active=auth_admin
+org.freedesktop.fwupd.fix-host-security-attr	any=auth_admin	inactive=no	active=auth_admin
+org.freedesktop.fwupd.undo-host-security-attr	any=auth_admin	inactive=no	active=auth_admin
+
+## direct activation checks as attacker
+
+$ runuser -u attacker -- busctl --system --timeout=6 call org.freedesktop.fwupd / org.freedesktop.DBus.Peer Ping
+Call failed: Connection timed out
+[rc=1]
+
+$ runuser -u attacker -- fwupdmgr --version
+Failed to connect to daemon: Error calling StartServiceByName for org.freedesktop.fwupd: Failed to activate service 'org.freedesktop.fwupd': timed out (service_start_timeout=25000ms)
+[rc=1]
+
+$ systemctl start fwupd.service
+[rc=0]
+
+$ systemctl status fwupd.service --no-pager -l | sed -n '1,120p'
+○ fwupd.service - Firmware update daemon
+     Loaded: loaded (/usr/lib/systemd/system/fwupd.service; static)
+     Active: inactive (dead)
+       Docs: https://fwupd.org/
+
+May 16 16:56:09 4f5b414436ae systemd[1]: fwupd.service - Firmware update daemon was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 16:56:10 4f5b414436ae systemd[1]: fwupd.service - Firmware update daemon was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 16:57:32 4f5b414436ae systemd[1]: fwupd.service - Firmware update daemon was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 16:57:57 4f5b414436ae systemd[1]: fwupd.service - Firmware update daemon was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 16:57:57 4f5b414436ae systemd[1]: fwupd.service - Firmware update daemon was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 16:58:22 4f5b414436ae systemd[1]: fwupd.service - Firmware update daemon was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 16:58:47 4f5b414436ae systemd[1]: fwupd.service - Firmware update daemon was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 16:59:13 4f5b414436ae systemd[1]: fwupd.service - Firmware update daemon was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 17:00:53 4f5b414436ae systemd[1]: fwupd.service - Firmware update daemon was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 17:01:18 4f5b414436ae systemd[1]: fwupd.service - Firmware update daemon was skipped because of an unmet condition check (ConditionVirtualization=!container).
+[rc=0]
+
+## attacker-controlled archive inputs
+[build-cabinet rc=0]
+total 16
+-rw------- 1 root root  14 May 16 17:01 notcab.cab
+-rw------- 1 root root  15 May 16 17:01 probe.bin
+-rw------- 1 root root 766 May 16 17:01 probe.cab
+-rw------- 1 root root 638 May 16 17:01 probe.metainfo.xml
+
+$ runuser -u attacker -- fwupdmgr --no-metadata-check get-details '/tmp/fwupd-local-archive.ZoUwig/notcab.cab'
+Failed to connect to daemon: Error calling StartServiceByName for org.freedesktop.fwupd: Failed to activate service 'org.freedesktop.fwupd': timed out (service_start_timeout=25000ms)
+[rc=1]
+
+$ runuser -u attacker -- fwupdmgr --no-metadata-check get-details '/tmp/fwupd-local-archive.ZoUwig/probe.cab'
+Failed to connect to daemon: Error calling StartServiceByName for org.freedesktop.fwupd: Failed to activate service 'org.freedesktop.fwupd': timed out (service_start_timeout=25000ms)
+[rc=1]
+
+$ runuser -u attacker -- fwupdmgr --assume-yes --no-metadata-check --no-reboot-check --no-device-prompt local-install '/tmp/fwupd-local-archive.ZoUwig/probe.cab'
+Failed to connect to daemon: Error calling StartServiceByName for org.freedesktop.fwupd: Failed to activate service 'org.freedesktop.fwupd': timed out (service_start_timeout=25000ms)
+[rc=1]
+
+## active selfauth policy and archive path
+/tmp/fwupd-local-archive.ZoUwig/selfauth-inner.sh /tmp/fwupd-local-archive.ZoUwig/notcab.cab /tmp/fwupd-local-archive.ZoUwig/probe.cab
+exit
+selfauth@4f5b414436ae:~$ <otcab.cab /tmp/fwupd-local-archive.ZoUwig/probe.cab
+[selfauth identity]
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+XDG_SESSION_ID=c13
+/dev/pts/0
+User=1002
+Name=selfauth
+TTY=pts/0
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+selfauth (1002)
+   Since: Sat 2026-05-16 17:02:33 UTC; 185ms ago
+   State: active
+Sessions: *c13
+  Linger: no
+    Unit: user-1002.slice
+          ├─session-c13.scope
+          │ ├─740164 su - selfauth
+          │ ├─740179 -bash
+          │ ├─740182 bash /tmp/fwupd-local-archive.ZoUwig/selfauth-inner.sh /tmp/fwupd-local-archive.ZoUwig/notcab.cab /tmp/fwupd-local-archive.ZoUwig/probe.cab
+          │ ├─740186 loginctl user-status selfauth
+          │ └─740187 sed -n 1,80p
+          └─user@1002.service
+            └─init.scope
+              ├─740167 /usr/lib/systemd/systemd --user
+              └─740168 "(sd-pam)"
+
+May 16 17:02:33 4f5b414436ae systemd[740167]: Listening on gpg-agent.socket - GnuPG cryptographic agent and passphrase cache.
+May 16 17:02:33 4f5b414436ae systemd[740167]: Listening on keyboxd.socket - GnuPG public key management service.
+May 16 17:02:33 4f5b414436ae systemd[740167]: Listening on pk-debconf-helper.socket - debconf communication socket.
+May 16 17:02:33 4f5b414436ae systemd[740167]: Listening on snapd.session-agent.socket - REST API socket for snapd user session agent.
+May 16 17:02:33 4f5b414436ae systemd[740167]: Listening on dbus.socket - D-Bus User Message Bus Socket.
+May 16 17:02:33 4f5b414436ae systemd[740167]: Listening on gpg-agent-ssh.socket - GnuPG cryptographic agent (ssh-agent emulation).
+May 16 17:02:33 4f5b414436ae systemd[740167]: Reached target sockets.target - Sockets.
+May 16 17:02:33 4f5b414436ae systemd[740167]: Reached target basic.target - Basic System.
+May 16 17:02:33 4f5b414436ae systemd[740167]: Reached target default.target - Main User Target.
+May 16 17:02:33 4f5b414436ae systemd[740167]: Startup finished in 72ms.
+
+$ pkcheck --action-id org.freedesktop.fwupd.update-internal-trusted --process 740182
+Authorization requires authentication and -u wasn't passed.
+[pkcheck rc=2]
+
+$ pkcheck --action-id org.freedesktop.fwupd.update-hotplug-trusted --process 740182
+Authorization requires authentication and -u wasn't passed.
+[pkcheck rc=2]
+
+$ fwupdmgr --no-metadata-check get-details /tmp/fwupd-local-archive.ZoUwig/notcab.cab
+Failed to connect to daemon: Error calling StartServiceByName for org.freedesktop.fwupd: Timeout was reached
+[rc=1]
+
+$ fwupdmgr --no-metadata-check get-details /tmp/fwupd-local-archive.ZoUwig/probe.cab
+Failed to connect to daemon: Error calling StartServiceByName for org.freedesktop.fwupd: Failed to activate service 'org.freedesktop.fwupd': timed out (service_start_timeout=25000ms)
+[rc=1]
+
+$ fwupdmgr --assume-yes --no-metadata-check --no-reboot-check --no-device-prompt local-install /tmp/fwupd-local-archive.ZoUwig/probe.cab
+Failed to connect to daemon: Error calling StartServiceByName for org.freedesktop.fwupd: Failed to activate service 'org.freedesktop.fwupd': timed out (service_start_timeout=25000ms)
+[rc=1]
+selfauth@4f5b414436ae:~$ exit
+logout
+[active-selfauth rc=0]
+
+## post-check and verdict
+Result=success
+ActiveState=inactive
+SubState=dead
+ConditionResult=no
+org.freedesktop.PolicyKit1       258 polkitd         polkitd         :1.4          polkit.service              -       -
+org.freedesktop.fwupd              - -               -               (activatable) -                           -       -
+verdict=no-root-lpe-default-fwupd-blocked-by-ConditionVirtualization-container

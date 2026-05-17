@@ -1,0 +1,2225 @@
+snapd boot/default service LPE probe
+target=ubuntu24-server-lpe-target
+2026-05-16T17:43:22-0400
+
+## pre-clean
+
+## target identity, default packages, versions
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux 508d797cbad0 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+init=/init loglevel=1 root=/dev/vdb rootfstype=erofs ro vsyscall=emulate panic=0 eth0.dhcp eth1.dhcp linuxkit.unified_cgroup_hierarchy=1 console=hvc0   virtio_net.disable_csum=1 vpnkit.connect=connect://2/1999 com.docker.VMID=59df66d6-eb4d-4a74-a522-c37f3332dbe6
+uid=0(root) gid=0(root) groups=0(root)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+systemd 255 (255.4-1ubuntu8.15)
++PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -BPF_FRAMEWORK -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified
+apparmor	4.0.1really4.0.1-0ubuntu0.24.04.6	arm64
+curl	8.5.0-2ubuntu10.9	arm64
+dbus	1.14.10-4ubuntu4.1	arm64
+finalrd	9build1	all
+policykit-1		
+polkitd	124-2ubuntu1.24.04.3	arm64
+snapd	2.74.1+ubuntu24.04.4	arm64
+squashfs-tools	1:4.6.1-1build1	arm64
+systemd	255.4-1ubuntu8.15	arm64
+systemd-sysv	255.4-1ubuntu8.15	arm64
+finalrd: /usr/bin/finalrd
+snap          2.74.1+ubuntu24.04.4
+snapd         2.74.1+ubuntu24.04.4
+series        16
+ubuntu        24.04
+kernel        6.10.14-linuxkit
+architecture  arm64
+No snaps are installed yet. Try 'snap install hello-world'.
+ID   Status  Spawn               Ready               Label  Summary
+1    Done    today at 20:04 UTC  today at 20:04 UTC  seed   Initialize system state
+seeded:           true
+preseeded:        false
+seed-completion:  84ms
+
+## default unit enabled, active, and failed state
+running
+UNIT FILE                              STATE   PRESET
+snapd.apparmor.service                 enabled enabled
+snapd.autoimport.service               enabled enabled
+snapd.core-fixup.service               enabled enabled
+snapd.failure.service                  static  -
+snapd.recovery-chooser-trigger.service enabled enabled
+snapd.seeded.service                   enabled enabled
+snapd.service                          enabled enabled
+snapd.snap-repair.service              static  -
+snapd.system-shutdown.service          enabled enabled
+snapd.socket                           enabled enabled
+snapd.snap-repair.timer                enabled enabled
+
+11 unit files listed.
+
+[is-enabled]
+enabled
+enabled
+static
+enabled
+enabled
+static
+enabled
+enabled
+enabled
+enabled
+enabled
+
+[is-active]
+inactive
+inactive
+inactive
+inactive
+inactive
+inactive
+inactive
+inactive
+active
+active
+active
+
+[is-failed]
+inactive
+inactive
+inactive
+inactive
+inactive
+inactive
+inactive
+inactive
+active
+active
+active
+
+## unit state: snapd.core-fixup.service
+* snapd.core-fixup.service - Automatically repair incorrect owner/permissions on core devices
+     Loaded: loaded (/usr/lib/systemd/system/snapd.core-fixup.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 21:42:20 UTC; 1min 2s ago
+             |- ConditionKernelCommandLine=|snap_core was not met
+             `- ConditionKernelCommandLine=|snapd_recovery_mode was not met
+       Docs: man:snap(1)
+
+May 16 20:04:41 508d797cbad0 systemd[1]: snapd.core-fixup.service - Automatically repair incorrect owner/permissions on core devices was skipped because no trigger condition checks were met.
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.core-fixup.service - Automatically repair incorrect owner/permissions on core devices was skipped because no trigger condition checks were met.
+
+[show]
+RemainAfterExit=yes
+Result=success
+ExecStart={ path=/usr/lib/snapd/snapd.core-fixup.sh ; argv[]=/usr/lib/snapd/snapd.core-fixup.sh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+Id=snapd.core-fixup.service
+Requires=system.slice sysinit.target
+Wants=
+Before=shutdown.target snapd.service multi-user.target
+After=systemd-journald.socket sysinit.target system.slice basic.target
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.core-fixup.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.recovery-chooser-trigger.service
+* snapd.recovery-chooser-trigger.service - Wait for the Ubuntu Core chooser trigger
+     Loaded: loaded (/usr/lib/systemd/system/snapd.recovery-chooser-trigger.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 21:42:20 UTC; 1min 2s ago
+             `- ConditionPathExistsGlob=/dev/input/event* was not met
+
+May 16 20:04:41 508d797cbad0 systemd[1]: snapd.recovery-chooser-trigger.service - Wait for the Ubuntu Core chooser trigger was skipped because of an unmet condition check (ConditionPathExistsGlob=/dev/input/event*).
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.recovery-chooser-trigger.service - Wait for the Ubuntu Core chooser trigger was skipped because of an unmet condition check (ConditionPathExistsGlob=/dev/input/event*).
+
+[show]
+RemainAfterExit=yes
+Result=success
+ExecStart={ path=/usr/lib/snapd/snap-bootstrap ; argv[]=/usr/lib/snapd/snap-bootstrap recovery-chooser-trigger ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+Id=snapd.recovery-chooser-trigger.service
+Requires=system.slice sysinit.target
+Wants=getty-pre.target
+Before=getty-pre.target shutdown.target multi-user.target
+After=system.slice systemd-journald.socket sysinit.target basic.target
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.recovery-chooser-trigger.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.snap-repair.service
+* snapd.snap-repair.service - Automatically fetch and run repair assertions
+     Loaded: loaded (/usr/lib/systemd/system/snapd.snap-repair.service; static)
+     Active: inactive (dead)
+TriggeredBy: * snapd.snap-repair.timer
+  Condition: start condition unmet at Sat 2026-05-16 21:42:20 UTC; 1min 2s ago
+             |- ConditionKernelCommandLine=|snap_core was not met
+             `- ConditionKernelCommandLine=|snapd_recovery_mode was not met
+       Docs: man:snap(1)
+
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.snap-repair.service - Automatically fetch and run repair assertions was skipped because no trigger condition checks were met.
+
+[show]
+RemainAfterExit=no
+Result=success
+ExecStart={ path=/usr/lib/snapd/snap-repair ; argv[]=/usr/lib/snapd/snap-repair run ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=SNAP_REPAIR_FROM_TIMER=1
+EnvironmentFiles=/etc/environment (ignore_errors=yes)
+EnvironmentFiles=/var/lib/snapd/environment/snapd.conf (ignore_errors=yes)
+Id=snapd.snap-repair.service
+Requires=system.slice sysinit.target
+Wants=
+Before=shutdown.target
+After=snapd.snap-repair.timer sysinit.target basic.target system.slice systemd-journald.socket
+Triggers=
+TriggeredBy=snapd.snap-repair.timer
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.snap-repair.service
+UnitFileState=static
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.snap-repair.timer
+* snapd.snap-repair.timer - Timer to automatically fetch and run repair assertions
+     Loaded: loaded (/usr/lib/systemd/system/snapd.snap-repair.timer; enabled; preset: enabled)
+     Active: inactive (dead)
+    Trigger: n/a
+   Triggers: * snapd.snap-repair.service
+  Condition: start condition unmet at Sat 2026-05-16 21:42:20 UTC; 1min 2s ago
+             |- ConditionKernelCommandLine=|snap_core was not met
+             `- ConditionKernelCommandLine=|snapd_recovery_mode was not met
+
+May 16 20:04:41 508d797cbad0 systemd[1]: snapd.snap-repair.timer - Timer to automatically fetch and run repair assertions was skipped because no trigger condition checks were met.
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.snap-repair.timer - Timer to automatically fetch and run repair assertions was skipped because no trigger condition checks were met.
+
+[show]
+Result=success
+Id=snapd.snap-repair.timer
+Requires=sysinit.target
+Wants=
+Before=timers.target snapd.snap-repair.service shutdown.target
+After=sysinit.target time-set.target -.mount time-sync.target
+Triggers=snapd.snap-repair.service
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.snap-repair.timer
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.apparmor.service
+* snapd.apparmor.service - Load AppArmor profiles managed internally by snapd
+     Loaded: loaded (/usr/lib/systemd/system/snapd.apparmor.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 21:42:20 UTC; 1min 2s ago
+             `- ConditionSecurity=apparmor was not met
+
+May 16 20:04:41 508d797cbad0 systemd[1]: snapd.apparmor.service - Load AppArmor profiles managed internally by snapd was skipped because of an unmet condition check (ConditionSecurity=apparmor).
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.apparmor.service - Load AppArmor profiles managed internally by snapd was skipped because of an unmet condition check (ConditionSecurity=apparmor).
+
+[show]
+RemainAfterExit=yes
+Result=success
+ExecStart={ path=/usr/lib/snapd/snapd-apparmor ; argv[]=/usr/lib/snapd/snapd-apparmor start ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+EnvironmentFiles=/etc/environment (ignore_errors=yes)
+EnvironmentFiles=/var/lib/snapd/environment/snapd.conf (ignore_errors=yes)
+Id=snapd.apparmor.service
+Requires=system.slice
+Wants=snapd.mounts.target
+Before=sysinit.target
+After=apparmor.service systemd-journald.socket snapd.mounts.target system.slice -.mount
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.apparmor.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.failure.service
+* snapd.failure.service - Failure handling of the snapd snap
+     Loaded: loaded (/usr/lib/systemd/system/snapd.failure.service; static)
+     Active: inactive (dead) since Sat 2026-05-16 21:42:20 UTC; 1min 2s ago
+    Process: 422565 ExecStart=/usr/lib/snapd/snap-failure snapd (code=exited, status=0/SUCCESS)
+   Main PID: 422565 (code=exited, status=0/SUCCESS)
+        CPU: 7ms
+
+May 16 21:42:20 508d797cbad0 systemd[1]: Starting snapd.failure.service - Failure handling of the snapd snap...
+May 16 21:42:20 508d797cbad0 snap-failure[422565]: cmd_snapd.go:132: no snapd snap in the system
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.failure.service: Deactivated successfully.
+May 16 21:42:20 508d797cbad0 systemd[1]: Finished snapd.failure.service - Failure handling of the snapd snap.
+
+[show]
+RemainAfterExit=no
+Result=success
+ExecStart={ path=/usr/lib/snapd/snap-failure ; argv[]=/usr/lib/snapd/snap-failure snapd ; ignore_errors=no ; start_time=[Sat 2026-05-16 21:42:20 UTC] ; stop_time=[Sat 2026-05-16 21:42:20 UTC] ; pid=422565 ; code=exited ; status=0 }
+Environment=
+EnvironmentFiles=/var/lib/snapd/environment/snapd.conf (ignore_errors=yes)
+Id=snapd.failure.service
+Requires=system.slice sysinit.target
+Wants=
+Before=shutdown.target
+After=sysinit.target basic.target systemd-journald.socket system.slice
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.failure.service
+UnitFileState=static
+UnitFilePreset=enabled
+ConditionResult=yes
+AssertResult=yes
+
+## unit state: snapd.autoimport.service
+* snapd.autoimport.service - Auto import assertions from block devices
+     Loaded: loaded (/usr/lib/systemd/system/snapd.autoimport.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 21:42:20 UTC; 1min 2s ago
+             |- ConditionKernelCommandLine=|snap_core was not met
+             `- ConditionKernelCommandLine=|snapd_recovery_mode was not met
+
+May 16 20:04:43 508d797cbad0 systemd[1]: snapd.autoimport.service - Auto import assertions from block devices was skipped because no trigger condition checks were met.
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.autoimport.service - Auto import assertions from block devices was skipped because no trigger condition checks were met.
+
+[show]
+RemainAfterExit=no
+Result=success
+ExecStart={ path=/usr/bin/snap ; argv[]=/usr/bin/snap auto-import ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+EnvironmentFiles=/var/lib/snapd/environment/snapd.conf (ignore_errors=yes)
+Id=snapd.autoimport.service
+Requires=system.slice sysinit.target
+Wants=
+Before=multi-user.target shutdown.target
+After=snapd.seeded.service system.slice snapd.socket snapd.service systemd-journald.socket basic.target sysinit.target
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.autoimport.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.system-shutdown.service
+* snapd.system-shutdown.service - Ubuntu core (all-snaps) system shutdown helper setup service
+     Loaded: loaded (/usr/lib/systemd/system/snapd.system-shutdown.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 21:42:20 UTC; 1min 2s ago
+             `- ConditionPathExists=!/usr/bin/finalrd was not met
+
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.system-shutdown.service - Ubuntu core (all-snaps) system shutdown helper setup service was skipped because of an unmet condition check (ConditionPathExists=!/usr/bin/finalrd).
+
+[show]
+RemainAfterExit=no
+Result=success
+ExecStart={ path=/bin/mount ; argv[]=/bin/mount /run -o remount,exec ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/bin/mkdir ; argv[]=/bin/mkdir -p /run/initramfs ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/bin/cp ; argv[]=/bin/cp /usr/lib/snapd/system-shutdown /run/initramfs/shutdown ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+Id=snapd.system-shutdown.service
+Requires=system.slice
+Wants=
+Before=umount.target
+After=system.slice systemd-journald.socket
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.system-shutdown.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.seeded.service
+* snapd.seeded.service - Wait until snapd is fully seeded
+     Loaded: loaded (/usr/lib/systemd/system/snapd.seeded.service; enabled; preset: enabled)
+     Active: active (exited) since Sat 2026-05-16 20:04:43 UTC; 1h 38min ago
+   Main PID: 268 (code=exited, status=0/SUCCESS)
+        CPU: 74ms
+
+May 16 20:04:41 508d797cbad0 systemd[1]: Starting snapd.seeded.service - Wait until snapd is fully seeded...
+May 16 20:04:43 508d797cbad0 systemd[1]: Finished snapd.seeded.service - Wait until snapd is fully seeded.
+
+[show]
+RemainAfterExit=yes
+Result=success
+ExecStart={ path=/usr/bin/snap ; argv[]=/usr/bin/snap wait system seed.loaded ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+Id=snapd.seeded.service
+Requires=snapd.socket system.slice sysinit.target
+Wants=
+Before=snapd.autoimport.service shutdown.target multi-user.target
+After=snapd.socket basic.target system.slice systemd-journald.socket sysinit.target
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/snapd.seeded.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=yes
+AssertResult=yes
+
+## unit state: snapd.service
+* snapd.service - Snap Daemon
+     Loaded: loaded (/usr/lib/systemd/system/snapd.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-05-16 21:43:22 UTC; 367ms ago
+TriggeredBy: * snapd.socket
+   Main PID: 430185 (snapd)
+      Tasks: 11 (limit: 9517)
+     Memory: 15.2M (peak: 20.2M)
+        CPU: 94ms
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/snapd.service
+             `-430185 /usr/lib/snapd/snapd
+
+May 16 21:43:22 508d797cbad0 systemd[1]: Starting snapd.service - Snap Daemon...
+May 16 21:43:22 508d797cbad0 snapd[430185]: overlord.go:294: Acquiring state lock file
+May 16 21:43:22 508d797cbad0 snapd[430185]: overlord.go:299: Acquired state lock file
+May 16 21:43:22 508d797cbad0 snapd[430185]: daemon.go:276: started snapd/2.74.1+ubuntu24.04.4 (series 16; classic; devmode) ubuntu/24.04 (arm64) linux/6.10.14-linuxkit.
+May 16 21:43:22 508d797cbad0 snapd[430185]: daemon.go:370: adjusting startup timeout by 30s (pessimistic estimate of 30s plus 5s per snap)
+May 16 21:43:22 508d797cbad0 snapd[430185]: backends.go:70: AppArmor status: apparmor not enabled
+May 16 21:43:22 508d797cbad0 snapd[430185]: standby.go:95: will consider standby after: 5s
+May 16 21:43:22 508d797cbad0 systemd[1]: Started snapd.service - Snap Daemon.
+May 16 21:43:23 508d797cbad0 snapd[430185]: snapmgr.go:1659: performing periodic snap downloads cache cleanup
+May 16 21:43:23 508d797cbad0 snapd[430185]: snapmgr.go:1669: cannot clean store downloads cache: open /var/lib/snapd/cache: no such file or directory
+
+[show]
+RemainAfterExit=no
+Result=success
+ExecStart={ path=/usr/lib/snapd/snapd ; argv[]=/usr/lib/snapd/snapd ; ignore_errors=no ; start_time=[Sat 2026-05-16 21:43:22 UTC] ; stop_time=[n/a] ; pid=430185 ; code=(null) ; status=0/0 }
+Environment=
+EnvironmentFiles=/etc/environment (ignore_errors=yes)
+EnvironmentFiles=/var/lib/snapd/environment/snapd.conf (ignore_errors=yes)
+Id=snapd.service
+Requires=system.slice sysinit.target snapd.socket
+Wants=time-set.target snapd.mounts.target
+Before=shutdown.target snapd.autoimport.service multi-user.target
+After=systemd-journald.socket system.slice time-set.target sysinit.target basic.target snapd.socket snapd.mounts.target snapd.core-fixup.service
+Triggers=
+TriggeredBy=snapd.socket
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/snapd.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=yes
+AssertResult=yes
+
+## unit state: snapd.socket
+* snapd.socket - Socket activation for snappy daemon
+     Loaded: loaded (/usr/lib/systemd/system/snapd.socket; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-05-16 20:04:41 UTC; 1h 38min ago
+   Triggers: * snapd.service
+     Listen: /run/snapd.socket (Stream)
+             /run/snapd-snap.socket (Stream)
+      Tasks: 0 (limit: 9517)
+     Memory: 0B (peak: 0B)
+        CPU: 292us
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/snapd.socket
+
+May 16 20:04:41 508d797cbad0 systemd[1]: Starting snapd.socket - Socket activation for snappy daemon...
+May 16 20:04:41 508d797cbad0 systemd[1]: Listening on snapd.socket - Socket activation for snappy daemon.
+
+[show]
+Result=success
+Environment=
+Id=snapd.socket
+Requires=system.slice sysinit.target
+Wants=
+Before=snapd.service sockets.target shutdown.target snapd.seeded.service snapd.autoimport.service
+After=system.slice -.mount sysinit.target
+Triggers=snapd.service
+TriggeredBy=
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/snapd.socket
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=yes
+AssertResult=yes
+
+## systemctl cat for scoped units
+
+### snapd.core-fixup.service
+# /usr/lib/systemd/system/snapd.core-fixup.service
+[Unit]
+Description=Automatically repair incorrect owner/permissions on core devices
+Before=snapd.service
+# don't run on classic
+ConditionKernelCommandLine=|snap_core
+ConditionKernelCommandLine=|snapd_recovery_mode
+Documentation=man:snap(1)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/snapd/snapd.core-fixup.sh
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
+
+
+### snapd.recovery-chooser-trigger.service
+# /usr/lib/systemd/system/snapd.recovery-chooser-trigger.service
+[Unit]
+Description=Wait for the Ubuntu Core chooser trigger
+Wants=getty-pre.target
+Before=getty-pre.target
+# don't run on classic or uc16/uc18
+ConditionKernelCommandLine=snapd_recovery_mode
+# only run when there are input devices
+ConditionPathExistsGlob=/dev/input/event*
+
+[Service]
+# blocks the service startup until a trigger is detected or a timeout is hit
+Type=oneshot
+ExecStart=/usr/lib/snapd/snap-bootstrap recovery-chooser-trigger
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target
+
+# started on boot only
+# X-Snapd-Snap: do-not-start
+
+### snapd.snap-repair.service
+# /usr/lib/systemd/system/snapd.snap-repair.service
+[Unit]
+Description=Automatically fetch and run repair assertions
+Documentation=man:snap(1)
+# don't run on classic
+ConditionKernelCommandLine=|snap_core
+ConditionKernelCommandLine=|snapd_recovery_mode
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/snapd/snap-repair run
+EnvironmentFile=-/etc/environment
+Environment=SNAP_REPAIR_FROM_TIMER=1
+EnvironmentFile=-/var/lib/snapd/environment/snapd.conf
+# There is no need to start this, the timer will run it
+# X-Snapd-Snap: do-not-start
+
+### snapd.snap-repair.timer
+# /usr/lib/systemd/system/snapd.snap-repair.timer
+[Unit]
+Description=Timer to automatically fetch and run repair assertions
+# don't run on classic
+ConditionKernelCommandLine=|snap_core
+ConditionKernelCommandLine=|snapd_recovery_mode
+
+[Timer]
+OnCalendar=*-*-* 5,11,17,23:00
+RandomizedDelaySec=2h
+AccuracySec=10min
+Persistent=true
+OnStartupSec=15m
+
+[Install]
+WantedBy=timers.target
+
+### snapd.apparmor.service
+# /usr/lib/systemd/system/snapd.apparmor.service
+# This systemd unit is needed on distributions that use apparmor but don't have
+# special support for loading snapd apparmor profiles. Until upstream apparmor
+# user-space release contains a systemd unit that is actually shipped by
+# distributors and that contains the necessary extension points for snapd the
+# apparmor profiles for snap applications need to be loaded separately from
+# other applications.
+[Unit]
+Description=Load AppArmor profiles managed internally by snapd
+DefaultDependencies=no
+Before=sysinit.target
+# This dependency is meant to ensure that apparmor initialization (whatever that might entail) is complete.
+After=apparmor.service
+# In case of re-execution, snapd snap has to be mounted. apparmor.service has
+# a dependency to local-fs.target which is enough in theory. But in case
+# this dependency dispappears, it is better to have an explicit dependency to
+# snapd.mount.target here.
+After=snapd.mounts.target
+Wants=snapd.mounts.target
+ConditionSecurity=apparmor
+RequiresMountsFor=/var/cache/apparmor /var/lib/snapd/apparmor/profiles
+# This is handled by snapd
+# X-Snapd-Snap: do-not-start
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/snapd/snapd-apparmor start
+EnvironmentFile=-/etc/environment
+EnvironmentFile=-/var/lib/snapd/environment/snapd.conf
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+
+### snapd.failure.service
+# /usr/lib/systemd/system/snapd.failure.service
+[Unit]
+Description=Failure handling of the snapd snap
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/snapd/snap-failure snapd
+EnvironmentFile=-/var/lib/snapd/environment/snapd.conf
+# X-Snapd-Snap: do-not-start
+
+### snapd.autoimport.service
+# /usr/lib/systemd/system/snapd.autoimport.service
+[Unit]
+Description=Auto import assertions from block devices
+After=snapd.service snapd.socket snapd.seeded.service
+# don't run on classic
+ConditionKernelCommandLine=|snap_core
+# TODO:UC20: only enable this in run mode?
+ConditionKernelCommandLine=|snapd_recovery_mode
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/snap auto-import
+EnvironmentFile=-/var/lib/snapd/environment/snapd.conf
+
+[Install]
+WantedBy=multi-user.target
+# This cannot be started on firstboot
+# X-Snapd-Snap: do-not-start
+
+### snapd.system-shutdown.service
+# /usr/lib/systemd/system/snapd.system-shutdown.service
+[Unit]
+Description=Ubuntu core (all-snaps) system shutdown helper setup service
+Before=umount.target
+DefaultDependencies=false
+# don't run on classic
+ConditionKernelCommandLine=|snap_core
+ConditionKernelCommandLine=|snapd_recovery_mode
+ConditionPathExists=!/usr/bin/finalrd
+# don't run if system-shutdown isn't there
+ConditionPathExists=/usr/lib/snapd/system-shutdown
+# X-Snapd-Snap: do-not-start
+
+[Service]
+Type=oneshot
+ExecStart=/bin/mount /run -o remount,exec
+ExecStart=/bin/mkdir -p /run/initramfs
+ExecStart=/bin/cp /usr/lib/snapd/system-shutdown /run/initramfs/shutdown
+
+[Install]
+WantedBy=final.target
+
+### snapd.seeded.service
+# /usr/lib/systemd/system/snapd.seeded.service
+[Unit]
+Description=Wait until snapd is fully seeded
+After=snapd.socket
+Requires=snapd.socket
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/snap wait system seed.loaded
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target cloud-final.service
+# This is handled special in snapd
+# X-Snapd-Snap: do-not-start
+
+### snapd.service
+# /usr/lib/systemd/system/snapd.service
+[Unit]
+Description=Snap Daemon
+After=snapd.socket
+After=time-set.target
+After=snapd.mounts.target
+Wants=time-set.target
+Wants=snapd.mounts.target
+Requires=snapd.socket
+OnFailure=snapd.failure.service
+# This is handled by snapd
+# X-Snapd-Snap: do-not-start
+
+[Service]
+# Disabled because it breaks lxd
+# (https://bugs.launchpad.net/snapd/+bug/1709536)
+#Nice=-5
+OOMScoreAdjust=-900
+ExecStart=/usr/lib/snapd/snapd
+EnvironmentFile=-/etc/environment
+EnvironmentFile=-/var/lib/snapd/environment/snapd.conf
+Restart=always
+# with systemd v254+, skip going through failed state during restart
+RestartMode=direct
+WatchdogSec=5m
+Type=notify
+NotifyAccess=all
+SuccessExitStatus=42
+RestartPreventExitStatus=42
+KillMode=process
+KeyringMode=shared
+
+[Install]
+WantedBy=multi-user.target
+
+### snapd.socket
+# /usr/lib/systemd/system/snapd.socket
+[Unit]
+Description=Socket activation for snappy daemon
+
+[Socket]
+ListenStream=/run/snapd.socket
+ListenStream=/run/snapd-snap.socket
+SocketMode=0666
+# these are the defaults, but can't hurt to specify them anyway:
+SocketUser=root
+SocketGroup=root
+
+[Install]
+WantedBy=sockets.target
+
+## condition evaluation on this stock classic container
+
+### ConditionKernelCommandLine=|snap_core
+test.service: ConditionKernelCommandLine=|snap_core failed.
+Conditions failed.
+
+### ConditionKernelCommandLine=|snapd_recovery_mode
+test.service: ConditionKernelCommandLine=|snapd_recovery_mode failed.
+Conditions failed.
+
+### ConditionKernelCommandLine=snapd_recovery_mode
+test.service: ConditionKernelCommandLine=snapd_recovery_mode failed.
+Conditions failed.
+
+### ConditionPathExistsGlob=/dev/input/event*
+test.service: ConditionPathExistsGlob=/dev/input/event* failed.
+Conditions failed.
+
+### ConditionSecurity=apparmor
+test.service: ConditionSecurity=apparmor failed.
+Conditions failed.
+
+### ConditionPathExists=/usr/lib/snapd/system-shutdown
+test.service: ConditionPathExists=/usr/lib/snapd/system-shutdown succeeded.
+Conditions succeeded.
+
+### ConditionPathExists=!/usr/bin/finalrd
+test.service: ConditionPathExists=!/usr/bin/finalrd failed.
+Conditions failed.
+
+## installed helper files and relevant source/literal lines
+/etc/apparmor.d
+/etc/apparmor.d/usr.lib.snapd.snap-confine.real
+/lib/systemd/system/snapd.apparmor.service
+/lib/systemd/system/snapd.autoimport.service
+/lib/systemd/system/snapd.core-fixup.service
+/lib/systemd/system/snapd.failure.service
+/lib/systemd/system/snapd.recovery-chooser-trigger.service
+/lib/systemd/system/snapd.seeded.service
+/lib/systemd/system/snapd.snap-repair.service
+/lib/systemd/system/snapd.snap-repair.timer
+/lib/systemd/system/snapd.system-shutdown.service
+/usr/lib/snapd/snap-recovery-chooser
+/usr/lib/snapd/snap-repair
+/usr/lib/snapd/snapd-apparmor
+/usr/lib/snapd/snapd.core-fixup.sh
+/usr/lib/snapd/system-shutdown
+/var/lib/snapd/apparmor
+/var/lib/snapd/apparmor/snap-confine
+/var/lib/snapd/auto-import
+-rwxr-xr-x 755 root:root 0:0 3826 /usr/lib/snapd/snapd.core-fixup.sh
+-rwxr-xr-x 755 root:root 0:0 12513744 /usr/lib/snapd/snap-bootstrap
+-rwxr-xr-x 755 root:root 0:0 7679376 /usr/lib/snapd/snap-repair
+-rwxr-xr-x 755 root:root 0:0 2413168 /usr/lib/snapd/snapd-apparmor
+-rwxr-xr-x 755 root:root 0:0 2872176 /usr/lib/snapd/snap-failure
+-rwxr-xr-x 755 root:root 0:0 67512 /usr/lib/snapd/system-shutdown
+-rwxr-xr-x 755 root:root 0:0 10466064 /usr/lib/snapd/snap-preseed
+-rwxr-xr-x 755 root:root 0:0 21406552 /usr/bin/snap
+/usr/lib/snapd/snapd.core-fixup.sh: POSIX shell script, ASCII text executable
+/usr/lib/snapd/snap-bootstrap:      ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=03f77928318fa4e0acc1922f81c28d5a40660dc7, for GNU/Linux 3.7.0, stripped
+/usr/lib/snapd/snap-repair:         ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=a7e2cfe0be555d4af5fce5b5a6bb95246361e868, for GNU/Linux 3.7.0, stripped
+/usr/lib/snapd/snapd-apparmor:      ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=07ba3fb5b51928e8111ba9e69ac855d9f13f1927, for GNU/Linux 3.7.0, stripped
+/usr/lib/snapd/snap-failure:        ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=78b09646e3a4b5f4f56e8d3839109dead700a938, for GNU/Linux 3.7.0, stripped
+/usr/lib/snapd/system-shutdown:     ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=cbd4d0a33f2110a1329391726efb3caedccb988b, for GNU/Linux 3.7.0, stripped
+/usr/lib/snapd/snap-preseed:        ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=10cb6bb1daaed454b1488d37b38e803acfb76aba, for GNU/Linux 3.7.0, stripped
+/usr/bin/snap:                      ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, Go BuildID=lGklU399nRuN4_zewVOk/3r2FfJ3LFVcEqoCysioV/alPpizt-hL9AwsoSgxfW/_bVsol_3xh-SXL_g7yEj, stripped
+/usr/lib/snapd/snapd.core-fixup.sh
+/usr/lib/snapd/snap-bootstrap
+/usr/lib/snapd/snap-repair
+/usr/lib/snapd/snapd-apparmor
+/usr/lib/snapd/snap-failure
+/usr/lib/snapd/system-shutdown
+/usr/lib/snapd/snap-preseed
+/usr/bin/snap
+
+[snapd.core-fixup.sh]
+     1	#!/bin/sh
+     2	
+     3	set -e
+     4	
+     5	if ! grep -q "ID=ubuntu-core" /etc/os-release; then
+     6	    # this code is only relevant on ubuntu-core devices
+     7	    #
+     8	    # this script will only run via systemd if /writable/system-data
+     9	    # exists however we still add this check here in case people run
+    10	    # it manually
+    11	    exit 0
+    12	fi
+    13	
+    14	# No fix-ups yet on UC20
+    15	if grep -q snapd_recovery_mode= /proc/cmdline; then
+    16	    exit 0
+    17	fi
+    18	
+    19	# Workaround https://forum.snapcraft.io/t/5253
+    20	#
+    21	# We see sometimes corrupted uboot.env files created by fsck.vfat.
+    22	# On the fat filesystem they are indistinguishable because one
+    23	# has a fat16 name UBOOT.ENV (and not lfn (long-file-name)) but
+    24	# the other has a "uboot.env" lfn name and a FSCK0000.000 FAT16
+    25	# name. The only known workaround is to remove all dupes and put
+    26	# one file back in place.
+    27	if [ "$(find /boot/uboot -name uboot.env | wc -l)" -gt 1 ]; then
+    28	    echo "Corrupted uboot.env file detected"
+    29	    # Ensure we have one uboot.env to go back to. Note that it does
+    30	    # not matter which one we pick (we can't choose anyway, we get
+    31	    # whatever the kernel gives us). The key part is that there is
+    32	    # only a single one after this script finishes. The bootloader
+    33	    # logic will recover in any case.
+    34	    cp -a /boot/uboot/uboot.env /boot/uboot/uboot.env.save
+    35	    # now delete all dupes
+    36	    while ls /boot/uboot/uboot.env 2>/dev/null; do
+    37	        rm -f /boot/uboot/uboot.env
+    38	    done
+    39	    # and move the saved one into place
+    40	    mv /boot/uboot/uboot.env.save /boot/uboot/uboot.env
+    41	
+    42	    # ensure we sync the fs
+    43	    sync
+    44	fi
+    45	
+    46	
+    47	# The code below deals with incorrect permissions that happened on
+    48	# some buggy ubuntu-image versions.
+    49	#
+    50	# This needs to run only once so we can exit here.
+    51	if [ -f /var/lib/snapd/device/ownership-change.after ]; then
+    52	    exit 0
+    53	fi
+    54	
+    55	# store important data in case we need it later
+    56	if [ ! -f /var/lib/snapd/device/ownership-change.before ]; then
+    57	    mkdir -p /var/lib/snapd/device
+    58	    find /etc/cloud /var/lib/cloud /var/lib/snapd -printf '%M %U %G %p\n' > /var/lib/snapd/device/ownership-change.before.tmp || true
+    59	    find  /writable/system-data /writable/system-data/var /writable/system-data/var/lib /writable/system-data/boot /writable/system-data/etc -maxdepth 0 -printf '%M %U %G %p\n' >> /var/lib/snapd/device/ownership-change.before.tmp || true
+    60	    mv /var/lib/snapd/device/ownership-change.before.tmp /var/lib/snapd/device/ownership-change.before
+    61	fi
+    62	    
+    63	# cleanup read/write files and directories (CVE-2017-10600)
+    64	for i in /etc/cloud /var/lib/cloud /var/lib/snapd ; do
+    65	  # restore ownership to root:root
+    66	  find "$i" \( -type f -o -type d -o -type l \) -a \( \! -uid 0 -o \! -gid 0 \) -print0 | \
+    67	    xargs -0 --no-run-if-empty chown -c --no-dereference root:root -- || true
+    68	done
+    69	
+    70	# cleanup a few /writable directories without descending
+    71	for i in /writable/system-data /writable/system-data/var /writable/system-data/var/lib /writable/system-data/boot /writable/system-data/etc ; do
+    72	  # restore ownership to root:root
+    73	  find "$i" -maxdepth 0 \( \! -uid 0 -o \! -gid 0 -o -type l \) -print0 | \
+    74	    xargs -0 --no-run-if-empty chown -c --no-dereference root:root -- || true
+    75	done
+    76	
+    77	# store permissions after manipulation, this is also used as the stamp file
+    78	# for the systemd service to ensure it is only run once
+    79	find /etc/cloud /var/lib/cloud /var/lib/snapd -printf '%M %U %G %p\n' > /var/lib/snapd/device/ownership-change.after.tmp
+    80	# Note: this find will fail on UC20 seeding because there is no
+    81	# /writable/system-data/boot
+    82	find  /writable/system-data /writable/system-data/var /writable/system-data/var/lib /writable/system-data/boot /writable/system-data/etc -maxdepth 0 -printf '%M %U %G %p\n' >> /var/lib/snapd/device/ownership-change.after.tmp
+    83	mv /var/lib/snapd/device/ownership-change.after.tmp /var/lib/snapd/device/ownership-change.after
+    84	
+    85	# ensure things are really on disk
+    86	sync
+
+[compiled helper path/assertion/seed literals]
+### /usr/lib/snapd/snap-bootstrap
+/dev/input/event
+/run/mnt/ubuntu-seed
+/run/mnt/ubuntu-seed/
+/tmp.go
+/tmp/core.kexec25.10DoingAbortoptee/proc/boothttpsnever-plug
+/tmpstatsyncfilelinkPWD
+/var/cache/apparmorpolicy:notify:user:/apparmor.d/abi/3.0/apparmor.d/abi/4.0invalid
+/var/cache/snapd/etc/modprobe.d//usr/share/fontsdevice
+/var/lib/snapd/snapinterfaces-requestsinvalid
+/var/lib/snapd/state.jsoncannot
+/var/tmp/swapfile.swpcannot
+assertions
+auto-import
+repair.json
+seed.yaml
+snapd.conf
+ubuntu-seed
+### /usr/lib/snapd/snap-repair
+/var/cache/apparmor/apparmor.d/abi/3.0/apparmor.d/abi/4.0user:
+/var/cache/snapd/etc/modprobe.d//usr/share/fontslong-descriptioncommand
+/var/lib/snapd/snapinterfaces-requestspositional-arg-nameshort
+assertions
+auto-import
+repair.json
+seed.yaml
+### /usr/lib/snapd/snapd-apparmor
+/var/cache/snapd/etc/modprobe.d//usr/share/fonts0123456789abcdefNeedDaemonReload23841857910156250123456789ABCDEFinteger
+/var/lib/snapd/snapinterfaces-requests/usr/lib/os-release/etc/initrd-release/var/cache/apparmor/apparmor.d/abi/3.0/apparmor.d/abi/4.0/snap/snapd/currentcannot
+assertions
+auto-import
+repair.json
+### /usr/lib/snapd/snap-failure
+/var/cache/snapd/etc/modprobe.d//usr/share/fontslong-descriptioncommand
+/var/lib/snapd/snapinterfaces-requests/usr/lib/os-release/etc/initrd-releasepositional-arg-nameshort
+assertions
+auto-import
+repair.json
+### /usr/lib/snapd/system-shutdown
+### /usr/bin/snap
+/dev/input/
+/dev/input/event
+/dev/input/js
+/dev/input/uinput
+/run/mnt/ubuntu-seed/
+/tmp
+/tmp.
+/tmp.go
+/tmp.mount-control
+/tmp/
+/tmp/.ICE-unix/
+/tmp/.X11-unix/
+/tmp/.X11-unix/X
+/tmp/.X11-unixfrom
+/tmp/.X11-unixresource
+/tmp/.snap/
+/tmp/.snapBefore
+/tmp/ibus/dbus-
+/tmp/krb5cc.Xauthoritystrace.fifoSNAP_SAVED_account-key
+/tmp/maliit-server/dbus-
+/tmp/snapd-preseedcore-writable.confetc/systemd/systemvar/lib/snapd/seedvar/cache/apparmorvar/lib/extrausersframebuffer_heighthdmi_force_hotplugcore.experimental.journal.persistentcore.users.lockoutservice.
+/tmpHOMEopenstatsyncfilelinkPOSTselfunixhttpnullbool
+/tmpfiles.d/core-writable.confcannot
+/var/cache/apparmor/
+/var/cache/apparmorpolicy:notify:user:/apparmor.d/abi/3.0/apparmor.d/abi/4.0/snap/snapd/currentcannot
+/var/cache/apparmorsystem-data/var/lib/extrauserscannot
+/var/cache/snapd/etc/modprobe.d//usr/share/fontsregexp:
+/var/cache/snapdcore.system.coredump.enablecore.system.coredump.maxuse/etc/ssh/sshd_not_to_be_run
+/var/lib/snapd/
+/var/lib/snapd/desktop/applications/
+/var/lib/snapd/desktop/applications/mimeinfo.cache
+/var/lib/snapd/desktop/icons/
+/var/lib/snapd/hostfs
+/var/lib/snapd/hostfs/
+/var/lib/snapd/hostfs/bin/journalctl
+/var/lib/snapd/hostfs/etc/os-release
+/var/lib/snapd/hostfs/lib/systemd/
+/var/lib/snapd/hostfs/opt/ros/
+/var/lib/snapd/hostfs/tmp/.X11-unix/
+/var/lib/snapd/hostfs/tmp/.X11-unixcannot
+/var/lib/snapd/hostfs/tmp/krb5cc
+/var/lib/snapd/hostfs/tmp/snap-private-tmp/snap.
+/var/lib/snapd/hostfs/trace
+/var/lib/snapd/hostfs/usr/lib/os-release
+/var/lib/snapd/hostfs/usr/local/share/doc
+/var/lib/snapd/hostfs/usr/local/share/doc/
+/var/lib/snapd/hostfs/usr/share/cups/doc-root/
+/var/lib/snapd/hostfs/usr/share/cups/doc-root/var/lib/snapd/hostfs/usr/share/gimp/2.0/helpcannot
+/var/lib/snapd/hostfs/usr/share/doc/
+/var/lib/snapd/hostfs/usr/share/docallows
+/var/lib/snapd/hostfs/usr/share/egl/egl_external_platform.d/
+/var/lib/snapd/hostfs/usr/share/gimp/2.0/help/
+/var/lib/snapd/hostfs/usr/share/glvnd/egl_vendor.d/
+/var/lib/snapd/hostfs/usr/share/gtk-doc/
+/var/lib/snapd/hostfs/usr/share/gtk-docinternal
+/var/lib/snapd/hostfs/usr/share/javascript
+/var/lib/snapd/hostfs/usr/share/javascript/
+/var/lib/snapd/hostfs/usr/share/libreoffice/help/
+/var/lib/snapd/hostfs/usr/share/libreoffice/help/var/lib/snapd/hostfs/usr/share/sphinx_rtd_themefailed
+/var/lib/snapd/hostfs/usr/share/sphinx_rtd_theme/
+/var/lib/snapd/hostfs/usr/share/vulkan/icd.d/
+/var/lib/snapd/hostfs/usr/share/xubuntu-docs/
+/var/lib/snapd/hostfs/usr/share/xubuntu-docscannot
+/var/lib/snapd/hostfs/var/
+/var/lib/snapd/hostfs/var/lib/
+/var/lib/snapd/hostfs/var/lib/dhcp
+/var/lib/snapd/hostfs/var/lib/dhcp/
+/var/lib/snapd/hostfs/var/lib/libvirt/dnsmasq/
+/var/lib/snapd/hostfsslot
+/var/lib/snapd/inhibitSNAP_COMPONENT_VERSIONopening
+/var/lib/snapd/lib/gl
+/var/lib/snapd/lib/gl:/var/lib/snapd/lib/gl32cannot
+/var/lib/snapd/lib/glvnd/
+/var/lib/snapd/lib/system/gpu/
+/var/lib/snapd/lib/vulkan/
+/var/lib/snapd/maintenance.json
+/var/lib/snapd/snapinterfaces-requests/usr/lib/os-release/etc/initrd-releaseunexpected
+/var/lib/snapd/snaps/@
+/var/lib/snapd/snaps/core_
+/var/tmp
+/var/tmp/
+/var/tmp/etilqs_
+/var/tmp/swapfile.swpundefined
+assertions
+auto-import
+repair.json
+seed.yaml
+snapd.conf
+ubuntu-seed
+### /usr/lib/snapd/snap-preseed
+/dev/input/
+/dev/input/event
+/dev/input/js
+/dev/input/uinput
+/tmp
+/tmp.
+/tmp.netlink-driver
+/tmp/
+/tmp/.ICE-unix/
+/tmp/snapd-preseedinternal
+/tmpfiles.d/core-writable.conferror
+/tmpopenstatsyncfilelink
+/var/cache/apparmorpolicy:notify:user:/apparmor.d/abi/3.0/apparmor.d/abi/4.0
+/var/cache/apparmorsystem-data/var/lib/extrauserscannot
+/var/cache/snapd
+/var/cache/snapd/etc/modprobe.d//usr/share/fonts
+/var/lib/snapd/
+/var/lib/snapd/hostfs/
+/var/lib/snapd/hostfs/bin/journalctl
+/var/lib/snapd/hostfs/lib/systemd/
+/var/lib/snapd/hostfs/opt/ros/
+/var/lib/snapd/hostfs/tmp/krb5cc
+/var/lib/snapd/hostfs/var/
+/var/lib/snapd/hostfs/var/lib/
+/var/lib/snapd/hostfs/var/lib/dhcp
+/var/lib/snapd/hostfs/var/lib/dhcp/
+/var/lib/snapd/hostfs/var/lib/libvirt/dnsmasq/
+/var/lib/snapd/inhibitnetwork
+/var/lib/snapd/maintenance.json
+/var/lib/snapd/seed
+/var/lib/snapd/snapinterfaces-requestssystemd-detect-virtinvalid
+/var/lib/snapd/snaps/@
+/var/lib/snapd/snaps/core_
+/var/tmp
+assertions
+auto-import
+repair.json
+seed.yaml
+
+## root-owned snapd unit input path inventory
+
+### /etc/environment
+lstat: -rw-r--r-- 644 root:root 0:0 regular file 106 /etc/environment -> '/etc/environment'
+stat:  -rw-r--r-- 644 root:root 0:0 regular file 106 /etc/environment
+f: /etc/environment
+drwxr-xr-x root root /
+drwxr-xr-x root root etc
+-rw-r--r-- root root environment
+
+### /var/lib/snapd/environment
+lstat: drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/environment -> '/var/lib/snapd/environment'
+stat:  drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/environment
+f: /var/lib/snapd/environment
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+drwxr-xr-x root root environment
+
+### /var/lib/snapd/environment/snapd.conf
+stat: cannot statx '/var/lib/snapd/environment/snapd.conf': No such file or directory
+stat: cannot statx '/var/lib/snapd/environment/snapd.conf': No such file or directory
+f: /var/lib/snapd/environment/snapd.conf
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+drwxr-xr-x root root environment
+                      snapd.conf - No such file or directory
+
+### /var/lib/snapd/seed
+stat: cannot statx '/var/lib/snapd/seed': No such file or directory
+stat: cannot statx '/var/lib/snapd/seed': No such file or directory
+f: /var/lib/snapd/seed
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+                      seed - No such file or directory
+
+### /var/lib/snapd/seed/seed.yaml
+stat: cannot statx '/var/lib/snapd/seed/seed.yaml': No such file or directory
+stat: cannot statx '/var/lib/snapd/seed/seed.yaml': No such file or directory
+f: /var/lib/snapd/seed/seed.yaml
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+                      seed - No such file or directory
+
+### /var/lib/snapd/seed/assertions
+stat: cannot statx '/var/lib/snapd/seed/assertions': No such file or directory
+stat: cannot statx '/var/lib/snapd/seed/assertions': No such file or directory
+f: /var/lib/snapd/seed/assertions
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+                      seed - No such file or directory
+
+### /var/lib/snapd/seed/assertions/sbs.assert
+stat: cannot statx '/var/lib/snapd/seed/assertions/sbs.assert': No such file or directory
+stat: cannot statx '/var/lib/snapd/seed/assertions/sbs.assert': No such file or directory
+f: /var/lib/snapd/seed/assertions/sbs.assert
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+                      seed - No such file or directory
+
+### /var/lib/snapd/seed/snaps
+stat: cannot statx '/var/lib/snapd/seed/snaps': No such file or directory
+stat: cannot statx '/var/lib/snapd/seed/snaps': No such file or directory
+f: /var/lib/snapd/seed/snaps
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+                      seed - No such file or directory
+
+### /var/lib/snapd/seed/snaps/sbs_1.snap
+stat: cannot statx '/var/lib/snapd/seed/snaps/sbs_1.snap': No such file or directory
+stat: cannot statx '/var/lib/snapd/seed/snaps/sbs_1.snap': No such file or directory
+f: /var/lib/snapd/seed/snaps/sbs_1.snap
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+                      seed - No such file or directory
+
+### /var/lib/snapd/assertions
+lstat: drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/assertions -> '/var/lib/snapd/assertions'
+stat:  drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/assertions
+f: /var/lib/snapd/assertions
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+drwxr-xr-x root root assertions
+
+### /var/lib/snapd/assertions/asserts-v0
+lstat: drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/assertions/asserts-v0 -> '/var/lib/snapd/assertions/asserts-v0'
+stat:  drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/assertions/asserts-v0
+f: /var/lib/snapd/assertions/asserts-v0
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+drwxr-xr-x root root assertions
+drwxr-xr-x root root asserts-v0
+
+### /var/cache/snapd
+lstat: drwxr-xr-x 755 root:root 0:0 directory 4096 /var/cache/snapd -> '/var/cache/snapd'
+stat:  drwxr-xr-x 755 root:root 0:0 directory 4096 /var/cache/snapd
+f: /var/cache/snapd
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root cache
+drwxr-xr-x root root snapd
+
+### /var/cache/snapd/assertions
+stat: cannot statx '/var/cache/snapd/assertions': No such file or directory
+stat: cannot statx '/var/cache/snapd/assertions': No such file or directory
+f: /var/cache/snapd/assertions
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root cache
+drwxr-xr-x root root snapd
+                      assertions - No such file or directory
+
+### /var/cache/snapd/snaps
+stat: cannot statx '/var/cache/snapd/snaps': No such file or directory
+stat: cannot statx '/var/cache/snapd/snaps': No such file or directory
+f: /var/cache/snapd/snaps
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root cache
+drwxr-xr-x root root snapd
+                      snaps - No such file or directory
+
+### /var/lib/snapd/snaps
+lstat: drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/snaps -> '/var/lib/snapd/snaps'
+stat:  drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/snaps
+f: /var/lib/snapd/snaps
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+drwxr-xr-x root root snaps
+
+### /var/lib/snapd/snaps/partial
+lstat: drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/snaps/partial -> '/var/lib/snapd/snaps/partial'
+stat:  drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/snaps/partial
+f: /var/lib/snapd/snaps/partial
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+drwxr-xr-x root root snaps
+drwxr-xr-x root root partial
+
+### /var/lib/snapd/auto-import
+lstat: drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/auto-import -> '/var/lib/snapd/auto-import'
+stat:  drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/auto-import
+f: /var/lib/snapd/auto-import
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+drwxr-xr-x root root auto-import
+
+### /var/lib/snapd/auto-import/sbs.assert
+stat: cannot statx '/var/lib/snapd/auto-import/sbs.assert': No such file or directory
+stat: cannot statx '/var/lib/snapd/auto-import/sbs.assert': No such file or directory
+f: /var/lib/snapd/auto-import/sbs.assert
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+drwxr-xr-x root root auto-import
+                      sbs.assert - No such file or directory
+
+### /var/lib/snapd/apparmor
+lstat: drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/apparmor -> '/var/lib/snapd/apparmor'
+stat:  drwxr-xr-x 755 root:root 0:0 directory 4096 /var/lib/snapd/apparmor
+f: /var/lib/snapd/apparmor
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+drwxr-xr-x root root apparmor
+
+### /var/lib/snapd/apparmor/profiles
+stat: cannot statx '/var/lib/snapd/apparmor/profiles': No such file or directory
+stat: cannot statx '/var/lib/snapd/apparmor/profiles': No such file or directory
+f: /var/lib/snapd/apparmor/profiles
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+drwxr-xr-x root root snapd
+drwxr-xr-x root root apparmor
+                      profiles - No such file or directory
+
+### /var/cache/apparmor
+lstat: drwxr-xr-x 755 root:root 0:0 directory 4096 /var/cache/apparmor -> '/var/cache/apparmor'
+stat:  drwxr-xr-x 755 root:root 0:0 directory 4096 /var/cache/apparmor
+f: /var/cache/apparmor
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root cache
+drwxr-xr-x root root apparmor
+
+### /run/mnt
+stat: cannot statx '/run/mnt': No such file or directory
+stat: cannot statx '/run/mnt': No such file or directory
+f: /run/mnt
+drwxr-xr-x root root /
+drwxr-xr-x root root run
+                      mnt - No such file or directory
+
+### /run/mnt/ubuntu-seed
+stat: cannot statx '/run/mnt/ubuntu-seed': No such file or directory
+stat: cannot statx '/run/mnt/ubuntu-seed': No such file or directory
+f: /run/mnt/ubuntu-seed
+drwxr-xr-x root root /
+drwxr-xr-x root root run
+                      mnt - No such file or directory
+
+### /run/mnt/ubuntu-seed/seed.yaml
+stat: cannot statx '/run/mnt/ubuntu-seed/seed.yaml': No such file or directory
+stat: cannot statx '/run/mnt/ubuntu-seed/seed.yaml': No such file or directory
+f: /run/mnt/ubuntu-seed/seed.yaml
+drwxr-xr-x root root /
+drwxr-xr-x root root run
+                      mnt - No such file or directory
+
+### /dev/input
+lstat: drwxr-xr-x 755 root:root 0:0 directory 60 /dev/input -> '/dev/input'
+stat:  drwxr-xr-x 755 root:root 0:0 directory 60 /dev/input
+f: /dev/input
+drwxr-xr-x root root /
+drwxr-xr-x root root dev
+drwxr-xr-x root root input
+
+### /dev/input/event0
+stat: cannot statx '/dev/input/event0': No such file or directory
+stat: cannot statx '/dev/input/event0': No such file or directory
+f: /dev/input/event0
+drwxr-xr-x root root /
+drwxr-xr-x root root dev
+drwxr-xr-x root root input
+                      event0 - No such file or directory
+
+### /boot/uboot
+stat: cannot statx '/boot/uboot': No such file or directory
+stat: cannot statx '/boot/uboot': No such file or directory
+f: /boot/uboot
+drwxr-xr-x root root /
+drwxr-xr-x root root boot
+                      uboot - No such file or directory
+
+### /boot/uboot/uboot.env
+stat: cannot statx '/boot/uboot/uboot.env': No such file or directory
+stat: cannot statx '/boot/uboot/uboot.env': No such file or directory
+f: /boot/uboot/uboot.env
+drwxr-xr-x root root /
+drwxr-xr-x root root boot
+                      uboot - No such file or directory
+
+### /etc/cloud
+lstat: drwxr-xr-x 755 root:root 0:0 directory 4096 /etc/cloud -> '/etc/cloud'
+stat:  drwxr-xr-x 755 root:root 0:0 directory 4096 /etc/cloud
+f: /etc/cloud
+drwxr-xr-x root root /
+drwxr-xr-x root root etc
+drwxr-xr-x root root cloud
+
+### /var/lib/cloud
+stat: cannot statx '/var/lib/cloud': No such file or directory
+stat: cannot statx '/var/lib/cloud': No such file or directory
+f: /var/lib/cloud
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxr-xr-x root root lib
+                      cloud - No such file or directory
+
+### /writable/system-data
+stat: cannot statx '/writable/system-data': No such file or directory
+stat: cannot statx '/writable/system-data': No such file or directory
+f: /writable/system-data
+drwxr-xr-x root root /
+                      writable - No such file or directory
+
+### /tmp
+lstat: drwxrwxrwt 1777 root:root 0:0 directory 4096 /tmp -> '/tmp'
+stat:  drwxrwxrwt 1777 root:root 0:0 directory 4096 /tmp
+f: /tmp
+drwxr-xr-x root root /
+drwxrwxrwt root root tmp
+
+### /var/tmp
+lstat: drwxrwxrwt 1777 root:root 0:0 directory 4096 /var/tmp -> '/var/tmp'
+stat:  drwxrwxrwt 1777 root:root 0:0 directory 4096 /var/tmp
+f: /var/tmp
+drwxr-xr-x root root /
+drwxr-xr-x root root var
+drwxrwxrwt root root tmp
+
+[var/lib, cache, run snapd trees]
+-rw------- root:root /run/snapd/lock/.lock -> 
+-rw------- root:root /var/lib/snapd/state.json -> 
+-rw-r--r-- root:root /var/cache/snapd/commands.db -> 
+-rw-r--r-- root:root /var/cache/snapd/names -> 
+-rw-r--r-- root:root /var/cache/snapd/sections -> 
+-rw-r--r-- root:root /var/lib/snapd/features/classic-preserves-xdg-runtime-dir -> 
+-rw-r--r-- root:root /var/lib/snapd/features/refresh-app-awareness -> 
+-rw-r--r-- root:root /var/lib/snapd/state.lock -> 
+-rw-r--r-- root:root /var/lib/snapd/system-key -> 
+d--x--x--x root:root /var/lib/snapd/void -> 
+drwx------ root:root /var/lib/snapd/cookie -> 
+drwxr-xr-x root:root /run/snapd -> 
+drwxr-xr-x root:root /run/snapd/lock -> 
+drwxr-xr-x root:root /run/snapd/ns -> 
+drwxr-xr-x root:root /var/cache/apparmor -> 
+drwxr-xr-x root:root /var/cache/snapd -> 
+drwxr-xr-x root:root /var/lib/snapd -> 
+drwxr-xr-x root:root /var/lib/snapd/apparmor -> 
+drwxr-xr-x root:root /var/lib/snapd/apparmor/snap-confine -> 
+drwxr-xr-x root:root /var/lib/snapd/assertions -> 
+drwxr-xr-x root:root /var/lib/snapd/assertions/asserts-v0 -> 
+drwxr-xr-x root:root /var/lib/snapd/assertions/asserts-v0/model -> 
+drwxr-xr-x root:root /var/lib/snapd/assertions/private-keys-v1 -> 
+drwxr-xr-x root:root /var/lib/snapd/auto-import -> 
+drwxr-xr-x root:root /var/lib/snapd/dbus-1 -> 
+drwxr-xr-x root:root /var/lib/snapd/dbus-1/services -> 
+drwxr-xr-x root:root /var/lib/snapd/dbus-1/system-services -> 
+drwxr-xr-x root:root /var/lib/snapd/desktop -> 
+drwxr-xr-x root:root /var/lib/snapd/desktop/applications -> 
+drwxr-xr-x root:root /var/lib/snapd/environment -> 
+drwxr-xr-x root:root /var/lib/snapd/features -> 
+drwxr-xr-x root:root /var/lib/snapd/firstboot -> 
+drwxr-xr-x root:root /var/lib/snapd/hostfs -> 
+drwxr-xr-x root:root /var/lib/snapd/inhibit -> 
+drwxr-xr-x root:root /var/lib/snapd/lib -> 
+drwxr-xr-x root:root /var/lib/snapd/lib/gl -> 
+drwxr-xr-x root:root /var/lib/snapd/lib/gl32 -> 
+drwxr-xr-x root:root /var/lib/snapd/lib/glvnd -> 
+drwxr-xr-x root:root /var/lib/snapd/lib/vulkan -> 
+drwxr-xr-x root:root /var/lib/snapd/snaps -> 
+drwxr-xr-x root:root /var/lib/snapd/snaps/partial -> 
+drwxr-xr-x root:root /var/lib/snapd/ssl -> 
+drwxr-xr-x root:root /var/lib/snapd/ssl/store-certs -> 
+
+## attacker writable search in snapd-adjacent trees
+
+## find writable snapd-adjacent paths
+$ runuser -u attacker -- bash -lc $'\nfor d in /var/lib/snapd /var/cache/snapd /run/snapd /var/cache/apparmor /run/mnt /dev/input /tmp /var/tmp; do\n  [ -e "$d" ] || { echo "MISSING $d"; continue; }\n  echo "### $d"\n  find "$d" -maxdepth 3 -xdev -writable -printf "%M %u:%g %p\\n" 2>/dev/null | sort | sed -n "1,80p"\ndone'
+### /var/lib/snapd
+### /var/cache/snapd
+### /run/snapd
+### /var/cache/apparmor
+MISSING /run/mnt
+### /dev/input
+### /tmp
+-rw------- attacker:attacker /tmp/varlink-fd-probe
+-rw------- attacker:attacker /tmp/varlink_fd_probe
+drwxr-xr-x attacker:attacker /tmp/mnt
+drwxr-xr-x attacker:attacker /tmp/mnt/snap
+drwxrwxrwt root:root /tmp
+drwxrwxrwt root:root /tmp/.ICE-unix
+drwxrwxrwt root:root /tmp/.X11-unix
+drwxrwxrwt root:root /tmp/.XIM-unix
+drwxrwxrwt root:root /tmp/.font-unix
+drwxrwxrwt root:root /tmp/test-polkit-agent-subject-spoof
+### /var/tmp
+drwxrwxrwt root:root /var/tmp
+rc=0
+
+## prepare attacker-controlled seed, environment, autoimport, recovery, and helper payloads
+
+## create hostile state under attacker-writable /tmp and /var/tmp
+$ runuser -u attacker -- bash -lc $'\nset -e\nrm -rf "$BASE"\nmkdir -p "$BASE"/{pathbin,fake-seed/assertions,fake-seed/snaps,ubuntu-seed/systems/20260516,recovery,preseed-image/var/lib/snapd/seed/assertions,preseed-image/var/lib/snapd/seed/snaps}\ncat > "$BASE/evil-snapd.conf" <<EOF\n# snapd_boot_services_probe hostile EnvironmentFile candidate\nPATH=$BASE/pathbin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\nTMPDIR=$BASE/tmp\nLD_PRELOAD=$BASE/not-real-preload.so\nSNAPD_DEBUG=1\nSNAP_REPAIR_FROM_TIMER=1\nEOF\nmkdir -p "$BASE/tmp"\ncat > "$BASE/fake-seed/seed.yaml" <<EOF\nsnaps:\n  - name: sbs\n    file: sbs_1.snap\n    unasserted: true\nEOF\nprintf "snapd_boot_services_probe fake assertion\\n" > "$BASE/fake-seed/assertions/sbs.assert"\nprintf "not a real snap\\nsnapd_boot_services_probe\\n" > "$BASE/fake-seed/snaps/sbs_1.snap"\ncp "$BASE/fake-seed/seed.yaml" "$BASE/preseed-image/var/lib/snapd/seed/seed.yaml"\ncp "$BASE/fake-seed/assertions/sbs.assert" "$BASE/preseed-image/var/lib/snapd/seed/assertions/sbs.assert"\ncp "$BASE/fake-seed/snaps/sbs_1.snap" "$BASE/preseed-image/var/lib/snapd/seed/snaps/sbs_1.snap"\nprintf "snapd_boot_services_probe auto-import assertion\\n" > "$BASE/auto-import.assert"\nprintf "snapd_boot_services_probe recovery chooser trigger\\n" > "$BASE/recovery/trigger"\ncp -a "$BASE/fake-seed/." "$BASE/ubuntu-seed/"\nfor h in snap snap-repair snapd-apparmor snap-failure snap-bootstrap snap-preseed apparmor_parser mount mkdir cp sh; do\n  cat > "$BASE/pathbin/$h" <<EOS\n#!/bin/sh\n{\n  echo "HELPER_HIT name=$h"\n  date -u +%Y-%m-%dT%H:%M:%SZ\n  id\n  echo "args=\\$*"\n  echo "PATH=\\$PATH"\n  echo "TMPDIR=\\${TMPDIR-}"\n} >> "$HELPER_HITS"\n{\n  echo "root marker from $h"\n  id\n} > "$ROOT_MARKER" 2>/dev/null || true\necho "tmp marker from $h" > "$TMP_MARKER" 2>/dev/null || true\necho "var tmp marker from $h" > "$VAR_TMP_MARKER" 2>/dev/null || true\nexit 23\nEOS\n  chmod 0755 "$BASE/pathbin/$h"\ndone\nln -s "$BASE/fake-seed" "$BASE/seed-link"\nln -s "$BASE/ubuntu-seed" "$BASE/ubuntu-seed-link"\nln -s "$BASE/evil-snapd.conf" "$BASE/snapd.conf-link"\nfind "$BASE" -maxdepth 4 -printf "%M %u:%g %p -> %l\\n" | sort | sed -n "1,220p"\n'
+-rw-r--r-- attacker:attacker /tmp/snapd-boot-services-probe/auto-import.assert -> 
+-rw-r--r-- attacker:attacker /tmp/snapd-boot-services-probe/evil-snapd.conf -> 
+-rw-r--r-- attacker:attacker /tmp/snapd-boot-services-probe/fake-seed/assertions/sbs.assert -> 
+-rw-r--r-- attacker:attacker /tmp/snapd-boot-services-probe/fake-seed/seed.yaml -> 
+-rw-r--r-- attacker:attacker /tmp/snapd-boot-services-probe/fake-seed/snaps/sbs_1.snap -> 
+-rw-r--r-- attacker:attacker /tmp/snapd-boot-services-probe/recovery/trigger -> 
+-rw-r--r-- attacker:attacker /tmp/snapd-boot-services-probe/ubuntu-seed/assertions/sbs.assert -> 
+-rw-r--r-- attacker:attacker /tmp/snapd-boot-services-probe/ubuntu-seed/seed.yaml -> 
+-rw-r--r-- attacker:attacker /tmp/snapd-boot-services-probe/ubuntu-seed/snaps/sbs_1.snap -> 
+-rwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin/apparmor_parser -> 
+-rwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin/cp -> 
+-rwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin/mkdir -> 
+-rwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin/mount -> 
+-rwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin/sh -> 
+-rwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin/snap -> 
+-rwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin/snap-bootstrap -> 
+-rwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin/snap-failure -> 
+-rwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin/snap-preseed -> 
+-rwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin/snap-repair -> 
+-rwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin/snapd-apparmor -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/fake-seed -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/fake-seed/assertions -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/fake-seed/snaps -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/pathbin -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/preseed-image -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/preseed-image/var -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/preseed-image/var/lib -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/preseed-image/var/lib/snapd -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/recovery -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/tmp -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/ubuntu-seed -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/ubuntu-seed/assertions -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/ubuntu-seed/snaps -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/ubuntu-seed/systems -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/ubuntu-seed/systems/20260516 -> 
+lrwxrwxrwx attacker:attacker /tmp/snapd-boot-services-probe/seed-link -> /tmp/snapd-boot-services-probe/fake-seed
+lrwxrwxrwx attacker:attacker /tmp/snapd-boot-services-probe/snapd.conf-link -> /tmp/snapd-boot-services-probe/evil-snapd.conf
+lrwxrwxrwx attacker:attacker /tmp/snapd-boot-services-probe/ubuntu-seed-link -> /tmp/snapd-boot-services-probe/ubuntu-seed
+rc=0
+
+## uid1001 direct writability, symlink, hardlink, and preseed attempts
+
+## write/symlink/hardlink attempts against each input path
+$ runuser -u attacker -- bash -lc $'\nset +e\ntry_one() {\n  p="$1"\n  parent="$(dirname -- "$p")"\n  base="$(basename -- "$p")"\n  echo "### target=$p"\n  if [ -d "$p" ]; then\n    touch "$p/sbs_uid1001_touch" 2>&1\n    echo "touch_dir_rc=$?"\n    rm -f "$p/sbs_uid1001_touch" 2>/dev/null\n    ln -s "$BASE/evil-snapd.conf" "$p/sbs_uid1001_link" 2>&1\n    echo "symlink_dir_rc=$?"\n    rm -f "$p/sbs_uid1001_link" 2>/dev/null\n    ln "$BASE/evil-snapd.conf" "$p/sbs_uid1001_hardlink" 2>&1\n    echo "hardlink_dir_rc=$?"\n    rm -f "$p/sbs_uid1001_hardlink" 2>/dev/null\n  else\n    touch "$p" 2>&1\n    echo "touch_file_rc=$?"\n    rm -f "$p" 2>/dev/null\n    ln -s "$BASE/evil-snapd.conf" "$p" 2>&1\n    echo "symlink_file_rc=$?"\n    rm -f "$p" 2>/dev/null\n  fi\n  ln /usr/lib/snapd/snapd.core-fixup.sh "$parent/sbs_core_fixup_hardlink_$base" 2>&1\n  echo "hardlink_root_file_in_parent_rc=$?"\n  rm -f "$parent/sbs_core_fixup_hardlink_$base" 2>/dev/null\n}\nfor p in \\\n  /var/lib/snapd/environment/snapd.conf \\\n  /var/lib/snapd/seed \\\n  /var/lib/snapd/seed/seed.yaml \\\n  /var/lib/snapd/seed/assertions \\\n  /var/lib/snapd/seed/snaps \\\n  /var/lib/snapd/assertions/asserts-v0 \\\n  /var/cache/snapd/assertions \\\n  /var/cache/snapd/snaps \\\n  /var/lib/snapd/snaps \\\n  /var/lib/snapd/snaps/partial \\\n  /var/lib/snapd/auto-import \\\n  /var/lib/snapd/auto-import/sbs.assert \\\n  /var/lib/snapd/apparmor/profiles \\\n  /var/cache/apparmor \\\n  /run/mnt \\\n  /run/mnt/ubuntu-seed \\\n  /dev/input \\\n  /dev/input/event0 \\\n  /boot/uboot/uboot.env \\\n  /etc/cloud \\\n  /var/lib/cloud \\\n  /writable/system-data \\\n  /tmp \\\n  /var/tmp; do\n  try_one "$p"\ndone\necho "### protected hardlink controls"\ncat /proc/sys/fs/protected_hardlinks 2>/dev/null || true\nln /usr/lib/snapd/snap-repair "$BASE/root-owned-hardlink-test" 2>&1\necho "hardlink_root_owned_to_tmp_rc=$?"\nln "$BASE/evil-snapd.conf" /tmp/sbs_attacker_hardlink_tmp 2>&1\necho "hardlink_attacker_file_to_tmp_rc=$?"\nrm -f /tmp/sbs_attacker_hardlink_tmp "$BASE/root-owned-hardlink-test" 2>/dev/null\n'
+### target=/var/lib/snapd/environment/snapd.conf
+touch: cannot touch '/var/lib/snapd/environment/snapd.conf': Permission denied
+touch_file_rc=1
+ln: failed to create symbolic link '/var/lib/snapd/environment/snapd.conf': Permission denied
+symlink_file_rc=1
+ln: failed to create hard link '/var/lib/snapd/environment/sbs_core_fixup_hardlink_snapd.conf' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/lib/snapd/seed
+touch: cannot touch '/var/lib/snapd/seed': Permission denied
+touch_file_rc=1
+ln: failed to create symbolic link '/var/lib/snapd/seed': Permission denied
+symlink_file_rc=1
+ln: failed to create hard link '/var/lib/snapd/sbs_core_fixup_hardlink_seed' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/lib/snapd/seed/seed.yaml
+touch: cannot touch '/var/lib/snapd/seed/seed.yaml': No such file or directory
+touch_file_rc=1
+ln: failed to create symbolic link '/var/lib/snapd/seed/seed.yaml': No such file or directory
+symlink_file_rc=1
+ln: failed to create hard link '/var/lib/snapd/seed/sbs_core_fixup_hardlink_seed.yaml' => '/usr/lib/snapd/snapd.core-fixup.sh': No such file or directory
+hardlink_root_file_in_parent_rc=1
+### target=/var/lib/snapd/seed/assertions
+touch: cannot touch '/var/lib/snapd/seed/assertions': No such file or directory
+touch_file_rc=1
+ln: failed to create symbolic link '/var/lib/snapd/seed/assertions': No such file or directory
+symlink_file_rc=1
+ln: failed to create hard link '/var/lib/snapd/seed/sbs_core_fixup_hardlink_assertions' => '/usr/lib/snapd/snapd.core-fixup.sh': No such file or directory
+hardlink_root_file_in_parent_rc=1
+### target=/var/lib/snapd/seed/snaps
+touch: cannot touch '/var/lib/snapd/seed/snaps': No such file or directory
+touch_file_rc=1
+ln: failed to create symbolic link '/var/lib/snapd/seed/snaps': No such file or directory
+symlink_file_rc=1
+ln: failed to create hard link '/var/lib/snapd/seed/sbs_core_fixup_hardlink_snaps' => '/usr/lib/snapd/snapd.core-fixup.sh': No such file or directory
+hardlink_root_file_in_parent_rc=1
+### target=/var/lib/snapd/assertions/asserts-v0
+touch: cannot touch '/var/lib/snapd/assertions/asserts-v0/sbs_uid1001_touch': Permission denied
+touch_dir_rc=1
+ln: failed to create symbolic link '/var/lib/snapd/assertions/asserts-v0/sbs_uid1001_link': Permission denied
+symlink_dir_rc=1
+ln: failed to create hard link '/var/lib/snapd/assertions/asserts-v0/sbs_uid1001_hardlink' => '/tmp/snapd-boot-services-probe/evil-snapd.conf': Permission denied
+hardlink_dir_rc=1
+ln: failed to create hard link '/var/lib/snapd/assertions/sbs_core_fixup_hardlink_asserts-v0' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/cache/snapd/assertions
+touch: cannot touch '/var/cache/snapd/assertions': Permission denied
+touch_file_rc=1
+ln: failed to create symbolic link '/var/cache/snapd/assertions': Permission denied
+symlink_file_rc=1
+ln: failed to create hard link '/var/cache/snapd/sbs_core_fixup_hardlink_assertions' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/cache/snapd/snaps
+touch: cannot touch '/var/cache/snapd/snaps': Permission denied
+touch_file_rc=1
+ln: failed to create symbolic link '/var/cache/snapd/snaps': Permission denied
+symlink_file_rc=1
+ln: failed to create hard link '/var/cache/snapd/sbs_core_fixup_hardlink_snaps' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/lib/snapd/snaps
+touch: cannot touch '/var/lib/snapd/snaps/sbs_uid1001_touch': Permission denied
+touch_dir_rc=1
+ln: failed to create symbolic link '/var/lib/snapd/snaps/sbs_uid1001_link': Permission denied
+symlink_dir_rc=1
+ln: failed to create hard link '/var/lib/snapd/snaps/sbs_uid1001_hardlink' => '/tmp/snapd-boot-services-probe/evil-snapd.conf': Permission denied
+hardlink_dir_rc=1
+ln: failed to create hard link '/var/lib/snapd/sbs_core_fixup_hardlink_snaps' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/lib/snapd/snaps/partial
+touch: cannot touch '/var/lib/snapd/snaps/partial/sbs_uid1001_touch': Permission denied
+touch_dir_rc=1
+ln: failed to create symbolic link '/var/lib/snapd/snaps/partial/sbs_uid1001_link': Permission denied
+symlink_dir_rc=1
+ln: failed to create hard link '/var/lib/snapd/snaps/partial/sbs_uid1001_hardlink' => '/tmp/snapd-boot-services-probe/evil-snapd.conf': Permission denied
+hardlink_dir_rc=1
+ln: failed to create hard link '/var/lib/snapd/snaps/sbs_core_fixup_hardlink_partial' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/lib/snapd/auto-import
+touch: cannot touch '/var/lib/snapd/auto-import/sbs_uid1001_touch': Permission denied
+touch_dir_rc=1
+ln: failed to create symbolic link '/var/lib/snapd/auto-import/sbs_uid1001_link': Permission denied
+symlink_dir_rc=1
+ln: failed to create hard link '/var/lib/snapd/auto-import/sbs_uid1001_hardlink' => '/tmp/snapd-boot-services-probe/evil-snapd.conf': Permission denied
+hardlink_dir_rc=1
+ln: failed to create hard link '/var/lib/snapd/sbs_core_fixup_hardlink_auto-import' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/lib/snapd/auto-import/sbs.assert
+touch: cannot touch '/var/lib/snapd/auto-import/sbs.assert': Permission denied
+touch_file_rc=1
+ln: failed to create symbolic link '/var/lib/snapd/auto-import/sbs.assert': Permission denied
+symlink_file_rc=1
+ln: failed to create hard link '/var/lib/snapd/auto-import/sbs_core_fixup_hardlink_sbs.assert' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/lib/snapd/apparmor/profiles
+touch: cannot touch '/var/lib/snapd/apparmor/profiles': Permission denied
+touch_file_rc=1
+ln: failed to create symbolic link '/var/lib/snapd/apparmor/profiles': Permission denied
+symlink_file_rc=1
+ln: failed to create hard link '/var/lib/snapd/apparmor/sbs_core_fixup_hardlink_profiles' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/cache/apparmor
+touch: cannot touch '/var/cache/apparmor/sbs_uid1001_touch': Permission denied
+touch_dir_rc=1
+ln: failed to create symbolic link '/var/cache/apparmor/sbs_uid1001_link': Permission denied
+symlink_dir_rc=1
+ln: failed to create hard link '/var/cache/apparmor/sbs_uid1001_hardlink' => '/tmp/snapd-boot-services-probe/evil-snapd.conf': Permission denied
+hardlink_dir_rc=1
+ln: failed to create hard link '/var/cache/sbs_core_fixup_hardlink_apparmor' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/run/mnt
+touch: cannot touch '/run/mnt': Permission denied
+touch_file_rc=1
+ln: failed to create symbolic link '/run/mnt': Permission denied
+symlink_file_rc=1
+ln: failed to create hard link '/run/sbs_core_fixup_hardlink_mnt' => '/usr/lib/snapd/snapd.core-fixup.sh': Invalid cross-device link
+hardlink_root_file_in_parent_rc=1
+### target=/run/mnt/ubuntu-seed
+touch: cannot touch '/run/mnt/ubuntu-seed': No such file or directory
+touch_file_rc=1
+ln: failed to create symbolic link '/run/mnt/ubuntu-seed': No such file or directory
+symlink_file_rc=1
+ln: failed to create hard link '/run/mnt/sbs_core_fixup_hardlink_ubuntu-seed' => '/usr/lib/snapd/snapd.core-fixup.sh': No such file or directory
+hardlink_root_file_in_parent_rc=1
+### target=/dev/input
+touch: cannot touch '/dev/input/sbs_uid1001_touch': Permission denied
+touch_dir_rc=1
+ln: failed to create symbolic link '/dev/input/sbs_uid1001_link': Permission denied
+symlink_dir_rc=1
+ln: failed to create hard link '/dev/input/sbs_uid1001_hardlink' => '/tmp/snapd-boot-services-probe/evil-snapd.conf': Invalid cross-device link
+hardlink_dir_rc=1
+ln: failed to create hard link '/dev/sbs_core_fixup_hardlink_input' => '/usr/lib/snapd/snapd.core-fixup.sh': Invalid cross-device link
+hardlink_root_file_in_parent_rc=1
+### target=/dev/input/event0
+touch: cannot touch '/dev/input/event0': Permission denied
+touch_file_rc=1
+ln: failed to create symbolic link '/dev/input/event0': Permission denied
+symlink_file_rc=1
+ln: failed to create hard link '/dev/input/sbs_core_fixup_hardlink_event0' => '/usr/lib/snapd/snapd.core-fixup.sh': Invalid cross-device link
+hardlink_root_file_in_parent_rc=1
+### target=/boot/uboot/uboot.env
+touch: cannot touch '/boot/uboot/uboot.env': No such file or directory
+touch_file_rc=1
+ln: failed to create symbolic link '/boot/uboot/uboot.env': No such file or directory
+symlink_file_rc=1
+ln: failed to create hard link '/boot/uboot/sbs_core_fixup_hardlink_uboot.env' => '/usr/lib/snapd/snapd.core-fixup.sh': No such file or directory
+hardlink_root_file_in_parent_rc=1
+### target=/etc/cloud
+touch: cannot touch '/etc/cloud/sbs_uid1001_touch': Permission denied
+touch_dir_rc=1
+ln: failed to create symbolic link '/etc/cloud/sbs_uid1001_link': Permission denied
+symlink_dir_rc=1
+ln: failed to create hard link '/etc/cloud/sbs_uid1001_hardlink' => '/tmp/snapd-boot-services-probe/evil-snapd.conf': Permission denied
+hardlink_dir_rc=1
+ln: failed to create hard link '/etc/sbs_core_fixup_hardlink_cloud' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/lib/cloud
+touch: cannot touch '/var/lib/cloud': Permission denied
+touch_file_rc=1
+ln: failed to create symbolic link '/var/lib/cloud': Permission denied
+symlink_file_rc=1
+ln: failed to create hard link '/var/lib/sbs_core_fixup_hardlink_cloud' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/writable/system-data
+touch: cannot touch '/writable/system-data': No such file or directory
+touch_file_rc=1
+ln: failed to create symbolic link '/writable/system-data': No such file or directory
+symlink_file_rc=1
+ln: failed to create hard link '/writable/sbs_core_fixup_hardlink_system-data' => '/usr/lib/snapd/snapd.core-fixup.sh': No such file or directory
+hardlink_root_file_in_parent_rc=1
+### target=/tmp
+touch_dir_rc=0
+symlink_dir_rc=0
+hardlink_dir_rc=0
+ln: failed to create hard link '//sbs_core_fixup_hardlink_tmp' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### target=/var/tmp
+touch_dir_rc=0
+symlink_dir_rc=0
+hardlink_dir_rc=0
+ln: failed to create hard link '/var/sbs_core_fixup_hardlink_tmp' => '/usr/lib/snapd/snapd.core-fixup.sh': Operation not permitted
+hardlink_root_file_in_parent_rc=1
+### protected hardlink controls
+1
+ln: failed to create hard link '/tmp/snapd-boot-services-probe/root-owned-hardlink-test' => '/usr/lib/snapd/snap-repair': Operation not permitted
+hardlink_root_owned_to_tmp_rc=1
+hardlink_attacker_file_to_tmp_rc=0
+rc=0
+
+## snap-preseed fake image as uid1001
+$ runuser -u attacker -- bash -lc $'\ntimeout 20s /usr/lib/snapd/snap-preseed "$BASE/preseed-image" 2>&1 | sed -n "1,160p"\necho "snap_preseed_rc=${PIPESTATUS[0]}"\nfind "$BASE/preseed-image" -maxdepth 5 -printf "%M %u:%g %p -> %l\\n" | sort | sed -n "1,160p"\n'
+error: must be run as root
+snap_preseed_rc=1
+-rw-r--r-- attacker:attacker /tmp/snapd-boot-services-probe/preseed-image/var/lib/snapd/seed/seed.yaml -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/preseed-image -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/preseed-image/var -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/preseed-image/var/lib -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/preseed-image/var/lib/snapd -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/preseed-image/var/lib/snapd/seed -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/preseed-image/var/lib/snapd/seed/assertions -> 
+drwxr-xr-x attacker:attacker /tmp/snapd-boot-services-probe/preseed-image/var/lib/snapd/seed/snaps -> 
+rc=0
+
+## direct helper and snap command trigger attempts as uid1001
+$ runuser -u attacker -- bash -lc $'\nset +e\nfor cmd in \\\n  "systemctl start snapd.core-fixup.service" \\\n  "systemctl start snapd.recovery-chooser-trigger.service" \\\n  "systemctl start snapd.snap-repair.service" \\\n  "systemctl start snapd.snap-repair.timer" \\\n  "systemctl start snapd.apparmor.service" \\\n  "systemctl start snapd.failure.service" \\\n  "systemctl start snapd.autoimport.service" \\\n  "systemctl start snapd.system-shutdown.service" \\\n  "systemctl restart snapd.seeded.service" \\\n  "snap wait system seed.loaded" \\\n  "snap debug seeding" \\\n  "snap repairs" \\\n  "snap repair 1" \\\n  "snap auto-import" \\\n  "/usr/lib/snapd/snap-repair run" \\\n  "/usr/lib/snapd/snapd-apparmor start" \\\n  "/usr/lib/snapd/snap-failure snapd" \\\n  "/usr/lib/snapd/snap-bootstrap recovery-chooser-trigger" \\\n  "/usr/lib/snapd/system-shutdown"; do\n  echo "### $cmd"\n  timeout 15s bash -lc "$cmd" 2>&1 | sed -n "1,80p"\n  echo "cmd_rc=${PIPESTATUS[0]}"\ndone\n'
+### systemctl start snapd.core-fixup.service
+Failed to start snapd.core-fixup.service: Interactive authentication required.
+See system logs and 'systemctl status snapd.core-fixup.service' for details.
+cmd_rc=1
+### systemctl start snapd.recovery-chooser-trigger.service
+Failed to start snapd.recovery-chooser-trigger.service: Interactive authentication required.
+See system logs and 'systemctl status snapd.recovery-chooser-trigger.service' for details.
+cmd_rc=1
+### systemctl start snapd.snap-repair.service
+Failed to start snapd.snap-repair.service: Interactive authentication required.
+See system logs and 'systemctl status snapd.snap-repair.service' for details.
+cmd_rc=1
+### systemctl start snapd.snap-repair.timer
+Failed to start snapd.snap-repair.timer: Interactive authentication required.
+See system logs and 'systemctl status snapd.snap-repair.timer' for details.
+cmd_rc=1
+### systemctl start snapd.apparmor.service
+Failed to start snapd.apparmor.service: Interactive authentication required.
+See system logs and 'systemctl status snapd.apparmor.service' for details.
+cmd_rc=1
+### systemctl start snapd.failure.service
+Failed to start snapd.failure.service: Interactive authentication required.
+See system logs and 'systemctl status snapd.failure.service' for details.
+cmd_rc=1
+### systemctl start snapd.autoimport.service
+Failed to start snapd.autoimport.service: Interactive authentication required.
+See system logs and 'systemctl status snapd.autoimport.service' for details.
+cmd_rc=1
+### systemctl start snapd.system-shutdown.service
+Failed to start snapd.system-shutdown.service: Interactive authentication required.
+See system logs and 'systemctl status snapd.system-shutdown.service' for details.
+cmd_rc=1
+### systemctl restart snapd.seeded.service
+Failed to restart snapd.seeded.service: Interactive authentication required.
+See system logs and 'systemctl status snapd.seeded.service' for details.
+cmd_rc=1
+### snap wait system seed.loaded
+error: access denied (try with sudo)
+cmd_rc=1
+### snap debug seeding
+seeded:           true
+preseeded:        false
+seed-completion:  84ms
+cmd_rc=0
+### snap repairs
+error: repairs are not available on a classic system
+cmd_rc=1
+### snap repair 1
+error: repairs are not available on a classic system
+cmd_rc=1
+### snap auto-import
+auto-import is disabled on classic
+cmd_rc=0
+### /usr/lib/snapd/snap-repair run
+error: cannot use snap-repair on a classic system
+cmd_rc=0
+### /usr/lib/snapd/snapd-apparmor start
+main.go:186: Inside container environment without internal policy
+cmd_rc=0
+### /usr/lib/snapd/snap-failure snapd
+cmd_snapd.go:132: no snapd snap in the system
+cmd_rc=0
+### /usr/lib/snapd/snap-bootstrap recovery-chooser-trigger
+error: please run as root
+cmd_rc=1
+### /usr/lib/snapd/system-shutdown
+This is a shutdown helper program; don't call it directly.
+cmd_rc=1
+rc=0
+
+## markers after unprivileged attempts
+MISSING /root/snapd_boot_services_root_marker
+MISSING /tmp/snapd_boot_services_tmp_marker
+MISSING /var/tmp/snapd_boot_services_var_tmp_marker
+MISSING /tmp/snapd-boot-services-probe/helper-hit.log
+ROOT_PROOF=NO
+
+## bounded race attempts while root starts scoped units
+
+## attacker symlink race against root-owned snapd inputs during root starts
+$ bash -lc $'\nset -e\nrm -f /tmp/sbs-race.out\nrunuser -u attacker -- env BASE="/tmp/snapd-boot-services-probe" bash -lc \'\nsuccess=0\nfail=0\nend=$((SECONDS+5))\ntargets="/var/lib/snapd/environment/snapd.conf /var/lib/snapd/seed/seed.yaml /var/lib/snapd/seed/assertions/sbs.assert /var/lib/snapd/seed/snaps/sbs_1.snap /var/cache/snapd/assertions/sbs.assert /var/cache/snapd/snaps/sbs_1.snap /var/lib/snapd/auto-import/sbs.assert /run/mnt/ubuntu-seed"\nwhile [ "$SECONDS" -lt "$end" ]; do\n  for t in $targets; do\n    ln -s "$BASE/evil-snapd.conf" "$t" >/dev/null 2>&1 && success=$((success+1)) || fail=$((fail+1))\n    rm -f "$t" >/dev/null 2>&1 || true\n  done\ndone\necho "race_success=$success race_fail=$fail"\n\' > /tmp/sbs-race.out 2>&1 &\nrace_pid=$!\nfor u in snapd.core-fixup.service snapd.recovery-chooser-trigger.service snapd.snap-repair.service snapd.snap-repair.timer snapd.apparmor.service snapd.failure.service snapd.autoimport.service snapd.system-shutdown.service snapd.seeded.service; do\n  echo "### root start $u"\n  timeout 25s systemctl start "$u" 2>&1 | sed -n "1,80p" || true\n  systemctl show "$u" -p ActiveState -p SubState -p Result -p ConditionResult --no-pager 2>&1 || true\ndone\nwait "$race_pid" || true\ncat /tmp/sbs-race.out 2>&1 || true\nrm -f /tmp/sbs-race.out\n'
+### root start snapd.core-fixup.service
+Result=success
+ActiveState=inactive
+SubState=dead
+ConditionResult=no
+### root start snapd.recovery-chooser-trigger.service
+Result=success
+ActiveState=inactive
+SubState=dead
+ConditionResult=no
+### root start snapd.snap-repair.service
+Result=success
+ActiveState=inactive
+SubState=dead
+ConditionResult=no
+### root start snapd.snap-repair.timer
+Result=success
+ActiveState=inactive
+SubState=dead
+ConditionResult=no
+### root start snapd.apparmor.service
+Result=success
+ActiveState=inactive
+SubState=dead
+ConditionResult=no
+### root start snapd.failure.service
+Result=success
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### root start snapd.autoimport.service
+Result=success
+ActiveState=inactive
+SubState=dead
+ConditionResult=no
+### root start snapd.system-shutdown.service
+Result=success
+ActiveState=inactive
+SubState=dead
+ConditionResult=no
+### root start snapd.seeded.service
+Result=success
+ActiveState=active
+SubState=exited
+ConditionResult=yes
+race_success=0 race_fail=3464
+rc=0
+
+## markers after root service starts
+MISSING /root/snapd_boot_services_root_marker
+MISSING /tmp/snapd_boot_services_tmp_marker
+MISSING /var/tmp/snapd_boot_services_var_tmp_marker
+MISSING /tmp/snapd-boot-services-probe/helper-hit.log
+ROOT_PROOF=NO
+
+## post-start unit statuses and journals since probe start
+
+## unit state: snapd.core-fixup.service
+* snapd.core-fixup.service - Automatically repair incorrect owner/permissions on core devices
+     Loaded: loaded (/usr/lib/systemd/system/snapd.core-fixup.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 21:43:24 UTC; 4s ago
+             |- ConditionKernelCommandLine=|snap_core was not met
+             `- ConditionKernelCommandLine=|snapd_recovery_mode was not met
+       Docs: man:snap(1)
+
+May 16 20:04:41 508d797cbad0 systemd[1]: snapd.core-fixup.service - Automatically repair incorrect owner/permissions on core devices was skipped because no trigger condition checks were met.
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.core-fixup.service - Automatically repair incorrect owner/permissions on core devices was skipped because no trigger condition checks were met.
+May 16 21:43:24 508d797cbad0 systemd[1]: snapd.core-fixup.service - Automatically repair incorrect owner/permissions on core devices was skipped because no trigger condition checks were met.
+
+[show]
+RemainAfterExit=yes
+Result=success
+ExecStart={ path=/usr/lib/snapd/snapd.core-fixup.sh ; argv[]=/usr/lib/snapd/snapd.core-fixup.sh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+Id=snapd.core-fixup.service
+Requires=system.slice sysinit.target
+Wants=
+Before=shutdown.target snapd.service multi-user.target
+After=systemd-journald.socket sysinit.target system.slice basic.target
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.core-fixup.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.recovery-chooser-trigger.service
+* snapd.recovery-chooser-trigger.service - Wait for the Ubuntu Core chooser trigger
+     Loaded: loaded (/usr/lib/systemd/system/snapd.recovery-chooser-trigger.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 21:43:24 UTC; 4s ago
+             `- ConditionPathExistsGlob=/dev/input/event* was not met
+
+May 16 20:04:41 508d797cbad0 systemd[1]: snapd.recovery-chooser-trigger.service - Wait for the Ubuntu Core chooser trigger was skipped because of an unmet condition check (ConditionPathExistsGlob=/dev/input/event*).
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.recovery-chooser-trigger.service - Wait for the Ubuntu Core chooser trigger was skipped because of an unmet condition check (ConditionPathExistsGlob=/dev/input/event*).
+May 16 21:43:24 508d797cbad0 systemd[1]: snapd.recovery-chooser-trigger.service - Wait for the Ubuntu Core chooser trigger was skipped because of an unmet condition check (ConditionPathExistsGlob=/dev/input/event*).
+
+[show]
+RemainAfterExit=yes
+Result=success
+ExecStart={ path=/usr/lib/snapd/snap-bootstrap ; argv[]=/usr/lib/snapd/snap-bootstrap recovery-chooser-trigger ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+Id=snapd.recovery-chooser-trigger.service
+Requires=system.slice sysinit.target
+Wants=getty-pre.target
+Before=getty-pre.target shutdown.target multi-user.target
+After=system.slice systemd-journald.socket sysinit.target basic.target
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.recovery-chooser-trigger.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.snap-repair.service
+* snapd.snap-repair.service - Automatically fetch and run repair assertions
+     Loaded: loaded (/usr/lib/systemd/system/snapd.snap-repair.service; static)
+     Active: inactive (dead)
+TriggeredBy: * snapd.snap-repair.timer
+  Condition: start condition unmet at Sat 2026-05-16 21:43:24 UTC; 4s ago
+             |- ConditionKernelCommandLine=|snap_core was not met
+             `- ConditionKernelCommandLine=|snapd_recovery_mode was not met
+       Docs: man:snap(1)
+
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.snap-repair.service - Automatically fetch and run repair assertions was skipped because no trigger condition checks were met.
+May 16 21:43:24 508d797cbad0 systemd[1]: snapd.snap-repair.service - Automatically fetch and run repair assertions was skipped because no trigger condition checks were met.
+
+[show]
+RemainAfterExit=no
+Result=success
+ExecStart={ path=/usr/lib/snapd/snap-repair ; argv[]=/usr/lib/snapd/snap-repair run ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=SNAP_REPAIR_FROM_TIMER=1
+EnvironmentFiles=/etc/environment (ignore_errors=yes)
+EnvironmentFiles=/var/lib/snapd/environment/snapd.conf (ignore_errors=yes)
+Id=snapd.snap-repair.service
+Requires=system.slice sysinit.target
+Wants=
+Before=shutdown.target
+After=snapd.snap-repair.timer sysinit.target basic.target system.slice systemd-journald.socket
+Triggers=
+TriggeredBy=snapd.snap-repair.timer
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.snap-repair.service
+UnitFileState=static
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.snap-repair.timer
+* snapd.snap-repair.timer - Timer to automatically fetch and run repair assertions
+     Loaded: loaded (/usr/lib/systemd/system/snapd.snap-repair.timer; enabled; preset: enabled)
+     Active: inactive (dead)
+    Trigger: n/a
+   Triggers: * snapd.snap-repair.service
+  Condition: start condition unmet at Sat 2026-05-16 21:43:24 UTC; 4s ago
+             |- ConditionKernelCommandLine=|snap_core was not met
+             `- ConditionKernelCommandLine=|snapd_recovery_mode was not met
+
+May 16 20:04:41 508d797cbad0 systemd[1]: snapd.snap-repair.timer - Timer to automatically fetch and run repair assertions was skipped because no trigger condition checks were met.
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.snap-repair.timer - Timer to automatically fetch and run repair assertions was skipped because no trigger condition checks were met.
+May 16 21:43:24 508d797cbad0 systemd[1]: snapd.snap-repair.timer - Timer to automatically fetch and run repair assertions was skipped because no trigger condition checks were met.
+
+[show]
+Result=success
+Id=snapd.snap-repair.timer
+Requires=sysinit.target
+Wants=
+Before=timers.target snapd.snap-repair.service shutdown.target
+After=sysinit.target time-set.target -.mount time-sync.target
+Triggers=snapd.snap-repair.service
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.snap-repair.timer
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.apparmor.service
+* snapd.apparmor.service - Load AppArmor profiles managed internally by snapd
+     Loaded: loaded (/usr/lib/systemd/system/snapd.apparmor.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 21:43:24 UTC; 4s ago
+             `- ConditionSecurity=apparmor was not met
+
+May 16 20:04:41 508d797cbad0 systemd[1]: snapd.apparmor.service - Load AppArmor profiles managed internally by snapd was skipped because of an unmet condition check (ConditionSecurity=apparmor).
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.apparmor.service - Load AppArmor profiles managed internally by snapd was skipped because of an unmet condition check (ConditionSecurity=apparmor).
+May 16 21:43:24 508d797cbad0 systemd[1]: snapd.apparmor.service - Load AppArmor profiles managed internally by snapd was skipped because of an unmet condition check (ConditionSecurity=apparmor).
+
+[show]
+RemainAfterExit=yes
+Result=success
+ExecStart={ path=/usr/lib/snapd/snapd-apparmor ; argv[]=/usr/lib/snapd/snapd-apparmor start ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+EnvironmentFiles=/etc/environment (ignore_errors=yes)
+EnvironmentFiles=/var/lib/snapd/environment/snapd.conf (ignore_errors=yes)
+Id=snapd.apparmor.service
+Requires=system.slice
+Wants=snapd.mounts.target
+Before=sysinit.target
+After=apparmor.service systemd-journald.socket snapd.mounts.target system.slice -.mount
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.apparmor.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.failure.service
+* snapd.failure.service - Failure handling of the snapd snap
+     Loaded: loaded (/usr/lib/systemd/system/snapd.failure.service; static)
+     Active: inactive (dead) since Sat 2026-05-16 21:43:24 UTC; 4s ago
+    Process: 431049 ExecStart=/usr/lib/snapd/snap-failure snapd (code=exited, status=0/SUCCESS)
+   Main PID: 431049 (code=exited, status=0/SUCCESS)
+        CPU: 2ms
+
+May 16 21:43:24 508d797cbad0 systemd[1]: Starting snapd.failure.service - Failure handling of the snapd snap...
+May 16 21:43:24 508d797cbad0 snap-failure[431049]: cmd_snapd.go:132: no snapd snap in the system
+May 16 21:43:24 508d797cbad0 systemd[1]: snapd.failure.service: Deactivated successfully.
+May 16 21:43:24 508d797cbad0 systemd[1]: Finished snapd.failure.service - Failure handling of the snapd snap.
+
+[show]
+RemainAfterExit=no
+Result=success
+ExecStart={ path=/usr/lib/snapd/snap-failure ; argv[]=/usr/lib/snapd/snap-failure snapd ; ignore_errors=no ; start_time=[Sat 2026-05-16 21:43:24 UTC] ; stop_time=[Sat 2026-05-16 21:43:24 UTC] ; pid=431049 ; code=exited ; status=0 }
+Environment=
+EnvironmentFiles=/var/lib/snapd/environment/snapd.conf (ignore_errors=yes)
+Id=snapd.failure.service
+Requires=system.slice sysinit.target
+Wants=
+Before=shutdown.target
+After=sysinit.target basic.target systemd-journald.socket system.slice
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.failure.service
+UnitFileState=static
+UnitFilePreset=enabled
+ConditionResult=yes
+AssertResult=yes
+
+## unit state: snapd.autoimport.service
+* snapd.autoimport.service - Auto import assertions from block devices
+     Loaded: loaded (/usr/lib/systemd/system/snapd.autoimport.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 21:43:24 UTC; 4s ago
+             |- ConditionKernelCommandLine=|snap_core was not met
+             `- ConditionKernelCommandLine=|snapd_recovery_mode was not met
+
+May 16 20:04:43 508d797cbad0 systemd[1]: snapd.autoimport.service - Auto import assertions from block devices was skipped because no trigger condition checks were met.
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.autoimport.service - Auto import assertions from block devices was skipped because no trigger condition checks were met.
+May 16 21:43:24 508d797cbad0 systemd[1]: snapd.autoimport.service - Auto import assertions from block devices was skipped because no trigger condition checks were met.
+
+[show]
+RemainAfterExit=no
+Result=success
+ExecStart={ path=/usr/bin/snap ; argv[]=/usr/bin/snap auto-import ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+EnvironmentFiles=/var/lib/snapd/environment/snapd.conf (ignore_errors=yes)
+Id=snapd.autoimport.service
+Requires=system.slice sysinit.target
+Wants=
+Before=multi-user.target shutdown.target
+After=snapd.seeded.service system.slice snapd.socket snapd.service systemd-journald.socket basic.target sysinit.target
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.autoimport.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.system-shutdown.service
+* snapd.system-shutdown.service - Ubuntu core (all-snaps) system shutdown helper setup service
+     Loaded: loaded (/usr/lib/systemd/system/snapd.system-shutdown.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 21:43:24 UTC; 4s ago
+             `- ConditionPathExists=!/usr/bin/finalrd was not met
+
+May 16 21:42:20 508d797cbad0 systemd[1]: snapd.system-shutdown.service - Ubuntu core (all-snaps) system shutdown helper setup service was skipped because of an unmet condition check (ConditionPathExists=!/usr/bin/finalrd).
+May 16 21:43:24 508d797cbad0 systemd[1]: snapd.system-shutdown.service - Ubuntu core (all-snaps) system shutdown helper setup service was skipped because of an unmet condition check (ConditionPathExists=!/usr/bin/finalrd).
+
+[show]
+RemainAfterExit=no
+Result=success
+ExecStart={ path=/bin/mount ; argv[]=/bin/mount /run -o remount,exec ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/bin/mkdir ; argv[]=/bin/mkdir -p /run/initramfs ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/bin/cp ; argv[]=/bin/cp /usr/lib/snapd/system-shutdown /run/initramfs/shutdown ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+Id=snapd.system-shutdown.service
+Requires=system.slice
+Wants=
+Before=umount.target
+After=system.slice systemd-journald.socket
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.system-shutdown.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=no
+AssertResult=no
+
+## unit state: snapd.seeded.service
+* snapd.seeded.service - Wait until snapd is fully seeded
+     Loaded: loaded (/usr/lib/systemd/system/snapd.seeded.service; enabled; preset: enabled)
+     Active: active (exited) since Sat 2026-05-16 20:04:43 UTC; 1h 38min ago
+   Main PID: 268 (code=exited, status=0/SUCCESS)
+        CPU: 74ms
+
+May 16 20:04:41 508d797cbad0 systemd[1]: Starting snapd.seeded.service - Wait until snapd is fully seeded...
+May 16 20:04:43 508d797cbad0 systemd[1]: Finished snapd.seeded.service - Wait until snapd is fully seeded.
+
+[show]
+RemainAfterExit=yes
+Result=success
+ExecStart={ path=/usr/bin/snap ; argv[]=/usr/bin/snap wait system seed.loaded ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+Id=snapd.seeded.service
+Requires=snapd.socket system.slice sysinit.target
+Wants=
+Before=snapd.autoimport.service shutdown.target multi-user.target
+After=snapd.socket basic.target system.slice systemd-journald.socket sysinit.target
+Triggers=
+TriggeredBy=
+LoadState=loaded
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/snapd.seeded.service
+UnitFileState=enabled
+UnitFilePreset=enabled
+ConditionResult=yes
+AssertResult=yes
+
+### journal snapd.core-fixup.service
+2026-05-16T21:43:24+00:00 508d797cbad0 systemd[1]: snapd.core-fixup.service - Automatically repair incorrect owner/permissions on core devices was skipped because no trigger condition checks were met.
+
+### journal snapd.recovery-chooser-trigger.service
+2026-05-16T21:43:24+00:00 508d797cbad0 systemd[1]: snapd.recovery-chooser-trigger.service - Wait for the Ubuntu Core chooser trigger was skipped because of an unmet condition check (ConditionPathExistsGlob=/dev/input/event*).
+
+### journal snapd.snap-repair.service
+2026-05-16T21:43:24+00:00 508d797cbad0 systemd[1]: snapd.snap-repair.service - Automatically fetch and run repair assertions was skipped because no trigger condition checks were met.
+
+### journal snapd.snap-repair.timer
+2026-05-16T21:43:24+00:00 508d797cbad0 systemd[1]: snapd.snap-repair.timer - Timer to automatically fetch and run repair assertions was skipped because no trigger condition checks were met.
+
+### journal snapd.apparmor.service
+2026-05-16T21:43:24+00:00 508d797cbad0 systemd[1]: snapd.apparmor.service - Load AppArmor profiles managed internally by snapd was skipped because of an unmet condition check (ConditionSecurity=apparmor).
+
+### journal snapd.failure.service
+2026-05-16T21:43:24+00:00 508d797cbad0 systemd[1]: Starting snapd.failure.service - Failure handling of the snapd snap...
+2026-05-16T21:43:24+00:00 508d797cbad0 snap-failure[431049]: cmd_snapd.go:132: no snapd snap in the system
+2026-05-16T21:43:24+00:00 508d797cbad0 systemd[1]: snapd.failure.service: Deactivated successfully.
+2026-05-16T21:43:24+00:00 508d797cbad0 systemd[1]: Finished snapd.failure.service - Failure handling of the snapd snap.
+
+### journal snapd.autoimport.service
+2026-05-16T21:43:24+00:00 508d797cbad0 systemd[1]: snapd.autoimport.service - Auto import assertions from block devices was skipped because no trigger condition checks were met.
+
+### journal snapd.system-shutdown.service
+2026-05-16T21:43:24+00:00 508d797cbad0 systemd[1]: snapd.system-shutdown.service - Ubuntu core (all-snaps) system shutdown helper setup service was skipped because of an unmet condition check (ConditionPathExists=!/usr/bin/finalrd).
+
+### journal snapd.seeded.service
+-- No entries --
+
+## snapd seeded/service interaction checks after hostile state
+No snaps are installed yet. Try 'snap install hello-world'.
+ID   Status  Spawn               Ready               Label  Summary
+1    Done    today at 20:04 UTC  today at 20:04 UTC  seed   Initialize system state
+seeded:           true
+preseeded:        false
+seed-completion:  84ms
+* snapd.seeded.service - Wait until snapd is fully seeded
+     Loaded: loaded (/usr/lib/systemd/system/snapd.seeded.service; enabled; preset: enabled)
+     Active: active (exited) since Sat 2026-05-16 20:04:43 UTC; 1h 38min ago
+   Main PID: 268 (code=exited, status=0/SUCCESS)
+        CPU: 74ms
+
+May 16 20:04:41 508d797cbad0 systemd[1]: Starting snapd.seeded.service - Wait until snapd is fully seeded...
+May 16 20:04:43 508d797cbad0 systemd[1]: Finished snapd.seeded.service - Wait until snapd is fully seeded.
+
+* snapd.service - Snap Daemon
+     Loaded: loaded (/usr/lib/systemd/system/snapd.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-05-16 21:43:22 UTC; 6s ago
+TriggeredBy: * snapd.socket
+   Main PID: 430185 (snapd)
+      Tasks: 11 (limit: 9517)
+     Memory: 15.2M (peak: 20.2M)
+        CPU: 98ms
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/snapd.service
+             `-430185 /usr/lib/snapd/snapd
+
+May 16 21:43:22 508d797cbad0 snapd[430185]: daemon.go:370: adjusting startup timeout by 30s (pessimistic estimate of 30s plus 5s per snap)
+May 16 21:43:22 508d797cbad0 snapd[430185]: backends.go:70: AppArmor status: apparmor not enabled
+May 16 21:43:22 508d797cbad0 snapd[430185]: standby.go:95: will consider standby after: 5s
+May 16 21:43:22 508d797cbad0 systemd[1]: Started snapd.service - Snap Daemon.
+May 16 21:43:23 508d797cbad0 snapd[430185]: snapmgr.go:1659: performing periodic snap downloads cache cleanup
+May 16 21:43:23 508d797cbad0 snapd[430185]: snapmgr.go:1669: cannot clean store downloads cache: open /var/lib/snapd/cache: no such file or directory
+May 16 21:43:24 508d797cbad0 snapd[430185]: access.go:70: polkit error: Authorization requires interaction
+May 16 21:43:27 508d797cbad0 snapd[430185]: standby.go:101: standby conditions met, initiating standby...
+May 16 21:43:27 508d797cbad0 snapd[430185]: daemon.go:556: gracefully waiting for running hooks
+May 16 21:43:27 508d797cbad0 snapd[430185]: daemon.go:558: done waiting for running hooks
+
+* snapd.socket - Socket activation for snappy daemon
+     Loaded: loaded (/usr/lib/systemd/system/snapd.socket; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-05-16 20:04:41 UTC; 1h 38min ago
+   Triggers: * snapd.service
+     Listen: /run/snapd.socket (Stream)
+             /run/snapd-snap.socket (Stream)
+      Tasks: 0 (limit: 9517)
+     Memory: 0B (peak: 0B)
+        CPU: 292us
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/snapd.socket
+
+May 16 20:04:41 508d797cbad0 systemd[1]: Starting snapd.socket - Socket activation for snappy daemon...
+May 16 20:04:41 508d797cbad0 systemd[1]: Listening on snapd.socket - Socket activation for snappy daemon.
+
+## pre-cleanup final proof verdict
+FINAL_ROOT_PROOF=NO
+
+## cleanup
+ls: cannot access '/tmp/snapd-boot-services-probe': No such file or directory
+ls: cannot access '/root/snapd_boot_services_root_marker': No such file or directory
+ls: cannot access '/tmp/snapd_boot_services_tmp_marker': No such file or directory
+ls: cannot access '/var/tmp/snapd_boot_services_var_tmp_marker': No such file or directory
+stat: cannot statx '/var/lib/snapd/environment/snapd.conf': No such file or directory
+stat: cannot statx '/var/lib/snapd/seed/seed.yaml': No such file or directory
+stat: cannot statx '/var/lib/snapd/auto-import/sbs.assert': No such file or directory
+stat: cannot statx '/run/mnt/ubuntu-seed': No such file or directory
+
+## final health after cleanup
+running
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.
+active
+active
+active
+No snaps are installed yet. Try 'snap install hello-world'.

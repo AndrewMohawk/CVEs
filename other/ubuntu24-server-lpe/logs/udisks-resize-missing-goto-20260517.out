@@ -1,0 +1,510 @@
+UDisks Filesystem.Resize missing-goto probe
+target=ubuntu24-server-lpe-target
+2026-05-17T16:41:38-0400
+
+== baseline ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux bf51bb670420 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+btrfs-progs	6.6.3-1.1build2	ii 
+dosfstools	4.2-1.1build1	ii 
+e2fsprogs	1.47.0-2.4~exp1ubuntu4.1	ii 
+gdb	15.1-1ubuntu1~24.04.1	ii 
+libblockdev-fs3:arm64	3.1.1-1ubuntu0.1	ii 
+libblockdev3:arm64	3.1.1-1ubuntu0.1	ii 
+libudisks2-0:arm64	2.10.1-6ubuntu1.3	ii 
+ntfs-3g	1:2022.10.3-1.2ubuntu3.1	ii 
+polkitd	124-2ubuntu1.24.04.3	ii 
+python3-dbus	1.3.2-5build3	ii 
+strace	6.8-0ubuntu2	ii 
+systemd	255.4-1ubuntu8.15	ii 
+udisks2	2.10.1-6ubuntu1.3	ii 
+xfsprogs	6.6.0-1ubuntu2.1	ii 
+ntfsresize	/usr/sbin/ntfsresize
+mkfs.ntfs	/usr/sbin/mkfs.ntfs
+xfs_growfs	/usr/sbin/xfs_growfs
+mkfs.xfs	/usr/sbin/mkfs.xfs
+resize2fs	/usr/sbin/resize2fs
+enabled
+active
+# /usr/lib/systemd/system/udisks2.service
+[Unit]
+Description=Disk Manager
+Documentation=man:udisks(8)
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.UDisks2
+ExecStart=/usr/libexec/udisks2/udisksd
+KillSignal=SIGINT
+
+[Install]
+WantedBy=graphical.target
+
+== polkit defaults ==
+org.freedesktop.udisks2.loop-setup	any=auth_admin	inactive=auth_admin	active=yes
+org.freedesktop.udisks2.filesystem-mount	any=auth_admin	inactive=auth_admin	active=yes
+org.freedesktop.udisks2.modify-device	any=auth_admin	inactive=auth_admin	active=yes
+org.freedesktop.udisks2.modify-device-system	any=auth_admin	inactive=auth_admin	active=auth_admin_keep
+org.freedesktop.udisks2.modify-device-other-seat	any=auth_admin	inactive=auth_admin	active=auth_admin_keep
+
+== source evidence ==
+  1930	  udisks_linux_block_object_lock_for_cleanup (UDISKS_LINUX_BLOCK_OBJECT (object));
+  1931	  udisks_state_check_block (state, udisks_linux_block_object_get_device_number (UDISKS_LINUX_BLOCK_OBJECT (object)));
+  1932	
+  1933	  if (! udisks_daemon_util_get_caller_uid_sync (daemon,
+  1934	                                                invocation,
+  1935	                                                NULL /* GCancellable */,
+  1936	                                                &caller_uid,
+  1937	                                                &error))
+  1938	    {
+  1939	      g_dbus_method_invocation_return_gerror (invocation, error);
+  1940	      goto out;
+  1941	    }
+  1942	
+  1943	  probed_fs_usage = udisks_block_get_id_usage (block);
+  1944	  if (g_strcmp0 (probed_fs_usage, "filesystem") != 0)
+  1945	    {
+  1946	      g_dbus_method_invocation_return_error (invocation,
+  1947	                                             UDISKS_ERROR,
+  1948	                                             UDISKS_ERROR_NOT_SUPPORTED,
+  1949	                                             "Cannot resize %s filesystem on %s",
+  1950	                                             probed_fs_usage,
+  1951	                                             udisks_block_get_device (block));
+  1952	      goto out;
+  1953	    }
+  1954	
+  1955	  probed_fs_type = udisks_block_get_id_type (block);
+  1956	  if (! bd_fs_can_resize (probed_fs_type, &mode, &required_utility, &error))
+  1957	    {
+  1958	      if (error != NULL)
+  1959	        g_dbus_method_invocation_return_error (invocation,
+  1960	                                               UDISKS_ERROR,
+  1961	                                               UDISKS_ERROR_FAILED,
+  1962	                                               "Cannot resize %s filesystem on %s: %s",
+  1963	                                               probed_fs_type,
+  1964	                                               udisks_block_get_device (block),
+  1965	                                               error->message);
+  1966	      else
+  1967	        g_dbus_method_invocation_return_error (invocation,
+  1968	                                               UDISKS_ERROR,
+  1969	                                               UDISKS_ERROR_FAILED,
+  1970	                                               "Cannot resize %s filesystem on %s: executable %s not found",
+  1971	                                               probed_fs_type,
+  1972	                                               udisks_block_get_device (block),
+  1973	                                               required_utility);
+  1974	      goto out;
+  1975	    }
+  1976	
+  1977	  /* it can't be known if it's shrinking or growing but check at least the mount state */
+  1978	  existing_mount_points = udisks_filesystem_get_mount_points (filesystem);
+  1979	  if (existing_mount_points != NULL && g_strv_length ((gchar **) existing_mount_points) > 0)
+  1980	    {
+  1981	      if (! (mode & BD_FS_ONLINE_SHRINK) && ! (mode & BD_FS_ONLINE_GROW))
+  1982	        g_dbus_method_invocation_return_error (invocation,
+  1983	                                               UDISKS_ERROR,
+  1984	                                               UDISKS_ERROR_NOT_SUPPORTED,
+  1985	                                               "Cannot resize %s filesystem on %s if mounted",
+  1986	                                               probed_fs_usage,
+  1987	                                               udisks_block_get_device (block));
+  1988	    }
+  1989	  else if (! (mode & BD_FS_OFFLINE_SHRINK) && ! (mode & BD_FS_OFFLINE_GROW))
+  1990	    {
+  1991	      g_dbus_method_invocation_return_error (invocation,
+  1992	                                             UDISKS_ERROR,
+  1993	                                             UDISKS_ERROR_NOT_SUPPORTED,
+  1994	                                             "Cannot resize %s filesystem on %s if unmounted",
+  1995	                                             probed_fs_usage,
+  1996	                                             udisks_block_get_device (block));
+  1997	    }
+  1998	
+  1999	  action_id = "org.freedesktop.udisks2.modify-device";
+  2000	  /* Translators: Shown in authentication dialog when the user
+  2001	   * requests resizing the filesystem.
+  2002	   *
+  2003	   * Do not translate $(drive), it's a placeholder and
+  2004	   * will be replaced by the name of the drive/device in question
+  2005	   */
+  2006	  message = N_("Authentication is required to resize the filesystem on $(drive)");
+  2007	  if (! udisks_daemon_util_setup_by_user (daemon, object, caller_uid))
+  2008	    {
+  2009	      if (udisks_block_get_hint_system (block))
+  2010	        {
+  2011	          action_id = "org.freedesktop.udisks2.modify-device-system";
+  2012	        }
+  2013	      else if (! udisks_daemon_util_on_user_seat (daemon, UDISKS_OBJECT (object), caller_uid))
+  2014	        {
+  2015	          action_id = "org.freedesktop.udisks2.modify-device-other-seat";
+  2016	        }
+  2017	    }
+  2018	
+  2019	  /* Check that the user is actually authorized to resize the filesystem. */
+  2020	  if (! udisks_daemon_util_check_authorization_sync (daemon,
+  2021	                                                    object,
+  2022	                                                    action_id,
+  2023	                                                    options,
+  2024	                                                    message,
+  2025	                                                    invocation))
+  2026	    goto out;
+  2027	
+  2028	  job = udisks_daemon_launch_simple_job (daemon,
+  2029	                                         UDISKS_OBJECT (object),
+  2030	                                         "filesystem-resize",
+  2031	                                         caller_uid,
+  2032	                                         NULL);
+  2033	  if (job == NULL)
+  2034	    {
+  2035	      g_dbus_method_invocation_return_error (invocation, UDISKS_ERROR, UDISKS_ERROR_FAILED,
+  2036	                                             "Failed to create a job object");
+  2037	      goto out;
+  2038	    }
+  2039	
+  2040	  udisks_bd_thread_set_progress_for_job (UDISKS_JOB (job));
+  2041	  if (! bd_fs_resize (udisks_block_get_device (block), size, probed_fs_type, &error))
+  2042	    {
+  2043	      g_dbus_method_invocation_return_error (invocation,
+  2044	                                             UDISKS_ERROR,
+  2045	                                             UDISKS_ERROR_FAILED,
+  2046	                                             "Error resizing filesystem on %s: %s",
+  2047	                                             udisks_block_get_device (block),
+  2048	                                             error->message);
+  2049	      udisks_simple_job_complete (UDISKS_SIMPLE_JOB (job), FALSE, error->message);
+  2050	      goto out;
+  2051	    }
+  2052	
+  2053	  /* At least resize2fs might need another uevent after it is done.
+  2054	   */
+  2055	  UDISKS_LINUX_FILESYSTEM (filesystem)->cached_fs_size = 0;
+  2056	  udisks_linux_block_object_trigger_uevent_sync (UDISKS_LINUX_BLOCK_OBJECT (object),
+  2057	                                                 UDISKS_DEFAULT_WAIT_TIMEOUT);
+  2058	  g_dbus_interface_skeleton_flush (G_DBUS_INTERFACE_SKELETON (filesystem));
+  2059	  udisks_filesystem_complete_resize (filesystem, invocation);
+  2060	  udisks_simple_job_complete (UDISKS_SIMPLE_JOB (job), TRUE, NULL);
+  2061	
+  2062	 out:
+  2063	  udisks_bd_thread_disable_progress ();
+  2064	  if (object != NULL)
+  2065	    udisks_linux_block_object_release_cleanup_lock (UDISKS_LINUX_BLOCK_OBJECT (object));
+
+== gdb ntfs-mounted trigger ==
+udisksd_pid=84461
+openvt_ntfs-mounted rc=8
+gdb_ntfs-mounted_rc=0
+
+== strace xfs-unmounted trigger ==
+udisksd_pid=84638
+openvt_xfs-unmounted rc=8
+strace_xfs-unmounted_rc=0
+
+== user trigger logs ==
+--- user-ntfs-mounted.log ---
+mode=ntfs-mounted
+identity=uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+tty=/dev/tty9
+XDG_SESSION_ID=147
+Id=147
+User=1001
+Name=attacker
+Seat=seat0
+TTY=tty9
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+
+polkit_active_checks
+org.freedesktop.udisks2.loop-setup rc=0
+org.freedesktop.udisks2.filesystem-mount rc=0
+org.freedesktop.udisks2.modify-device rc=0
+/home/attacker/udisks-resize-missing-goto-20260517/ntfs-mounted.img is not a block device.
+mkntfs forced anyway.
+The sector size was not specified for /home/attacker/udisks-resize-missing-goto-20260517/ntfs-mounted.img and it could not be obtained automatically.  It has been set to 512 bytes.
+The partition start sector was not specified for /home/attacker/udisks-resize-missing-goto-20260517/ntfs-mounted.img and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /home/attacker/udisks-resize-missing-goto-20260517/ntfs-mounted.img and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /home/attacker/udisks-resize-missing-goto-20260517/ntfs-mounted.img and it could not be obtained automatically.  It has been set to 0.
+Cluster size has been automatically set to 4096 bytes.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+Creating NTFS volume structures.
+mkntfs completed successfully. Have a nice day.
+image=/home/attacker/udisks-resize-missing-goto-20260517/ntfs-mounted.img
+Mapped file /home/attacker/udisks-resize-missing-goto-20260517/ntfs-mounted.img as /dev/loop0.
+loop_setup_rc=0
+dev=/dev/loop0
+obj=/org/freedesktop/UDisks2/block_devices/loop0
+()
+Mounted /dev/loop0 at /media/attacker/RESIZENTFS
+mount_rc=0
+TARGET                     SOURCE     FSTYPE OPTIONS
+/media/attacker/RESIZENTFS /dev/loop0 ntfs3  rw,nosuid,nodev,relatime,uid=1001,gid=1001,iocharset=iso8859-1
+calling Resize size=67108864
+unique_name=:1.2253
+exception=DBusException: org.freedesktop.UDisks2.Error.NotSupported: Cannot resize filesystem filesystem on /dev/loop0 if mounted
+holding_system_bus_name=8s
+resize_call_rc=0
+TARGET                     SOURCE     FSTYPE OPTIONS
+/media/attacker/RESIZENTFS /dev/loop0 ntfs3  rw,nosuid,nodev,relatime,uid=1001,gid=1001,iocharset=iso8859-1
+ls: cannot access '/root/udisks_resize_missing_goto_root': Permission denied
+ls: cannot access '/run/udisks_resize_missing_goto_root': No such file or directory
+ls: cannot access '/tmp/udisks_resize_missing_goto_root': No such file or directory
+--- openvt-ntfs-mounted.log ---
+openvt: Couldn't deallocate console 9
+--- user-xfs-unmounted.log ---
+mode=xfs-unmounted
+identity=uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+tty=/dev/tty9
+XDG_SESSION_ID=149
+Id=149
+User=1001
+Name=attacker
+Seat=seat0
+TTY=tty9
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+
+polkit_active_checks
+org.freedesktop.udisks2.loop-setup rc=0
+org.freedesktop.udisks2.filesystem-mount rc=0
+org.freedesktop.udisks2.modify-device rc=0
+meta-data=/home/attacker/udisks-resize-missing-goto-20260517/xfs-unmounted.img isize=512    agcount=4, agsize=32768 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=1
+         =                       reflink=0    bigtime=1 inobtcount=1 nrext64=0
+data     =                       bsize=4096   blocks=131072, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=16384, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+image=/home/attacker/udisks-resize-missing-goto-20260517/xfs-unmounted.img
+Mapped file /home/attacker/udisks-resize-missing-goto-20260517/xfs-unmounted.img as /dev/loop1.
+loop_setup_rc=0
+dev=/dev/loop1
+obj=/org/freedesktop/UDisks2/block_devices/loop1
+()
+calling Resize size=402653184
+unique_name=:1.2267
+exception=DBusException: org.freedesktop.UDisks2.Error.Failed: Error resizing filesystem on /dev/loop1: Process reported exit code 1: [EXPERIMENTAL] try to shrink unused space 98304, old size is 131072
+xfs_growfs: XFS_IOC_FSGROWFSDATA xfsctl failed: Invalid argument
+
+holding_system_bus_name=8s
+resize_call_rc=0
+ls: cannot access '/root/udisks_resize_missing_goto_root': Permission denied
+ls: cannot access '/run/udisks_resize_missing_goto_root': No such file or directory
+ls: cannot access '/tmp/udisks_resize_missing_goto_root': No such file or directory
+--- openvt-xfs-unmounted.log ---
+openvt: Couldn't deallocate console 9
+
+== gdb evidence ==
+--- /tmp/udisks-resize-missing-goto-20260517/gdb-ntfs-mounted.log ---
+[Thread debugging using libthread_db enabled]
+[Switching to Thread 0xffff7b40ef40 (LWP 84464)]
+HIT return_error inv=0xffff68006dd0 domain=504 code=11
+#0  0x0000ffff81b3d758 in g_dbus_method_invocation_return_error () from /lib/aarch64-linux-gnu/libgio-2.0.so.0
+HIT bd_fs_resize device=/dev/loop0 size=67108864 type=ntfs
+#0  0x0000ffff821ca2dc in bd_fs_resize () from /lib/aarch64-linux-gnu/libblockdev.so.3
+HIT bd_fs_resize device=/dev/loop0 size=67108864 type=ntfs
+#0  0x0000ffff7b4b1cf4 in bd_fs_resize () from /lib/aarch64-linux-gnu/libbd_fs.so.3
+HIT return_error inv=0xffff68006dd0 domain=504 code=0
+#0  0x0000ffff81b3d758 in g_dbus_method_invocation_return_error () from /lib/aarch64-linux-gnu/libgio-2.0.so.0
+Thread 1 "udisksd" received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 0xffff82264020 (LWP 84461)]
+0x0000ffff81da1308 in g_type_check_instance_is_fundamentally_a () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+GDB_STOPPED_AFTER_CONTINUE
+#0  0x0000ffff81da1308 in g_type_check_instance_is_fundamentally_a () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+pc             0xffff81da1308      0xffff81da1308 <g_type_check_instance_is_fundamentally_a+24>
+Thread 7 (Thread 0xffff80c0ef40 (LWP 84462) "gmain"):
+#0  0x0000ffff817a0c1c in __GI___poll (fds=0xaaab03616710, nfds=2, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:41
+Thread 6 (Thread 0xffff7be0ef40 (LWP 84463) "pool-spawner"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+Thread 5 (Thread 0xffff7b40ef40 (LWP 84464) "pool-udisksd"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+Thread 4 (Thread 0xffff7aa0ef40 (LWP 84465) "gdbus"):
+#0  0x0000ffff817a0c1c in __GI___poll (fds=0xffff68000b90, nfds=2, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:41
+Thread 3 (Thread 0xffff7a00ef40 (LWP 84466) "probing-thread"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+Thread 2 (Thread 0xffff7960ef40 (LWP 84467) "cleanup"):
+#0  __GI___fstatat64 (fd=<optimized out>, file=0xffff5c001310 "/sys/devices/virtual/block/loop0/size", buf=0xffff7960d1a8, flag=256) at ../sysdeps/unix/sysv/linux/fstatat64.c:159
+Thread 1 (Thread 0xffff82264020 (LWP 84461) "udisksd"):
+#0  0x0000ffff81da1308 in g_type_check_instance_is_fundamentally_a () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+--- tail /tmp/udisks-resize-missing-goto-20260517/gdb-ntfs-mounted.log ---
+x11            0xaaab03679f40      187651473252160
+x12            0xaaab03656720      187651473106720
+x13            0x0                 0
+x14            0x20                32
+x15            0x0                 0
+x16            0xffff81bfe1c8      281472858579400
+x17            0xffff81d867f0      281472860186608
+x18            0x0                 0
+x19            0xffff68006dd0      281472426601936
+x20            0xaaab0380dc00      187651474906112
+x21            0xaaab0380dbfc      187651474906108
+x22            0xaaab0380e4a0      187651474908320
+x23            0xffff68001c00      281472426580992
+x24            0xffff818dc5a4      281472855295396
+x25            0x4100000000        279172874240
+x26            0xffff819f02f0      281472856425200
+x27            0x0                 0
+x28            0x0                 0
+x29            0xffffe9300a80      281474593983104
+x30            0x56ffff81d86824    24488320857303076
+sp             0xffffe9300a80      0xffffe9300a80
+pc             0xffff81da1308      0xffff81da1308 <g_type_check_instance_is_fundamentally_a+24>
+cpsr           0x60001000          [ EL=0 BTYPE=0 SSBS C Z ]
+fpsr           0x10                [ IXC ]
+fpcr           0x1000000           [ Len=0 Stride=0 RMode=0 FZ ]
+tpidr          0xffff82264760      0xffff82264760
+tpidr2         0x0                 0x0
+pauth_dmask    0x7f000000000000    35747322042253312
+pauth_cmask    0x7f000000000000    35747322042253312
+
+Thread 7 (Thread 0xffff80c0ef40 (LWP 84462) "gmain"):
+#0  0x0000ffff817a0c1c in __GI___poll (fds=0xaaab03616710, nfds=2, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:41
+#1  0x0000ffff81941a2c in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffff818debc8 [PAC] in g_main_context_iteration () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffff818dec24 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#4  0x0000ffff8190f4c8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffff8174595c [PAC] in start_thread (arg=0xffff82264760) at ./nptl/pthread_create.c:447
+#6  0x0000ffff817abb4c in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone3.S:76
+
+Thread 6 (Thread 0xffff7be0ef40 (LWP 84463) "pool-spawner"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+#1  0x0000ffff8193b4e0 in g_cond_wait () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffff818a78d8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffff8191036c [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#4  0x0000ffff8190f4c8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffff8174595c [PAC] in start_thread (arg=0xffff82264760) at ./nptl/pthread_create.c:447
+#6  0x0000ffff817abb4c in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone3.S:76
+
+Thread 5 (Thread 0xffff7b40ef40 (LWP 84464) "pool-udisksd"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+#1  0x0000ffff8193bee4 in g_cond_wait_until () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffff818a789c [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffff81915898 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#4  0x0000ffff8190f4c8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffff8174595c [PAC] in start_thread (arg=0xffff7be0f680) at ./nptl/pthread_create.c:447
+#6  0x0000ffff817abb4c in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone3.S:76
+
+Thread 4 (Thread 0xffff7aa0ef40 (LWP 84465) "gdbus"):
+#0  0x0000ffff817a0c1c in __GI___poll (fds=0xffff68000b90, nfds=2, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:41
+#1  0x0000ffff81941a2c in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffff818e02b0 [PAC] in g_main_loop_run () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffff81b2efd4 [PAC] in ?? () from /lib/aarch64-linux-gnu/libgio-2.0.so.0
+#4  0x0000ffff8190f4c8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffff8174595c [PAC] in start_thread (arg=0xffff7b40f680) at ./nptl/pthread_create.c:447
+#6  0x0000ffff817abb4c in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone3.S:76
+
+Thread 3 (Thread 0xffff7a00ef40 (LWP 84466) "probing-thread"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+#1  0x0000ffff8193b4e0 in g_cond_wait () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffff818a78d8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffff818a795c [PAC] in g_async_queue_pop () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#4  0x0000aaaae3a44ca4 [PAC] in probe_request_thread_func ()
+#5  0x0000ffff8190f4c8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#6  0x0000ffff8174595c [PAC] in start_thread (arg=0xffff82264760) at ./nptl/pthread_create.c:447
+#7  0x0000ffff817abb4c in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone3.S:76
+
+Thread 2 (Thread 0xffff7960ef40 (LWP 84467) "cleanup"):
+#0  __GI___fstatat64 (fd=<optimized out>, file=0xffff5c001310 "/sys/devices/virtual/block/loop0/size", buf=0xffff7960d1a8, flag=256) at ../sysdeps/unix/sysv/linux/fstatat64.c:159
+#1  0x0000ffff81d1d608 in ?? () from /lib/aarch64-linux-gnu/libudev.so.1
+#2  0x0000ffff81d088ac [PAC] in udev_device_get_sysattr_value () from /lib/aarch64-linux-gnu/libudev.so.1
+#3  0x0000ffff82216834 [PAC] in g_udev_device_get_sysfs_attr_as_uint64 () from /lib/aarch64-linux-gnu/libgudev-1.0.so.0
+#4  0x0000aaaae3a76ecc [PAC] in ?? ()
+#5  0x0000aaaae3a77450 [PAC] in ?? ()
+#6  0x0000aaaae3a77b98 [PAC] in ?? ()
+#7  0x0000ffff818df7f0 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#8  0x0000ffff81941ae8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#9  0x0000ffff818e02b0 [PAC] in g_main_loop_run () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+
+Thread 1 (Thread 0xffff82264020 (LWP 84461) "udisksd"):
+#0  0x0000ffff81da1308 in g_type_check_instance_is_fundamentally_a () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+#1  0x0000ffff81d86824 [PAC] in g_object_unref () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+#2  0x0000ffff81b398d8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libgio-2.0.so.0
+#3  0x0000ffff81ac1be0 [PAC] in ?? () from /lib/aarch64-linux-gnu/libgio-2.0.so.0
+#4  0x0000ffff81d86b0c [PAC] in g_object_unref () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+#5  0x0000ffff818d47fc [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#6  0x0000ffff818ddbc8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#7  0x0000ffff818df860 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#8  0x0000ffff81941ae8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#9  0x0000ffff818e02b0 [PAC] in g_main_loop_run () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+[Inferior 1 (process 84461) detached]
+
+== strace execve evidence ==
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84638 ---
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84639 ---
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84640 ---
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84641 ---
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84642 ---
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84643 ---
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84644 ---
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84765 ---
+execve("/usr/local/sbin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop1"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=1bedca24874e42a9a96731ce76cbe9ed", "JOURNAL_STREAM=9:1006020", "SYSTEMD_EXEC_PID=84638", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = -1 ENOENT (No such file or directory)
+execve("/usr/local/bin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop1"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=1bedca24874e42a9a96731ce76cbe9ed", "JOURNAL_STREAM=9:1006020", "SYSTEMD_EXEC_PID=84638", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = -1 ENOENT (No such file or directory)
+execve("/usr/sbin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop1"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=1bedca24874e42a9a96731ce76cbe9ed", "JOURNAL_STREAM=9:1006020", "SYSTEMD_EXEC_PID=84638", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = 0
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84766 ---
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84781 ---
+execve("/usr/local/sbin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop1"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=1bedca24874e42a9a96731ce76cbe9ed", "JOURNAL_STREAM=9:1006020", "SYSTEMD_EXEC_PID=84638", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = -1 ENOENT (No such file or directory)
+execve("/usr/local/bin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop1"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=1bedca24874e42a9a96731ce76cbe9ed", "JOURNAL_STREAM=9:1006020", "SYSTEMD_EXEC_PID=84638", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = -1 ENOENT (No such file or directory)
+execve("/usr/sbin/xfs_db", ["xfs_db", "-r", "-c", "info", "/dev/loop1"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=1bedca24874e42a9a96731ce76cbe9ed", "JOURNAL_STREAM=9:1006020", "SYSTEMD_EXEC_PID=84638", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = 0
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84782 ---
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.84783 ---
+execve("/usr/local/sbin/xfs_growfs", ["xfs_growfs", "-D", "98304", "/tmp/blockdev.OYFOP3"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=1bedca24874e42a9a96731ce76cbe9ed", "JOURNAL_STREAM=9:1006020", "SYSTEMD_EXEC_PID=84638", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = -1 ENOENT (No such file or directory)
+execve("/usr/local/bin/xfs_growfs", ["xfs_growfs", "-D", "98304", "/tmp/blockdev.OYFOP3"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=1bedca24874e42a9a96731ce76cbe9ed", "JOURNAL_STREAM=9:1006020", "SYSTEMD_EXEC_PID=84638", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = -1 ENOENT (No such file or directory)
+execve("/usr/sbin/xfs_growfs", ["xfs_growfs", "-D", "98304", "/tmp/blockdev.OYFOP3"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=1bedca24874e42a9a96731ce76cbe9ed", "JOURNAL_STREAM=9:1006020", "SYSTEMD_EXEC_PID=84638", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = 0
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.85354 ---
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.attach.err ---
+--- /tmp/udisks-resize-missing-goto-20260517/strace-xfs-unmounted.attach.out ---
+
+== journal evidence ==
+May 17 19:50:09 bf51bb670420 udisksd[35096]: Mounted /dev/loop0 at /media/attacker/EXT4SUID on behalf of uid 1001
+May 17 19:50:09 bf51bb670420 udisksd[35096]: Mounted /dev/loop0 at /media/attacker/EXT4SUID on behalf of uid 1001
+May 17 19:53:45 bf51bb670420 udisksd[35096]: Mounted /dev/loop0 at /media/attacker/EXT4SUID on behalf of uid 1001
+May 17 19:53:45 bf51bb670420 udisksd[35096]: Mounted /dev/loop0 at /media/attacker/EXT4SUID on behalf of uid 1001
+May 17 19:53:47 bf51bb670420 udisksd[35096]: Mounted /dev/loop0 at /media/attacker/EXT4SUID on behalf of uid 1001
+May 17 20:41:39 bf51bb670420 udisksd[35096]: udisks daemon version 2.10.1 exiting
+May 17 20:41:39 bf51bb670420 udisksd[84461]: udisks daemon version 2.10.1 starting
+May 17 20:41:39 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 20:41:44 bf51bb670420 udisksd[84461]: Set up loop device /dev/loop0 (backed by /home/attacker/udisks-resize-missing-goto-20260517/ntfs-mounted.img)
+May 17 20:41:46 bf51bb670420 udisksd[84461]: Mounted /dev/loop0 at /media/attacker/RESIZENTFS on behalf of uid 1001
+May 17 20:41:46 bf51bb670420 systemd[1]: udisks2.service: Main process exited, code=killed, status=11/SEGV
+May 17 20:41:54 bf51bb670420 udisksd[84623]: udisks daemon version 2.10.1 starting
+May 17 20:41:54 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 20:41:54 bf51bb670420 udisksd[84623]: udisks daemon version 2.10.1 exiting
+May 17 20:41:54 bf51bb670420 udisksd[84638]: udisks daemon version 2.10.1 starting
+May 17 20:41:54 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 20:41:56 bf51bb670420 udisksd[84638]: Set up loop device /dev/loop1 (backed by /home/attacker/udisks-resize-missing-goto-20260517/xfs-unmounted.img)
+May 17 20:43:08 bf51bb670420 systemd[1]: udisks2.service: Main process exited, code=killed, status=11/SEGV
+May 17 20:43:08 bf51bb670420 udisksd[85365]: udisks daemon version 2.10.1 starting
+May 17 20:43:08 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+
+== root proof check before cleanup ==
+ABSENT /root/udisks_resize_missing_goto_root
+ABSENT /run/udisks_resize_missing_goto_root
+ABSENT /tmp/udisks_resize_missing_goto_root
+ROOT_PROOF=NO
+
+== cleanup proof ==
+ABSENT /tmp/udisks-resize-missing-goto-20260517
+ABSENT /home/attacker/udisks-resize-missing-goto-20260517
+ABSENT /root/udisks_resize_missing_goto_root
+ABSENT /run/udisks_resize_missing_goto_root
+ABSENT /tmp/udisks_resize_missing_goto_root
+udisks2_active=active
+failed_units:
+our_loop_devices:
+none
+our_mounts:
+none
+
+wrote /Users/andrewmohawk/Documents/UbuntuLPE/ubuntu24-server-lpe/logs/udisks-resize-missing-goto-20260517.out

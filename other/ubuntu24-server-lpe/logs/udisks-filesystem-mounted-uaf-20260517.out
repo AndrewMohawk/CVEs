@@ -1,0 +1,699 @@
+UDisks mounted Filesystem.Check/Repair missing-goto UAF probe
+target=ubuntu24-server-lpe-target
+2026-05-17T15:39:19-0400
+
+== baseline ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux bf51bb670420 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+attacker:x:1001:1001::/home/attacker:/bin/bash
+selfauth:x:1002:1002::/home/selfauth:/bin/bash
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+active_probe_user=attacker uid=1001 home=/home/attacker
+dbus	1.14.10-4ubuntu4.1	ii 
+e2fsprogs	1.47.0-2.4~exp1ubuntu4.1	ii 
+gdb	15.1-1ubuntu1~24.04.1	ii 
+libblockdev-fs3:arm64	3.1.1-1ubuntu0.1	ii 
+libblockdev3:arm64	3.1.1-1ubuntu0.1	ii 
+libudisks2-0:arm64	2.10.1-6ubuntu1.3	ii 
+policykit-1		un 
+polkitd	124-2ubuntu1.24.04.3	ii 
+python3-dbus	1.3.2-5build3	ii 
+strace	6.8-0ubuntu2	ii 
+systemd	255.4-1ubuntu8.15	ii 
+udisks2	2.10.1-6ubuntu1.3	ii 
+enabled
+active
+# /usr/lib/systemd/system/udisks2.service
+[Unit]
+Description=Disk Manager
+Documentation=man:udisks(8)
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.UDisks2
+ExecStart=/usr/libexec/udisks2/udisksd
+KillSignal=SIGINT
+
+[Install]
+WantedBy=graphical.target
+
+== polkit defaults ==
+org.freedesktop.udisks2.loop-setup	any=auth_admin	inactive=auth_admin	active=yes
+org.freedesktop.udisks2.filesystem-mount	any=auth_admin	inactive=auth_admin	active=yes
+org.freedesktop.udisks2.modify-device	any=auth_admin	inactive=auth_admin	active=yes
+org.freedesktop.udisks2.modify-device-system	any=auth_admin	inactive=auth_admin	active=auth_admin_keep
+org.freedesktop.udisks2.modify-device-other-seat	any=auth_admin	inactive=auth_admin	active=auth_admin_keep
+
+== source evidence ==
+  2079	handle_repair (UDisksFilesystem      *filesystem,
+  2080	               GDBusMethodInvocation *invocation,
+  2081	               GVariant              *options)
+  2082	{
+  2083	  UDisksBlock *block = NULL;
+  2084	  UDisksObject *object = NULL;
+  2085	  UDisksDaemon *daemon = NULL;
+  2086	  UDisksState *state = NULL;
+  2087	  const gchar *probed_fs_usage = NULL;
+  2088	  const gchar *probed_fs_type = NULL;
+  2089	  const gchar *action_id = NULL;
+  2090	  const gchar *message = NULL;
+  2091	  uid_t caller_uid;
+  2092	  GError *error = NULL;
+  2093	  gboolean ret = FALSE;
+  2094	  UDisksBaseJob *job = NULL;
+  2095	  gchar *required_utility = NULL;
+  2096	  const gchar * const *existing_mount_points = NULL;
+  2097	
+  2098	  g_mutex_lock (&UDISKS_LINUX_FILESYSTEM (filesystem)->lock);
+  2099	
+  2100	  object = udisks_daemon_util_dup_object (filesystem, &error);
+  2101	  if (object == NULL)
+  2102	    {
+  2103	      g_dbus_method_invocation_return_gerror (invocation, error);
+  2104	      goto out;
+  2105	    }
+  2106	
+  2107	  daemon = udisks_linux_block_object_get_daemon (UDISKS_LINUX_BLOCK_OBJECT (object));
+  2108	  state = udisks_daemon_get_state (daemon);
+  2109	  block = udisks_object_peek_block (object);
+  2110	
+  2111	  udisks_linux_block_object_lock_for_cleanup (UDISKS_LINUX_BLOCK_OBJECT (object));
+  2112	  udisks_state_check_block (state, udisks_linux_block_object_get_device_number (UDISKS_LINUX_BLOCK_OBJECT (object)));
+  2113	
+  2114	  if (! udisks_daemon_util_get_caller_uid_sync (daemon,
+  2115	                                                invocation,
+  2116	                                                NULL /* GCancellable */,
+  2117	                                                &caller_uid,
+  2118	                                                &error))
+  2119	    {
+  2120	      g_dbus_method_invocation_return_gerror (invocation, error);
+  2121	      goto out;
+  2122	    }
+  2123	
+  2124	  probed_fs_usage = udisks_block_get_id_usage (block);
+  2125	  if (g_strcmp0 (probed_fs_usage, "filesystem") != 0)
+  2126	    {
+  2127	      g_dbus_method_invocation_return_error (invocation,
+  2128	                                             UDISKS_ERROR,
+  2129	                                             UDISKS_ERROR_NOT_SUPPORTED,
+  2130	                                             "Cannot repair %s filesystem on %s",
+  2131	                                             probed_fs_usage,
+  2132	                                             udisks_block_get_device (block));
+  2133	      goto out;
+  2134	    }
+  2135	
+  2136	  probed_fs_type = udisks_block_get_id_type (block);
+  2137	  if (! bd_fs_can_repair (probed_fs_type, &required_utility, &error))
+  2138	    {
+  2139	      if (error != NULL)
+  2140	        g_dbus_method_invocation_return_error (invocation,
+  2141	                                               UDISKS_ERROR,
+  2142	                                               UDISKS_ERROR_FAILED,
+  2143	                                               "Cannot repair %s filesystem on %s: %s",
+  2144	                                               probed_fs_type,
+  2145	                                               udisks_block_get_device (block),
+  2146	                                               error->message);
+  2147	      else
+  2148	        g_dbus_method_invocation_return_error (invocation,
+  2149	                                               UDISKS_ERROR,
+  2150	                                               UDISKS_ERROR_FAILED,
+  2151	                                               "Cannot repair %s filesystem on %s: executable %s not found",
+  2152	                                               probed_fs_type,
+  2153	                                               udisks_block_get_device (block),
+  2154	                                               required_utility);
+  2155	      goto out;
+  2156	    }
+  2157	
+  2158	  /* check the mount state */
+  2159	  existing_mount_points = udisks_filesystem_get_mount_points (filesystem);
+  2160	  if (existing_mount_points != NULL && g_strv_length ((gchar **) existing_mount_points) > 0)
+  2161	    {
+  2162	      g_dbus_method_invocation_return_error (invocation,
+  2163	                                             UDISKS_ERROR,
+  2164	                                             UDISKS_ERROR_NOT_SUPPORTED,
+  2165	                                             "Cannot repair %s filesystem on %s if mounted",
+  2166	                                             probed_fs_usage,
+  2167	                                             udisks_block_get_device (block));
+  2168	    }
+  2169	
+  2170	  action_id = "org.freedesktop.udisks2.modify-device";
+  2171	  /* Translators: Shown in authentication dialog when the user
+  2172	   * requests resizing the filesystem.
+  2173	   *
+  2174	   * Do not translate $(drive), it's a placeholder and
+  2175	   * will be replaced by the name of the drive/device in question
+  2176	   */
+  2177	  message = N_("Authentication is required to repair the filesystem on $(drive)");
+  2178	  if (! udisks_daemon_util_setup_by_user (daemon, object, caller_uid))
+  2179	    {
+  2180	      if (udisks_block_get_hint_system (block))
+  2181	        {
+  2182	          action_id = "org.freedesktop.udisks2.modify-device-system";
+  2183	        }
+  2184	      else if (! udisks_daemon_util_on_user_seat (daemon, UDISKS_OBJECT (object), caller_uid))
+  2185	        {
+  2186	          action_id = "org.freedesktop.udisks2.modify-device-other-seat";
+  2187	        }
+  2188	    }
+  2189	
+  2190	  /* Check that the user is actually authorized to repair the filesystem. */
+  2191	  if (! udisks_daemon_util_check_authorization_sync (daemon,
+  2192	                                                     object,
+  2193	                                                     action_id,
+  2194	                                                     options,
+  2195	                                                     message,
+  2196	                                                     invocation))
+  2197	    goto out;
+  2198	
+  2199	  job = udisks_daemon_launch_simple_job (daemon,
+  2200	                                         UDISKS_OBJECT (object),
+  2201	                                         "filesystem-repair",
+  2202	                                         caller_uid,
+  2203	                                         NULL);
+  2204	  if (job == NULL)
+  2205	    {
+  2206	      g_dbus_method_invocation_return_error (invocation, UDISKS_ERROR, UDISKS_ERROR_FAILED,
+  2207	                                             "Failed to create a job object");
+  2208	      goto out;
+  2209	    }
+  2210	
+  2211	  udisks_bd_thread_set_progress_for_job (UDISKS_JOB (job));
+  2212	  ret = bd_fs_repair (udisks_block_get_device (block), probed_fs_type, &error);
+  2213	  if (error)
+  2214	    {
+  2215	      g_dbus_method_invocation_return_error (invocation,
+  2216	                                             UDISKS_ERROR,
+  2217	                                             UDISKS_ERROR_FAILED,
+  2218	                                             "Error reparing filesystem on %s: %s",
+  2219	                                             udisks_block_get_device (block),
+  2220	                                             error->message);
+  2221	      udisks_simple_job_complete (UDISKS_SIMPLE_JOB (job), FALSE, error->message);
+  2222	      goto out;
+  2223	    }
+  2224	
+  2225	  udisks_linux_block_object_trigger_uevent_sync (UDISKS_LINUX_BLOCK_OBJECT (object),
+  2226	                                                 UDISKS_DEFAULT_WAIT_TIMEOUT);
+  2227	  udisks_filesystem_complete_repair (filesystem, invocation, ret);
+  2228	  udisks_simple_job_complete (UDISKS_SIMPLE_JOB (job), TRUE, NULL);
+  2247	handle_check (UDisksFilesystem      *filesystem,
+  2248	              GDBusMethodInvocation *invocation,
+  2249	              GVariant              *options)
+  2250	{
+  2251	  UDisksBlock *block = NULL;
+  2252	  UDisksObject *object = NULL;
+  2253	  UDisksDaemon *daemon = NULL;
+  2254	  UDisksState *state = NULL;
+  2255	  const gchar *probed_fs_usage = NULL;
+  2256	  const gchar *probed_fs_type = NULL;
+  2257	  const gchar *action_id = NULL;
+  2258	  const gchar *message = NULL;
+  2259	  uid_t caller_uid;
+  2260	  GError *error = NULL;
+  2261	  gboolean ret = FALSE;
+  2262	  UDisksBaseJob *job = NULL;
+  2263	  gchar *required_utility = NULL;
+  2264	  const gchar * const *existing_mount_points = NULL;
+  2265	
+  2266	  g_mutex_lock (&UDISKS_LINUX_FILESYSTEM (filesystem)->lock);
+  2267	
+  2268	  object = udisks_daemon_util_dup_object (filesystem, &error);
+  2269	  if (object == NULL)
+  2270	    {
+  2271	      g_dbus_method_invocation_return_gerror (invocation, error);
+  2272	      goto out;
+  2273	    }
+  2274	
+  2275	  daemon = udisks_linux_block_object_get_daemon (UDISKS_LINUX_BLOCK_OBJECT (object));
+  2276	  state = udisks_daemon_get_state (daemon);
+  2277	  block = udisks_object_peek_block (object);
+  2278	
+  2279	  udisks_linux_block_object_lock_for_cleanup (UDISKS_LINUX_BLOCK_OBJECT (object));
+  2280	  udisks_state_check_block (state, udisks_linux_block_object_get_device_number (UDISKS_LINUX_BLOCK_OBJECT (object)));
+  2281	
+  2282	  if (! udisks_daemon_util_get_caller_uid_sync (daemon,
+  2283	                                                invocation,
+  2284	                                                NULL /* GCancellable */,
+  2285	                                                &caller_uid,
+  2286	                                                &error))
+  2287	    {
+  2288	      g_dbus_method_invocation_return_gerror (invocation, error);
+  2289	      goto out;
+  2290	    }
+  2291	
+  2292	  probed_fs_usage = udisks_block_get_id_usage (block);
+  2293	  if (g_strcmp0 (probed_fs_usage, "filesystem") != 0)
+  2294	    {
+  2295	      g_dbus_method_invocation_return_error (invocation,
+  2296	                                             UDISKS_ERROR,
+  2297	                                             UDISKS_ERROR_NOT_SUPPORTED,
+  2298	                                             "Cannot check %s filesystem on %s",
+  2299	                                             probed_fs_usage,
+  2300	                                             udisks_block_get_device (block));
+  2301	      goto out;
+  2302	    }
+  2303	
+  2304	  probed_fs_type = udisks_block_get_id_type (block);
+  2305	  if (! bd_fs_can_check (probed_fs_type, &required_utility, &error))
+  2306	    {
+  2307	      if (error != NULL)
+  2308	        g_dbus_method_invocation_return_error (invocation,
+  2309	                                               UDISKS_ERROR,
+  2310	                                               UDISKS_ERROR_FAILED,
+  2311	                                               "Cannot check %s filesystem on %s: %s",
+  2312	                                               probed_fs_type,
+  2313	                                               udisks_block_get_device (block),
+  2314	                                               error->message);
+  2315	      else
+  2316	        g_dbus_method_invocation_return_error (invocation,
+  2317	                                               UDISKS_ERROR,
+  2318	                                               UDISKS_ERROR_FAILED,
+  2319	                                               "Cannot check %s filesystem on %s: executable %s not found",
+  2320	                                               probed_fs_type,
+  2321	                                               udisks_block_get_device (block),
+  2322	                                               required_utility);
+  2323	      goto out;
+  2324	    }
+  2325	
+  2326	  /* check the mount state */
+  2327	  existing_mount_points = udisks_filesystem_get_mount_points (filesystem);
+  2328	  if (existing_mount_points != NULL && g_strv_length ((gchar **) existing_mount_points) > 0)
+  2329	    {
+  2330	      g_dbus_method_invocation_return_error (invocation,
+  2331	                                             UDISKS_ERROR,
+  2332	                                             UDISKS_ERROR_NOT_SUPPORTED,
+  2333	                                             "Cannot check %s filesystem on %s if mounted",
+  2334	                                             probed_fs_usage,
+  2335	                                             udisks_block_get_device (block));
+  2336	    }
+  2337	
+  2338	  action_id = "org.freedesktop.udisks2.modify-device";
+  2339	  /* Translators: Shown in authentication dialog when the user
+  2340	   * requests resizing the filesystem.
+  2341	   *
+  2342	   * Do not translate $(drive), it's a placeholder and
+  2343	   * will be replaced by the name of the drive/device in question
+  2344	   */
+  2345	  message = N_("Authentication is required to check the filesystem on $(drive)");
+  2346	  if (! udisks_daemon_util_setup_by_user (daemon, object, caller_uid))
+  2347	    {
+  2348	      if (udisks_block_get_hint_system (block))
+  2349	        {
+  2350	          action_id = "org.freedesktop.udisks2.modify-device-system";
+  2351	        }
+  2352	      else if (! udisks_daemon_util_on_user_seat (daemon, UDISKS_OBJECT (object), caller_uid))
+  2353	        {
+  2354	          action_id = "org.freedesktop.udisks2.modify-device-other-seat";
+  2355	        }
+  2356	    }
+  2357	
+  2358	  /* Check that the user is actually authorized to check the filesystem. */
+  2359	  if (! udisks_daemon_util_check_authorization_sync (daemon,
+  2360	                                                     object,
+  2361	                                                     action_id,
+  2362	                                                     options,
+  2363	                                                     message,
+  2364	                                                     invocation))
+  2365	    goto out;
+  2366	
+  2367	  job = udisks_daemon_launch_simple_job (daemon,
+  2368	                                         UDISKS_OBJECT (object),
+  2369	                                         "filesystem-check",
+  2370	                                         caller_uid,
+  2371	                                         NULL);
+  2372	  if (job == NULL)
+  2373	    {
+  2374	      g_dbus_method_invocation_return_error (invocation, UDISKS_ERROR, UDISKS_ERROR_FAILED,
+  2375	                                             "Failed to create a job object");
+  2376	      goto out;
+  2377	    }
+  2378	
+  2379	  udisks_bd_thread_set_progress_for_job (UDISKS_JOB (job));
+  2380	  ret = bd_fs_check (udisks_block_get_device (block), probed_fs_type, &error);
+  2381	  if (error)
+  2382	    {
+  2383	      g_dbus_method_invocation_return_error (invocation,
+  2384	                                             UDISKS_ERROR,
+  2385	                                             UDISKS_ERROR_FAILED,
+  2386	                                             "Error checking filesystem on %s: %s",
+  2387	                                             udisks_block_get_device (block),
+  2388	                                             error->message);
+  2389	      udisks_simple_job_complete (UDISKS_SIMPLE_JOB (job), FALSE, error->message);
+  2390	      goto out;
+  2391	    }
+  2392	
+  2393	  udisks_linux_block_object_trigger_uevent_sync (UDISKS_LINUX_BLOCK_OBJECT (object),
+  2394	                                                 UDISKS_DEFAULT_WAIT_TIMEOUT);
+  2395	  udisks_filesystem_complete_check (filesystem, invocation, ret);
+  2396	  udisks_simple_job_complete (UDISKS_SIMPLE_JOB (job), TRUE, NULL);
+
+== fresh gdb Check trigger ==
+udisksd_pid=34573
+openvt_Check rc=8
+gdb_check_rc=0
+
+== fresh strace Repair trigger ==
+udisksd_pid=34792
+openvt_Repair rc=8
+strace_repair_rc=0
+
+== user trigger logs ==
+--- user-Check.log ---
+method=Check
+identity=uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+tty=/dev/tty9
+XDG_SESSION_ID=107
+Id=107
+User=1001
+Name=attacker
+Seat=seat0
+TTY=tty9
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+
+polkit_active_checks
+org.freedesktop.udisks2.loop-setup rc=0
+org.freedesktop.udisks2.filesystem-mount rc=0
+org.freedesktop.udisks2.modify-device rc=0
+image=/home/attacker/udisks-filesystem-mounted-uaf-20260517/Check.ext4.img
+Mapped file /home/attacker/udisks-filesystem-mounted-uaf-20260517/Check.ext4.img as /dev/loop0.
+loop_setup_rc=0
+dev=/dev/loop0
+obj=/org/freedesktop/UDisks2/block_devices/loop0
+()
+Mounted /dev/loop0 at /media/attacker/UAFCheck
+mount_rc=0
+TARGET                   SOURCE     FSTYPE OPTIONS
+/media/attacker/UAFCheck /dev/loop0 ext4   rw,nosuid,nodev,relatime,errors=remount-ro
+
+unique_name=:1.1630
+exception=DBusException: org.freedesktop.UDisks2.Error.NotSupported: Cannot check filesystem filesystem on /dev/loop0 if mounted
+holding_system_bus_name=8s
+method_call_rc=0
+TARGET                   SOURCE     FSTYPE OPTIONS
+/media/attacker/UAFCheck /dev/loop0 ext4   rw,nosuid,nodev,relatime,errors=remount-ro
+ls: cannot access '/root/udisks_filesystem_mounted_uaf_root': Permission denied
+ls: cannot access '/run/udisks_filesystem_mounted_uaf_root': No such file or directory
+ls: cannot access '/tmp/udisks_filesystem_mounted_uaf_root': No such file or directory
+--- openvt-Check.log ---
+openvt: Couldn't deallocate console 9
+--- user-Repair.log ---
+method=Repair
+identity=uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+tty=/dev/tty9
+XDG_SESSION_ID=109
+Id=109
+User=1001
+Name=attacker
+Seat=seat0
+TTY=tty9
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+
+polkit_active_checks
+org.freedesktop.udisks2.loop-setup rc=0
+org.freedesktop.udisks2.filesystem-mount rc=0
+org.freedesktop.udisks2.modify-device rc=0
+image=/home/attacker/udisks-filesystem-mounted-uaf-20260517/Repair.ext4.img
+Mapped file /home/attacker/udisks-filesystem-mounted-uaf-20260517/Repair.ext4.img as /dev/loop1.
+loop_setup_rc=0
+dev=/dev/loop1
+obj=/org/freedesktop/UDisks2/block_devices/loop1
+()
+Mounted /dev/loop1 at /media/attacker/UAFRepair
+mount_rc=0
+TARGET                    SOURCE     FSTYPE OPTIONS
+/media/attacker/UAFRepair /dev/loop1 ext4   rw,nosuid,nodev,relatime,errors=remount-ro
+
+unique_name=:1.1648
+exception=DBusException: org.freedesktop.UDisks2.Error.NotSupported: Cannot repair filesystem filesystem on /dev/loop1 if mounted
+holding_system_bus_name=8s
+method_call_rc=0
+TARGET                    SOURCE     FSTYPE OPTIONS
+/media/attacker/UAFRepair /dev/loop1 ext4   rw,nosuid,nodev,relatime,errors=remount-ro
+ls: cannot access '/root/udisks_filesystem_mounted_uaf_root': Permission denied
+ls: cannot access '/run/udisks_filesystem_mounted_uaf_root': No such file or directory
+ls: cannot access '/tmp/udisks_filesystem_mounted_uaf_root': No such file or directory
+--- openvt-Repair.log ---
+openvt: Couldn't deallocate console 9
+
+== gdb evidence ==
+[Thread debugging using libthread_db enabled]
+[Switching to Thread 0xffffb640ef40 (LWP 34576)]
+HIT auth_with_error action=org.freedesktop.udisks2.loop-setup invocation=0xffff9c0068f0
+#0  0x0000aaaacece54b8 in udisks_daemon_util_check_authorization_sync_with_error ()
+HIT auth_with_error action=org.freedesktop.udisks2.rescan invocation=0xffff9c003610
+#0  0x0000aaaacece54b8 in udisks_daemon_util_check_authorization_sync_with_error ()
+HIT auth_with_error action=org.freedesktop.udisks2.filesystem-mount invocation=0xffff9c0036f0
+#0  0x0000aaaacece54b8 in udisks_daemon_util_check_authorization_sync_with_error ()
+HIT return_dbus_error inv=0xffff9c0066f0 error=org.freedesktop.UDisks2.Error.NotSupported message=Cannot check filesystem filesystem on /dev/loop0 if mounted
+#0  0x0000ffffb873d2c0 in g_dbus_method_invocation_return_dbus_error () from /lib/aarch64-linux-gnu/libgio-2.0.so.0
+HIT auth_with_error action=org.freedesktop.udisks2.modify-device invocation=0xffff9c0066f0
+#0  0x0000aaaacece54b8 in udisks_daemon_util_check_authorization_sync_with_error ()
+HIT bd_fs_check device=/dev/loop0 type=ext4
+#0  0x0000ffffb8dca32c in bd_fs_check () from /lib/aarch64-linux-gnu/libblockdev.so.3
+HIT bd_fs_check device=/dev/loop0 type=ext4
+#0  0x0000ffffb50b1d60 in bd_fs_check () from /lib/aarch64-linux-gnu/libbd_fs.so.3
+Thread 1 "udisksd" received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 0xffffb8e6b020 (LWP 34573)]
+0x0000ffffb89a1308 in g_type_check_instance_is_fundamentally_a () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+GDB_STOPPED_AFTER_CONTINUE
+#0  0x0000ffffb89a1308 in g_type_check_instance_is_fundamentally_a () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+pc             0xffffb89a1308      0xffffb89a1308 <g_type_check_instance_is_fundamentally_a+24>
+Thread 7 (Thread 0xffffb780ef40 (LWP 34574) "gmain"):
+#0  0x0000ffffb83a0c1c in __GI___poll (fds=0xaaaae2b24710, nfds=2, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:41
+Thread 6 (Thread 0xffffb6e0ef40 (LWP 34575) "pool-spawner"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+Thread 5 (Thread 0xffffb640ef40 (LWP 34576) "pool-udisksd"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+Thread 4 (Thread 0xffffb5a0ef40 (LWP 34577) "gdbus"):
+#0  0x0000ffffb83a0c1c in __GI___poll (fds=0xffff9c000b90, nfds=2, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:41
+Thread 3 (Thread 0xffffb4e0ef40 (LWP 34578) "probing-thread"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+Thread 2 (Thread 0xffffafe0ef40 (LWP 34579) "cleanup"):
+#0  0x0000ffffb82ffeac in __GI___getrandom (flags=4, length=16, buffer=0xffffb8950a20) at ../sysdeps/unix/sysv/linux/getrandom.c:29
+Thread 1 (Thread 0xffffb8e6b020 (LWP 34573) "udisksd"):
+#0  0x0000ffffb89a1308 in g_type_check_instance_is_fundamentally_a () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+--- gdb tail ---
+#5  0x0000ffffb84d47fc [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#6  0x0000ffffb84ddbc8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#7  0x0000ffffb84df860 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#8  0x0000ffffb8541ae8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#9  0x0000ffffb84e02b0 [PAC] in g_main_loop_run () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#10 0x0000aaaacecae5d8 [PAC] in main ()
+x0             0xfff063f9b836      281407934543926
+x1             0x50                80
+x2             0xffffb8eadb50      281473784142672
+x3             0x0                 0
+x4             0x0                 0
+x5             0x1                 1
+x6             0xffff98001790      281473231886224
+x7             0x3b                59
+x8             0x1                 1
+x9             0x10b3e8c11d2140    4701411881066816
+x10            0xffffffffffffff    72057594037927935
+x11            0x1a7922dd5e        113701477726
+x12            0x108               264
+x13            0x0                 0
+x14            0x20                32
+x15            0x0                 0
+x16            0xffffb87fe1c8      281473777131976
+x17            0xffffb89867f0      281473778739184
+x18            0x0                 0
+x19            0xffff9c0066f0      281473299015408
+x20            0xaaaae2b77220      187650924835360
+x21            0xaaaae2b7721c      187650924835356
+x22            0xaaaae2d238e0      187650926590176
+x23            0xffff9c003f50      281473299005264
+x24            0xffffb84dc5a4      281473773847972
+x25            0x4100000000        279172874240
+x26            0xffffb85f02f0      281473774977776
+x27            0x0                 0
+x28            0x0                 0
+x29            0xfffffaeccde0      281474891566560
+x30            0x5ffffb8986824     1688848662292516
+sp             0xfffffaeccde0      0xfffffaeccde0
+pc             0xffffb89a1308      0xffffb89a1308 <g_type_check_instance_is_fundamentally_a+24>
+cpsr           0x60001000          [ EL=0 BTYPE=0 SSBS C Z ]
+fpsr           0x10                [ IXC ]
+fpcr           0x1000000           [ Len=0 Stride=0 RMode=0 FZ ]
+tpidr          0xffffb8e6b760      0xffffb8e6b760
+tpidr2         0x0                 0x0
+pauth_dmask    0x7f000000000000    35747322042253312
+pauth_cmask    0x7f000000000000    35747322042253312
+
+Thread 7 (Thread 0xffffb780ef40 (LWP 34574) "gmain"):
+#0  0x0000ffffb83a0c1c in __GI___poll (fds=0xaaaae2b24710, nfds=2, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:41
+#1  0x0000ffffb8541a2c in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffffb84debc8 [PAC] in g_main_context_iteration () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffffb84dec24 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#4  0x0000ffffb850f4c8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffffb834595c [PAC] in start_thread (arg=0xffffb8e6b760) at ./nptl/pthread_create.c:447
+#6  0x0000ffffb83abb4c in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone3.S:76
+
+Thread 6 (Thread 0xffffb6e0ef40 (LWP 34575) "pool-spawner"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+#1  0x0000ffffb853b4e0 in g_cond_wait () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffffb84a78d8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffffb851036c [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#4  0x0000ffffb850f4c8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffffb834595c [PAC] in start_thread (arg=0xffffb8e6b760) at ./nptl/pthread_create.c:447
+#6  0x0000ffffb83abb4c in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone3.S:76
+
+Thread 5 (Thread 0xffffb640ef40 (LWP 34576) "pool-udisksd"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+#1  0x0000ffffb853bee4 in g_cond_wait_until () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffffb84a789c [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffffb8515898 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#4  0x0000ffffb850f4c8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffffb834595c [PAC] in start_thread (arg=0xffffb6e0f680) at ./nptl/pthread_create.c:447
+#6  0x0000ffffb83abb4c in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone3.S:76
+
+Thread 4 (Thread 0xffffb5a0ef40 (LWP 34577) "gdbus"):
+#0  0x0000ffffb83a0c1c in __GI___poll (fds=0xffff9c000b90, nfds=2, timeout=<optimized out>) at ../sysdeps/unix/sysv/linux/poll.c:41
+#1  0x0000ffffb8541a2c in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffffb84e02b0 [PAC] in g_main_loop_run () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffffb872efd4 [PAC] in ?? () from /lib/aarch64-linux-gnu/libgio-2.0.so.0
+#4  0x0000ffffb850f4c8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#5  0x0000ffffb834595c [PAC] in start_thread (arg=0xffffb640f680) at ./nptl/pthread_create.c:447
+#6  0x0000ffffb83abb4c in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone3.S:76
+
+Thread 3 (Thread 0xffffb4e0ef40 (LWP 34578) "probing-thread"):
+#0  syscall () at ../sysdeps/unix/sysv/linux/aarch64/syscall.S:38
+#1  0x0000ffffb853b4e0 in g_cond_wait () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#2  0x0000ffffb84a78d8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#3  0x0000ffffb84a795c [PAC] in g_async_queue_pop () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#4  0x0000aaaacecb4ca4 [PAC] in probe_request_thread_func ()
+#5  0x0000ffffb850f4c8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#6  0x0000ffffb834595c [PAC] in start_thread (arg=0xffffb8e6b760) at ./nptl/pthread_create.c:447
+#7  0x0000ffffb83abb4c in thread_start () at ../sysdeps/unix/sysv/linux/aarch64/clone3.S:76
+
+Thread 2 (Thread 0xffffafe0ef40 (LWP 34579) "cleanup"):
+#0  0x0000ffffb82ffeac in __GI___getrandom (flags=4, length=16, buffer=0xffffb8950a20) at ../sysdeps/unix/sysv/linux/getrandom.c:29
+#1  __GI___getrandom (buffer=0xffffb8950a20, length=16, flags=4) at ../sysdeps/unix/sysv/linux/getrandom.c:27
+#2  0x0000ffffb891c510 in ?? () from /lib/aarch64-linux-gnu/libudev.so.1
+#3  0x0000ffffb89222cc [PAC] in ?? () from /lib/aarch64-linux-gnu/libudev.so.1
+#4  0x0000ffffb8916820 [PAC] in ?? () from /lib/aarch64-linux-gnu/libudev.so.1
+#5  0x0000ffffb890c99c [PAC] in ?? () from /lib/aarch64-linux-gnu/libudev.so.1
+#6  0x0000ffffb8920130 [PAC] in ?? () from /lib/aarch64-linux-gnu/libudev.so.1
+#7  0x0000ffffb8924c80 [PAC] in ?? () from /lib/aarch64-linux-gnu/libudev.so.1
+#8  0x0000ffffb89177d8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libudev.so.1
+#9  0x0000ffffb890911c [PAC] in udev_device_get_tags_list_entry () from /lib/aarch64-linux-gnu/libudev.so.1
+#10 0x0000ffffb8e14d1c [PAC] in ?? () from /lib/aarch64-linux-gnu/libgudev-1.0.so.0
+#11 0x0000ffffb8e14f9c [PAC] in g_udev_client_query_by_device_number () from /lib/aarch64-linux-gnu/libgudev-1.0.so.0
+
+Thread 1 (Thread 0xffffb8e6b020 (LWP 34573) "udisksd"):
+#0  0x0000ffffb89a1308 in g_type_check_instance_is_fundamentally_a () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+#1  0x0000ffffb8986824 [PAC] in g_object_unref () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+#2  0x0000ffffb87398d8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libgio-2.0.so.0
+#3  0x0000ffffb86c1be0 [PAC] in ?? () from /lib/aarch64-linux-gnu/libgio-2.0.so.0
+#4  0x0000ffffb8986b0c [PAC] in g_object_unref () from /lib/aarch64-linux-gnu/libgobject-2.0.so.0
+#5  0x0000ffffb84d47fc [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#6  0x0000ffffb84ddbc8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#7  0x0000ffffb84df860 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#8  0x0000ffffb8541ae8 [PAC] in ?? () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#9  0x0000ffffb84e02b0 [PAC] in g_main_loop_run () from /lib/aarch64-linux-gnu/libglib-2.0.so.0
+#10 0x0000aaaacecae5d8 [PAC] in main ()
+[Inferior 1 (process 34573) detached]
+
+== strace execve evidence ==
+execve("/usr/local/sbin/e2fsck", ["e2fsck", "-f", "-y", "-C", "1", "/dev/loop1"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=ddefc116df2441f68248e10561928c50", "JOURNAL_STREAM=9:610335", "SYSTEMD_EXEC_PID=34792", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = -1 ENOENT (No such file or directory)
+execve("/usr/local/bin/e2fsck", ["e2fsck", "-f", "-y", "-C", "1", "/dev/loop1"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=ddefc116df2441f68248e10561928c50", "JOURNAL_STREAM=9:610335", "SYSTEMD_EXEC_PID=34792", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = -1 ENOENT (No such file or directory)
+execve("/usr/sbin/e2fsck", ["e2fsck", "-f", "-y", "-C", "1", "/dev/loop1"], ["LANG=C.UTF-8", "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin", "USER=root", "INVOCATION_ID=ddefc116df2441f68248e10561928c50", "JOURNAL_STREAM=9:610335", "SYSTEMD_EXEC_PID=34792", "MEMORY_PRESSURE_WATCH=/sys/fs/cgroup/docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service/memory.pressure", "MEMORY_PRESSURE_WRITE=c29tZSAyMDAwMDAgMjAwMDAwMAA=", "GIO_USE_VFS=local", "LC_ALL=C.UTF-8"]) = 0
+--- strace attach stderr ---
+strace: Process 34792 attached with 7 threads
+strace: Process 34932 attached
+
+== journal crash evidence ==
+May 17 19:38:09 bf51bb670420 udisksd[32311]: udisks daemon version 2.10.1 exiting
+May 17 19:38:09 bf51bb670420 udisksd[33875]: udisks daemon version 2.10.1 starting
+May 17 19:38:09 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:38:16 bf51bb670420 udisksd[33875]: udisks daemon version 2.10.1 exiting
+May 17 19:38:16 bf51bb670420 udisksd[34000]: udisks daemon version 2.10.1 starting
+May 17 19:38:17 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:38:19 bf51bb670420 udisksd[34000]: Set up loop device /dev/loop0 (backed by /home/attacker/udisks-filesystem-mounted-uaf-20260517/Check.ext4.img)
+May 17 19:38:20 bf51bb670420 udisksd[34000]: Mounted /dev/loop0 at /media/attacker/UAFCheck on behalf of uid 1001
+May 17 19:38:20 bf51bb670420 systemd[1]: udisks2.service: Main process exited, code=killed, status=11/SEGV
+May 17 19:38:28 bf51bb670420 udisksd[34193]: udisks daemon version 2.10.1 starting
+May 17 19:38:29 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:38:29 bf51bb670420 udisksd[34193]: udisks daemon version 2.10.1 exiting
+May 17 19:38:29 bf51bb670420 udisksd[34208]: udisks daemon version 2.10.1 starting
+May 17 19:38:29 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:38:31 bf51bb670420 udisksd[34208]: Set up loop device /dev/loop1 (backed by /home/attacker/udisks-filesystem-mounted-uaf-20260517/Repair.ext4.img)
+May 17 19:38:32 bf51bb670420 udisksd[34208]: Mounted /dev/loop1 at /media/attacker/UAFRepair on behalf of uid 1001
+May 17 19:38:32 bf51bb670420 systemd[1]: udisks2.service: Main process exited, code=killed, status=11/SEGV
+May 17 19:38:40 bf51bb670420 udisksd[34407]: udisks daemon version 2.10.1 starting
+May 17 19:38:40 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:38:41 bf51bb670420 udisksd[34407]: udisks daemon version 2.10.1 exiting
+May 17 19:38:41 bf51bb670420 udisksd[34450]: udisks daemon version 2.10.1 starting
+May 17 19:38:41 bf51bb670420 udisksd[34450]: udisks_state_check_loop_entry: unexpected name for /dev/loop0 - expected `/home/attacker/udisks-filesystem-mounted-uaf-20260517/Check.ext4.img' but got `/home/attacker/udisks-filesystem-mounted-uaf-20260517/Check.ext4.img (deleted)'
+May 17 19:38:41 bf51bb670420 udisksd[34450]: udisks_state_check_loop_entry: unexpected name for /dev/loop1 - expected `/home/attacker/udisks-filesystem-mounted-uaf-20260517/Repair.ext4.img' but got `/home/attacker/udisks-filesystem-mounted-uaf-20260517/Repair.ext4.img (deleted)'
+May 17 19:38:41 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:38:51 bf51bb670420 systemd[1]: udisks2.service: Main process exited, code=killed, status=11/SEGV
+May 17 19:38:52 bf51bb670420 udisksd[34525]: udisks daemon version 2.10.1 starting
+May 17 19:38:52 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:39:20 bf51bb670420 udisksd[34525]: udisks daemon version 2.10.1 exiting
+May 17 19:39:20 bf51bb670420 udisksd[34573]: udisks daemon version 2.10.1 starting
+May 17 19:39:20 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:39:23 bf51bb670420 udisksd[34573]: Set up loop device /dev/loop0 (backed by /home/attacker/udisks-filesystem-mounted-uaf-20260517/Check.ext4.img)
+May 17 19:39:25 bf51bb670420 udisksd[34573]: Mounted /dev/loop0 at /media/attacker/UAFCheck on behalf of uid 1001
+May 17 19:39:25 bf51bb670420 systemd[1]: udisks2.service: Main process exited, code=killed, status=11/SEGV
+May 17 19:39:33 bf51bb670420 udisksd[34777]: udisks daemon version 2.10.1 starting
+May 17 19:39:33 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:39:33 bf51bb670420 udisksd[34777]: udisks daemon version 2.10.1 exiting
+May 17 19:39:33 bf51bb670420 udisksd[34792]: udisks daemon version 2.10.1 starting
+May 17 19:39:33 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:39:35 bf51bb670420 udisksd[34792]: Set up loop device /dev/loop1 (backed by /home/attacker/udisks-filesystem-mounted-uaf-20260517/Repair.ext4.img)
+May 17 19:39:36 bf51bb670420 udisksd[34792]: Mounted /dev/loop1 at /media/attacker/UAFRepair on behalf of uid 1001
+May 17 19:39:36 bf51bb670420 systemd[1]: udisks2.service: Main process exited, code=killed, status=11/SEGV
+May 17 19:39:45 bf51bb670420 udisksd[34943]: udisks daemon version 2.10.1 starting
+May 17 19:39:46 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+
+== root proof check before cleanup ==
+ABSENT /root/udisks_filesystem_mounted_uaf_root
+ABSENT /run/udisks_filesystem_mounted_uaf_root
+ABSENT /tmp/udisks_filesystem_mounted_uaf_root
+ROOT_PROOF=NO
+
+== cleanup proof ==
+ABSENT /tmp/udisks-filesystem-mounted-uaf-20260517
+ABSENT /home/attacker/udisks-filesystem-mounted-uaf-20260517
+ABSENT /root/udisks_filesystem_mounted_uaf_root
+ABSENT /run/udisks_filesystem_mounted_uaf_root
+ABSENT /tmp/udisks_filesystem_mounted_uaf_root
+udisks2_active=active
+failed_units:
+our_loop_devices:
+none
+our_mounts:
+none
+
+wrote /Users/andrewmohawk/Documents/UbuntuLPE/ubuntu24-server-lpe/logs/udisks-filesystem-mounted-uaf-20260517.out
+
+== post-run helper path ownership proof ==
+drwxr-xr-x 755 root:root directory /usr/local/sbin
+drwxr-xr-x 755 root:root directory /usr/local/bin
+drwxr-xr-x 755 root:root directory /usr/sbin
+drwxr-xr-x 755 root:root directory /usr/bin
+stat: cannot statx '/snap/bin': No such file or directory
+-rwxr-xr-x 755 root:root regular file /usr/sbin/e2fsck
+-rwxr-xr-x 755 root:root regular file /usr/libexec/udisks2/udisksd
+
+== post-run external health proof ==
+udisks2=active
+failed_units_start
+failed_units_end
+loops=0
+mounts=0

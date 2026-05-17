@@ -1,0 +1,75 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PackageKit package.
+#
+# Translators:
+# zayed <zayed.alsaidi@gmail.com>, 2022
+msgid ""
+msgstr ""
+"Project-Id-Version: PackageKit\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Arabic (http://app.transifex.com/freedesktop/packagekit/language/ar/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+msgid "Authentication is required to accept a EULA"
+msgstr "الاستيثاق مطلوب للموافقة على اتفاقية الترخيص للمستخدم النهائي"
+
+msgid "Authentication is required to cancel a task that was not started by yourself"
+msgstr "الاستيثاق مطلوب لإلغاء مَهمة بُدأت بواسطة"
+
+msgid "Authentication is required to change software repository parameters"
+msgstr "الاستيثاق مطلوب لتغير مُعامِلات مستودع البرامج"
+
+msgid "Authentication is required to clear the offline updates message"
+msgstr "الاستيثاق مطلوب لمسح رسائل التحديث في أثناء إقلاع النظام "
+
+msgid "Authentication is required to consider a key used for signing software as trusted"
+msgstr "الاستيثاق مطلوب لاعتبار مفتاح يستخدم لتوقيع البرامج على أنه موثوق به"
+
+msgid "Authentication is required to downgrade software"
+msgstr "الاستيثاق مطلوب لإعادة تثبيت برنامَج لإصدارة أقدم"
+
+msgid "Authentication is required to install software"
+msgstr "الاستيثاق مطلوب لتثبيت برنامج"
+
+msgid "Authentication is required to install untrusted software"
+msgstr "الاستيثاق مطلوب لتثبيت برنامَج غير موثوق"
+
+msgid "Authentication is required to refresh the system repositories"
+msgstr "الاستيثاق مطلوب لتحديث مستودعات النظام"
+
+msgid "Authentication is required to reinstall software"
+msgstr "الاستيثاق مطلوب لإعادة تثبيت برنامَج"
+
+msgid "Authentication is required to remove software"
+msgstr "الاستيثاق مطلوب لإزالة برنامَج"
+
+msgid "Authentication is required to repair the installed software"
+msgstr "الاستيثاق مطلوب لإصلاح البرامج المثبتة"
+
+msgid "Authentication is required to set the network proxy used for downloading software"
+msgstr "الاستيثاق مطلوب لتعيين وكيل شبكة سيستخدم لتنزيل البرامج"
+
+msgid "Authentication is required to trigger offline updates"
+msgstr "الاستيثاق مطلوب لإطلاق التحديث في أثناء إقلاع النظام "
+
+msgid "Authentication is required to update software"
+msgstr "الاستيثاق مطلوب لتحديث برنامَج"
+
+msgid "Authentication is required to upgrade the operating system"
+msgstr "الاستيثاق مطلوب لتحديث النظام التشغيلي"
+
+#. TRANSLATORS: this is the author of the backend
+msgid "Author"
+msgstr "المؤلف"
+
+msgid "Automatically remove unused dependencies"
+msgstr "أزل الاعتماديات غير المستعملة بشكل آلي"
+
+#. TRANSLATORS: transaction state, waiting for user to type in a password
+msgid "Waiting for authentication"
+msgstr "في انتظار الاستيثاق"

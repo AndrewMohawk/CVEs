@@ -1,0 +1,1518 @@
+
+### host scope
+repo=/Users/andrewmohawk/Documents/UbuntuLPE/ubuntu24-server-lpe
+container=ubuntu24-server-lpe-target
+container=ubuntu24-server-lpe-target image=ubuntu24-server-default-lpe:20260516-standard status=Up 2 hours
+
+### target baseline
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+Linux bf51bb670420 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+
+$ id attacker
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+[rc=0]
+
+$ groups attacker
+attacker : attacker
+[rc=0]
+
+$ systemctl is-system-running
+running
+[rc=0]
+apt	2.8.3	ii 
+cloud-init		un 
+cron	3.0pl1-184ubuntu2	ii 
+dpkg	1.22.6ubuntu6.6	ii 
+logrotate	3.21.0-2build1	ii 
+needrestart	3.6-7ubuntu4.5	ii 
+systemd	255.4-1ubuntu8.15	ii 
+ubuntu-advantage-tools		un 
+ubuntu-pro-client	37.2ubuntu~24.04	ii 
+ubuntu-release-upgrader-core	1:24.04.28	ii 
+unattended-upgrades	2.9.1+nmu4ubuntu1	ii 
+update-manager-core	1:24.04.12	ii 
+update-notifier-common	3.192.68.2	ii 
+
+### default maintenance timers and path units
+
+$ systemctl list-timers --all --no-pager
+NEXT                                 LEFT LAST                              PASSED UNIT                           ACTIVATES
+Sun 2026-05-17 20:30:00 UTC          9min Sun 2026-05-17 20:20:05 UTC      11s ago sysstat-collect.timer          sysstat-collect.service
+Mon 2026-05-18 00:00:00 UTC      3h 39min Sun 2026-05-17 01:13:58 UTC            - dpkg-db-backup.timer           dpkg-db-backup.service
+Mon 2026-05-18 00:00:00 UTC      3h 39min Sun 2026-05-17 01:13:58 UTC            - logrotate.timer                logrotate.service
+Mon 2026-05-18 00:07:00 UTC      3h 46min -                                      - sysstat-summary.timer          sysstat-summary.service
+Mon 2026-05-18 06:08:09 UTC            9h Sun 2026-05-17 08:21:07 UTC            - apt-daily-upgrade.timer        apt-daily-upgrade.service
+Mon 2026-05-18 08:29:33 UTC           12h Sun 2026-05-17 03:45:16 UTC            - man-db.timer                   man-db.service
+Mon 2026-05-18 08:32:24 UTC           12h Sun 2026-05-17 18:03:03 UTC            - apt-daily.timer                apt-daily.service
+Mon 2026-05-18 09:39:46 UTC           13h Sun 2026-05-17 18:31:04 UTC 1h 49min ago motd-news.timer                motd-news.service
+Mon 2026-05-18 18:36:21 UTC           22h Sun 2026-05-17 18:36:21 UTC 1h 43min ago systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service
+Mon 2026-05-18 19:51:16 UTC           23h Sun 2026-05-17 18:26:28 UTC 1h 53min ago update-notifier-download.timer update-notifier-download.service
+Sun 2026-05-24 03:10:29 UTC        6 days Sun 2026-05-17 03:15:54 UTC            - e2scrub_all.timer              e2scrub_all.service
+Mon 2026-05-25 09:43:10 UTC 1 week 0 days Sun 2026-05-17 16:58:32 UTC            - update-notifier-motd.timer     update-notifier-motd.service
+-                                       - -                                      - apport-autoreport.timer        apport-autoreport.service
+-                                       - -                                      - fstrim.timer                   fstrim.service
+-                                       - -                                      - fwupd-refresh.timer            fwupd-refresh.service
+-                                       - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service
+-                                       - -                                      - ua-timer.timer                 ua-timer.service
+
+17 timers listed.
+[rc=0]
+
+$ systemctl list-units --type=path --all --no-pager
+  UNIT                               LOAD      ACTIVE   SUB     DESCRIPTION
+  apport-autoreport.path             loaded    inactive dead    Process error reports when automatic reporting is enabled (file watch)
+  systemd-ask-password-console.path  loaded    active   waiting Dispatch Password Requests to Console Directory Watch
+  systemd-ask-password-plymouth.path loaded    inactive dead    Forward Password Requests to Plymouth Directory Watch
+  systemd-ask-password-wall.path     loaded    active   waiting Forward Password Requests to Wall Directory Watch
+● whoopsie.path                      not-found inactive dead    whoopsie.path
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+5 loaded units listed.
+To show all installed unit files use 'systemctl list-unit-files'.
+[rc=0]
+--- apt-daily.service
+ExecStart={ path=/usr/lib/apt/apt.systemd.daily ; argv[]=/usr/lib/apt/apt.systemd.daily update ; ignore_errors=no ; start_time=[Sun 2026-05-17 19:51:17 UTC] ; stop_time=[Sun 2026-05-17 19:51:17 UTC] ; pid=69140 ; code=exited ; status=0 }
+User=
+Id=apt-daily.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/apt-daily.service
+UnitFileState=static
+ConditionResult=yes
+--- apt-daily-upgrade.service
+ExecStart={ path=/usr/lib/apt/apt.systemd.daily ; argv[]=/usr/lib/apt/apt.systemd.daily install ; ignore_errors=no ; start_time=[Sun 2026-05-17 19:51:17 UTC] ; stop_time=[Sun 2026-05-17 19:51:17 UTC] ; pid=69155 ; code=exited ; status=0 }
+User=
+Id=apt-daily-upgrade.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/apt-daily-upgrade.service
+UnitFileState=static
+ConditionResult=yes
+--- dpkg-db-backup.service
+ExecStart={ path=/usr/libexec/dpkg/dpkg-db-backup ; argv[]=/usr/libexec/dpkg/dpkg-db-backup ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Id=dpkg-db-backup.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/dpkg-db-backup.service
+UnitFileState=static
+ConditionResult=no
+--- logrotate.service
+ExecStart={ path=/usr/sbin/logrotate ; argv[]=/usr/sbin/logrotate /etc/logrotate.conf ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Id=logrotate.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/logrotate.service
+UnitFileState=static
+ConditionResult=no
+--- man-db.service
+ExecStart={ path=/usr/bin/install ; argv[]=/usr/bin/install -d -o man -g man -m 0755 /var/cache/man ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/bin/mandb ; argv[]=/usr/bin/mandb --quiet ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=man
+Id=man-db.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/man-db.service
+UnitFileState=static
+ConditionResult=no
+--- motd-news.service
+ExecStart={ path=/etc/update-motd.d/50-motd-news ; argv[]=/etc/update-motd.d/50-motd-news --force ; ignore_errors=no ; start_time=[Sun 2026-05-17 19:51:16 UTC] ; stop_time=[Sun 2026-05-17 19:51:17 UTC] ; pid=69105 ; code=exited ; status=0 }
+User=
+Id=motd-news.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/motd-news.service
+UnitFileState=static
+ConditionResult=yes
+--- sysstat-collect.service
+ExecStart={ path=/usr/lib/sysstat/sa1 ; argv[]=/usr/lib/sysstat/sa1 1 1 ; ignore_errors=no ; start_time=[Sun 2026-05-17 20:20:07 UTC] ; stop_time=[Sun 2026-05-17 20:20:09 UTC] ; pid=75465 ; code=exited ; status=0 }
+User=root
+Id=sysstat-collect.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/sysstat-collect.service
+UnitFileState=static
+ConditionResult=yes
+--- sysstat-summary.service
+ExecStart={ path=/usr/lib/sysstat/sa2 ; argv[]=/usr/lib/sysstat/sa2 -A ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=root
+Id=sysstat-summary.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/sysstat-summary.service
+UnitFileState=static
+ConditionResult=no
+--- systemd-tmpfiles-clean.service
+ExecStart={ path=systemd-tmpfiles ; argv[]=systemd-tmpfiles --clean ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Id=systemd-tmpfiles-clean.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/systemd-tmpfiles-clean.service
+UnitFileState=static
+ConditionResult=yes
+--- update-notifier-download.service
+ExecStart={ path=/usr/lib/update-notifier/package-data-downloader ; argv[]=/usr/lib/update-notifier/package-data-downloader ; ignore_errors=no ; start_time=[Sun 2026-05-17 19:51:16 UTC] ; stop_time=[Sun 2026-05-17 19:51:16 UTC] ; pid=69094 ; code=exited ; status=0 }
+User=
+Id=update-notifier-download.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/update-notifier-download.service
+UnitFileState=static
+ConditionResult=yes
+--- update-notifier-motd.service
+ExecStart={ path=/usr/lib/ubuntu-release-upgrader/release-upgrade-motd ; argv[]=/usr/lib/ubuntu-release-upgrader/release-upgrade-motd ; ignore_errors=no ; start_time=[Sun 2026-05-17 19:51:16 UTC] ; stop_time=[Sun 2026-05-17 19:51:16 UTC] ; pid=69098 ; code=exited ; status=0 }
+User=
+Id=update-notifier-motd.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/update-notifier-motd.service
+UnitFileState=static
+ConditionResult=yes
+--- ua-timer.service
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/lib/ubuntu-advantage/timer.py ; ignore_errors=no ; start_time=[Sun 2026-05-17 19:51:16 UTC] ; stop_time=[Sun 2026-05-17 19:51:16 UTC] ; pid=69090 ; code=exited ; status=0 }
+User=
+Id=ua-timer.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/ua-timer.service
+UnitFileState=static
+ConditionResult=yes
+--- unattended-upgrades.service
+ExecStart={ path=/usr/share/unattended-upgrades/unattended-upgrade-shutdown ; argv[]=/usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Id=unattended-upgrades.service
+LoadState=loaded
+ActiveState=active
+FragmentPath=/usr/lib/systemd/system/unattended-upgrades.service
+UnitFileState=enabled
+ConditionResult=yes
+--- apport-autoreport.service
+ExecStart={ path=/usr/share/apport/whoopsie-upload-all ; argv[]=/usr/share/apport/whoopsie-upload-all --timeout 20 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Id=apport-autoreport.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/apport-autoreport.service
+UnitFileState=static
+ConditionResult=no
+--- systemd-ask-password-wall.service
+ExecStart={ path=systemd-tty-ask-password-agent ; argv[]=systemd-tty-ask-password-agent --wall ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Id=systemd-ask-password-wall.service
+LoadState=loaded
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/systemd-ask-password-wall.service
+UnitFileState=static
+ConditionResult=no
+--- apport-autoreport.path
+# /usr/lib/systemd/system/apport-autoreport.path
+[Unit]
+Description=Process error reports when automatic reporting is enabled (file watch)
+ConditionPathExists=/var/lib/apport/autoreport
+
+[Path]
+PathChanged=/var/crash
+
+[Install]
+WantedBy=paths.target
+--- systemd-ask-password-wall.path
+# /usr/lib/systemd/system/systemd-ask-password-wall.path
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Forward Password Requests to Wall Directory Watch
+Documentation=man:systemd-ask-password-wall.path(8)
+
+DefaultDependencies=no
+Before=paths.target cryptsetup.target
+Conflicts=emergency.service
+Before=emergency.service
+Conflicts=shutdown.target
+Before=shutdown.target
+
+[Path]
+DirectoryNotEmpty=/run/systemd/ask-password
+MakeDirectory=yes
+
+### root-owned input and state paths
+drwxr-xr-x root:root /etc/apt/apt.conf.d type=directory
+drwxr-xr-x root:root /etc/needrestart type=directory
+drwxr-xr-x root:root /etc/needrestart/conf.d type=directory
+drwxr-xr-x root:root /etc/cron.d type=directory
+drwxr-xr-x root:root /etc/cron.daily type=directory
+drwxr-xr-x root:root /etc/logrotate.d type=directory
+drwxr-xr-x root:root /etc/tmpfiles.d type=directory
+drwxr-xr-x root:root /usr/lib/tmpfiles.d type=directory
+drwxr-xr-x root:root /usr/share/package-data-downloads type=directory
+drwxr-xr-x root:root /var/lib/update-notifier type=directory
+drwxr-xr-x root:root /var/lib/update-notifier/package-data-downloads type=directory
+drwx------ _apt:root /var/lib/update-notifier/package-data-downloads/partial type=directory
+drwxr-xr-x root:root /var/lib/ubuntu-advantage type=directory
+drwxr-xr-x root:root /var/lib/ubuntu-release-upgrader type=directory
+drwxr-xr-x root:root /var/lib/update-manager type=directory
+drwxr-xr-x root:root /var/lib/apt type=directory
+drwx------ _apt:root /var/lib/apt/lists/partial type=directory
+drwxr-xr-x root:root /var/cache/apt type=directory
+drwx------ _apt:root /var/cache/apt/archives/partial type=directory
+drwxr-xr-x root:root /var/log/apt type=directory
+drwxr-x--- root:adm /var/log/unattended-upgrades type=directory
+drwxr-xr-x root:root /var/lib/dpkg type=directory
+drwxr-xr-x root:root /var/backups type=directory
+drwxr-xr-x root:root /run/systemd/ask-password type=directory
+drwxr-xr-x root:root /var/lib/apport type=directory
+drwx-wx--T root:crontab /var/spool/cron/crontabs type=directory
+drwxrwxr-x root:syslog /var/log type=directory
+drwxr-xr-x root:root /var/log/sysstat type=directory
+drwxr-xr-x man:man /var/cache/man type=directory
+drwxr-xr-x root:root /run/needrestart type=directory
+drwxr-xr-x root:root /run type=directory
+drwxrwxrwt root:root /tmp type=directory
+drwxrwxrwt root:root /var/tmp type=directory
+drwxrwxrwt root:utmp /run/screen type=directory
+
+### attacker write gates
+
+$ attacker: p='/etc/apt/apt.conf.d'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/etc/apt/apt.conf.d/agent_maint_write_test': Permission denied
+NO_WRITE:/etc/apt/apt.conf.d
+[attacker rc=0]
+
+$ attacker: p='/etc/needrestart'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/etc/needrestart/agent_maint_write_test': Permission denied
+NO_WRITE:/etc/needrestart
+[attacker rc=0]
+
+$ attacker: p='/etc/needrestart/conf.d'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/etc/needrestart/conf.d/agent_maint_write_test': Permission denied
+NO_WRITE:/etc/needrestart/conf.d
+[attacker rc=0]
+
+$ attacker: p='/etc/cron.d'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/etc/cron.d/agent_maint_write_test': Permission denied
+NO_WRITE:/etc/cron.d
+[attacker rc=0]
+
+$ attacker: p='/etc/cron.daily'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/etc/cron.daily/agent_maint_write_test': Permission denied
+NO_WRITE:/etc/cron.daily
+[attacker rc=0]
+
+$ attacker: p='/etc/logrotate.d'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/etc/logrotate.d/agent_maint_write_test': Permission denied
+NO_WRITE:/etc/logrotate.d
+[attacker rc=0]
+
+$ attacker: p='/etc/tmpfiles.d'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/etc/tmpfiles.d/agent_maint_write_test': Permission denied
+NO_WRITE:/etc/tmpfiles.d
+[attacker rc=0]
+
+$ attacker: p='/usr/lib/tmpfiles.d'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/usr/lib/tmpfiles.d/agent_maint_write_test': Permission denied
+NO_WRITE:/usr/lib/tmpfiles.d
+[attacker rc=0]
+
+$ attacker: p='/usr/share/package-data-downloads'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/usr/share/package-data-downloads/agent_maint_write_test': Permission denied
+NO_WRITE:/usr/share/package-data-downloads
+[attacker rc=0]
+
+$ attacker: p='/var/lib/update-notifier'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/lib/update-notifier/agent_maint_write_test': Permission denied
+NO_WRITE:/var/lib/update-notifier
+[attacker rc=0]
+
+$ attacker: p='/var/lib/update-notifier/package-data-downloads'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/lib/update-notifier/package-data-downloads/agent_maint_write_test': Permission denied
+NO_WRITE:/var/lib/update-notifier/package-data-downloads
+[attacker rc=0]
+
+$ attacker: p='/var/lib/update-notifier/package-data-downloads/partial'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/lib/update-notifier/package-data-downloads/partial/agent_maint_write_test': Permission denied
+NO_WRITE:/var/lib/update-notifier/package-data-downloads/partial
+[attacker rc=0]
+
+$ attacker: p='/var/lib/ubuntu-advantage'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/lib/ubuntu-advantage/agent_maint_write_test': Permission denied
+NO_WRITE:/var/lib/ubuntu-advantage
+[attacker rc=0]
+
+$ attacker: p='/var/lib/ubuntu-release-upgrader'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/lib/ubuntu-release-upgrader/agent_maint_write_test': Permission denied
+NO_WRITE:/var/lib/ubuntu-release-upgrader
+[attacker rc=0]
+
+$ attacker: p='/var/lib/update-manager'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/lib/update-manager/agent_maint_write_test': Permission denied
+NO_WRITE:/var/lib/update-manager
+[attacker rc=0]
+
+$ attacker: p='/var/lib/apt'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/lib/apt/agent_maint_write_test': Permission denied
+NO_WRITE:/var/lib/apt
+[attacker rc=0]
+
+$ attacker: p='/var/lib/apt/lists/partial'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/lib/apt/lists/partial/agent_maint_write_test': Permission denied
+NO_WRITE:/var/lib/apt/lists/partial
+[attacker rc=0]
+
+$ attacker: p='/var/cache/apt'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/cache/apt/agent_maint_write_test': Permission denied
+NO_WRITE:/var/cache/apt
+[attacker rc=0]
+
+$ attacker: p='/var/cache/apt/archives/partial'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/cache/apt/archives/partial/agent_maint_write_test': Permission denied
+NO_WRITE:/var/cache/apt/archives/partial
+[attacker rc=0]
+
+$ attacker: p='/var/log/apt'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/log/apt/agent_maint_write_test': Permission denied
+NO_WRITE:/var/log/apt
+[attacker rc=0]
+
+$ attacker: p='/var/log/unattended-upgrades'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/log/unattended-upgrades/agent_maint_write_test': Permission denied
+NO_WRITE:/var/log/unattended-upgrades
+[attacker rc=0]
+
+$ attacker: p='/var/lib/dpkg'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/lib/dpkg/agent_maint_write_test': Permission denied
+NO_WRITE:/var/lib/dpkg
+[attacker rc=0]
+
+$ attacker: p='/var/backups'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/backups/agent_maint_write_test': Permission denied
+NO_WRITE:/var/backups
+[attacker rc=0]
+
+$ attacker: p='/run/systemd/ask-password'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/run/systemd/ask-password/agent_maint_write_test': Permission denied
+NO_WRITE:/run/systemd/ask-password
+[attacker rc=0]
+
+$ attacker: p='/var/lib/apport'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/lib/apport/agent_maint_write_test': Permission denied
+NO_WRITE:/var/lib/apport
+[attacker rc=0]
+
+$ attacker: p='/var/spool/cron/crontabs'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/spool/cron/crontabs/agent_maint_write_test': Permission denied
+NO_WRITE:/var/spool/cron/crontabs
+[attacker rc=0]
+
+$ attacker: p='/var/log'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/log/agent_maint_write_test': Permission denied
+NO_WRITE:/var/log
+[attacker rc=0]
+
+$ attacker: p='/var/log/sysstat'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/log/sysstat/agent_maint_write_test': Permission denied
+NO_WRITE:/var/log/sysstat
+[attacker rc=0]
+
+$ attacker: p='/var/cache/man'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/var/cache/man/agent_maint_write_test': Permission denied
+NO_WRITE:/var/cache/man
+[attacker rc=0]
+
+$ attacker: p='/run/needrestart'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/run/needrestart/agent_maint_write_test': Permission denied
+NO_WRITE:/run/needrestart
+[attacker rc=0]
+
+$ attacker: p='/run'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+touch: cannot touch '/run/agent_maint_write_test': Permission denied
+NO_WRITE:/run
+[attacker rc=0]
+
+$ attacker: p='/tmp'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+WRITABLE:/tmp
+[attacker rc=0]
+
+$ attacker: p='/var/tmp'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+WRITABLE:/var/tmp
+[attacker rc=0]
+
+$ attacker: p='/run/screen'; if [ -d "$p" ]; then touch "$p/agent_maint_write_test" && rm -f "$p/agent_maint_write_test" && echo WRITABLE:$p || echo NO_WRITE:$p; else echo MISSING_OR_NOT_DIR:$p; fi
+WRITABLE:/run/screen
+[attacker rc=0]
+
+$ attacker: printf 'DPkg::Post-Invoke {"/bin/sh -c \"id > /root/agent_maint_glue_root_marker\"";};\n' >/etc/apt/apt.conf.d/99agent-maint
+bash: line 1: /etc/apt/apt.conf.d/99agent-maint: Permission denied
+[attacker rc=1]
+
+$ attacker: printf 'Script: /home/attacker/agent_maint_glue/hit.sh\n' >/usr/share/package-data-downloads/agent-maint
+bash: line 1: /usr/share/package-data-downloads/agent-maint: Permission denied
+[attacker rc=1]
+
+$ attacker: ln -s /root/agent_maint_glue_root_marker /var/lib/update-notifier/package-data-downloads/agent-maint
+ln: failed to create symbolic link '/var/lib/update-notifier/package-data-downloads/agent-maint': Permission denied
+[attacker rc=1]
+
+$ attacker: mkdir -p /run/needrestart && touch /run/needrestart/unpacked
+touch: cannot touch '/run/needrestart/unpacked': Permission denied
+[attacker rc=1]
+
+$ attacker: touch /run/systemd/ask-password/agent-maint
+touch: cannot touch '/run/systemd/ask-password/agent-maint': Permission denied
+[attacker rc=1]
+
+$ attacker: mkdir -p /var/lib/apport/autoreport
+mkdir: cannot create directory '/var/lib/apport/autoreport': Permission denied
+[attacker rc=1]
+
+### cron and anacron defaults
+
+$ command -v anacron
+[rc=1]
+
+$ systemctl cat cron.service
+# /usr/lib/systemd/system/cron.service
+[Unit]
+Description=Regular background program processing daemon
+Documentation=man:cron(8)
+After=remote-fs.target nss-user-lookup.target
+
+[Service]
+EnvironmentFile=-/etc/default/cron
+ExecStart=/usr/sbin/cron -f -P $EXTRA_OPTS
+IgnoreSIGPIPE=false
+KillMode=process
+Restart=on-failure
+SyslogFacility=cron
+
+[Install]
+WantedBy=multi-user.target
+[rc=0]
+
+$ nl -ba /etc/crontab
+     1	# /etc/crontab: system-wide crontab
+     2	# Unlike any other crontab you don't have to run the `crontab'
+     3	# command to install the new version when you edit this file
+     4	# and files in /etc/cron.d. These files also have username fields,
+     5	# that none of the other crontabs do.
+     6	
+     7	SHELL=/bin/sh
+     8	# You can also override PATH, but by default, newer versions inherit it from the environment
+     9	#PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    10	
+    11	# Example of job definition:
+    12	# .---------------- minute (0 - 59)
+    13	# |  .------------- hour (0 - 23)
+    14	# |  |  .---------- day of month (1 - 31)
+    15	# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+    16	# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+    17	# |  |  |  |  |
+    18	# *  *  *  *  * user-name command to be executed
+    19	17 *	* * *	root	cd / && run-parts --report /etc/cron.hourly
+    20	25 6	* * *	root	test -x /usr/sbin/anacron || { cd / && run-parts --report /etc/cron.daily; }
+    21	47 6	* * 7	root	test -x /usr/sbin/anacron || { cd / && run-parts --report /etc/cron.weekly; }
+    22	52 6	1 * *	root	test -x /usr/sbin/anacron || { cd / && run-parts --report /etc/cron.monthly; }
+    23	#
+[rc=0]
+
+$ find /etc/cron.d /etc/cron.daily /etc/cron.weekly -maxdepth 1 -printf %M\ %u:%g\ %p\ -\>\ %l\\n
+drwxr-xr-x root:root /etc/cron.d -> 
+-rw-r--r-- root:root /etc/cron.d/e2scrub_all -> 
+-rw-r--r-- root:root /etc/cron.d/sysstat -> 
+-rw-r--r-- root:root /etc/cron.d/.placeholder -> 
+drwxr-xr-x root:root /etc/cron.daily -> 
+-rwxr-xr-x root:root /etc/cron.daily/apt-compat -> 
+-rwxr-xr-x root:root /etc/cron.daily/dpkg -> 
+-rwxr-xr-x root:root /etc/cron.daily/logrotate -> 
+-rwxr-xr-x root:root /etc/cron.daily/apport -> 
+-rwxr-xr-x root:root /etc/cron.daily/sysstat -> 
+-rwxr-xr-x root:root /etc/cron.daily/man-db -> 
+-rw-r--r-- root:root /etc/cron.daily/.placeholder -> 
+drwxr-xr-x root:root /etc/cron.weekly -> 
+-rwxr-xr-x root:root /etc/cron.weekly/man-db -> 
+-rw-r--r-- root:root /etc/cron.weekly/.placeholder -> 
+[rc=0]
+--- /etc/cron.daily/apport
+--- /etc/cron.daily/apt-compat
+6:# run. We want to randomize the apt update and unattended-upgrade
+10:if [ -d /run/systemd/system ]; then
+16:    # laptop check, on_ac_power returns:
+32:# (some code taken from cron-apt, thanks)
+36:    eval $(apt-config shell RandomSleep APT::Periodic::RandomSleep)
+55:exec /usr/lib/apt/apt.systemd.daily
+--- /etc/cron.daily/dpkg
+4:if [ -d /run/systemd/system ]; then
+8:/usr/libexec/dpkg/dpkg-db-backup
+--- /etc/cron.daily/logrotate
+4:if [ -d /run/systemd/system ]; then
+9:if [ ! -x /usr/sbin/logrotate ]; then
+13:/usr/sbin/logrotate /etc/logrotate.conf
+16:    /usr/bin/logger -t logrotate "ALERT exited abnormally with [$EXITVALUE]"
+--- /etc/cron.daily/man-db
+7:if [ -d /run/systemd/system ]; then
+15:export PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
+40:if [ -x /usr/bin/mandb ]; then
+41:    # --pidfile /dev/null so it always starts; mandb isn't really a daemon,
+45:		      --startas /usr/bin/mandb --oknodo --chuid man \
+--- /etc/cron.daily/sysstat
+8:DEFAULT=/etc/default/sysstat
+13:[ ! -d /run/systemd/system ] || exit 0
+15:[ -x /usr/lib/sysstat/sa2 ] || exit 0
+22:exec /usr/lib/sysstat/sa2 -A
+--- /etc/cron.weekly/man-db
+7:if [ -d /run/systemd/system ]; then
+15:export PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
+30:if [ -x /usr/bin/mandb ]; then
+31:    # --pidfile /dev/null so it always starts; mandb isn't really a daemon,
+35:		      --startas /usr/bin/mandb --oknodo --chuid man \
+
+$ attacker: systemctl start cron.service
+Failed to start cron.service: Interactive authentication required.
+See system logs and 'systemctl status cron.service' for details.
+[attacker rc=1]
+
+### needrestart patched interpreter regression
+
+$ attacker: PYTHONPATH='/home/attacker/agent_maint_glue/needrestart/py' /usr/bin/python3 '/home/attacker/agent_maint_glue/needrestart/py/sleeper.py' >/tmp/agent_maint_nr_user.out 2>&1 & echo $! >'/home/attacker/agent_maint_glue/needrestart/py.pid'
+[attacker rc=0]
+marker after attacker-owned start:
+agentmod uid=1001 euid=1001
+
+$ /usr/sbin/needrestart -v -b -r l
+[main] eval /etc/needrestart/needrestart.conf
+[main] needrestart v3.6
+[main] running in root mode
+[main] systemd detected
+[main] vm detected
+[main] container detected
+NEEDRESTART-VER: 3.6
+[Core] #302 is a NeedRestart::Interp::Python
+[Python] #302: source=/usr/share/unattended-upgrades/unattended-upgrade-shutdown
+[Core] #75905 is a NeedRestart::Interp::Python
+[Python] #75905: source=/home/attacker/agent_maint_glue/needrestart/py/sleeper.py
+[main] inside container, skipping kernel checks
+[main] inside container or vm, skipping microcode checks
+[rc=0]
+marker after root needrestart:
+absent
+
+### apt, unattended-upgrades, update-notifier, ubuntu-pro triggers
+
+$ apt-config dump
+APT "";
+APT::Architecture "arm64";
+APT::Build-Essential "";
+APT::Build-Essential:: "build-essential";
+APT::Install-Recommends "1";
+APT::Install-Suggests "0";
+APT::Key "";
+APT::Key::Assert-Pubkey-Algo ">=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1";
+APT::Key::Assert-Pubkey-Algo::Next ">=rsa2048,ed25519,ed448,nistp256,nistp384,nistp512";
+APT::Key::Assert-Pubkey-Algo::Future ">=rsa3072,ed25519,ed448";
+APT::Sandbox "";
+APT::Sandbox::User "_apt";
+APT::NeverAutoRemove "";
+APT::NeverAutoRemove:: "^firmware-linux.*";
+APT::NeverAutoRemove:: "^linux-firmware$";
+APT::NeverAutoRemove:: "^linux-image-[a-z0-9]*$";
+APT::NeverAutoRemove:: "^linux-image-[a-z0-9]*-[a-z0-9]*$";
+APT::VersionedKernelPackages "";
+APT::VersionedKernelPackages:: "linux-.*";
+APT::VersionedKernelPackages:: "kfreebsd-.*";
+APT::VersionedKernelPackages:: "gnumach-.*";
+APT::VersionedKernelPackages:: ".*-modules";
+APT::VersionedKernelPackages:: ".*-kernel";
+APT::Never-MarkAuto-Sections "";
+APT::Never-MarkAuto-Sections:: "metapackages";
+APT::Never-MarkAuto-Sections:: "tasks";
+APT::Move-Autobit-Sections "";
+APT::Move-Autobit-Sections:: "oldlibs";
+APT::Periodic "";
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Download-Upgradeable-Packages "0";
+APT::Periodic::AutocleanInterval "0";
+APT::Periodic::Unattended-Upgrade "1";
+APT::Periodic::Enable "0";
+APT::Update "";
+APT::Update::Post-Invoke-Success "";
+APT::Update::Post-Invoke-Success:: "touch /var/lib/apt/periodic/update-success-stamp 2>/dev/null || true";
+APT::Update::Post-Invoke-Success:: "/usr/bin/test -e /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service && /usr/bin/test -S /var/run/dbus/system_bus_socket && /usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update > /dev/null; /bin/echo > /dev/null";
+APT::Update::Post-Invoke-Success:: "if /usr/bin/test -w /var/cache/swcatalog -a -e /usr/bin/appstreamcli; then appstreamcli refresh --source=os > /dev/null || true; fi";
+APT::Update::Post-Invoke-Success:: "if /usr/bin/test -w /var/lib/command-not-found/ -a -e /usr/lib/cnf-update-db; then /usr/lib/cnf-update-db > /dev/null; fi";
+APT::Update::Post-Invoke-Success:: "/usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";
+APT::Update::Pre-Invoke "";
+APT::Update::Pre-Invoke:: "[ ! -e /run/systemd/system ] || [ $(id -u) -ne 0 ] || systemctl start --no-block apt-news.service esm-cache.service >/dev/null 2>&1 || true";
+APT::Update::Post-Invoke "";
+APT::Update::Post-Invoke:: "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true";
+APT::Archives "";
+APT::Archives::MaxAge "30";
+APT::Archives::MinAge "2";
+APT::Archives::MaxSize "500";
+APT::AutoRemove "";
+APT::AutoRemove::SuggestsImportant "false";
+APT::Architectures "";
+APT::Architectures:: "arm64";
+APT::Compressor "";
+APT::Compressor::. "";
+APT::Compressor::.::Name ".";
+APT::Compressor::.::Extension "";
+APT::Compressor::.::Binary "";
+APT::Compressor::.::Cost "0";
+APT::Compressor::zstd "";
+APT::Compressor::zstd::Name "zstd";
+APT::Compressor::zstd::Extension ".zst";
+APT::Compressor::zstd::Binary "zstd";
+APT::Compressor::zstd::Cost "60";
+APT::Compressor::zstd::CompressArg "";
+APT::Compressor::zstd::CompressArg:: "-19";
+APT::Compressor::zstd::UncompressArg "";
+APT::Compressor::zstd::UncompressArg:: "-d";
+APT::Compressor::lz4 "";
+APT::Compressor::lz4::Name "lz4";
+APT::Compressor::lz4::Extension ".lz4";
+APT::Compressor::lz4::Binary "false";
+APT::Compressor::lz4::Cost "50";
+APT::Compressor::gzip "";
+APT::Compressor::gzip::Name "gzip";
+APT::Compressor::gzip::Extension ".gz";
+APT::Compressor::gzip::Binary "gzip";
+APT::Compressor::gzip::Cost "100";
+APT::Compressor::gzip::CompressArg "";
+APT::Compressor::gzip::CompressArg:: "-6n";
+APT::Compressor::gzip::UncompressArg "";
+APT::Compressor::gzip::UncompressArg:: "-d";
+APT::Compressor::xz "";
+APT::Compressor::xz::Name "xz";
+APT::Compressor::xz::Extension ".xz";
+APT::Compressor::xz::Binary "xz";
+APT::Compressor::xz::Cost "200";
+APT::Compressor::xz::CompressArg "";
+APT::Compressor::xz::CompressArg:: "-6";
+APT::Compressor::xz::UncompressArg "";
+APT::Compressor::xz::UncompressArg:: "-d";
+APT::Compressor::bzip2 "";
+APT::Compressor::bzip2::Name "bzip2";
+APT::Compressor::bzip2::Extension ".bz2";
+APT::Compressor::bzip2::Binary "bzip2";
+APT::Compressor::bzip2::Cost "300";
+APT::Compressor::bzip2::CompressArg "";
+APT::Compressor::bzip2::CompressArg:: "-6";
+APT::Compressor::bzip2::UncompressArg "";
+APT::Compressor::bzip2::UncompressArg:: "-d";
+APT::Compressor::lzma "";
+APT::Compressor::lzma::Name "lzma";
+APT::Compressor::lzma::Extension ".lzma";
+APT::Compressor::lzma::Binary "xz";
+APT::Compressor::lzma::Cost "400";
+APT::Compressor::lzma::CompressArg "";
+APT::Compressor::lzma::CompressArg:: "--format=lzma";
+APT::Compressor::lzma::CompressArg:: "-6";
+APT::Compressor::lzma::UncompressArg "";
+APT::Compressor::lzma::UncompressArg:: "--format=lzma";
+APT::Compressor::lzma::UncompressArg:: "-d";
+Dir "/";
+Dir::State "var/lib/apt";
+Dir::State::lists "lists/";
+Dir::State::cdroms "cdroms.list";
+Dir::State::extended_states "extended_states";
+Dir::State::status "/var/lib/dpkg/status";
+Dir::Cache "var/cache/apt";
+Dir::Cache::archives "archives/";
+Dir::Cache::srcpkgcache "";
+Dir::Cache::pkgcache "";
+Dir::Etc "etc/apt";
+Dir::Etc::sourcelist "sources.list";
+Dir::Etc::sourceparts "sources.list.d";
+Dir::Etc::main "apt.conf";
+Dir::Etc::netrc "auth.conf";
+Dir::Etc::netrcparts "auth.conf.d";
+Dir::Etc::parts "apt.conf.d";
+Dir::Etc::preferences "preferences";
+Dir::Etc::preferencesparts "preferences.d";
+Dir::Etc::trusted "trusted.gpg";
+Dir::Etc::trustedparts "trusted.gpg.d";
+Dir::Bin "";
+Dir::Bin::methods "/usr/lib/apt/methods";
+Dir::Bin::solvers "";
+Dir::Bin::solvers:: "/usr/lib/apt/solvers";
+Dir::Bin::planners "";
+Dir::Bin::planners:: "/usr/lib/apt/planners";
+Dir::Bin::dpkg "/usr/bin/dpkg";
+Dir::Bin::gzip "/bin/gzip";
+Dir::Bin::bzip2 "/bin/bzip2";
+Dir::Bin::xz "/usr/bin/xz";
+Dir::Bin::lz4 "/usr/bin/lz4";
+Dir::Bin::zstd "/usr/bin/zstd";
+Dir::Bin::lzma "/usr/bin/xz";
+Dir::Media "";
+Dir::Media::MountPath "/media/apt";
+Dir::Log "var/log/apt";
+Dir::Log::Terminal "term.log";
+Dir::Log::History "history.log";
+Dir::Log::Planner "eipp.log.xz";
+Dir::Ignore-Files-Silently "";
+Dir::Ignore-Files-Silently:: "~$";
+Dir::Ignore-Files-Silently:: "\.disabled$";
+Dir::Ignore-Files-Silently:: "\.bak$";
+Dir::Ignore-Files-Silently:: "\.dpkg-[a-z]+$";
+Dir::Ignore-Files-Silently:: "\.ucf-[a-z]+$";
+Dir::Ignore-Files-Silently:: "\.save$";
+Dir::Ignore-Files-Silently:: "\.orig$";
+Dir::Ignore-Files-Silently:: "\.distUpgrade$";
+Acquire "";
+Acquire::AllowInsecureRepositories "0";
+Acquire::AllowWeakRepositories "0";
+Acquire::AllowDowngradeToInsecureRepositories "0";
+Acquire::cdrom "";
+Acquire::cdrom::mount "/media/cdrom/";
+Acquire::IndexTargets "";
+Acquire::IndexTargets::deb "";
+Acquire::IndexTargets::deb::Packages "";
+Acquire::IndexTargets::deb::Packages::MetaKey "$(COMPONENT)/binary-$(ARCHITECTURE)/Packages";
+Acquire::IndexTargets::deb::Packages::flatMetaKey "Packages";
+Acquire::IndexTargets::deb::Packages::ShortDescription "Packages";
+Acquire::IndexTargets::deb::Packages::Description "$(RELEASE)/$(COMPONENT) $(ARCHITECTURE) Packages";
+Acquire::IndexTargets::deb::Packages::flatDescription "$(RELEASE) Packages";
+Acquire::IndexTargets::deb::Packages::Optional "0";
+Acquire::IndexTargets::deb::Translations "";
+Acquire::IndexTargets::deb::Translations::MetaKey "$(COMPONENT)/i18n/Translation-$(LANGUAGE)";
+Acquire::IndexTargets::deb::Translations::flatMetaKey "$(LANGUAGE)";
+Acquire::IndexTargets::deb::Translations::ShortDescription "Translation-$(LANGUAGE)";
+Acquire::IndexTargets::deb::Translations::Description "$(RELEASE)/$(COMPONENT) Translation-$(LANGUAGE)";
+Acquire::IndexTargets::deb::Translations::flatDescription "$(RELEASE) Translation-$(LANGUAGE)";
+Acquire::IndexTargets::deb::DEP-11 "";
+Acquire::IndexTargets::deb::DEP-11::MetaKey "$(COMPONENT)/dep11/Components-$(NATIVE_ARCHITECTURE).yml";
+Acquire::IndexTargets::deb::DEP-11::ShortDescription "Components-$(NATIVE_ARCHITECTURE)";
+Acquire::IndexTargets::deb::DEP-11::Description "$(RELEASE)/$(COMPONENT) $(NATIVE_ARCHITECTURE) Components";
+Acquire::IndexTargets::deb::DEP-11::KeepCompressed "true";
+Acquire::IndexTargets::deb::DEP-11::KeepCompressedAs "gz";
+Acquire::IndexTargets::deb::DEP-11-icons-small "";
+Acquire::IndexTargets::deb::DEP-11-icons-small::MetaKey "$(COMPONENT)/dep11/icons-48x48.tar";
+Acquire::IndexTargets::deb::DEP-11-icons-small::ShortDescription "icons-48x48";
+Acquire::IndexTargets::deb::DEP-11-icons-small::Description "$(RELEASE)/$(COMPONENT) Icons (48x48)";
+Acquire::IndexTargets::deb::DEP-11-icons-small::KeepCompressed "true";
+Acquire::IndexTargets::deb::DEP-11-icons-small::KeepCompressedAs "gz";
+Acquire::IndexTargets::deb::DEP-11-icons-small::DefaultEnabled "false";
+Acquire::IndexTargets::deb::DEP-11-icons "";
+Acquire::IndexTargets::deb::DEP-11-icons::MetaKey "$(COMPONENT)/dep11/icons-64x64.tar";
+Acquire::IndexTargets::deb::DEP-11-icons::ShortDescription "icons-64x64";
+Acquire::IndexTargets::deb::DEP-11-icons::Description "$(RELEASE)/$(COMPONENT) Icons (64x64)";
+Acquire::IndexTargets::deb::DEP-11-icons::KeepCompressed "true";
+Acquire::IndexTargets::deb::DEP-11-icons::KeepCompressedAs "gz";
+Acquire::IndexTargets::deb::DEP-11-icons::DefaultEnabled "false";
+Acquire::IndexTargets::deb::DEP-11-icons-hidpi "";
+Acquire::IndexTargets::deb::DEP-11-icons-hidpi::MetaKey "$(COMPONENT)/dep11/icons-64x64@2.tar";
+Acquire::IndexTargets::deb::DEP-11-icons-hidpi::ShortDescription "icons-64x64@2";
+Acquire::IndexTargets::deb::DEP-11-icons-hidpi::Description "$(RELEASE)/$(COMPONENT) Icons (64x64@2)";
+Acquire::IndexTargets::deb::DEP-11-icons-hidpi::KeepCompressed "true";
+Acquire::IndexTargets::deb::DEP-11-icons-hidpi::KeepCompressedAs "gz";
+Acquire::IndexTargets::deb::DEP-11-icons-hidpi::DefaultEnabled "false";
+Acquire::IndexTargets::deb::DEP-11-icons-large "";
+Acquire::IndexTargets::deb::DEP-11-icons-large::MetaKey "$(COMPONENT)/dep11/icons-128x128.tar";
+Acquire::IndexTargets::deb::DEP-11-icons-large::ShortDescription "icons-128x128";
+Acquire::IndexTargets::deb::DEP-11-icons-large::Description "$(RELEASE)/$(COMPONENT) Icons (128x128)";
+Acquire::IndexTargets::deb::DEP-11-icons-large::KeepCompressed "true";
+Acquire::IndexTargets::deb::DEP-11-icons-large::KeepCompressedAs "gz";
+Acquire::IndexTargets::deb::DEP-11-icons-large::DefaultEnabled "false";
+Acquire::IndexTargets::deb::DEP-11-icons-large-hidpi "";
+Acquire::IndexTargets::deb::DEP-11-icons-large-hidpi::MetaKey "$(COMPONENT)/dep11/icons-128x128@2.tar";
+Acquire::IndexTargets::deb::DEP-11-icons-large-hidpi::ShortDescription "icons-128x128@2";
+Acquire::IndexTargets::deb::DEP-11-icons-large-hidpi::Description "$(RELEASE)/$(COMPONENT) Icons (128x128@2)";
+Acquire::IndexTargets::deb::DEP-11-icons-large-hidpi::KeepCompressed "true";
+Acquire::IndexTargets::deb::DEP-11-icons-large-hidpi::KeepCompressedAs "gz";
+Acquire::IndexTargets::deb::DEP-11-icons-large-hidpi::DefaultEnabled "false";
+Acquire::IndexTargets::deb::CNF "";
+Acquire::IndexTargets::deb::CNF::MetaKey "$(COMPONENT)/cnf/Commands-$(NATIVE_ARCHITECTURE)";
+Acquire::IndexTargets::deb::CNF::ShortDescription "Commands-$(NATIVE_ARCHITECTURE)";
+Acquire::IndexTargets::deb::CNF::Description "$(RELEASE)/$(COMPONENT) $(NATIVE_ARCHITECTURE) c-n-f Metadata";
+Acquire::IndexTargets::deb-src "";
+Acquire::IndexTargets::deb-src::Sources "";
+Acquire::IndexTargets::deb-src::Sources::MetaKey "$(COMPONENT)/source/Sources";
+Acquire::IndexTargets::deb-src::Sources::flatMetaKey "Sources";
+Acquire::IndexTargets::deb-src::Sources::ShortDescription "Sources";
+Acquire::IndexTargets::deb-src::Sources::Description "$(RELEASE)/$(COMPONENT) Sources";
+Acquire::IndexTargets::deb-src::Sources::flatDescription "$(RELEASE) Sources";
+Acquire::IndexTargets::deb-src::Sources::Optional "0";
+Acquire::Changelogs "";
+Acquire::Changelogs::URI "";
+Acquire::Changelogs::URI::Origin "";
+Acquire::Changelogs::URI::Origin::Debian "https://metadata.ftp-master.debian.org/changelogs/@CHANGEPATH@_changelog";
+Acquire::Changelogs::URI::Origin::Ubuntu "https://changelogs.ubuntu.com/changelogs/pool/@CHANGEPATH@/changelog";
+Acquire::Changelogs::AlwaysOnline "true";
+Acquire::Changelogs::AlwaysOnline::Origin "";
+Acquire::Changelogs::AlwaysOnline::Origin::Ubuntu "1";
+Acquire::Snapshots "";
+Acquire::Snapshots::URI "";
+Acquire::Snapshots::URI::Origin "";
+Acquire::Snapshots::URI::Origin::Debian "https://snapshot.debian.org/archive/debian/@SNAPSHOTID@/";
+Acquire::Snapshots::URI::Origin::Ubuntu "https://snapshot.ubuntu.com/ubuntu/@SNAPSHOTID@/";
+Acquire::Snapshots::URI::Override "";
+Acquire::Snapshots::URI::Override::Label "";
+Acquire::Snapshots::URI::Override::Label::Debian-Security "https://snapshot.debian.org/archive/debian-security/@SNAPSHOTID@/";
+Acquire::Snapshots::URI::Host "";
+Acquire::Snapshots::URI::Host::archive.ubuntu.com "https://snapshot.ubuntu.com/@PATH@/@SNAPSHOTID@/";
+Acquire::Snapshots::URI::Host::deb.debian.org "https://snapshot.debian.org/archive/@PATH@/@SNAPSHOTID@/";
+Acquire::Snapshots::URI::Host::.archive.ubuntu.com "https://snapshot.ubuntu.com/@PATH@/@SNAPSHOTID@/";
+Acquire::Snapshots::URI::Host::security.ubuntu.com "https://snapshot.ubuntu.com/@PATH@/@SNAPSHOTID@/";
+Acquire::Snapshots::URI::Host::ppa.launchpadcontent.net "https://snapshot.ppa.launchpadcontent.net/@PATH@/@SNAPSHOTID@/";
+Acquire::Snapshots::URI::Host::ppa.launchpad.net "https://snapshot.ppa.launchpadcontent.net/@PATH@/@SNAPSHOTID@/";
+Acquire::http "";
+Acquire::http::User-Agent-Non-Interactive "true";
+Acquire::GzipIndexes "true";
+Acquire::CompressionTypes "";
+Acquire::CompressionTypes::Order "";
+Acquire::CompressionTypes::Order:: "gz";
+Acquire::CompressionTypes::xz "xz";
+Acquire::CompressionTypes::bz2 "bzip2";
+Acquire::CompressionTypes::lzma "lzma";
+Acquire::CompressionTypes::gz "gzip";
+Acquire::CompressionTypes::lz4 "lz4";
+Acquire::CompressionTypes::zst "zstd";
+Acquire::Languages "";
+Acquire::Languages:: "none";
+DPkg "";
+DPkg::Path "/usr/sbin:/usr/bin:/sbin:/bin";
+DPkg::Post-Invoke "";
+DPkg::Post-Invoke:: "/usr/bin/test -e /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service && /usr/bin/test -S /var/run/dbus/system_bus_socket && /usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update > /dev/null; /bin/echo > /dev/null";
+DPkg::Post-Invoke:: "test -x /usr/lib/needrestart/apt-pinvoke && /usr/lib/needrestart/apt-pinvoke -m u || true";
+DPkg::Post-Invoke:: "if [ -d /var/lib/update-notifier ]; then touch /var/lib/update-notifier/dpkg-run-stamp; fi; /usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";
+DPkg::Post-Invoke:: "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true";
+DPkg::Pre-Install-Pkgs "";
+DPkg::Pre-Install-Pkgs:: "/usr/sbin/dpkg-preconfigure --apt || true";
+binary "apt-config";
+binary::apt "";
+binary::apt::AptCli "";
+binary::apt::AptCli::Hooks "";
+binary::apt::AptCli::Hooks::Upgrade "";
+binary::apt::AptCli::Hooks::Upgrade:: "[ ! -f /usr/lib/ubuntu-advantage/apt-esm-json-hook ] || [ $(id -u) -ne 0 ] || /usr/lib/ubuntu-advantage/apt-esm-json-hook 2>> /var/log/ubuntu-advantage-apt-hook.log || true";
+binary::apt::AptCli::Hooks::Install "";
+binary::apt::AptCli::Hooks::Install:: "[ ! -f /usr/bin/snap ] || /usr/bin/snap advise-snap --from-apt 2>/dev/null || true";
+binary::apt::APT "";
+binary::apt::APT::Color "1";
+binary::apt::APT::Cache "";
+binary::apt::APT::Cache::Show "";
+binary::apt::APT::Cache::Show::Version "2";
+binary::apt::APT::Cache::AllVersions "0";
+binary::apt::APT::Cache::ShowVirtuals "1";
+binary::apt::APT::Cache::Search "";
+binary::apt::APT::Cache::Search::Version "2";
+binary::apt::APT::Cache::ShowDependencyType "1";
+binary::apt::APT::Cache::ShowVersion "1";
+binary::apt::APT::Get "";
+binary::apt::APT::Get::Upgrade-Allow-New "1";
+binary::apt::APT::Get::Update "";
+binary::apt::APT::Get::Update::InteractiveReleaseInfoChanges "1";
+binary::apt::APT::Cmd "";
+binary::apt::APT::Cmd::Show-Update-Stats "1";
+binary::apt::APT::Cmd::Pattern-Only "1";
+binary::apt::APT::Keep-Downloaded-Packages "0";
+binary::apt::DPkg "";
+binary::apt::DPkg::Progress-Fancy "1";
+binary::apt::DPkg::Lock "";
+binary::apt::DPkg::Lock::Timeout "120";
+Unattended-Upgrade "";
+Unattended-Upgrade::Allowed-Origins "";
+Unattended-Upgrade::Allowed-Origins:: "${distro_id}:${distro_codename}";
+Unattended-Upgrade::Allowed-Origins:: "${distro_id}:${distro_codename}-security";
+Unattended-Upgrade::Allowed-Origins:: "${distro_id}ESMApps:${distro_codename}-apps-security";
+Unattended-Upgrade::Allowed-Origins:: "${distro_id}ESM:${distro_codename}-infra-security";
+Unattended-Upgrade::DevRelease "auto";
+CommandLine "";
+CommandLine::AsString "apt-config dump";
+[rc=0]
+
+$ attacker: systemctl set-environment PATH=/home/attacker/agent_maint_glue/bin:/usr/bin:/bin
+Failed to set environment: Access denied
+[attacker rc=1]
+
+$ attacker: systemctl import-environment PATH PYTHONPATH PERL5LIB
+Environment variable $PYTHONPATH not set, ignoring.
+Environment variable $PERL5LIB not set, ignoring.
+Failed to import environment: Access denied
+[attacker rc=1]
+
+$ attacker: systemctl start apt-daily.service
+Failed to start apt-daily.service: Interactive authentication required.
+See system logs and 'systemctl status apt-daily.service' for details.
+[attacker rc=1]
+
+$ attacker: systemctl start apt-daily-upgrade.service
+Failed to start apt-daily-upgrade.service: Interactive authentication required.
+See system logs and 'systemctl status apt-daily-upgrade.service' for details.
+[attacker rc=1]
+
+$ attacker: systemctl start update-notifier-download.service
+Failed to start update-notifier-download.service: Interactive authentication required.
+See system logs and 'systemctl status update-notifier-download.service' for details.
+[attacker rc=1]
+
+$ attacker: systemctl start update-notifier-motd.service
+Failed to start update-notifier-motd.service: Interactive authentication required.
+See system logs and 'systemctl status update-notifier-motd.service' for details.
+[attacker rc=1]
+
+$ attacker: systemctl start ua-timer.service
+Failed to start ua-timer.service: Interactive authentication required.
+See system logs and 'systemctl status ua-timer.service' for details.
+[attacker rc=1]
+
+$ attacker: printf '%s\n' $$ >/var/run/unattended-upgrades.pid
+bash: line 1: /var/run/unattended-upgrades.pid: Permission denied
+[attacker rc=1]
+
+$ attacker: printf '100\n' >/var/run/unattended-upgrades.progress
+bash: line 1: /var/run/unattended-upgrades.progress: Permission denied
+[attacker rc=1]
+
+$ attacker: kill -TERM 302
+bash: line 1: kill: (302) - Operation not permitted
+[attacker rc=1]
+--- root smoke update-notifier-download.service
+[rc=0]
+--- root smoke update-notifier-motd.service
+[rc=0]
+--- root smoke ua-timer.service
+[rc=0]
+--- root smoke apt-daily.service
+[rc=0]
+--- root smoke apt-daily-upgrade.service
+[rc=0]
+
+### logrotate non-rsyslog inputs
+
+$ logrotate --version
+logrotate 3.21.0
+
+    Default mail command:       /usr/bin/mail
+    Default compress command:   /bin/gzip
+    Default uncompress command: /bin/gunzip
+    Default compress extension: .gz
+    Default state file path:    /var/lib/logrotate/status
+    ACL support:                yes
+    SELinux support:            yes
+[rc=0]
+
+$ find /etc/logrotate.d -maxdepth 1 -type f -printf %M\ %u:%g\ %p\\n
+-rw-r--r-- root:root /etc/logrotate.d/apt
+-rw-r--r-- root:root /etc/logrotate.d/alternatives
+-rw-r--r-- root:root /etc/logrotate.d/dpkg
+-rw-r--r-- root:root /etc/logrotate.d/ufw
+-rw-r--r-- root:root /etc/logrotate.d/rsyslog
+-rw-r--r-- root:root /etc/logrotate.d/apport
+-rw-r--r-- root:root /etc/logrotate.d/ubuntu-pro-client
+-rw-r--r-- root:root /etc/logrotate.d/bootlog
+-rw-r--r-- root:root /etc/logrotate.d/unattended-upgrades
+-rw-r--r-- root:root /etc/logrotate.d/wtmp
+-rw-r--r-- root:root /etc/logrotate.d/btmp
+[rc=0]
+/etc/logrotate.conf:3:# global options do not affect preceding include directives
+/etc/logrotate.conf:10:su root adm
+/etc/logrotate.conf:15:# create new (empty) log files after rotating old ones
+/etc/logrotate.conf:25:include /etc/logrotate.d
+/etc/logrotate.d/alternatives:8:	create 644 root root
+/etc/logrotate.d/dpkg:8:	create 644 root root
+/etc/logrotate.d/ubuntu-pro-client:4:    su root root
+/etc/logrotate.d/ubuntu-pro-client:5:    create 0644 root root
+/etc/logrotate.d/wtmp:5:    create 0664 root utmp
+/etc/logrotate.d/btmp:5:    create 0660 root utmp
+
+$ attacker: printf agent_maint >>'/var/log/dpkg.log'
+bash: line 1: /var/log/dpkg.log: Permission denied
+[attacker rc=1]
+
+$ attacker: printf agent_maint >>'/var/log/apt/history.log'
+bash: line 1: /var/log/apt/history.log: Permission denied
+[attacker rc=1]
+
+$ attacker: printf agent_maint >>'/var/log/apt/term.log'
+bash: line 1: /var/log/apt/term.log: Permission denied
+[attacker rc=1]
+
+$ attacker: printf agent_maint >>'/var/log/unattended-upgrades/unattended-upgrades.log'
+bash: line 1: /var/log/unattended-upgrades/unattended-upgrades.log: Permission denied
+[attacker rc=1]
+
+$ attacker: printf agent_maint >>'/var/log/wtmp'
+bash: line 1: /var/log/wtmp: Permission denied
+[attacker rc=1]
+
+$ attacker: printf agent_maint >>'/var/log/btmp'
+bash: line 1: /var/log/btmp: Permission denied
+[attacker rc=1]
+
+$ attacker: printf agent_maint >>'/var/log/sysstat/sa17'
+bash: line 1: /var/log/sysstat/sa17: Permission denied
+[attacker rc=1]
+
+$ logrotate -d /etc/logrotate.conf
+warning: logrotate in debug mode does nothing except printing debug messages!  Consider using verbose mode (-v) instead if this is not what you want.
+
+reading config file /etc/logrotate.conf
+including /etc/logrotate.d
+reading config file alternatives
+reading config file apport
+reading config file apt
+reading config file bootlog
+reading config file btmp
+reading config file dpkg
+reading config file rsyslog
+reading config file ubuntu-pro-client
+reading config file ufw
+reading config file unattended-upgrades
+reading config file wtmp
+Reading state from file: /var/lib/logrotate/status
+Allocating hash table for state file, size 64 entries
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+Creating new state
+
+Handling 12 logs
+
+rotating pattern: /var/log/alternatives.log  monthly (12 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 0 to 0 and egid from 0 to 4 (pid 76086)
+considering log /var/log/alternatives.log
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a month ago)
+switching euid from 0 to 0 and egid from 4 to 0 (pid 76086)
+
+rotating pattern: /var/log/apport.log  after 1 days (7 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 0 to 0 and egid from 0 to 4 (pid 76086)
+considering log /var/log/apport.log
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a day ago)
+switching euid from 0 to 0 and egid from 4 to 0 (pid 76086)
+
+rotating pattern: /var/log/apt/term.log  monthly (12 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 0 to 0 and egid from 0 to 4 (pid 76086)
+considering log /var/log/apt/term.log
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a month ago)
+switching euid from 0 to 0 and egid from 4 to 0 (pid 76086)
+
+rotating pattern: /var/log/apt/history.log  monthly (12 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 0 to 0 and egid from 0 to 4 (pid 76086)
+considering log /var/log/apt/history.log
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a month ago)
+switching euid from 0 to 0 and egid from 4 to 0 (pid 76086)
+
+rotating pattern: /var/log/boot.log
+ after 1 days (7 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 0 to 0 and egid from 0 to 4 (pid 76086)
+considering log /var/log/boot.log
+  log /var/log/boot.log does not exist -- skipping
+switching euid from 0 to 0 and egid from 4 to 0 (pid 76086)
+
+rotating pattern: /var/log/btmp  monthly (1 rotations)
+empty log files are rotated, old logs are removed
+switching euid from 0 to 0 and egid from 0 to 4 (pid 76086)
+considering log /var/log/btmp
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a month ago)
+switching euid from 0 to 0 and egid from 4 to 0 (pid 76086)
+
+rotating pattern: /var/log/dpkg.log  monthly (12 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 0 to 0 and egid from 0 to 4 (pid 76086)
+considering log /var/log/dpkg.log
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a month ago)
+switching euid from 0 to 0 and egid from 4 to 0 (pid 76086)
+
+rotating pattern: /var/log/syslog
+/var/log/mail.log
+/var/log/kern.log
+/var/log/auth.log
+/var/log/user.log
+/var/log/cron.log
+ weekly (4 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 0 to 0 and egid from 0 to 4 (pid 76086)
+considering log /var/log/syslog
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a week ago)
+considering log /var/log/mail.log
+  log /var/log/mail.log does not exist -- skipping
+considering log /var/log/kern.log
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a week ago)
+considering log /var/log/auth.log
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a week ago)
+considering log /var/log/user.log
+  log /var/log/user.log does not exist -- skipping
+considering log /var/log/cron.log
+  log /var/log/cron.log does not exist -- skipping
+not running postrotate script, since no logs were rotated
+switching euid from 0 to 0 and egid from 4 to 0 (pid 76086)
+
+rotating pattern: /var/log/ubuntu-advantage*.log  monthly (6 rotations)
+empty log files are not rotated, old logs are removed
+considering log /var/log/ubuntu-advantage.log
+Creating new state
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 20:00
+  log does not need rotating (log has already been rotated)
+
+rotating pattern: /var/log/ufw.log
+ weekly (4 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 0 to 0 and egid from 0 to 4 (pid 76086)
+considering log /var/log/ufw.log
+  log /var/log/ufw.log does not exist -- skipping
+not running postrotate script, since no logs were rotated
+switching euid from 0 to 0 and egid from 4 to 0 (pid 76086)
+
+rotating pattern: /var/log/unattended-upgrades/unattended-upgrades.log 
+/var/log/unattended-upgrades/unattended-upgrades-dpkg.log
+/var/log/unattended-upgrades/unattended-upgrades-shutdown.log
+ monthly (6 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 0 to 0 and egid from 0 to 4 (pid 76086)
+considering log /var/log/unattended-upgrades/unattended-upgrades.log
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a month ago)
+considering log /var/log/unattended-upgrades/unattended-upgrades-dpkg.log
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a month ago)
+considering log /var/log/unattended-upgrades/unattended-upgrades-shutdown.log
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a month ago)
+switching euid from 0 to 0 and egid from 4 to 0 (pid 76086)
+
+rotating pattern: /var/log/wtmp  monthly (1 rotations)
+empty log files are rotated, only log files >= 1048576 bytes are rotated, old logs are removed
+switching euid from 0 to 0 and egid from 0 to 4 (pid 76086)
+considering log /var/log/wtmp
+  Now: 2026-05-17 20:20
+  Last rotated at 2026-05-17 01:00
+  log does not need rotating (log has been rotated at 2026-05-17 01:00, which is less than a month ago)
+  log does not need rotating ('minsize' directive is used and the log size is smaller than the minsize value)
+switching euid from 0 to 0 and egid from 4 to 0 (pid 76086)
+[rc=0]
+
+### maintainer script glue scan
+--- /var/lib/dpkg/info/apt.preinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/apt.preinst
+5:dpkg-maintscript-helper rm_conffile /etc/cron.daily/apt 1.2.10\~ -- "$@"
+--- /var/lib/dpkg/info/apt.postinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/apt.postinst
+17:dpkg-maintscript-helper rm_conffile /etc/cron.daily/apt 1.2.10\~ -- "$@"
+23:	deb-systemd-helper unmask 'apt-daily-upgrade.timer' >/dev/null || true
+26:	if deb-systemd-helper --quiet was-enabled 'apt-daily-upgrade.timer'; then
+29:		deb-systemd-helper enable 'apt-daily-upgrade.timer' >/dev/null || true
+33:		deb-systemd-helper update-state 'apt-daily-upgrade.timer' >/dev/null || true
+40:	deb-systemd-helper unmask 'apt-daily.timer' >/dev/null || true
+43:	if deb-systemd-helper --quiet was-enabled 'apt-daily.timer'; then
+46:		deb-systemd-helper enable 'apt-daily.timer' >/dev/null || true
+50:		deb-systemd-helper update-state 'apt-daily.timer' >/dev/null || true
+57:		systemctl --system daemon-reload >/dev/null || true
+63:		deb-systemd-invoke $_dh_action 'apt-daily-upgrade.timer' 'apt-daily.timer' >/dev/null || true
+--- /var/lib/dpkg/info/apt.prerm
+-rwxr-xr-x root:root /var/lib/dpkg/info/apt.prerm
+5:	deb-systemd-invoke stop 'apt-daily-upgrade.timer' 'apt-daily.timer' >/dev/null || true
+10:dpkg-maintscript-helper rm_conffile /etc/cron.daily/apt 1.2.10\~ -- "$@"
+--- /var/lib/dpkg/info/apt.postrm
+-rwxr-xr-x root:root /var/lib/dpkg/info/apt.postrm
+6:# This program is free software; you can redistribute it and/or modify
+15:dpkg-maintscript-helper rm_conffile /etc/cron.daily/apt 1.2.10\~ -- "$@"
+20:	systemctl --system daemon-reload >/dev/null || true
+25:	systemctl --system daemon-reload >/dev/null || true
+30:	if [ -x "/usr/bin/deb-systemd-helper" ]; then
+31:		deb-systemd-helper purge 'apt-daily-upgrade.timer' 'apt-daily.timer' >/dev/null || true
+--- /var/lib/dpkg/info/apt.triggers
+-rw-r--r-- root:root /var/lib/dpkg/info/apt.triggers
+--- /var/lib/dpkg/info/dpkg.postinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/dpkg.postinst
+58:  local prog=start-stop-daemon
+62:  if [ ! -f "$DPKG_ROOT/sbin/$prog" ]; then
+63:    ln -s "/usr/sbin/$prog" "$DPKG_ROOT/sbin/$prog"
+83:    systemctl --system daemon-reload >/dev/null || true
+91:	deb-systemd-helper unmask 'dpkg-db-backup.timer' >/dev/null || true
+94:	if deb-systemd-helper --quiet was-enabled 'dpkg-db-backup.timer'; then
+97:		deb-systemd-helper enable 'dpkg-db-backup.timer' >/dev/null || true
+101:		deb-systemd-helper update-state 'dpkg-db-backup.timer' >/dev/null || true
+--- /var/lib/dpkg/info/dpkg.postrm
+-rwxr-xr-x root:root /var/lib/dpkg/info/dpkg.postrm
+16:  local prog=start-stop-daemon
+18:  if [ -L "$DPKG_ROOT/sbin/$prog" ]; then
+19:    rm "$DPKG_ROOT/sbin/$prog"
+27:    deb-systemd-invoke restart 'dpkg-db-backup.timer' >/dev/null || true
+54:	systemctl --system daemon-reload >/dev/null || true
+59:	if [ -x "/usr/bin/deb-systemd-helper" ]; then
+60:		deb-systemd-helper purge 'dpkg-db-backup.timer' >/dev/null || true
+--- /var/lib/dpkg/info/needrestart.preinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/needrestart.preinst
+5:dpkg-maintscript-helper rm_conffile /etc/needrestart/hook.d/30-pacman 3.6-4 -- "$@"
+--- /var/lib/dpkg/info/needrestart.postinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/needrestart.postinst
+5:dpkg-maintscript-helper rm_conffile /etc/needrestart/hook.d/30-pacman 3.6-4 -- "$@"
+--- /var/lib/dpkg/info/needrestart.postrm
+-rwxr-xr-x root:root /var/lib/dpkg/info/needrestart.postrm
+5:dpkg-maintscript-helper rm_conffile /etc/needrestart/hook.d/30-pacman 3.6-4 -- "$@"
+--- /var/lib/dpkg/info/unattended-upgrades.preinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/unattended-upgrades.preinst
+9:if [ "$1" = "install" ] && [ -n "$2" ] && [ -e "/etc/init.d/unattended-upgrades" ] ; then
+10:	chmod +x "/etc/init.d/unattended-upgrades" >/dev/null || true
+15:CONFIG="/etc/apt/apt.conf.d/50unattended-upgrades"
+17:# if the transition to ucf was not handled properly, do it now
+21:               && dpkg-query -W  -f='${Conffiles}\n' unattended-upgrades | grep -q "$CONFIG .* obsolete"; then
+--- /var/lib/dpkg/info/unattended-upgrades.postinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/unattended-upgrades.postinst
+31:if [ -d /var/log/unattended-upgrades ]; then
+32:  chown root:adm /var/log/unattended-upgrades || true
+33:  chmod 0750 /var/log/unattended-upgrades
+37:    python3 -c 'import apt; import apt_pkg; import sys; sys.exit(1 if apt_pkg.get_lock("/var/run/unattended-upgrades.lock") >= 0 else 0)'
+47:        db_get unattended-upgrades/enable_auto_updates || true
+50:	    NEWFILE="/usr/share/unattended-upgrades/20auto-upgrades"
+52:	    ucfr unattended-upgrades "$CONFIG"
+55:	    NEWFILE="/usr/share/unattended-upgrades/20auto-upgrades-disabled"
+57:	    ucfr unattended-upgrades "$CONFIG"
+60:	CONFIG="/etc/apt/apt.conf.d/50unattended-upgrades"
+61:	NEWFILE="/usr/share/unattended-upgrades/50unattended-upgrades"
+63:	# also fix conffile which was not properly migrated to ucf earlier
+72:	ucfr unattended-upgrades "$CONFIG"
+85:            if [ -f /etc/rc0.d/K[0-9][0-9]unattended-upgrades ] \
+86:            && [ -f /etc/rc6.d/K[0-9][0-9]unattended-upgrades ] ; then
+87:            	update-rc.d -f unattended-upgrades remove
+92:	        if deb-systemd-helper --quiet was-enabled unattended-upgrades.service \
+95:	            deb-systemd-helper disable unattended-upgrades.service >/dev/null || true
+116:	deb-systemd-helper unmask 'unattended-upgrades.service' >/dev/null || true
+119:	if deb-systemd-helper --quiet was-enabled 'unattended-upgrades.service'; then
+122:		deb-systemd-helper enable 'unattended-upgrades.service' >/dev/null || true
+126:		deb-systemd-helper update-state 'unattended-upgrades.service' >/dev/null || true
+132:	if [ -x "/etc/init.d/unattended-upgrades" ]; then
+133:		update-rc.d unattended-upgrades defaults >/dev/null || exit 1
+140:# deb-systemd-helper fails to correctly enable the unit. It checks for 
+158:		systemctl enable unattended-upgrades >&2 || true
+160:			echo "Skipping starting unattended-upgrades.service because unattended-upgrades is running" >&2
+162:			deb-systemd-invoke start unattended-upgrades.service >&2 || true
+--- /var/lib/dpkg/info/unattended-upgrades.postrm
+-rwxr-xr-x root:root /var/lib/dpkg/info/unattended-upgrades.postrm
+24:		ucf --purge /etc/apt/apt.conf.d/50unattended-upgrades
+27:	rm -f /etc/apt/apt.conf.d/50unattended-upgrades.ucf-*
+29:	rm -f /etc/apt/apt.conf.d/50unattended-upgrades
+30:	dpkg-maintscript-helper rm_conffile /etc/apt/apt.conf.d/50unattended-upgrades -- "$@"
+46:if [ "$1" = "remove" ] && [ -x "/etc/init.d/unattended-upgrades" ] ; then
+47:	chmod -x "/etc/init.d/unattended-upgrades" >/dev/null || true
+50:	update-rc.d unattended-upgrades remove >/dev/null
+55:	if [ -x "/usr/bin/deb-systemd-helper" ]; then
+56:		deb-systemd-helper purge 'unattended-upgrades.service' >/dev/null || true
+--- /var/lib/dpkg/info/update-notifier-common.preinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/update-notifier-common.preinst
+4:dpkg-maintscript-helper rm_conffile /etc/update-motd.d/20-cpu-checker 0.110.1ubuntu1 -- "$@"
+5:dpkg-maintscript-helper rm_conffile /etc/cron.daily/update-notifier-common 3.192.34\~ -- "$@"
+6:dpkg-maintscript-helper rm_conffile /etc/cron.weekly/update-notifier-common 3.192.34\~ -- "$@"
+--- /var/lib/dpkg/info/update-notifier-common.postinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/update-notifier-common.postinst
+15:			/usr/share/package-data-downloads)
+16:				/usr/lib/update-notifier/package-data-downloader
+24:chown -R _apt:root /var/lib/update-notifier/package-data-downloads/partial/
+25:chmod 700 /var/lib/update-notifier/package-data-downloads/partial/
+29:/usr/lib/update-notifier/package-data-downloader
+32:dpkg-maintscript-helper rm_conffile /etc/update-motd.d/20-cpu-checker 0.110.1ubuntu1 -- "$@"
+33:dpkg-maintscript-helper rm_conffile /etc/cron.daily/update-notifier-common 3.192.34\~ -- "$@"
+34:dpkg-maintscript-helper rm_conffile /etc/cron.weekly/update-notifier-common 3.192.34\~ -- "$@"
+39:	deb-systemd-helper unmask 'update-notifier-download.timer' >/dev/null || true
+42:	if deb-systemd-helper --quiet was-enabled 'update-notifier-download.timer'; then
+45:		deb-systemd-helper enable 'update-notifier-download.timer' >/dev/null || true
+49:		deb-systemd-helper update-state 'update-notifier-download.timer' >/dev/null || true
+56:	deb-systemd-helper unmask 'update-notifier-motd.timer' >/dev/null || true
+59:	if deb-systemd-helper --quiet was-enabled 'update-notifier-motd.timer'; then
+62:		deb-systemd-helper enable 'update-notifier-motd.timer' >/dev/null || true
+66:		deb-systemd-helper update-state 'update-notifier-motd.timer' >/dev/null || true
+73:		systemctl --system daemon-reload >/dev/null || true
+79:		deb-systemd-invoke $_dh_action 'update-notifier-download.service' 'update-notifier-download.timer' 'update-notifier-motd.service' 'update-notifier-motd.timer' >/dev/null || true
+--- /var/lib/dpkg/info/update-notifier-common.prerm
+-rwxr-xr-x root:root /var/lib/dpkg/info/update-notifier-common.prerm
+5:	deb-systemd-invoke stop 'update-notifier-download.service' 'update-notifier-download.timer' 'update-notifier-motd.service' 'update-notifier-motd.timer' >/dev/null || true
+9:dpkg-maintscript-helper rm_conffile /etc/update-motd.d/20-cpu-checker 0.110.1ubuntu1 -- "$@"
+10:dpkg-maintscript-helper rm_conffile /etc/cron.daily/update-notifier-common 3.192.34\~ -- "$@"
+11:dpkg-maintscript-helper rm_conffile /etc/cron.weekly/update-notifier-common 3.192.34\~ -- "$@"
+--- /var/lib/dpkg/info/update-notifier-common.postrm
+-rwxr-xr-x root:root /var/lib/dpkg/info/update-notifier-common.postrm
+4:dpkg-maintscript-helper rm_conffile /etc/update-motd.d/20-cpu-checker 0.110.1ubuntu1 -- "$@"
+5:dpkg-maintscript-helper rm_conffile /etc/cron.daily/update-notifier-common 3.192.34\~ -- "$@"
+6:dpkg-maintscript-helper rm_conffile /etc/cron.weekly/update-notifier-common 3.192.34\~ -- "$@"
+10:	systemctl --system daemon-reload >/dev/null || true
+15:	if [ -x "/usr/bin/deb-systemd-helper" ]; then
+16:		deb-systemd-helper purge 'update-notifier-download.timer' 'update-notifier-motd.timer' >/dev/null || true
+--- /var/lib/dpkg/info/update-notifier-common.triggers
+-rw-r--r-- root:root /var/lib/dpkg/info/update-notifier-common.triggers
+1:interest-noawait /usr/share/package-data-downloads
+--- /var/lib/dpkg/info/ubuntu-pro-client.postinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/ubuntu-pro-client.postinst
+26:# Helpers that change state of pro-client
+49:      # Migrations from previous ubuntu-pro-client package versions.
+60:      # do-release-upgrade migrations from previous Ubuntu release ubuntu-pro-client package versions
+67:                  deb-systemd-helper purge ubuntu-advantage-cloud-id-shim.service > /dev/null || true
+68:                  deb-systemd-helper unmask ubuntu-advantage-cloud-id-shim.service > /dev/null || true
+75:      # Always do these to ensure ubuntu-pro-client is in correct state
+80:      if grep -q "^ua_config:" /etc/ubuntu-advantage/uaclient.conf; then
+81:          echo "Warning: uaclient.conf contains old ua_config field." >&2
+83:          echo "         1. Run 'sudo pro config set field=value' for each field/value pair" >&2
+84:          echo "            present under ua_config in /etc/ubuntu-advantage/uaclient.conf" >&2
+85:          echo "         2. Delete ua_config and all sub-fields in" >&2
+86:          echo "            /etc/ubuntu-advantage/uaclient.conf" >&2
+93:    APP_PROFILE="/etc/apparmor.d/ubuntu_pro_apt_news"
+96:        LOCAL_APP_PROFILE="/etc/apparmor.d/local/ubuntu_pro_apt_news"
+103:        # Reload the profile, including any abstraction updates
+112:    APP_PROFILE="/etc/apparmor.d/ubuntu_pro_esm_cache"
+115:        LOCAL_APP_PROFILE="/etc/apparmor.d/local/ubuntu_pro_esm_cache"
+122:        # Reload the profile, including any abstraction updates
+132:	py3compile -p ubuntu-pro-client:arm64 
+135:	pypy3compile -p ubuntu-pro-client:arm64  || true
+142:	deb-systemd-helper unmask 'ua-reboot-cmds.service' >/dev/null || true
+145:	if deb-systemd-helper --quiet was-enabled 'ua-reboot-cmds.service'; then
+148:		deb-systemd-helper enable 'ua-reboot-cmds.service' >/dev/null || true
+152:		deb-systemd-helper update-state 'ua-reboot-cmds.service' >/dev/null || true
+159:	deb-systemd-helper unmask 'ua-timer.timer' >/dev/null || true
+162:	if deb-systemd-helper --quiet was-enabled 'ua-timer.timer'; then
+165:		deb-systemd-helper enable 'ua-timer.timer' >/dev/null || true
+169:		deb-systemd-helper update-state 'ua-timer.timer' >/dev/null || true
+176:	deb-systemd-helper unmask 'ubuntu-advantage.service' >/dev/null || true
+179:	if deb-systemd-helper --quiet was-enabled 'ubuntu-advantage.service'; then
+182:		deb-systemd-helper enable 'ubuntu-advantage.service' >/dev/null || true
+186:		deb-systemd-helper update-state 'ubuntu-advantage.service' >/dev/null || true
+193:		systemctl --system daemon-reload >/dev/null || true
+194:		deb-systemd-invoke start 'ua-timer.timer' >/dev/null || true
+201:		systemctl --system daemon-reload >/dev/null || true
+202:		deb-systemd-invoke start 'ubuntu-advantage.service' >/dev/null || true
+--- /var/lib/dpkg/info/ubuntu-pro-client.prerm
+-rwxr-xr-x root:root /var/lib/dpkg/info/ubuntu-pro-client.prerm
+25:	deb-systemd-invoke stop 'ubuntu-advantage.service' >/dev/null || true
+30:	deb-systemd-invoke stop 'ua-timer.timer' >/dev/null || true
+36:	py3clean -p ubuntu-pro-client:arm64 
+38:	dpkg -L ubuntu-pro-client:arm64 | sed -En -e '/^(.*)\/(.+)\.py$/s,,rm "\1/__pycache__/\2".*,e'
+--- /var/lib/dpkg/info/ubuntu-pro-client.postrm
+-rwxr-xr-x root:root /var/lib/dpkg/info/ubuntu-pro-client.postrm
+24:    rm -f /etc/apt/trusted.gpg.d/ubuntu-pro-*.gpg
+38:	systemctl --system daemon-reload >/dev/null || true
+43:	systemctl --system daemon-reload >/dev/null || true
+48:	if [ -x "/usr/bin/deb-systemd-helper" ]; then
+49:		deb-systemd-helper purge 'ubuntu-advantage.service' >/dev/null || true
+55:	if [ -x "/usr/bin/deb-systemd-helper" ]; then
+56:		deb-systemd-helper purge 'ua-timer.timer' >/dev/null || true
+62:	if [ -x "/usr/bin/deb-systemd-helper" ]; then
+63:		deb-systemd-helper purge 'ua-reboot-cmds.service' >/dev/null || true
+68:if [ "$1" = "purge" ] && ! [ -e "/etc/apparmor.d/ubuntu_pro_esm_cache" ] ; then
+69:    rm -f "/etc/apparmor.d/disable/ubuntu_pro_esm_cache" || true
+70:    rm -f "/etc/apparmor.d/force-complain/ubuntu_pro_esm_cache" || true
+71:    rm -f "/etc/apparmor.d/local/ubuntu_pro_esm_cache" || true
+72:    rm -f /var/cache/apparmor/*/"ubuntu_pro_esm_cache" || true
+79:if [ "$1" = "purge" ] && ! [ -e "/etc/apparmor.d/ubuntu_pro_apt_news" ] ; then
+80:    rm -f "/etc/apparmor.d/disable/ubuntu_pro_apt_news" || true
+81:    rm -f "/etc/apparmor.d/force-complain/ubuntu_pro_apt_news" || true
+82:    rm -f "/etc/apparmor.d/local/ubuntu_pro_apt_news" || true
+83:    rm -f /var/cache/apparmor/*/"ubuntu_pro_apt_news" || true
+--- /var/lib/dpkg/info/cron.preinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/cron.preinst
+4:if [ "$1" = "install" ] && [ -n "$2" ] && [ -e "/etc/init.d/cron" ] ; then
+5:	chmod +x "/etc/init.d/cron" >/dev/null || true
+--- /var/lib/dpkg/info/cron.postinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/cron.postinst
+7:    # Fixup crontab binary for new group 'crontab'.
+8:    if ! dpkg-statoverride --list /usr/bin/crontab > /dev/null ; then
+9:	dpkg-statoverride --update --add root crontab 2755 /usr/bin/crontab
+15:	if [ -z "${DPKG_ROOT:-}" ] && [ -x "/etc/init.d/cron" ]; then
+16:		update-rc.d cron defaults >/dev/null
+22:		invoke-rc.d --skip-systemd-native cron $_dh_action || exit 1
+29:	deb-systemd-helper unmask 'cron.service' >/dev/null || true
+32:	if deb-systemd-helper --quiet was-enabled 'cron.service'; then
+35:		deb-systemd-helper enable 'cron.service' >/dev/null || true
+39:		deb-systemd-helper update-state 'cron.service' >/dev/null || true
+46:		systemctl --system daemon-reload >/dev/null || true
+52:		deb-systemd-invoke $_dh_action 'cron.service' >/dev/null || true
+--- /var/lib/dpkg/info/cron.prerm
+-rwxr-xr-x root:root /var/lib/dpkg/info/cron.prerm
+5:	deb-systemd-invoke stop 'cron.service' >/dev/null || true
+9:if [ -z "${DPKG_ROOT:-}" ] && [ "$1" = remove ] && [ -x "/etc/init.d/cron" ] ; then
+10:	invoke-rc.d --skip-systemd-native cron stop || exit 1
+--- /var/lib/dpkg/info/cron.postrm
+-rwxr-xr-x root:root /var/lib/dpkg/info/cron.postrm
+5:       dpkg-statoverride --list /usr/bin/crontab > /dev/null; then 
+6:    dpkg-statoverride --remove /usr/bin/crontab
+10:if [ "$1" = "remove" ] && [ -x "/etc/init.d/cron" ] ; then
+11:	chmod -x "/etc/init.d/cron" >/dev/null || true
+14:	update-rc.d cron remove >/dev/null
+19:	systemctl --system daemon-reload >/dev/null || true
+24:	if [ -x "/usr/bin/deb-systemd-helper" ]; then
+25:		deb-systemd-helper purge 'cron.service' >/dev/null || true
+--- /var/lib/dpkg/info/logrotate.postinst
+-rwxr-xr-x root:root /var/lib/dpkg/info/logrotate.postinst
+6:	deb-systemd-helper unmask 'logrotate.timer' >/dev/null || true
+9:	if deb-systemd-helper --quiet was-enabled 'logrotate.timer'; then
+12:		deb-systemd-helper enable 'logrotate.timer' >/dev/null || true
+16:		deb-systemd-helper update-state 'logrotate.timer' >/dev/null || true
+23:		systemctl --system daemon-reload >/dev/null || true
+29:		deb-systemd-invoke $_dh_action 'logrotate.service' 'logrotate.timer' >/dev/null || true
+--- /var/lib/dpkg/info/logrotate.prerm
+-rwxr-xr-x root:root /var/lib/dpkg/info/logrotate.prerm
+5:	deb-systemd-invoke stop 'logrotate.service' 'logrotate.timer' >/dev/null || true
+--- /var/lib/dpkg/info/logrotate.postrm
+-rwxr-xr-x root:root /var/lib/dpkg/info/logrotate.postrm
+4:  rm -rf /var/lib/logrotate
+9:	systemctl --system daemon-reload >/dev/null || true
+14:	if [ -x "/usr/bin/deb-systemd-helper" ]; then
+15:		deb-systemd-helper purge 'logrotate.timer' >/dev/null || true
+
+### root proof and cleanup
+ROOT_PROOF=NO
+NEEDRESTART_MARKER_AFTER_ROOT=NO
+cleanup_done
+
+Wrote /Users/andrewmohawk/Documents/UbuntuLPE/ubuntu24-server-lpe/logs/agent_maint_glue_recheck.out

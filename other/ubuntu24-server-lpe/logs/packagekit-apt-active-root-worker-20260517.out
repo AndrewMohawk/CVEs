@@ -1,0 +1,667 @@
+PackageKit/APT active-user root-worker probe
+target=ubuntu24-server-lpe-target
+2026-05-17T15:20:20-0400
+
+$ docker exec -i ubuntu24-server-lpe-target bash
+== target/default proof ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux bf51bb670420 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+apt	2.8.3	ii 
+dbus	1.14.10-4ubuntu4.1	ii 
+debconf	1.5.86ubuntu1	ii 
+dpkg	1.22.6ubuntu6.6	ii 
+gir1.2-packagekitglib-1.0	1.2.8-2ubuntu1.5	ii 
+libpackagekit-glib2-18:arm64	1.2.8-2ubuntu1.5	ii 
+packagekit	1.2.8-2ubuntu1.5	ii 
+packagekit-tools	1.2.8-2ubuntu1.5	ii 
+polkitd	124-2ubuntu1.24.04.3	ii 
+python3-gi	3.48.2-1	ii 
+systemd	255.4-1ubuntu8.15	ii 
+
+== service and file roots ==
+# /usr/lib/systemd/system/packagekit.service
+[Unit]
+Description=PackageKit Daemon
+# PK doesn't know how to do anything on ostree-managed systems;
+# currently the design is to have dedicated daemons like
+# eos-updater and rpm-ostree, and gnome-software talks to those.
+ConditionPathExists=!/run/ostree-booted
+Wants=network-online.target
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.PackageKit
+User=root
+ExecStart=/usr/libexec/packagekitd
+
+# /usr/lib/systemd/system/packagekit-offline-update.service
+[Unit]
+Description=Update the operating system whilst offline
+
+DefaultDependencies=no
+Requires=sysinit.target dbus.socket
+After=sysinit.target dbus.socket systemd-journald.socket system-update-pre.target
+Before=shutdown.target system-update.target
+# See packagekit.service
+ConditionPathExists=!/run/ostree-booted
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/pk-offline-update
+
+FailureAction=reboot
+drwxr-xr-x root:root directory 4096 /var/lib/PackageKit -> '/var/lib/PackageKit'
+-rw-r--r-- root:root regular file 32768 /var/lib/PackageKit/transactions.db -> '/var/lib/PackageKit/transactions.db'
+drwxr-xr-x root:root directory 4096 /var/cache/PackageKit -> '/var/cache/PackageKit'
+drwxr-xr-x root:root directory 4096 /var/cache/PackageKit/downloads -> '/var/cache/PackageKit/downloads'
+drwxr-xr-x root:root directory 4096 /etc/apt -> '/etc/apt'
+drwxr-xr-x root:root directory 4096 /etc/apt/apt.conf.d -> '/etc/apt/apt.conf.d'
+drwxr-xr-x root:root directory 12288 /var/lib/apt/lists -> '/var/lib/apt/lists'
+drwx------ _apt:root directory 20480 /var/lib/apt/lists/partial -> '/var/lib/apt/lists/partial'
+drwx------ _apt:root directory 4096 /var/cache/apt/archives/partial -> '/var/cache/apt/archives/partial'
+
+== active PackageKit polkit defaults ==
+org.freedesktop.packagekit.system-sources-refresh	any=auth_admin	inactive=yes	active=yes
+org.freedesktop.packagekit.system-network-proxy-configure	any=auth_admin	inactive=auth_admin	active=yes
+org.freedesktop.packagekit.trigger-offline-update	any=auth_admin	inactive=auth_admin	active=yes
+org.freedesktop.packagekit.trigger-offline-upgrade	any=auth_admin	inactive=auth_admin	active=auth_admin
+org.freedesktop.packagekit.clear-offline-update	any=auth_admin	inactive=auth_admin	active=yes
+org.freedesktop.packagekit.package-install-untrusted	any=auth_admin	inactive=auth_admin	active=auth_admin
+org.freedesktop.packagekit.system-update	any=auth_admin	inactive=auth_admin	active=auth_admin_keep
+org.freedesktop.packagekit.system-sources-configure	any=auth_admin	inactive=auth_admin	active=auth_admin_keep
+
+== PackageKit methods of interest ==
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml:141:    <method name="SetHints">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml:254:    <method name="Cancel">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml:665:    <method name="GetUpdates">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml:739:    <method name="InstallFiles">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml:887:    <method name="RefreshCache">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml:999:    <method name="RepoEnable">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml:1030:    <method name="RepoSetData">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.Transaction.xml:1424:    <method name="UpdatePackages">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.xml:378:    <method name="SetProxy">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.xml:584:    <method name="ClearResults">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.xml:595:    <method name="Trigger">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.xml:616:    <method name="TriggerUpgrade">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.xml:637:    <method name="Cancel">
+/usr/share/dbus-1/interfaces/org.freedesktop.PackageKit.xml:648:    <method name="GetPrepared">
+
+== apt hooks ==
+/etc/apt/apt.conf.d/01-vendor-ubuntu:1:Acquire::Changelogs::AlwaysOnline "true";
+/etc/apt/apt.conf.d/01-vendor-ubuntu:2:Acquire::http::User-Agent-Non-Interactive "true";
+/etc/apt/apt.conf.d/docker-gzip-indexes:1:Acquire::GzipIndexes "true"; Acquire::CompressionTypes::Order:: "gz";
+/etc/apt/apt.conf.d/docker-clean:1:DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };
+/etc/apt/apt.conf.d/docker-clean:2:APT::Update::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };
+/etc/apt/apt.conf.d/docker-no-languages:1:Acquire::Languages "none";
+/etc/apt/apt.conf.d/70debconf:3:DPkg::Pre-Install-Pkgs {"/usr/sbin/dpkg-preconfigure --apt || true";};
+/etc/apt/apt.conf.d/50unattended-upgrades:107://Acquire::http::Dl-Limit "70";
+/etc/apt/apt.conf.d/50appstream:1:## This file is provided by appstreamcli(1) to download DEP-11
+/etc/apt/apt.conf.d/50appstream:4:Acquire::IndexTargets {
+/etc/apt/apt.conf.d/50appstream:75:APT::Update::Post-Invoke-Success {
+/etc/apt/apt.conf.d/50appstream:76:    "if /usr/bin/test -w /var/cache/swcatalog -a -e /usr/bin/appstreamcli; then appstreamcli refresh --source=os > /dev/null || true; fi";
+/etc/apt/apt.conf.d/99needrestart:8:DPkg::Post-Invoke {"test -x /usr/lib/needrestart/apt-pinvoke && /usr/lib/needrestart/apt-pinvoke -m u || true"; };
+/etc/apt/apt.conf.d/20apt-esm-hook.conf:1:APT::Update::Pre-Invoke {
+/etc/apt/apt.conf.d/99update-notifier:1:DPkg::Post-Invoke {"if [ -d /var/lib/update-notifier ]; then touch /var/lib/update-notifier/dpkg-run-stamp; fi; /usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";};
+/etc/apt/apt.conf.d/99update-notifier:2:APT::Update::Post-Invoke-Success {"/usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";};
+/etc/apt/apt.conf.d/15update-stamp:1:APT::Update::Post-Invoke-Success {"touch /var/lib/apt/periodic/update-success-stamp 2>/dev/null || true";};
+/etc/apt/apt.conf.d/20packagekit:5:DPkg::Post-Invoke {
+/etc/apt/apt.conf.d/20packagekit:6:"/usr/bin/test -e /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service && /usr/bin/test -S /var/run/dbus/system_bus_socket && /usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update > /dev/null; /bin/echo > /dev/null";
+/etc/apt/apt.conf.d/20packagekit:10:APT::Update::Post-Invoke-Success {
+/etc/apt/apt.conf.d/20packagekit:11:"/usr/bin/test -e /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service && /usr/bin/test -S /var/run/dbus/system_bus_socket && /usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update > /dev/null; /bin/echo > /dev/null";
+/etc/apt/apt.conf.d/50command-not-found:4:Acquire::IndexTargets {
+/etc/apt/apt.conf.d/50command-not-found:14:APT::Update::Post-Invoke-Success {
+/etc/apt/apt.conf.d/50command-not-found:15:    "if /usr/bin/test -w /var/lib/command-not-found/ -a -e /usr/lib/cnf-update-db; then /usr/lib/cnf-update-db > /dev/null; fi";
+-rw-r--r-- 1 selfauth selfauth 698 May 17 19:20 /tmp/packagekit-apt-active-root-worker/packagekit-apt-active-root-worker.deb
+
+== active default PackageKit/APT run ==
+
+== root seeded offline setup for fixed-path semantics ==
+-rw-r--r-- 1 root root 78 May 17 19:20 /var/lib/PackageKit/prepared-update
+packagekit-apt-active-root-worker;1.0;all;seeded
+PKAPT_SEEDED_PREPARED_UPDATE
+
+== active default user output ==
+
+## session
+uid=1002 gid=1002 tty=/dev/tty8
+XDG_SESSION_ID=64
+Id=64
+User=1002
+Name=selfauth
+Seat=seat0
+TTY=tty8
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+
+## active authorization
+CAN_AUTHORIZE org.freedesktop.packagekit.system-sources-refresh -> 1
+CAN_AUTHORIZE org.freedesktop.packagekit.system-network-proxy-configure -> 1
+CAN_AUTHORIZE org.freedesktop.packagekit.trigger-offline-update -> 1
+CAN_AUTHORIZE org.freedesktop.packagekit.trigger-offline-upgrade -> 3
+CAN_AUTHORIZE org.freedesktop.packagekit.clear-offline-update -> 1
+CAN_AUTHORIZE org.freedesktop.packagekit.package-install-untrusted -> 3
+CAN_AUTHORIZE org.freedesktop.packagekit.system-update -> 3
+CAN_AUTHORIZE org.freedesktop.packagekit.system-sources-configure -> 3
+
+## transaction db before
+DB_STAT mode=0o644 uid=0 gid=0 size=32768
+DB_TABLE config rows=1
+DB_ROW config ('job_count', '28')
+DB_TABLE last_action rows=3
+DB_ROW last_action ('get-updates', '2026-05-17T19:19:50.518088Z')
+DB_ROW last_action ('install-files', '2026-05-17T19:19:55.130745Z')
+DB_ROW last_action ('resolve', '2026-05-17T17:55:39.208346Z')
+DB_TABLE proxy rows=0
+DB_TABLE transactions rows=0
+
+## offline props default-before
+OFFLINE_PROP UpdatePrepared=False
+OFFLINE_PROP UpdateTriggered=False
+OFFLINE_PROP UpgradePrepared=False
+OFFLINE_PROP UpgradeTriggered=False
+OFFLINE_PROP TriggerAction=unset
+
+## offline files default-before
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+FRONTEND_READY path='/tmp/packagekit-apt-active-root-worker/frontend\nPKAPT_FRONTEND_SPLIT=1'
+PROXY_READY port=35141
+
+## SetProxy
+SET_PROXY_OK http='http://127.0.0.1:35141/\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_PROXY_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com=http://127.0.0.1:35141/' https='http://127.0.0.1:35141/\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_PROXY_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com=http://127.0.0.1:35141/' no_proxy='localhost\nPKAPT_NO_PROXY_SPLIT=1' pac='file:///tmp/packagekit-apt-active-root-worker/proxy.pac\nPKAPT_PAC_SPLIT=1'
+
+## transaction db after-setproxy
+DB_STAT mode=0o644 uid=0 gid=0 size=32768
+DB_TABLE config rows=1
+DB_ROW config ('job_count', '28')
+DB_TABLE last_action rows=3
+DB_ROW last_action ('get-updates', '2026-05-17T19:19:50.518088Z')
+DB_ROW last_action ('install-files', '2026-05-17T19:19:55.130745Z')
+DB_ROW last_action ('resolve', '2026-05-17T17:55:39.208346Z')
+DB_TABLE proxy rows=1
+DB_ROW proxy ('2026-05-17T19:20:21.565737Z', 'http://127.0.0.1:35141/\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_PROXY_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com=http://127.0.0.1:35141/', 'http://127.0.0.1:35141/\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_PROXY_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com=http://127.0.0.1:35141/', None, '', 'localhost\nPKAPT_NO_PROXY_SPLIT=1', 'file:///tmp/packagekit-apt-active-root-worker/proxy.pac\nPKAPT_PAC_SPLIT=1', 1002, '/org/freedesktop/logind/session-64')
+DB_TABLE transactions rows=0
+
+## tx refresh-cache-force
+TX_PATH refresh-cache-force /29_acdcebab
+SET_HINTS_OK refresh-cache-force ['locale=C.UTF-8\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPYTHONPATH=/tmp/packagekit-apt-active-root-worker/py\nPKAPT_LOCALE_SPLIT=1', 'interactive=true', 'background=false', 'cache-age=1', 'frontend-socket=/tmp/packagekit-apt-active-root-worker/frontend\nPKAPT_FRONTEND_SPLIT=1', 'packagekit-apt-active-root-worker=x\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_UNKNOWN_SPLIT=1']
+TX_METHOD_OK refresh-cache-force RefreshCache
+PROXY_HIT addr=('127.0.0.1', 43366) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble/InRelease HTTP/1.1'
+PROXY_HEADER 'Host: ports.ubuntu.com'
+PROXY_HEADER 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT addr=('127.0.0.1', 43368) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-updates/InRelease HTTP/1.1'
+PROXY_HEADER 'Host: ports.ubuntu.com'
+PROXY_HEADER 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT addr=('127.0.0.1', 43380) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease HTTP/1.1'
+PROXY_HEADER 'Host: ports.ubuntu.com'
+PROXY_HEADER 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+PROXY_HIT addr=('127.0.0.1', 43382) first='GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease HTTP/1.1'
+PROXY_HEADER 'Host: ports.ubuntu.com'
+PROXY_HEADER 'User-Agent: Debian APT-HTTP/1.3 (2.8.3)'
+TX_SIGNAL refresh-cache-force ErrorCode (64, "E: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease  Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?)\nE: The repository 'http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease' is no longer signed.\nW: Updating from such a repository can't be done securely, and is therefore disabled by default.\nW: See apt-secure(8) manpage for repository creation and user configuration details.\nE: http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease is not (yet) available (Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?))\nE: Failed to fetch http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease  Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?)\nE: The repository 'http://ports.ubuntu.com/ubuntu-ports noble-security InRelease' is no longer signed.\nW: Updating from such a repository can't be done securely, and is therefore disabled by default.\nW: See apt-secure(8) manpage for repository creation and user configuration details.\nE: http://ports.ubuntu.com/ubuntu-ports noble-security InRelease is not (yet) available (Clearsigned file isn't valid, got 'NOSPLIT' (does the network require authentication?))\n")
+TX_SIGNAL refresh-cache-force Finished (2, 9863)
+TX_DONE refresh-cache-force done=True packages=[] package_count=0
+
+## tx get-updates
+TX_PATH get-updates /30_cecdcbcb
+SET_HINTS_OK get-updates ['locale=C.UTF-8\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPYTHONPATH=/tmp/packagekit-apt-active-root-worker/py\nPKAPT_LOCALE_SPLIT=1', 'interactive=true', 'background=false', 'cache-age=1', 'frontend-socket=/tmp/packagekit-apt-active-root-worker/frontend\nPKAPT_FRONTEND_SPLIT=1', 'packagekit-apt-active-root-worker=x\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_UNKNOWN_SPLIT=1']
+TX_METHOD_OK get-updates GetUpdates
+TX_SIGNAL get-updates Finished (1, 4828)
+TX_DONE get-updates done=True packages=[] package_count=0
+NO_UPDATE_PACKAGES_FOR_ONLY_DOWNLOAD
+
+## tx installfiles-only-download-local
+TX_PATH installfiles-only-download-local /31_bedadded
+SET_HINTS_OK installfiles-only-download-local ['locale=C.UTF-8\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPYTHONPATH=/tmp/packagekit-apt-active-root-worker/py\nPKAPT_LOCALE_SPLIT=1', 'interactive=true', 'background=false', 'cache-age=1', 'frontend-socket=/tmp/packagekit-apt-active-root-worker/frontend\nPKAPT_FRONTEND_SPLIT=1', 'packagekit-apt-active-root-worker=x\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_UNKNOWN_SPLIT=1']
+TX_METHOD_OK installfiles-only-download-local InstallFiles
+TX_SIGNAL installfiles-only-download-local Package (10, 'packagekit-apt-active-root-worker;1.0;all;+manual:local', 'PackageKit APT active root worker probe package')
+TX_SIGNAL installfiles-only-download-local ItemProgress ('packagekit-apt-active-root-worker;1.0;all;+manual:local', 8, 0)
+TX_SIGNAL installfiles-only-download-local Package (18, 'packagekit-apt-active-root-worker;1.0;all;+manual:local', 'PackageKit APT active root worker probe package')
+TX_SIGNAL installfiles-only-download-local Finished (1, 4316)
+TX_DONE installfiles-only-download-local done=True packages=['packagekit-apt-active-root-worker;1.0;all;+manual:local', 'packagekit-apt-active-root-worker;1.0;all;+manual:local'] package_count=2
+
+## tx installfiles-real-local
+TX_PATH installfiles-real-local /32_acbaedce
+SET_HINTS_OK installfiles-real-local ['locale=C.UTF-8\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPYTHONPATH=/tmp/packagekit-apt-active-root-worker/py\nPKAPT_LOCALE_SPLIT=1', 'interactive=true', 'background=false', 'cache-age=1', 'frontend-socket=/tmp/packagekit-apt-active-root-worker/frontend\nPKAPT_FRONTEND_SPLIT=1', 'packagekit-apt-active-root-worker=x\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_UNKNOWN_SPLIT=1']
+TX_METHOD_OK installfiles-real-local InstallFiles
+TX_SIGNAL installfiles-real-local ErrorCode (48, 'Failed to obtain authentication.')
+TX_SIGNAL installfiles-real-local Finished (2, 0)
+TX_DONE installfiles-real-local done=True packages=[] package_count=0
+
+## offline props after-default-transactions
+OFFLINE_PROP UpdatePrepared=False
+OFFLINE_PROP UpdateTriggered=False
+OFFLINE_PROP UpgradePrepared=False
+OFFLINE_PROP UpgradeTriggered=False
+OFFLINE_PROP TriggerAction=unset
+
+## offline files after-default-transactions
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call getprepared-default
+OFFLINE_CALL_OK getprepared-default GetPrepared -> ([],)
+
+## offline call trigger-default-no-seed
+OFFLINE_CALL_ERROR trigger-default-no-seed Trigger GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._pk_2dengine_2derror_2dquark.Code1: Prepared update not found: /var/lib/PackageKit/prepared-update
+
+## offline files after-trigger-default-no-seed
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call cancel-default
+OFFLINE_CALL_OK cancel-default Cancel -> None
+
+## offline files after-cancel-default
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## SetProxy
+SET_PROXY_OK http='' https='' no_proxy='' pac=''
+
+## transaction db after-clear-proxy
+DB_STAT mode=0o644 uid=0 gid=0 size=32768
+DB_TABLE config rows=1
+DB_ROW config ('job_count', '32')
+DB_TABLE last_action rows=3
+DB_ROW last_action ('get-updates', '2026-05-17T19:20:36.784998Z')
+DB_ROW last_action ('install-files', '2026-05-17T19:20:41.614855Z')
+DB_ROW last_action ('resolve', '2026-05-17T17:55:39.208346Z')
+DB_TABLE proxy rows=1
+DB_ROW proxy ('2026-05-17T19:20:21.565737Z', None, '', None, '', '', '', 1002, '/org/freedesktop/logind/session-64')
+DB_TABLE transactions rows=0
+PROXY_COUNT count=4 lines=['GET http://ports.ubuntu.com/ubuntu-ports/dists/noble/InRelease HTTP/1.1', 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-updates/InRelease HTTP/1.1', 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-backports/InRelease HTTP/1.1', 'GET http://ports.ubuntu.com/ubuntu-ports/dists/noble-security/InRelease HTTP/1.1']
+FRONTEND_COUNT count=0 events=[]
+
+== active seeded user output ==
+
+## seeded offline session
+uid=1002 gid=1002 tty=/dev/tty8
+XDG_SESSION_ID=66
+Id=66
+User=1002
+Name=selfauth
+Seat=seat0
+TTY=tty8
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+
+## active authorization
+CAN_AUTHORIZE org.freedesktop.packagekit.system-sources-refresh -> 1
+CAN_AUTHORIZE org.freedesktop.packagekit.system-network-proxy-configure -> 1
+CAN_AUTHORIZE org.freedesktop.packagekit.trigger-offline-update -> 1
+CAN_AUTHORIZE org.freedesktop.packagekit.trigger-offline-upgrade -> 3
+CAN_AUTHORIZE org.freedesktop.packagekit.clear-offline-update -> 1
+CAN_AUTHORIZE org.freedesktop.packagekit.package-install-untrusted -> 3
+CAN_AUTHORIZE org.freedesktop.packagekit.system-update -> 3
+CAN_AUTHORIZE org.freedesktop.packagekit.system-sources-configure -> 3
+
+## offline props seeded-before
+OFFLINE_PROP UpdatePrepared=True
+OFFLINE_PROP UpdateTriggered=False
+OFFLINE_PROP UpgradePrepared=False
+OFFLINE_PROP UpgradeTriggered=False
+OFFLINE_PROP TriggerAction=unset
+
+## offline files seeded-before
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update file mode=0o644 uid=0 gid=0 size=78 data=b'packagekit-apt-active-root-worker;1.0;all;seeded\nPKAPT_SEEDED_PREPARED_UPDATE\n'
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call getprepared-seeded
+OFFLINE_CALL_OK getprepared-seeded GetPrepared -> (['packagekit-apt-active-root-worker;1.0;all;seeded', 'PKAPT_SEEDED_PREPARED_UPDATE', ''],)
+
+## offline call trigger-seeded-action-'reboot\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_OFFLINE_SPLIT=1'
+OFFLINE_CALL_ERROR trigger-seeded-action-'reboot\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_OFFLINE_SPLIT=1' Trigger GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._pk_2dengine_2derror_2dquark.Code4: action reboot
+APT_CONFIG=/tmp/pkapt-worker.conf
+PKAPT_OFFLINE_SPLIT=1 unsupported
+
+## offline props after-trigger-'reboot\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_OFFLINE_SPLIT=1'
+OFFLINE_PROP UpdatePrepared=True
+OFFLINE_PROP UpdateTriggered=False
+OFFLINE_PROP UpgradePrepared=False
+OFFLINE_PROP UpgradeTriggered=False
+OFFLINE_PROP TriggerAction=unset
+
+## offline files after-trigger-'reboot\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_OFFLINE_SPLIT=1'
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update file mode=0o644 uid=0 gid=0 size=78 data=b'packagekit-apt-active-root-worker;1.0;all;seeded\nPKAPT_SEEDED_PREPARED_UPDATE\n'
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call cancel-after-'reboot\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_OFFLINE_SPLIT=1'
+OFFLINE_CALL_OK cancel-after-'reboot\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_OFFLINE_SPLIT=1' Cancel -> None
+
+## offline files after-cancel-'reboot\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_OFFLINE_SPLIT=1'
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update file mode=0o644 uid=0 gid=0 size=78 data=b'packagekit-apt-active-root-worker;1.0;all;seeded\nPKAPT_SEEDED_PREPARED_UPDATE\n'
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call trigger-seeded-action-'power-off/../../root'
+OFFLINE_CALL_ERROR trigger-seeded-action-'power-off/../../root' Trigger GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._pk_2dengine_2derror_2dquark.Code4: action power-off/../../root unsupported
+
+## offline props after-trigger-'power-off/../../root'
+OFFLINE_PROP UpdatePrepared=True
+OFFLINE_PROP UpdateTriggered=False
+OFFLINE_PROP UpgradePrepared=False
+OFFLINE_PROP UpgradeTriggered=False
+OFFLINE_PROP TriggerAction=unset
+
+## offline files after-trigger-'power-off/../../root'
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update file mode=0o644 uid=0 gid=0 size=78 data=b'packagekit-apt-active-root-worker;1.0;all;seeded\nPKAPT_SEEDED_PREPARED_UPDATE\n'
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call cancel-after-'power-off/../../root'
+OFFLINE_CALL_OK cancel-after-'power-off/../../root' Cancel -> None
+
+## offline files after-cancel-'power-off/../../root'
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update file mode=0o644 uid=0 gid=0 size=78 data=b'packagekit-apt-active-root-worker;1.0;all;seeded\nPKAPT_SEEDED_PREPARED_UPDATE\n'
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call trigger-seeded-action-''
+OFFLINE_CALL_ERROR trigger-seeded-action-'' Trigger GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._pk_2dengine_2derror_2dquark.Code4: action  unsupported
+
+## offline props after-trigger-''
+OFFLINE_PROP UpdatePrepared=True
+OFFLINE_PROP UpdateTriggered=False
+OFFLINE_PROP UpgradePrepared=False
+OFFLINE_PROP UpgradeTriggered=False
+OFFLINE_PROP TriggerAction=unset
+
+## offline files after-trigger-''
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update file mode=0o644 uid=0 gid=0 size=78 data=b'packagekit-apt-active-root-worker;1.0;all;seeded\nPKAPT_SEEDED_PREPARED_UPDATE\n'
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call cancel-after-''
+OFFLINE_CALL_OK cancel-after-'' Cancel -> None
+
+## offline files after-cancel-''
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update file mode=0o644 uid=0 gid=0 size=78 data=b'packagekit-apt-active-root-worker;1.0;all;seeded\nPKAPT_SEEDED_PREPARED_UPDATE\n'
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call trigger-seeded-action-'reboot'
+OFFLINE_CALL_OK trigger-seeded-action-'reboot' Trigger -> None
+
+## offline props after-trigger-'reboot'
+OFFLINE_PROP UpdatePrepared=True
+OFFLINE_PROP UpdateTriggered=True
+OFFLINE_PROP UpgradePrepared=False
+OFFLINE_PROP UpgradeTriggered=False
+OFFLINE_PROP TriggerAction=reboot
+
+## offline files after-trigger-'reboot'
+OFFLINE_FILE /system-update symlink mode=0o777 target='/var/lib/PackageKit/prepared-update'
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action file mode=0o644 uid=0 gid=0 size=6 data=b'reboot'
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update file mode=0o644 uid=0 gid=0 size=78 data=b'packagekit-apt-active-root-worker;1.0;all;seeded\nPKAPT_SEEDED_PREPARED_UPDATE\n'
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call cancel-after-'reboot'
+OFFLINE_CALL_OK cancel-after-'reboot' Cancel -> None
+
+## offline files after-cancel-'reboot'
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update file mode=0o644 uid=0 gid=0 size=78 data=b'packagekit-apt-active-root-worker;1.0;all;seeded\nPKAPT_SEEDED_PREPARED_UPDATE\n'
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call trigger-seeded-action-'power-off'
+OFFLINE_CALL_OK trigger-seeded-action-'power-off' Trigger -> None
+
+## offline props after-trigger-'power-off'
+OFFLINE_PROP UpdatePrepared=True
+OFFLINE_PROP UpdateTriggered=True
+OFFLINE_PROP UpgradePrepared=False
+OFFLINE_PROP UpgradeTriggered=False
+OFFLINE_PROP TriggerAction=power-off
+
+## offline files after-trigger-'power-off'
+OFFLINE_FILE /system-update symlink mode=0o777 target='/var/lib/PackageKit/prepared-update'
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action file mode=0o644 uid=0 gid=0 size=9 data=b'power-off'
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update file mode=0o644 uid=0 gid=0 size=78 data=b'packagekit-apt-active-root-worker;1.0;all;seeded\nPKAPT_SEEDED_PREPARED_UPDATE\n'
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call cancel-after-'power-off'
+OFFLINE_CALL_OK cancel-after-'power-off' Cancel -> None
+
+## offline files after-cancel-'power-off'
+OFFLINE_FILE /system-update missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-action missing
+OFFLINE_FILE /var/lib/PackageKit/offline-update-competed missing
+OFFLINE_FILE /var/lib/PackageKit/prepared-update file mode=0o644 uid=0 gid=0 size=78 data=b'packagekit-apt-active-root-worker;1.0;all;seeded\nPKAPT_SEEDED_PREPARED_UPDATE\n'
+OFFLINE_FILE /var/lib/PackageKit/prepared-upgrade missing
+
+## offline call trigger-upgrade-seeded
+OFFLINE_CALL_ERROR trigger-upgrade-seeded TriggerUpgrade GDBus.Error:org.gtk.GDBus.UnmappedGError.Quark._pk_2dengine_2derror_2dquark.Code0: failed to obtain auth
+
+## offline props seeded-after
+OFFLINE_PROP UpdatePrepared=True
+OFFLINE_PROP UpdateTriggered=False
+OFFLINE_PROP UpgradePrepared=False
+OFFLINE_PROP UpgradeTriggered=False
+OFFLINE_PROP TriggerAction=unset
+
+== root worker environment monitor ==
+ENV_SNAPSHOT pid=19923 uid=0 cmd='/usr/libexec/packagekitd '
+  ENV_ITEM b'LANG=C.UTF-8'
+  SEPARATE_FLAGS 
+ENV_SNAPSHOT pid=20030 uid=0 cmd='/usr/lib/apt/methods/http '
+  ENV_ITEM b'LANG=C.UTF-8\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPYTHONPATH=/tmp/packagekit-apt-active-root-worker/py\nPKAPT_LOCALE_SPLIT=1'
+  ENV_ITEM b'LANGUAGE=C.UTF-8\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPYTHONPATH=/tmp/packagekit-apt-active-root-worker/py\nPKAPT_LOCALE_SPLIT=1'
+  ENV_ITEM b'http_proxy=http://127.0.0.1:35141/\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_PROXY_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com=http://127.0.0.1:35141/'
+  SEPARATE_FLAGS 
+ENV_SNAPSHOT pid=20031 uid=0 cmd='/usr/libexec/packagekitd '
+  ENV_ITEM b'LANG=C.UTF-8'
+  SEPARATE_FLAGS 
+ENV_SNAPSHOT pid=20037 uid=42 cmd='/usr/lib/apt/methods/http '
+  ENV_ITEM b'LANG=C.UTF-8\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPYTHONPATH=/tmp/packagekit-apt-active-root-worker/py\nPKAPT_LOCALE_SPLIT=1'
+  ENV_ITEM b'LANGUAGE=C.UTF-8\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPYTHONPATH=/tmp/packagekit-apt-active-root-worker/py\nPKAPT_LOCALE_SPLIT=1'
+  ENV_ITEM b'http_proxy=http://127.0.0.1:35141/\nAPT_CONFIG=/tmp/pkapt-worker.conf\nPKAPT_PROXY_SPLIT=1\nAcquire::http::Proxy::ports.ubuntu.com=http://127.0.0.1:35141/'
+  SEPARATE_FLAGS 
+ENV_SNAPSHOT pid=20151 uid=0 cmd='/usr/libexec/packagekitd '
+  ENV_ITEM b'LANG=C.UTF-8'
+  SEPARATE_FLAGS 
+
+== final transaction database snapshot ==
+DB_STAT mode=0o644 uid=0 gid=0 size=32768
+DB_TABLE config rows=1
+DB_ROW config ('job_count', '32')
+DB_TABLE last_action rows=3
+DB_ROW last_action ('get-updates', '2026-05-17T19:20:36.784998Z')
+DB_ROW last_action ('install-files', '2026-05-17T19:20:41.614855Z')
+DB_ROW last_action ('resolve', '2026-05-17T17:55:39.208346Z')
+DB_TABLE proxy rows=1
+DB_ROW proxy ('2026-05-17T19:20:21.565737Z', None, '', None, '', '', '', 1002, '/org/freedesktop/logind/session-64')
+DB_TABLE transactions rows=0
+
+== root proof checks ==
+ROOT_MARKER_ABSENT /root/packagekit_apt_active_root_worker_root
+ROOT_MARKER_ABSENT /root/packagekit_apt_active_root_worker_root.pre
+ROOT_MARKER_ABSENT /root/packagekit_apt_active_root_worker_root.post
+ROOT_MARKER_ABSENT /root/packagekit_apt_active_root_worker_root.dpkgpre
+ROOT_MARKER_ABSENT /root/packagekit_apt_active_root_worker_root.dpkgpost
+ROOT_MARKER_ABSENT /root/packagekit_apt_active_root_worker_root.postinst
+ROOT_MARKER_ABSENT /root/packagekit_apt_active_root_worker_root.pythonpath
+
+== offline files before cleanup ==
+OFFLINE_BEFORE_CLEANUP missing /system-update
+OFFLINE_BEFORE_CLEANUP missing /var/lib/PackageKit/offline-update-action
+OFFLINE_BEFORE_CLEANUP missing /var/lib/PackageKit/offline-update-competed
+-rw-r--r-- 1 root root 78 May 17 19:20 /var/lib/PackageKit/prepared-update
+packagekit-apt-active-root-worker;1.0;all;seeded
+PKAPT_SEEDED_PREPARED_UPDATE
+OFFLINE_BEFORE_CLEANUP missing /var/lib/PackageKit/prepared-upgrade
+
+== PackageKit journal during probe ==
+May 17 16:56:18 bf51bb670420 PackageKit[9688]: daemon start
+May 17 16:56:18 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 17:04:18 bf51bb670420 PackageKit[9688]: daemon quit
+May 17 17:04:18 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 17:48:11 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 17:48:11 bf51bb670420 PackageKit[36301]: daemon start
+May 17 17:48:11 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 17:55:15 bf51bb670420 PackageKit[36301]: get-updates transaction /5_dbcacade from uid 1001 finished with success after 41ms
+May 17 17:55:15 bf51bb670420 PackageKit[36301]: uid 1001 is trying to obtain org.freedesktop.packagekit.repair-system auth (only_trusted:1)
+May 17 17:55:15 bf51bb670420 PackageKit[36301]: uid 1001 failed to obtain auth
+May 17 17:55:15 bf51bb670420 PackageKit[36301]: get-updates transaction /7_ddacbcdd from uid 1001 finished with success after 59ms
+May 17 17:55:38 bf51bb670420 PackageKit[36301]: resolve transaction /8_adeaaaee from uid 1001 finished with success after 97ms
+May 17 17:55:38 bf51bb670420 PackageKit[36301]: uid 1001 is trying to obtain org.freedesktop.packagekit.package-reinstall auth (only_trusted:1)
+May 17 17:55:38 bf51bb670420 PackageKit[36301]: uid 1001 failed to obtain auth
+May 17 17:55:39 bf51bb670420 PackageKit[36301]: resolve transaction /10_bcaacbdd from uid 1001 finished with success after 57ms
+May 17 17:55:39 bf51bb670420 PackageKit[36301]: resolve transaction /11_dcdbeaac from uid 1001 finished with success after 43ms
+May 17 17:55:39 bf51bb670420 PackageKit[36301]: resolve transaction /12_aedaadeb from uid 1001 finished with success after 44ms
+May 17 18:04:53 bf51bb670420 PackageKit[36301]: daemon quit
+May 17 18:04:53 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 18:04:56 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 18:04:56 bf51bb670420 PackageKit[43417]: daemon start
+May 17 18:04:56 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 18:10:02 bf51bb670420 PackageKit[43417]: daemon quit
+May 17 18:10:02 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+-- Boot 96caf4622a634ac080c0ac1044cba492 --
+May 17 18:25:41 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 18:25:41 bf51bb670420 PackageKit[632]: daemon start
+May 17 18:25:42 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 18:30:47 bf51bb670420 PackageKit[632]: daemon quit
+May 17 18:30:47 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 18:31:30 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 18:31:30 bf51bb670420 PackageKit[1937]: daemon start
+May 17 18:31:30 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 18:31:53 bf51bb670420 PackageKit[1937]: uid 1001 is trying to obtain org.freedesktop.packagekit.system-sources-refresh auth (only_trusted:0)
+May 17 18:32:14 bf51bb670420 PackageKit[1937]: uid 1001 is trying to obtain org.freedesktop.packagekit.system-sources-configure auth (only_trusted:0)
+May 17 18:32:14 bf51bb670420 PackageKit[1937]: uid 1001 failed to obtain auth
+May 17 18:32:28 bf51bb670420 PackageKit[1937]: install-files transaction /20_eeedceec from uid 1001 finished with success after 75ms
+May 17 18:32:37 bf51bb670420 PackageKit[1937]: uid 1001 is trying to obtain org.freedesktop.packagekit.package-install-untrusted auth (only_trusted:0)
+May 17 18:32:37 bf51bb670420 PackageKit[1937]: uid 1001 failed to obtain auth
+May 17 18:32:41 bf51bb670420 PackageKit[1937]: uid 1001 is trying to obtain org.freedesktop.packagekit.system-sources-refresh auth (only_trusted:0)
+May 17 18:32:41 bf51bb670420 PackageKit[1937]: uid 1001 failed to obtain auth
+May 17 18:41:46 bf51bb670420 PackageKit[1937]: daemon quit
+May 17 18:41:46 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 18:43:10 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 18:43:10 bf51bb670420 PackageKit[5270]: daemon start
+May 17 18:43:10 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 18:48:56 bf51bb670420 PackageKit[5270]: daemon quit
+May 17 18:48:56 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 18:50:29 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 18:50:29 bf51bb670420 PackageKit[8025]: daemon start
+May 17 18:50:29 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 18:52:14 bf51bb670420 PackageKit[8025]: uid 1001 is trying to obtain org.freedesktop.packagekit.repair-system auth (only_trusted:0)
+May 17 18:52:14 bf51bb670420 PackageKit[8025]: uid 1001 failed to obtain auth
+May 17 19:02:00 bf51bb670420 PackageKit[8025]: daemon quit
+May 17 19:02:00 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 19:02:48 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 19:02:48 bf51bb670420 PackageKit[12728]: daemon start
+May 17 19:02:48 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 19:10:43 bf51bb670420 PackageKit[12728]: daemon quit
+May 17 19:10:43 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 19:19:00 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 19:19:00 bf51bb670420 PackageKit[18942]: daemon start
+May 17 19:19:00 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 19:19:01 bf51bb670420 systemd[1]: Stopping packagekit.service - PackageKit Daemon...
+May 17 19:19:01 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 19:19:01 bf51bb670420 systemd[1]: Stopped packagekit.service - PackageKit Daemon.
+May 17 19:19:01 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 19:19:01 bf51bb670420 PackageKit[19093]: daemon start
+May 17 19:19:01 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 19:19:02 bf51bb670420 systemd[1]: Stopping packagekit.service - PackageKit Daemon...
+May 17 19:19:02 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 19:19:02 bf51bb670420 systemd[1]: Stopped packagekit.service - PackageKit Daemon.
+May 17 19:19:02 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 19:19:02 bf51bb670420 PackageKit[19252]: daemon start
+May 17 19:19:02 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 19:19:43 bf51bb670420 systemd[1]: Stopping packagekit.service - PackageKit Daemon...
+May 17 19:19:43 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 19:19:43 bf51bb670420 systemd[1]: Stopped packagekit.service - PackageKit Daemon.
+May 17 19:19:43 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 19:19:43 bf51bb670420 PackageKit[19374]: daemon start
+May 17 19:19:43 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 19:19:44 bf51bb670420 PackageKit[19374]: uid 1002 is trying to obtain org.freedesktop.packagekit.system-sources-refresh auth (only_trusted:0)
+May 17 19:19:44 bf51bb670420 PackageKit[19374]: uid 1002 obtained auth for org.freedesktop.packagekit.system-sources-refresh
+May 17 19:19:46 bf51bb670420 PackageKit[19374]: refresh-cache transaction /25_bebebdec from uid 1002 finished with failed after 2392ms
+May 17 19:19:50 bf51bb670420 PackageKit[19374]: get-updates transaction /26_ebeedabe from uid 1002 finished with success after 3207ms
+May 17 19:19:55 bf51bb670420 PackageKit[19374]: install-files transaction /27_bbeabccd from uid 1002 finished with success after 4090ms
+May 17 19:19:55 bf51bb670420 PackageKit[19374]: uid 1002 is trying to obtain org.freedesktop.packagekit.package-install-untrusted auth (only_trusted:0)
+May 17 19:19:55 bf51bb670420 PackageKit[19374]: uid 1002 failed to obtain auth
+May 17 19:19:56 bf51bb670420 systemd[1]: Stopping packagekit.service - PackageKit Daemon...
+May 17 19:19:56 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 19:19:56 bf51bb670420 systemd[1]: Stopped packagekit.service - PackageKit Daemon.
+May 17 19:19:56 bf51bb670420 systemd[1]: packagekit.service: Consumed 9.784s CPU time.
+May 17 19:19:56 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 19:19:56 bf51bb670420 PackageKit[19620]: daemon start
+May 17 19:19:56 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 19:19:57 bf51bb670420 systemd[1]: Stopping packagekit.service - PackageKit Daemon...
+May 17 19:19:57 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 19:19:57 bf51bb670420 systemd[1]: Stopped packagekit.service - PackageKit Daemon.
+May 17 19:19:57 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 19:19:57 bf51bb670420 PackageKit[19771]: daemon start
+May 17 19:19:57 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 19:20:21 bf51bb670420 systemd[1]: Stopping packagekit.service - PackageKit Daemon...
+May 17 19:20:21 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 19:20:21 bf51bb670420 systemd[1]: Stopped packagekit.service - PackageKit Daemon.
+May 17 19:20:21 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 19:20:21 bf51bb670420 PackageKit[19923]: daemon start
+May 17 19:20:21 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 17 19:20:21 bf51bb670420 PackageKit[19923]: uid 1002 is trying to obtain org.freedesktop.packagekit.system-sources-refresh auth (only_trusted:0)
+May 17 19:20:21 bf51bb670420 PackageKit[19923]: uid 1002 obtained auth for org.freedesktop.packagekit.system-sources-refresh
+May 17 19:20:31 bf51bb670420 PackageKit[19923]: refresh-cache transaction /29_acdcebab from uid 1002 finished with failed after 9863ms
+May 17 19:20:36 bf51bb670420 PackageKit[19923]: get-updates transaction /30_cecdcbcb from uid 1002 finished with success after 4828ms
+May 17 19:20:41 bf51bb670420 PackageKit[19923]: install-files transaction /31_bedadded from uid 1002 finished with success after 4316ms
+May 17 19:20:42 bf51bb670420 PackageKit[19923]: uid 1002 is trying to obtain org.freedesktop.packagekit.package-install-untrusted auth (only_trusted:0)
+May 17 19:20:42 bf51bb670420 PackageKit[19923]: uid 1002 failed to obtain auth
+May 17 19:20:42 bf51bb670420 systemd[1]: Stopping packagekit.service - PackageKit Daemon...
+May 17 19:20:42 bf51bb670420 systemd[1]: packagekit.service: Deactivated successfully.
+May 17 19:20:42 bf51bb670420 systemd[1]: Stopped packagekit.service - PackageKit Daemon.
+May 17 19:20:42 bf51bb670420 systemd[1]: packagekit.service: Consumed 13.079s CPU time.
+May 17 19:20:42 bf51bb670420 systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 17 19:20:42 bf51bb670420 PackageKit[20151]: daemon start
+May 17 19:20:42 bf51bb670420 systemd[1]: Started packagekit.service - PackageKit Daemon.
+
+== cleanup health preview ==
+running
+
+Host log: /Users/andrewmohawk/Documents/UbuntuLPE/ubuntu24-server-lpe/logs/packagekit-apt-active-root-worker-20260517.out

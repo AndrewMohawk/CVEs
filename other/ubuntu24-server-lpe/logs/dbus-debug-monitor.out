@@ -1,0 +1,357 @@
+D-Bus Debug.Stats and Monitoring system-bus probe
+target=ubuntu24-server-lpe-target attacker=attacker
+2026-05-16T17:16:36-0400
+
+## cleanup before probe
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+
+## target identity, packages, and system bus reachability
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== identity ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux 508d797cbad0 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+      1 root     systemd         /sbin/init
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+attacker
+sudo: a password is required
+sudo_rc=1
+
+== package versions ==
+dbus	1.14.10-4ubuntu4.1	arm64	ii 
+dbus-bin	1.14.10-4ubuntu4.1	arm64	ii 
+dbus-daemon	1.14.10-4ubuntu4.1	arm64	ii 
+dbus-system-bus-common	1.14.10-4ubuntu4.1	all	ii 
+libdbus-1-3:arm64	1.14.10-4ubuntu4.1	arm64	ii 
+polkitd	124-2ubuntu1.24.04.3	arm64	ii 
+systemd	255.4-1ubuntu8.15	arm64	ii 
+
+== system bus service/socket state ==
+ExecStart={ path=/usr/bin/dbus-daemon ; argv[]=@dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/dbus.service
+
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/dbus.socket
+message+     263 dbus-daemon     @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+srw-rw-rw- 666 root:root socket /run/dbus/system_bus_socket -> '/run/dbus/system_bus_socket'
+-rwxr-xr-x 755 root:root regular file /usr/bin/dbus-daemon -> '/usr/bin/dbus-daemon'
+-rwxr-xr-x 755 root:root regular file /usr/bin/busctl -> '/usr/bin/busctl'
+-rwxr-xr-x 755 root:root regular file /usr/bin/dbus-monitor -> '/usr/bin/dbus-monitor'
+-rwxr-xr-x 755 root:root regular file /usr/bin/dbus-send -> '/usr/bin/dbus-send'
+-rw-r--r-- 644 root:root regular file /usr/share/dbus-1/system.conf -> '/usr/share/dbus-1/system.conf'
+-rw-r--r-- 644 root:root regular file /usr/lib/systemd/system/dbus.service -> '/usr/lib/systemd/system/dbus.service'
+-rw-r--r-- 644 root:root regular file /usr/lib/systemd/system/dbus.socket -> '/usr/lib/systemd/system/dbus.socket'
+dbus-system-bus-common: /usr/share/dbus-1/system.conf
+dbus: /usr/lib/systemd/system/dbus.service
+dbus-system-bus-common: /usr/lib/systemd/system/dbus.socket
+
+== bus name and interface reachability ==
+NAME                             PID PROCESS         USER            CONNECTION    UNIT                        SESSION DESCRIPTION
+:1.0                             105 systemd-resolve systemd-resolve :1.0          systemd-resolved.service    -       -
+:1.1                               1 systemd         root            :1.1          init.scope                  -       -
+:1.1061                       256491 polkitd         polkitd         :1.1061       polkit.service              -       -
+:1.1151                       258458 busctl          root            :1.1151       init.scope                  -       -
+:1.3                             271 systemd-logind  root            :1.3          systemd-logind.service      -       -
+:1.348                        249575 netplan-dbus    root            :1.348        dbus.service                -       -
+:1.350                        249580 python3         root            :1.350        dbus.service                -       -
+:1.5                             305 unattended-upgr root            :1.5          unattended-upgrades.service -       -
+:1.508                        251674 udisksd         root            :1.508        udisks2.service             -       -
+:1.740                        252828 boltd           root            :1.740        bolt.service                -       -
+com.ubuntu.SoftwareProperties 249580 python3         root            :1.350        dbus.service                -       -
+io.netplan.Netplan            249575 netplan-dbus    root            :1.348        dbus.service                -       -
+org.freedesktop.DBus               1 systemd         root            -             init.scope                  -       -
+org.freedesktop.ModemManager1      - -               -               (activatable) -                           -       -
+org.freedesktop.PackageKit         - -               -               (activatable) -                           -       -
+org.freedesktop.PolicyKit1    256491 polkitd         polkitd         :1.1061       polkit.service              -       -
+org.freedesktop.UDisks2       251674 udisksd         root            :1.508        udisks2.service             -       -
+org.freedesktop.bolt          252828 boltd           root            :1.740        bolt.service                -       -
+org.freedesktop.fwupd              - -               -               (activatable) -                           -       -
+org.freedesktop.hostname1          - -               -               (activatable) -                           -       -
+org.freedesktop.locale1            - -               -               (activatable) -                           -       -
+org.freedesktop.login1           271 systemd-logind  root            :1.3          systemd-logind.service      -       -
+org.freedesktop.network1           - -               -               (activatable) -                           -       -
+org.freedesktop.resolve1         105 systemd-resolve systemd-resolve :1.0          systemd-resolved.service    -       -
+org.freedesktop.systemd1           1 systemd         root            :1.1          init.scope                  -       -
+org.freedesktop.timedate1          - -               -               (activatable) -                           -       -
+org.freedesktop.timesync1          - -               -               (activatable) -                           -       -
+-- Debug.Stats introspection as root --
+NAME                             TYPE      SIGNATURE RESULT/VALUE FLAGS
+.GetAllMatchRules                method    -         a{sas}       -
+.GetConnectionStats              method    s         a{sv}        -
+.GetStats                        method    -         a{sv}        -
+-- Monitoring introspection as root --
+NAME                            TYPE      SIGNATURE RESULT/VALUE FLAGS
+.BecomeMonitor                  method    asu       -            -
+
+== root-only Debug.Stats control calls prove interface is compiled/enabled ==
+a{sv} 12 "Serial" u 1 "ListMemPoolUsedBytes" u 94824 "ListMemPoolCachedBytes" u 35544 "ListMemPoolAllocatedBytes" u 196224 "ActiveConnections" u 10 "IncompleteConnections" u 0 "MatchRules" u 27 "PeakMatchRules" u 39 "PeakMatchRulesPerConnection" u 15 "BusNames" u 18 "PeakBusNames" u 26 "PeakBusNamesPerConnection" u 2
+root_getstats_rc=0
+a{sv} 16 "Serial" u 1 "MatchRules" u 11 "PeakMatchRules" u 15 "BusNames" u 2 "PeakBusNames" u 2 "UniqueName" s ":1.1" "IncomingMessages" u 0 "IncomingBytes" u 0 "IncomingFDs" u 0 "PeakIncomingBytes" u 70614 "PeakIncomingFDs" u 0 "OutgoingMessages" u 0 "OutgoingBytes" u 0 "OutgoingFDs" u 0 "PeakOutgoingBytes" u 832 "PeakOutgoingFDs" u 1
+root_getconnectionstats_rc=0
+a{sas} 10 ":1.348" 0 ":1.1061" 1 "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\'" ":1.508" 5 "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\'org.freedesktop.PolicyKit1\'" "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\'org.freedesktop.login1\'" "type=\'signal\',interface=\'org.freedesktop.DBus.Properties\',member=\'PropertiesChanged\',path=\'/org/freedesktop/PolicyKit1/Authority\',sender=\'org.freedesktop.PolicyKit1\',arg0=\'org.freedesktop.PolicyKit1.Authority\'" "type=\'signal\',interface=\'org.freedesktop.PolicyKit1.Authority\',path=\'/org/freedesktop/PolicyKit1/Authority\',sender=\'org.freedesktop.PolicyKit1\'" "type=\'signal\',interface=\'org.freedesktop.login1.Manager\',member=\'PrepareForSleep\',path=\'/org/freedesktop/login1\',sender=\'org.freedesktop.login1\'" ":1.350" 0 ":1.1156" 0 ":1.0" 1 "type=\'signal\',interface=\'org.freedesktop.login1.Manager\',member=\'PrepareForSleep\',path=\'/org/freedesktop/login1\',sender=\'org.freedesktop.login1\'" ":1.1" 11 "type=\'method_call\',interface=\'org.freedesktop.MemoryAllocation1\',member=\'GetMallocInfo\',path=\'/org/freedesktop/MemoryAllocation1\',destination=\'org.freedesktop.systemd1\'" "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\':1.3\'" "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\'org.freedesktop.network1\'" "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\'org.freedesktop.UDisks2\'" "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\'org.freedesktop.login1\'" "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\'org.freedesktop.ModemManager1\'" "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\'org.freedesktop.PolicyKit1\'" "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\'org.freedesktop.timesync1\'" "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\'org.freedesktop.resolve1\'" "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\'org.freedesktop.bolt\'" "type=\'signal\',interface=\'org.freedesktop.systemd1.Activator\',member=\'ActivationRequest\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\'" ":1.740" 3 "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\'org.freedesktop.PolicyKit1\'" "type=\'signal\',interface=\'org.freedesktop.DBus.Properties\',member=\'PropertiesChanged\',path=\'/org/freedesktop/PolicyKit1/Authority\',sender=\'org.freedesktop.PolicyKit1\',arg0=\'org.freedesktop.PolicyKit1.Authority\'" "type=\'signal\',interface=\'org.freedesktop.PolicyKit1.Authority\',path=\'/org/freedesktop/PolicyKit1/Authority\',sender=\'org.freedesktop.PolicyKit1\'" ":1.3" 4 "type=\'signal\',interface=\'org.freedesktop.DBus.Properties\',member=\'PropertiesChanged\',sender=\'org.freedesktop.systemd1\'" "type=\'signal\',interface=\'org.freedesktop.systemd1.Manager\',member=\'JobRemoved\',path=\'/org/freedesktop/systemd1\',sender=\'org.freedesktop.systemd1\'" "type=\'signal\',interface=\'org.freedesktop.systemd1.Manager\',member=\'UnitRemoved\',path=\'/org/freedesktop/systemd1\',sender=\'org.freedesktop.systemd1\'" "type=\'signal\',interface=\'org.freedesktop.systemd1.Manager\',member=\'Reloading\',path=\'/org/freedesktop/systemd1\',sender=\'org.freedesktop.systemd1\'" ":1.5" 2 "type=\'signal\',interface=\'org.freedesktop.DBus\',member=\'NameOwnerChanged\',path=\'/org/freedesktop/DBus\',sender=\'org.freedesktop.DBus\',arg0=\':1.3\'" "type=\'signal\',member=\'PrepareForShutdown\',path=\'/org/freedesktop/login1\',sender=\':1.3\'"
+root_getallmatchrules_rc=0
+
+## relevant D-Bus policy/config snippets
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== /usr/share/dbus-1/system.conf relevant lines ==
+    44	  <policy context="default">
+    45	    <!-- All users can connect to system bus -->
+    46	    <allow user="*"/>
+    47	
+    48	    <!-- Holes must be punched in service configuration files for
+    49	         name ownership and sending method calls -->
+    50	    <deny own="*"/>
+    51	    <deny send_type="method_call"/>
+    52	
+    53	    <!-- Signals and reply messages (method returns, errors) are allowed
+    54	         by default -->
+    55	    <allow send_type="signal"/>
+    56	    <allow send_requested_reply="true" send_type="method_return"/>
+    57	    <allow send_requested_reply="true" send_type="error"/>
+    58	
+    59	    <!-- All messages may be received by default -->
+    60	    <allow receive_type="method_call"/>
+    61	    <allow receive_type="method_return"/>
+    62	    <allow receive_type="error"/>
+    63	    <allow receive_type="signal"/>
+    64	
+    65	    <!-- Allow anyone to talk to the message bus -->
+    66	    <allow send_destination="org.freedesktop.DBus"
+    67	           send_interface="org.freedesktop.DBus" />
+    68	    <allow send_destination="org.freedesktop.DBus"
+    69	           send_interface="org.freedesktop.DBus.Introspectable"/>
+    70	    <allow send_destination="org.freedesktop.DBus"
+    71	           send_interface="org.freedesktop.DBus.Properties"/>
+    72	    <allow send_destination="org.freedesktop.DBus"
+    73	           send_interface="org.freedesktop.DBus.Containers1"/>
+    74	    <!-- But disallow some specific bus services -->
+    75	    <deny send_destination="org.freedesktop.DBus"
+    76	          send_interface="org.freedesktop.DBus"
+    77	          send_member="UpdateActivationEnvironment"/>
+    78	    <deny send_destination="org.freedesktop.DBus"
+    79	          send_interface="org.freedesktop.DBus.Debug.Stats"/>
+    80	    <deny send_destination="org.freedesktop.DBus"
+    81	          send_interface="org.freedesktop.systemd1.Activator"/>
+    82	  </policy>
+    83	
+    84	  <!-- Only systemd, which runs as root, may report activation failures. -->
+    85	  <policy user="root">
+    86	    <allow send_destination="org.freedesktop.DBus"
+    87	           send_interface="org.freedesktop.systemd1.Activator"/>
+    88	  </policy>
+    89	
+    90	  <!-- root may monitor the system bus. -->
+    91	  <policy user="root">
+    92	    <allow send_destination="org.freedesktop.DBus"
+    93	           send_interface="org.freedesktop.DBus.Monitoring"/>
+    94	  </policy>
+    95	
+    96	  <!-- If the Stats interface was enabled at compile-time, root may use it.
+    97	       Copy this into system.local.conf or system.d/*.conf if you want to
+    98	       enable other privileged users to view statistics and debug info -->
+    99	  <policy user="root">
+   100	    <allow send_destination="org.freedesktop.DBus"
+   101	           send_interface="org.freedesktop.DBus.Debug.Stats"/>
+   102	  </policy>
+   103	
+   104	  <!-- Include legacy configuration location -->
+
+== policy hits for Debug.Stats / Monitoring / eavesdrop ==
+/usr/share/dbus-1/system.conf:66:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:68:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:70:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:72:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:75:    <deny send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:78:    <deny send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:79:          send_interface="org.freedesktop.DBus.Debug.Stats"/>
+/usr/share/dbus-1/system.conf:80:    <deny send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:86:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:92:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:93:           send_interface="org.freedesktop.DBus.Monitoring"/>
+/usr/share/dbus-1/system.conf:100:    <allow send_destination="org.freedesktop.DBus"
+/usr/share/dbus-1/system.conf:101:           send_interface="org.freedesktop.DBus.Debug.Stats"/>
+
+## uid1001 direct interface and monitor trigger attempts
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash -s
+== attacker identity and root marker precheck ==
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+attacker
+DBUS_SYSTEM_BUS_ADDRESS=unset
+stat: cannot statx '/root/dbus_debug_monitor_root': Permission denied
+marker_absent_before
+
+### introspect Debug.Stats
+$ busctl --system introspect org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.Debug.Stats --no-pager
+NAME                             TYPE      SIGNATURE RESULT/VALUE FLAGS
+.GetAllMatchRules                method    -         a{sas}       -
+.GetConnectionStats              method    s         a{sv}        -
+.GetStats                        method    -         a{sv}        -
+rc=0
+
+### introspect Monitoring
+$ busctl --system introspect org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.Monitoring --no-pager
+NAME                            TYPE      SIGNATURE RESULT/VALUE FLAGS
+.BecomeMonitor                  method    asu       -            -
+rc=0
+
+### Debug.Stats.GetStats
+$ busctl --system call org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.Debug.Stats GetStats
+Call failed: Access denied
+rc=1
+
+### Debug.Stats.GetConnectionStats root unique name
+$ busctl --system call org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.Debug.Stats GetConnectionStats s :1.1
+Call failed: Access denied
+rc=1
+
+### Debug.Stats.GetAllMatchRules
+$ busctl --system call org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.Debug.Stats GetAllMatchRules
+Call failed: Access denied
+rc=1
+
+### Monitoring.BecomeMonitor via busctl
+$ busctl --system call org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.Monitoring BecomeMonitor asu 0 0
+Call failed: Access denied
+rc=1
+
+### Monitoring.BecomeMonitor via dbus-send
+$ dbus-send --system --dest=org.freedesktop.DBus --type=method_call --print-reply /org/freedesktop/DBus org.freedesktop.DBus.Monitoring.BecomeMonitor array:string: uint32:0
+Error org.freedesktop.DBus.Error.AccessDenied: Rejected send message, 1 matched rules; type="method_call", sender=":1.1163" (uid=1001 pid=258500 comm="dbus-send --system --dest=org.freedesktop.DBus --t") interface="org.freedesktop.DBus.Monitoring" member="BecomeMonitor" error name="(unset)" requested_reply="0" destination="org.freedesktop.DBus" (bus)
+rc=1
+
+### dbus-monitor --system default attempt
+$ timeout 4 dbus-monitor --system 2>&1 | sed -n "1,90p"; printf "dbus_monitor_rc=%s\n" "${PIPESTATUS[0]}"
+dbus-monitor: unable to enable new-style monitoring: org.freedesktop.DBus.Error.AccessDenied: "Rejected send message, 1 matched rules; type="method_call", sender=":1.1164" (uid=1001 pid=258506 comm="dbus-monitor --system") interface="org.freedesktop.DBus.Monitoring" member="BecomeMonitor" error name="(unset)" requested_reply="0" destination="org.freedesktop.DBus" (bus)". Falling back to eavesdropping.
+signal time=1778966197.156497 sender=org.freedesktop.DBus -> destination=:1.1164 serial=2 path=/org/freedesktop/DBus; interface=org.freedesktop.DBus; member=NameAcquired
+   string ":1.1164"
+signal time=1778966198.085708 sender=:1.1 -> destination=(null destination) serial=21402 path=/org/freedesktop/systemd1/unit/man_2ddb_2etimer; interface=org.freedesktop.DBus.Properties; member=PropertiesChanged
+   string "org.freedesktop.systemd1.Timer"
+   array [
+      dict entry(
+         string "NextElapseUSecRealtime"
+         variant             uint64 1779000139868436
+      )
+      dict entry(
+         string "NextElapseUSecMonotonic"
+         variant             uint64 0
+      )
+      dict entry(
+         string "LastTriggerUSec"
+         variant             uint64 0
+      )
+      dict entry(
+         string "LastTriggerUSecMonotonic"
+         variant             uint64 0
+      )
+      dict entry(
+         string "Result"
+         variant             string "success"
+      )
+   ]
+   array [
+      string "TimersMonotonic"
+      string "TimersCalendar"
+   ]
+signal time=1778966198.085781 sender=:1.1 -> destination=(null destination) serial=21403 path=/org/freedesktop/systemd1/unit/man_2ddb_2etimer; interface=org.freedesktop.DBus.Properties; member=PropertiesChanged
+   string "org.freedesktop.systemd1.Unit"
+   array [
+      dict entry(
+         string "ActiveState"
+         variant             string "active"
+      )
+      dict entry(
+         string "FreezerState"
+         variant             string "running"
+      )
+      dict entry(
+         string "SubState"
+         variant             string "waiting"
+      )
+      dict entry(
+         string "StateChangeTimestamp"
+         variant             uint64 1778966198083587
+      )
+      dict entry(
+         string "StateChangeTimestampMonotonic"
+         variant             uint64 4322062452
+      )
+      dict entry(
+         string "InactiveExitTimestamp"
+         variant             uint64 1778961881693838
+      )
+      dict entry(
+         string "InactiveExitTimestampMonotonic"
+         variant             uint64 5737793
+      )
+      dict entry(
+         string "ActiveEnterTimestamp"
+         variant             uint64 1778961881693838
+      )
+      dict entry(
+         string "ActiveEnterTimestampMonotonic"
+         variant             uint64 5737793
+      )
+      dict entry(
+         string "ActiveExitTimestamp"
+         variant             uint64 0
+      )
+      dict entry(
+         string "ActiveExitTimestampMonotonic"
+         variant             uint64 0
+      )
+      dict entry(
+         string "InactiveEnterTimestamp"
+         variant             uint64 0
+      )
+      dict entry(
+         string "InactiveEnterTimestampMonotonic"
+         variant             uint64 0
+      )
+      dict entry(
+         string "Job"
+         variant             struct {
+               uint32 0
+dbus_monitor_rc=124
+rc=0
+
+### dbus-monitor explicit eavesdrop method-call attempt
+$ timeout 4 dbus-monitor --system "eavesdrop=true,type=method_call" 2>&1 | sed -n "1,90p"; printf "dbus_monitor_eavesdrop_rc=%s\n" "${PIPESTATUS[0]}"
+dbus-monitor: unable to enable new-style monitoring: org.freedesktop.DBus.Error.AccessDenied: "Rejected send message, 1 matched rules; type="method_call", sender=":1.1165" (uid=1001 pid=258512 comm="dbus-monitor --system eavesdrop=true,type=method_c") interface="org.freedesktop.DBus.Monitoring" member="BecomeMonitor" error name="(unset)" requested_reply="0" destination="org.freedesktop.DBus" (bus)". Falling back to eavesdropping.
+Failed to setup match "eavesdrop=true,eavesdrop=true,type=method_call": rejected attempt to call AddMatch by connection :1.1165 (uid=1001 pid=258512 comm="dbus-monitor --system eavesdrop=true,type=method_c") with uid 1001
+dbus_monitor_eavesdrop_rc=1
+rc=0
+
+== root marker post-trigger check from uid1001 ==
+stat: cannot statx '/root/dbus_debug_monitor_root': Permission denied
+marker_absent_after_attacker_triggers
+
+## root proof check, cleanup, and final target state
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== root marker/root proof check ==
+NO_ROOT_MARKER /root/dbus_debug_monitor_root
+
+== cleanup ==
+no marker to remove
+
+== final health ==
+running
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.

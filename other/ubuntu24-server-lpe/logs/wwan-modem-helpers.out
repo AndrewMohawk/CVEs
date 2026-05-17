@@ -1,0 +1,593 @@
+## target and package proof
+uid=0(root) gid=0(root) groups=0(root)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+libmbim-utils	1.31.2-0ubuntu3.1	ii 
+libqmi-utils	1.35.2-0ubuntu2	ii 
+modemmanager	1.23.4-0ubuntu2	ii 
+usb-modeswitch	2.6.1-3ubuntu3	ii 
+dpkg-query: no path found matching pattern /usr/lib/udev/rules.d/40-usb_modeswitch.rules
+libmbim-utils: /usr/bin/mbim-network
+libqmi-utils: /usr/bin/qmi-network
+modemmanager: /usr/sbin/ModemManager
+usb-modeswitch-data: /lib/udev/rules.d/40-usb_modeswitch.rules
+usb-modeswitch: /usr/sbin/usb_modeswitch_dispatcher
+## unit and service proof
+UNIT FILE               STATE   PRESET
+ModemManager.service    enabled enabled
+usb_modeswitch@.service static  -
+
+2 unit files listed.
+# /usr/lib/systemd/system/ModemManager.service
+[Unit]
+Description=Modem Manager
+After=polkit.service
+Requires=polkit.service
+ConditionVirtualization=!container
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.ModemManager1
+ExecStart=/usr/sbin/ModemManager
+StandardError=null
+Restart=on-abort
+CapabilityBoundingSet=CAP_SYS_ADMIN CAP_NET_ADMIN
+ProtectSystem=true
+ProtectHome=true
+PrivateTmp=true
+RestrictAddressFamilies=AF_NETLINK AF_UNIX AF_QIPCRTR
+NoNewPrivileges=true
+User=root
+
+[Install]
+WantedBy=multi-user.target
+Alias=dbus-org.freedesktop.ModemManager1.service
+
+# /usr/lib/systemd/system/usb_modeswitch@.service
+[Unit]
+Description=USB_ModeSwitch_%i
+Documentation=man:usb_modeswitch_dispatcher(1)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/sbin/usb_modeswitch_dispatcher --switch-mode %i
+# Testing
+#ExecStart=/bin/echo "usb_modeswitch.service: device name is %i"
+Environment="TMPDIR=/run"
+
+--- ModemManager.service
+BusName=org.freedesktop.ModemManager1
+ExecStart={ path=/usr/sbin/ModemManager ; argv[]=/usr/sbin/ModemManager ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+User=root
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/ModemManager.service
+UnitFileState=enabled
+ConditionResult=no
+--- usb_modeswitch@wwanlpe.service
+BusName=
+ExecStart={ path=/usr/sbin/usb_modeswitch_dispatcher ; argv[]=/usr/sbin/usb_modeswitch_dispatcher --switch-mode wwanlpe ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=TMPDIR=/run
+User=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/usb_modeswitch@.service
+UnitFileState=static
+ConditionResult=no
+:1.4                             258 polkitd         polkitd         :1.4          polkit.service              -       -
+org.freedesktop.ModemManager1      - -               -               (activatable) -                           -       -
+org.freedesktop.PolicyKit1       258 polkitd         polkitd         :1.4          polkit.service              -       -
+## vulnerable-looking script/config proof
+   107	PROFILE_FILE=/etc/qmi-network.conf
+   108	
+   109	# Device + Command with options; options given first
+   110	while [ $# -gt 2 ]; do
+   111	    OPT="$1"
+   112	    shift
+   113	
+   114	    case "$OPT" in
+   115	        "--")
+   116	            break 2;;
+   117	        "--profile")
+   118	            if [ $# -gt 2 ]; then
+   119	                PROFILE_FILE="$1"
+   120	                shift
+   121	            else
+   122	                PROFILE_FILE=""
+   123	            fi
+   124	            ;;
+   125	        "--profile="*)
+   126	            PROFILE_FILE="${OPT#*=}";;
+   127	        *)
+   128	            echo >&2 "Invalid option: $OPT"
+   129	            print_usage
+   130	            exit 255;;
+   131	    esac
+   132	done
+   133	
+   134	if [ -z "$PROFILE_FILE" ]; then
+   135	    echo "error: empty profile path given" 1>&2
+   136	    print_usage
+   137	    exit 255
+   138	fi
+   139	
+   140	if [ $# -ne 2 ] || [ "$1" = '--*' ] || [ "$2" = '--*' ]; then
+   141	    echo "error: missing arguments" 1>&2
+   142	    print_usage
+   143	    exit 255
+   144	fi
+   145	
+   146	DEVICE=$1
+   147	COMMAND=$2
+   148	
+   149	STATE_FILE=/tmp/qmi-network-state-`basename $DEVICE`
+   150	
+   151	load_profile ()
+   152	{
+   153	    if [ -f "$PROFILE_FILE" ]; then
+   154	        echo "Loading profile at ${PROFILE_FILE}..."
+   155	        . $PROFILE_FILE
+   156	
+   157	        if [ -n "$APN" ]; then
+   158	            echo "    APN: $APN"
+   159	        else
+   160	            echo "    APN: unset"
+   161	        fi
+   162	
+   163	        if [ -n "$APN_USER" ]; then
+   164	            echo "    APN user: $APN_USER"
+   165	        else
+   166	            echo "    APN user: unset"
+   167	        fi
+   168	
+   169	        if [ -n "$APN_PASS" ]; then
+   170	            echo "    APN password: $APN_PASS"
+   171	        else
+   172	            echo "    APN password: unset"
+   173	        fi
+   174	
+   175	        if [ "$PROXY" = "yes" ]; then
+   176	            echo "    qmi-proxy: $PROXY"
+   177	            PROXY_OPT='--device-open-proxy'
+   178	        else
+   179	            echo "    qmi-proxy: no"
+   180	        fi
+   181	
+   182	        if [ -n "$IP_TYPE" ]; then
+   183	            echo "    IP_TYPE: $IP_TYPE"
+   184	        else
+   185	            echo "    IP_TYPE: unset"
+   186	        fi
+   187	
+   188	        if [ -n "$PROFILE" ]; then
+   189	            echo "    PROFILE: $PROFILE"
+   190	        else
+   191	            echo "    PROFILE: unset"
+   192	        fi
+   193	
+   194	    else
+   195	        echo "Profile at '$PROFILE_FILE' not found..."
+   196	    fi
+   197	}
+   198	
+   199	save_state ()
+   200	{
+   201	    KEY=$1
+   202	    VAL=$2
+   203	
+   204	    echo "Saving state at ${STATE_FILE}... ($KEY: $VAL)"
+   205	
+   206	    if [ -f "$STATE_FILE" ]; then
+   207	        PREVIOUS=`cat $STATE_FILE`
+   208	        PREVIOUS=`echo "$PREVIOUS" | grep -v $KEY`
+   209	        if [ -n "$PREVIOUS" ]; then
+   210	            echo $PREVIOUS > $STATE_FILE
+   211	        else
+   212	            rm $STATE_FILE
+   213	        fi
+   214	    fi
+   215	
+   216	    if [ -n "$VAL" ]; then
+   217	        echo "$KEY=\"$VAL\"" >> $STATE_FILE
+   218	    fi
+   219	}
+   220	
+   221	load_state ()
+   222	{
+   223	    if [ -f "$STATE_FILE" ]; then
+   224	        echo "Loading previous state from ${STATE_FILE}..."
+   225	        . $STATE_FILE
+--- mbim
+    93	PROFILE_FILE=/etc/mbim-network.conf
+    94	
+    95	# Device + Command with options; options given first
+    96	while [ $# -gt 2 ]; do
+    97	    OPT="$1"
+    98	    shift
+    99	
+   100	    case "$OPT" in
+   101	        "--")
+   102	            break 2;;
+   103	        "--profile")
+   104	            if [ $# -gt 2 ]; then
+   105	                PROFILE_FILE="$1"
+   106	                shift
+   107	            else
+   108	                PROFILE_FILE=""
+   109	            fi
+   110	            ;;
+   111	        "--profile="*)
+   112	            PROFILE_FILE="${OPT#*=}";;
+   113	        *)
+   114	            echo >&2 "Invalid option: $OPT"
+   115	            print_usage
+   116	            exit 255;;
+   117	    esac
+   118	done
+   119	
+   120	if [ -z "$PROFILE_FILE" ]; then
+   121	    echo "error: empty profile path given" 1>&2
+   122	    print_usage
+   123	    exit 255
+   124	fi
+   125	
+   126	if [ $# -ne 2 ] || [ "$1" = "--*" ] || [ "$2" = "--*" ]; then
+   127	    echo "error: missing arguments" 1>&2
+   128	    print_usage
+   129	    exit 255
+   130	fi
+   131	
+   132	DEVICE=$1
+   133	COMMAND=$2
+   134	
+   135	STATE_FILE=/tmp/mbim-network-state-`basename $DEVICE`
+   136	
+   137	load_profile ()
+   138	{
+   139	    if [ -f "$PROFILE_FILE" ]; then
+   140	        echo "Loading profile at ${PROFILE_FILE}..."
+   141	        . $PROFILE_FILE
+   142	
+   143	        if [ -n "$APN" ]; then
+   144	            echo "    APN: $APN"
+   145	        else
+   146	            echo "    APN: unset"
+   147	        fi
+   148	
+   149	        if [ -n "$APN_AUTH" ]; then
+   150	            echo "    APN auth protocol: $APN_AUTH"
+   151	        else
+   152	            echo "    APN auth protocol: unset"
+   153	        fi
+   154	
+   155	        if [ -n "$APN_USER" ]; then
+   156	            echo "    APN user: $APN_USER"
+   157	            if [ -z "$APN_AUTH" ]; then
+   158	                echo "error: APN_USER in the profile requires APN_AUTH" 1>&2
+   159	                exit 32
+   160	            fi
+   161	        else
+   162	            echo "    APN user: unset"
+   163	        fi
+   164	
+   165	        if [ -n "$APN_PASS" ]; then
+   166	            echo "    APN password: $APN_PASS"
+   167	            if [ -z "$APN_USER" ]; then
+   168	                echo "error: APN_PASS in the profile requires APN_USER" 1>&2
+   169	                exit 32
+   170	            fi
+   171	        else
+   172	            echo "    APN password: unset"
+   173	        fi
+   174	
+   175	        if [ "$PROXY" = "yes" ]; then
+   176	            echo "    mbim-proxy: $PROXY"
+   177	            PROXY_OPT='--device-open-proxy'
+   178	        else
+   179	            echo "    mbim-proxy: no"
+   180	        fi
+   181	    else
+   182	        echo "Profile at '$PROFILE_FILE' not found..."
+   183	    fi
+   184	}
+   185	
+   186	save_state ()
+   187	{
+   188	    KEY=$1
+   189	    VAL=$2
+   190	
+   191	    if [ -n "${PROXY_OPT}" ]; then
+   192	        return
+   193	    fi
+   194	
+   195	    echo "Saving state at ${STATE_FILE}... ($KEY: $VAL)"
+   196	
+   197	    if [ -f "$STATE_FILE" ]; then
+   198	        PREVIOUS=`cat $STATE_FILE`
+   199	        PREVIOUS=`echo "$PREVIOUS" | grep -v $KEY`
+   200	        if [ -n "$PREVIOUS" ]; then
+   201	            echo $PREVIOUS > $STATE_FILE
+   202	        else
+   203	            rm $STATE_FILE
+   204	        fi
+   205	    fi
+   206	
+   207	    if [ -n "$VAL" ]; then
+   208	        echo "$KEY=\"$VAL\"" >> $STATE_FILE
+   209	    fi
+   210	}
+   211	
+   212	load_state ()
+   213	{
+   214	    if [ -n "${PROXY_OPT}" ]; then
+   215	        return
+   216	    fi
+   217	
+   218	    if [ -f "$STATE_FILE" ]; then
+   219	        echo "Loading previous state from ${STATE_FILE}..."
+   220	        . $STATE_FILE
+--- usb modeswitch rules and dispatcher lines
+/usr/sbin/usb_modeswitch_dispatcher:131:set setup(dbdir_etc) /etc/usb_modeswitch.d
+/usr/sbin/usb_modeswitch_dispatcher:300:		if [catch {set cfgno [exec /usr/sbin/usb_modeswitch -j -Q $busParam $devParam -v $usb(idVendor) -p $usb(idProduct)]} err] {
+/usr/sbin/usb_modeswitch_dispatcher:336:		catch {set report [exec /usr/sbin/usb_modeswitch -W -D $configParam $busParam $devParam -v $usb(idVendor) -p $usb(idProduct) -f "$flags(config)" 2>@1]} report
+/usr/sbin/usb_modeswitch_dispatcher:344:		catch {set report [exec /usr/sbin/usb_modeswitch -Q -D $configParam $busParam $devParam -v $usb(idVendor) -p $usb(idProduct) -f "$flags(config)" 2>@1]} report
+/usr/sbin/usb_modeswitch_dispatcher:663:		exec echo "\nUSB_ModeSwitch log from [clock format [clock seconds]]" >/var/log/usb_modeswitch_$device
+/usr/sbin/usb_modeswitch_dispatcher:664:		exec echo "$loginit" >>/var/log/usb_modeswitch_$device
+/usr/sbin/usb_modeswitch_dispatcher:667:	exec echo $msg >>/var/log/usb_modeswitch_$device
+/usr/sbin/usb_modeswitch_dispatcher:800:set listfile /var/lib/usb_modeswitch/$name
+/usr/sbin/usb_modeswitch_dispatcher:930:	puts "Usage: usb_modeswitch_dispatcher [--config-file=<path>] --switch-mode=<device kernel name>"
+/usr/sbin/usb_modeswitch_dispatcher:931:	puts "       usb_modeswitch_dispatcher --symlink-name=<sys path to device>"
+## filesystem trust roots
+-rwxr-xr-x 755 root:root /usr/bin/qmi-network type=regular file
+-rwxr-xr-x 755 root:root /usr/bin/mbim-network type=regular file
+-rwxr-xr-x 755 root:root /usr/bin/qmicli type=regular file
+-rwxr-xr-x 755 root:root /usr/bin/mbimcli type=regular file
+-rwxr-xr-x 755 root:root /usr/sbin/ModemManager type=regular file
+-rwxr-xr-x 755 root:root /usr/sbin/usb_modeswitch_dispatcher type=regular file
+-rwxr-xr-x 755 root:root /usr/sbin/usb_modeswitch type=regular file
+-rw-r--r-- 644 root:root /usr/lib/udev/rules.d/40-usb_modeswitch.rules type=regular file
+MISSING /etc/qmi-network.conf
+MISSING /etc/mbim-network.conf
+drwxr-xr-x 755 root:root /etc/ModemManager type=directory
+drwxr-xr-x 755 root:root /etc/ModemManager/fcc-unlock.d type=directory
+drwxr-xr-x 755 root:root /etc/ModemManager/connection.d type=directory
+drwxr-xr-x 755 root:root /usr/share/ModemManager/fcc-unlock.available.d type=directory
+drwxr-xr-x 755 root:root /usr/share/ModemManager/connection.available.d type=directory
+drwxr-xr-x 755 root:root /etc/usb_modeswitch.d type=directory
+drwxr-xr-x 755 root:root /usr/share/usb_modeswitch type=directory
+drwxr-xr-x 755 root:root /var/lib/usb_modeswitch type=directory
+drwxr-xr-x 755 root:root /run/udev type=directory
+dr-xr-xr-x 555 root:root /sys type=directory
+## attacker cannot write root trust roots
+### attacker: 
+id
+for p in \
+  /etc/qmi-network.conf \
+  /etc/mbim-network.conf \
+  /etc/ModemManager/fcc-unlock.d/9999 \
+  /etc/ModemManager/connection.d/99-lpe \
+  /etc/usb_modeswitch.d/ffff:ffff \
+  /var/lib/usb_modeswitch/ffff:ffff \
+  /run/udev/wwan_modem_lpe \
+  /sys/wwan_modem_lpe; do
+  echo "--- $p"
+  mkdir -p "$(dirname "$p")" 2>/tmp/wwan_modem_mkdir.err || true
+  printf "owned\n" > "$p" 2>/tmp/wwan_modem_write.err
+  echo "write_rc=$? err=$(cat /tmp/wwan_modem_write.err 2>/dev/null)"
+done
+
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+--- /etc/qmi-network.conf
+bash: line 14: /etc/qmi-network.conf: Permission denied
+write_rc=1 err=
+--- /etc/mbim-network.conf
+bash: line 14: /etc/mbim-network.conf: Permission denied
+write_rc=1 err=
+--- /etc/ModemManager/fcc-unlock.d/9999
+bash: line 14: /etc/ModemManager/fcc-unlock.d/9999: Permission denied
+write_rc=1 err=
+--- /etc/ModemManager/connection.d/99-lpe
+bash: line 14: /etc/ModemManager/connection.d/99-lpe: Permission denied
+write_rc=1 err=
+--- /etc/usb_modeswitch.d/ffff:ffff
+bash: line 14: /etc/usb_modeswitch.d/ffff:ffff: Permission denied
+write_rc=1 err=
+--- /var/lib/usb_modeswitch/ffff:ffff
+bash: line 14: /var/lib/usb_modeswitch/ffff:ffff: Permission denied
+write_rc=1 err=
+--- /run/udev/wwan_modem_lpe
+bash: line 14: /run/udev/wwan_modem_lpe: Permission denied
+write_rc=1 err=
+--- /sys/wwan_modem_lpe
+bash: line 14: /sys/wwan_modem_lpe: Permission denied
+write_rc=1 err=
+rc=0
+## attacker direct qmi/mbim profile, PATH, and /tmp state primitives
+### attacker: 
+set -e
+mkdir -p "$HOME/wwan_modem_helpers_probe/bin"
+cat > "$HOME/wwan_modem_helpers_probe/profile-qmi.conf" <<EOF
+APN=internet
+PROXY=no
+IP_TYPE=4
+PROFILE=
+id > "$HOME/wwan_modem_helpers_probe/profile_qmi_uid"
+touch /root/wwan_modem_helpers_lpe_marker 2>/dev/null || true
+EOF
+cat > "$HOME/wwan_modem_helpers_probe/profile-mbim.conf" <<EOF
+APN=internet
+PROXY=no
+id > "$HOME/wwan_modem_helpers_probe/profile_mbim_uid"
+touch /root/wwan_modem_helpers_lpe_marker 2>/dev/null || true
+EOF
+cat > "$HOME/wwan_modem_helpers_probe/bin/qmicli" <<EOF
+#!/bin/sh
+id > "$HOME/wwan_modem_helpers_probe/qmicli_uid"
+echo "fake qmicli args: \$*" >> "$HOME/wwan_modem_helpers_probe/qmicli_args"
+exit 1
+EOF
+cat > "$HOME/wwan_modem_helpers_probe/bin/mbimcli" <<EOF
+#!/bin/sh
+id > "$HOME/wwan_modem_helpers_probe/mbimcli_uid"
+echo "fake mbimcli args: \$*" >> "$HOME/wwan_modem_helpers_probe/mbimcli_args"
+exit 1
+EOF
+chmod 755 "$HOME/wwan_modem_helpers_probe/bin/qmicli" "$HOME/wwan_modem_helpers_probe/bin/mbimcli"
+ln -sf /root/wwan_modem_helpers_lpe_marker /tmp/qmi-network-state-wwanlpe
+ln -sf /root/wwan_modem_helpers_lpe_marker /tmp/mbim-network-state-wwanlpe
+PATH="$HOME/wwan_modem_helpers_probe/bin:$PATH" /usr/bin/qmi-network --profile="$HOME/wwan_modem_helpers_probe/profile-qmi.conf" /tmp/wwanlpe status || true
+PATH="$HOME/wwan_modem_helpers_probe/bin:$PATH" /usr/bin/mbim-network --profile="$HOME/wwan_modem_helpers_probe/profile-mbim.conf" /tmp/wwanlpe status || true
+for f in "$HOME"/wwan_modem_helpers_probe/*_uid "$HOME"/wwan_modem_helpers_probe/*_args; do
+  [ -e "$f" ] && { echo "--- $f"; cat "$f"; }
+done
+test -e /root/wwan_modem_helpers_lpe_marker && echo direct_root_marker || echo no_direct_root_marker
+
+Loading profile at /home/attacker/wwan_modem_helpers_probe/profile-qmi.conf...
+    APN: internet
+    APN user: unset
+    APN password: unset
+    qmi-proxy: no
+    IP_TYPE: 4
+    PROFILE: unset
+Getting status with 'qmicli -d /tmp/wwanlpe --wds-get-packet-service-status  '...
+error: couldn't get packet service status
+Loading profile at /home/attacker/wwan_modem_helpers_probe/profile-mbim.conf...
+    APN: internet
+    APN auth protocol: unset
+    APN user: unset
+    APN password: unset
+    mbim-proxy: no
+Getting status with 'mbimcli -d /tmp/wwanlpe --query-connection-state '...
+error: couldn't get connection status
+--- /home/attacker/wwan_modem_helpers_probe/mbimcli_uid
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+--- /home/attacker/wwan_modem_helpers_probe/profile_mbim_uid
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+--- /home/attacker/wwan_modem_helpers_probe/profile_qmi_uid
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+--- /home/attacker/wwan_modem_helpers_probe/qmicli_uid
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+--- /home/attacker/wwan_modem_helpers_probe/mbimcli_args
+fake mbimcli args: -d /tmp/wwanlpe --query-connection-state
+--- /home/attacker/wwan_modem_helpers_probe/qmicli_args
+fake qmicli args: -d /tmp/wwanlpe --wds-get-packet-service-status
+no_direct_root_marker
+rc=0
+## attacker service, D-Bus, and udev/root-helper trigger attempts
+### attacker: 
+for cmd in \
+  "systemctl start ModemManager.service" \
+  "systemctl start usb_modeswitch@wwanlpe.service" \
+  "busctl --system introspect org.freedesktop.ModemManager1 /org/freedesktop/ModemManager1" \
+  "udevadm trigger --subsystem-match=usb" \
+  "/usr/sbin/usb_modeswitch_dispatcher --switch-mode=wwanlpe" \
+  "/usr/lib/udev/usb_modeswitch /wwanlpe"; do
+  echo "--- $cmd"
+  timeout 8s bash -lc "$cmd" 2>&1 | sed -n "1,100p"
+  echo cmd_rc=${PIPESTATUS[0]}
+done
+
+--- systemctl start ModemManager.service
+Failed to start ModemManager.service: Interactive authentication required.
+See system logs and 'systemctl status ModemManager.service' for details.
+cmd_rc=1
+--- systemctl start usb_modeswitch@wwanlpe.service
+Failed to start usb_modeswitch@wwanlpe.service: Interactive authentication required.
+See system logs and 'systemctl status usb_modeswitch@wwanlpe.service' for details.
+cmd_rc=1
+--- busctl --system introspect org.freedesktop.ModemManager1 /org/freedesktop/ModemManager1
+cmd_rc=124
+--- udevadm trigger --subsystem-match=usb
+usb1: Failed to write 'change' to '/sys/devices/platform/vhci_hcd.0/usb1/uevent': Permission denied
+1-0:1.0: Failed to write 'change' to '/sys/devices/platform/vhci_hcd.0/usb1/1-0:1.0/uevent': Permission denied
+usb2: Failed to write 'change' to '/sys/devices/platform/vhci_hcd.0/usb2/uevent': Permission denied
+2-0:1.0: Failed to write 'change' to '/sys/devices/platform/vhci_hcd.0/usb2/2-0:1.0/uevent': Permission denied
+cmd_rc=1
+--- /usr/sbin/usb_modeswitch_dispatcher --switch-mode=wwanlpe
+Dispatcher for 'usb_modeswitch'; usually run by udev, not intended for interactive operation
+invalid command name "--config-file=<path>"
+    while executing
+"--config-file=<path>"
+    (procedure "ShowUsage" line 3)
+    invoked from within
+"ShowUsage"
+    invoked from within
+"if [info exists arg1] {
+	if {[string length $arg1] == 0} {
+		ShowUsage
+		Log "\nNo device provided for mode-switching. Exit"
+		SafeExit
+	}
+} else {
+	S..."
+    (procedure "Main" line 60)
+    invoked from within
+"Main $argv $argc"
+    (file "/usr/sbin/usb_modeswitch_dispatcher" line 1056)
+cmd_rc=1
+--- /usr/lib/udev/usb_modeswitch /wwanlpe
+Failed to restart usb_modeswitch@wwanlpe.service: Interactive authentication required.
+See system logs and 'systemctl status usb_modeswitch@wwanlpe.service' for details.
+cmd_rc=0
+rc=0
+## root condition check for default services
+### root: systemctl start ModemManager.service 2>&1; echo modem_start_rc=$?; systemctl status ModemManager.service --no-pager -l 2>&1 | sed -n "1,90p"
+modem_start_rc=0
+○ ModemManager.service - Modem Manager
+     Loaded: loaded (/usr/lib/systemd/system/ModemManager.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Sat 2026-05-16 18:33:18 UTC; 3ms ago
+             └─ ConditionVirtualization=!container was not met
+
+May 16 16:50:56 4f5b414436ae systemd[1]: ModemManager.service - Modem Manager was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 16:55:50 4f5b414436ae systemd[1]: ModemManager.service - Modem Manager was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 16:56:26 4f5b414436ae systemd[1]: ModemManager.service - Modem Manager was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 18:33:10 4f5b414436ae systemd[1]: ModemManager.service - Modem Manager was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 16 18:33:18 4f5b414436ae systemd[1]: ModemManager.service - Modem Manager was skipped because of an unmet condition check (ConditionVirtualization=!container).
+rc=0
+### root: systemctl start usb_modeswitch@wwanlpe.service 2>&1; echo modeswitch_start_rc=$?; systemctl status usb_modeswitch@wwanlpe.service --no-pager -l 2>&1 | sed -n "1,120p"; ls -l /var/log/usb_modeswitch_wwanlpe /var/lib/usb_modeswitch/wwanlpe 2>&1 || true
+Job for usb_modeswitch@wwanlpe.service failed because the control process exited with error code.
+See "systemctl status usb_modeswitch@wwanlpe.service" and "journalctl -xeu usb_modeswitch@wwanlpe.service" for details.
+modeswitch_start_rc=1
+× usb_modeswitch@wwanlpe.service - USB_ModeSwitch_wwanlpe
+     Loaded: loaded (/usr/lib/systemd/system/usb_modeswitch@.service; static)
+     Active: failed (Result: exit-code) since Sat 2026-05-16 18:33:18 UTC; 5ms ago
+       Docs: man:usb_modeswitch_dispatcher(1)
+    Process: 781258 ExecStart=/usr/sbin/usb_modeswitch_dispatcher --switch-mode wwanlpe (code=exited, status=1/FAILURE)
+   Main PID: 781258 (code=exited, status=1/FAILURE)
+        CPU: 3ms
+
+May 16 18:33:18 4f5b414436ae usb_modeswitch_dispatcher[781258]:     (procedure "ShowUsage" line 3)
+May 16 18:33:18 4f5b414436ae usb_modeswitch_dispatcher[781258]:     invoked from within
+May 16 18:33:18 4f5b414436ae usb_modeswitch_dispatcher[781258]: "ShowUsage"
+May 16 18:33:18 4f5b414436ae usb_modeswitch_dispatcher[781258]:     (procedure "Main" line 74)
+May 16 18:33:18 4f5b414436ae usb_modeswitch_dispatcher[781258]:     invoked from within
+May 16 18:33:18 4f5b414436ae usb_modeswitch_dispatcher[781258]: "Main $argv $argc"
+May 16 18:33:18 4f5b414436ae usb_modeswitch_dispatcher[781258]:     (file "/usr/sbin/usb_modeswitch_dispatcher" line 1056)
+May 16 18:33:18 4f5b414436ae systemd[1]: usb_modeswitch@wwanlpe.service: Main process exited, code=exited, status=1/FAILURE
+May 16 18:33:18 4f5b414436ae systemd[1]: usb_modeswitch@wwanlpe.service: Failed with result 'exit-code'.
+May 16 18:33:18 4f5b414436ae systemd[1]: Failed to start usb_modeswitch@wwanlpe.service - USB_ModeSwitch_wwanlpe.
+ls: cannot access '/var/log/usb_modeswitch_wwanlpe': No such file or directory
+ls: cannot access '/var/lib/usb_modeswitch/wwanlpe': No such file or directory
+rc=0
+## root proof before cleanup
+ROOT_PROOF=no
+## cleanup and health
+ABSENT /root/wwan_modem_helpers_lpe_marker
+ABSENT /home/attacker/wwan_modem_helpers_probe
+ABSENT /tmp/qmi-network-state-wwanlpe
+ABSENT /tmp/mbim-network-state-wwanlpe
+ABSENT /var/log/usb_modeswitch_wwanlpe
+ABSENT /var/lib/usb_modeswitch/wwanlpe
+running

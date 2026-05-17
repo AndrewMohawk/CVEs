@@ -1,0 +1,612 @@
+
+## target default identity/package/setuid reachability
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+group: sudo:x:27:ubuntu
+group: adm:x:4:ubuntu,syslog
+group: shadow:x:42:
+group: root:x:0:
+selfauth P 2026-05-16 0 99999 7 -1
+dbus	1.14.10-4ubuntu4.1	arm64	ii 
+libpam-modules:arm64	1.5.3-5ubuntu5.5	arm64	ii 
+libpam-modules-bin	1.5.3-5ubuntu5.5	arm64	ii 
+libpam0g:arm64	1.5.3-5ubuntu5.5	arm64	ii 
+libpolkit-agent-1-0:arm64	124-2ubuntu1.24.04.3	arm64	ii 
+libpolkit-gobject-1-0:arm64	124-2ubuntu1.24.04.3	arm64	ii 
+pkexec			un 
+policykit-1			un 
+polkitd	124-2ubuntu1.24.04.3	arm64	ii 
+strace	6.8-0ubuntu2	arm64	ii 
+systemd	255.4-1ubuntu8.15	arm64	ii 
+19033270 lrwxrwxrwx 1 root root    33 Apr 10 10:57 /usr/lib/policykit-1/polkit-agent-helper-1 -> ../polkit-1/polkit-agent-helper-1
+19033251 -rwsr-xr-x 1 root root 67664 Apr 10 10:57 /usr/lib/polkit-1/polkit-agent-helper-1
+19033271 lrwxrwxrwx 1 root root    37 Apr 10 10:57 /usr/libexec/polkit-agent-helper-1 -> ../lib/polkit-1/polkit-agent-helper-1
+/usr/lib/polkit-1/polkit-agent-helper-1 mode=4755 perms=-rwsr-xr-x owner=root:root uid=0 gid=0 size=67664 type=regular file
+056e1d23d22de62932e022cf6f2779361d03c93547cea500a8e74853b3905158  /usr/lib/polkit-1/polkit-agent-helper-1
+selfauth_can_execute_helper_rc=0
+
+## polkit PAM service and binary protocol strings
+#%PAM-1.0
+
+@include common-auth
+@include common-account
+@include common-password
+session       required   pam_env.so readenv=1 user_readenv=0
+session       required   pam_env.so readenv=1 envfile=/etc/default/locale user_readenv=0
+@include common-session-noninteractive
+--- common-auth
+#
+# /etc/pam.d/common-auth - authentication settings common to all services
+#
+# This file is included from other service-specific PAM config files,
+# and should contain a list of the authentication modules that define
+# the central authentication scheme for use on the system
+# (e.g., /etc/shadow, LDAP, Kerberos, etc.).  The default is to use the
+# traditional Unix authentication mechanisms.
+#
+# As of pam 1.0.1-6, this file is managed by pam-auth-update by default.
+# To take advantage of this, it is recommended that you configure any
+# local modules either before or after the default block, and use
+# pam-auth-update to manage selection of other modules.  See
+# pam-auth-update(8) for details.
+
+# here are the per-package modules (the "Primary" block)
+auth	[success=1 default=ignore]	pam_unix.so nullok
+# here's the fallback if no module succeeds
+auth	requisite			pam_deny.so
+# prime the stack with a positive return value if there isn't one already;
+# this avoids us returning an error just because nothing sets a success code
+# since the modules above will each just jump around
+auth	required			pam_permit.so
+# and here are more per-package modules (the "Additional" block)
+auth	optional			pam_cap.so 
+# end of pam-auth-update config
+--- common-account
+#
+# /etc/pam.d/common-account - authorization settings common to all services
+#
+# This file is included from other service-specific PAM config files,
+# and should contain a list of the authorization modules that define
+# the central access policy for use on the system.  The default is to
+# only deny service to users whose accounts are expired in /etc/shadow.
+#
+# As of pam 1.0.1-6, this file is managed by pam-auth-update by default.
+# To take advantage of this, it is recommended that you configure any
+# local modules either before or after the default block, and use
+# pam-auth-update to manage selection of other modules.  See
+# pam-auth-update(8) for details.
+#
+
+# here are the per-package modules (the "Primary" block)
+account	[success=1 new_authtok_reqd=done default=ignore]	pam_unix.so 
+# here's the fallback if no module succeeds
+account	requisite			pam_deny.so
+# prime the stack with a positive return value if there isn't one already;
+# this avoids us returning an error just because nothing sets a success code
+# since the modules above will each just jump around
+account	required			pam_permit.so
+# and here are more per-package modules (the "Additional" block)
+# end of pam-auth-update config
+--- common-session-noninteractive
+#
+# /etc/pam.d/common-session-noninteractive - session-related modules
+# common to all non-interactive services
+#
+# This file is included from other service-specific PAM config files,
+# and should contain a list of modules that define tasks to be performed
+# at the start and end of all non-interactive sessions.
+#
+# As of pam 1.0.1-6, this file is managed by pam-auth-update by default.
+# To take advantage of this, it is recommended that you configure any
+# local modules either before or after the default block, and use
+# pam-auth-update to manage selection of other modules.  See
+# pam-auth-update(8) for details.
+
+# here are the per-package modules (the "Primary" block)
+session	[default=1]			pam_permit.so
+# here's the fallback if no module succeeds
+session	requisite			pam_deny.so
+# prime the stack with a positive return value if there isn't one already;
+# this avoids us returning an error just because nothing sets a success code
+# since the modules above will each just jump around
+session	required			pam_permit.so
+# The pam_umask module will set the umask according to the system default in
+# /etc/login.defs and user settings, solving the problem of different
+# umask settings with different shells, display managers, remote sessions etc.
+# See "man pam_umask".
+session optional			pam_umask.so
+# and here are more per-package modules (the "Additional" block)
+session	required	pam_unix.so 
+# end of pam-auth-update config
+--- helper strings
+geteuid
+getuid
+isatty
+polkit_authority_get_sync
+polkit_unix_user_new_for_name
+polkit_authority_authentication_agent_response_sync
+pam_set_item
+pam_get_item
+pam_start
+pam_strerror
+pam_acct_mgmt
+pam_end
+pam_authenticate
+libpolkit-gobject-1.so.0
+LIBPAM_1.0
+$ORIGIN/../polkit
+PAM_PROMPT_ECHO_OFF
+PAM_PROMPT_ECHO_ON
+PAM_ERROR_MSG
+PAM_TEXT_INFO
+polkit-agent-helper-1: needs to be setuid root
+Incorrect permissions on %s (needs to be setuid root)
+polkit-agent-helper-1
+inappropriate use of helper, wrong number of arguments [uid=%d]
+polkit-agent-helper-1: wrong number of arguments. This incident has been logged.
+inappropriate use of helper, stdin is a tty [uid=%d]
+polkit-agent-helper-1: inappropriate use of helper, stdin is a tty. This incident has been logged.
+polkit-1
+polkit-agent-helper-1: pam_start failed: %s
+polkit-agent-helper-1: pam_set_item failed: %s
+polkit-agent-helper-1: pam_authenticate failed: %s
+polkit-agent-helper-1: pam_acct_mgmt failed: %s
+polkit-agent-helper-1: pam_get_item failed: %s
+polkit-agent-helper-1: Tried to auth user '%s' but we got auth for user '%s' instead
+Error getting authority: %s
+polkit-agent-helper-1: error response to PolicyKit daemon: %s
+FAILURE
+SUCCESS
+/usr/lib/debug/.dwz/aarch64-linux-gnu/polkitd.debug
+
+## polkit default action/auth inventory
+[auth_self_actions]
+none
+[focus_actions]
+org.freedesktop.policykit.exec	/usr/share/polkit-1/actions/org.freedesktop.policykit.policy	any=auth_admin inactive=auth_admin active=auth_admin
+org.freedesktop.systemd1.manage-unit-files	/usr/share/polkit-1/actions/org.freedesktop.systemd1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.systemd1.manage-units	/usr/share/polkit-1/actions/org.freedesktop.systemd1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+
+## root-owned state before direct helper probes
+stat -rw-r--r-- 644 root:root 1704 /etc/passwd
+e1468fa4ad17e48937e0fe2d6f1c64ea1d8477c339287f68bd3fc54aa9729ee0  /etc/passwd
+stat -rw-r----- 640 root:shadow 937 /etc/shadow
+66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+stat -rw-r--r-- 644 root:root 857 /etc/group
+6f9dbca3bed6a13aa64baadf58ccdccf3d6f18eac2bf8e6e6dd3ea08634ae5be  /etc/group
+stat -rw-r----- 640 root:shadow 729 /etc/gshadow
+3470f908cc636edf0f69d37ed04b7947031ad0487977ec3973f0d8d64d3461c3  /etc/gshadow
+stat -rw-r--r-- 644 root:root 106 /etc/environment
+3d88795b8d42b87bbbf91f8d30dae43b6db9ecd4b1eb93a883062352c902ff5d  /etc/environment
+stat -rw-r--r-- 644 root:root 13 /etc/default/locale
+89dd29db91ea608d72b5b4d3d3f5816cc2d3c1dd730741dc41b20ce12f1c2b3b  /etc/default/locale
+stat -rw-r--r-- 644 root:root 2971 /etc/security/pam_env.conf
+7038e2676178dcda6a9bdd6b8948af8206af56f5291cb2cda7f563a9904c15bd  /etc/security/pam_env.conf
+stat -rw-r--r-- 644 root:root 270 /usr/lib/pam.d/polkit-1
+bc30e80027e6cd3d29900f2f8d46f4137c7c5dc06e0dffc34d5ef586476e5bfb  /usr/lib/pam.d/polkit-1
+stat -rw-r--r-- 644 root:root 1242 /etc/pam.d/common-auth
+628197de9e50b6be37421b04a67f07924f515e0b0f4c06aed9fea953d20ed6e6  /etc/pam.d/common-auth
+stat -rw-r--r-- 644 root:root 1208 /etc/pam.d/common-account
+aa8a63d72e79399b6c51ebe4e9f828c954145a799eb4b8f3224724f51cbb9fac  /etc/pam.d/common-account
+stat -rw-r--r-- 644 root:root 1427 /etc/pam.d/common-session
+f237c090d61f72820ede6f77f4889e9db292b84fafb2c5d19ae6c125ea3bd371  /etc/pam.d/common-session
+stat -rw-r--r-- 644 root:root 1435 /etc/pam.d/common-session-noninteractive
+1bd1ef2b6241fc8b3c97bbaf57e5c6038c96c275e30c62ebee6eec15701e2e07  /etc/pam.d/common-session-noninteractive
+tree 644 root:root /usr/share/polkit-1/rules.d/49-ubuntu-admin.rules
+tree 644 root:root /usr/share/polkit-1/rules.d/50-default.rules
+tree 644 root:root /usr/share/polkit-1/rules.d/org.freedesktop.bolt.rules
+tree 644 root:root /usr/share/polkit-1/rules.d/org.freedesktop.fwupd.rules
+tree 644 root:root /usr/share/polkit-1/rules.d/org.freedesktop.packagekit.rules
+tree 644 root:root /usr/share/polkit-1/rules.d/systemd-networkd.rules
+tree 750 root:polkitd /etc/polkit-1/rules.d
+tree 750 root:polkitd /var/lib/polkit-1
+tree 755 root:root /etc/polkit-1
+tree 755 root:root /usr/share/polkit-1/rules.d
+tree 755 root:root /var/lib/polkit-1/localauthority
+tree 755 root:root /var/lib/polkit-1/localauthority/10-vendor.d
+
+## argc guard: no arguments
+$ runuser -u selfauth -- timeout 4s bash -lc \'/usr/lib/polkit-1/polkit-agent-helper-1\'
+polkit-agent-helper-1: wrong number of arguments. This incident has been logged.
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## argc guard: username without cookie
+$ runuser -u selfauth -- timeout 4s bash -lc printf\ \'selfauth\\n\'\ \|\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ selfauth
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: pam_authenticate failed: Authentication failure
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## tty stdin guard
+$ runuser -u selfauth -- timeout 5s bash -lc script\ -qfec\ \'timeout\ 3s\ /usr/lib/polkit-1/polkit-agent-helper-1\ selfauth\ fakecookie\'\ /dev/null\ \</dev/null
+polkit-agent-helper-1: inappropriate use of helper, stdin is a tty. This incident has been logged.
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## valid PAM password with fake cookie
+$ runuser -u selfauth -- timeout 8s bash -lc printf\ \'selfauth\\n\'\ \|\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ selfauth\ fakecookie
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: No session for cookie
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## wrong PAM password with fake cookie
+$ runuser -u selfauth -- timeout 8s bash -lc printf\ \'bad\\n\'\ \|\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ selfauth\ fakecookie
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: pam_authenticate failed: Authentication failure
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## root username with selfauth password
+$ runuser -u selfauth -- timeout 8s bash -lc printf\ \'selfauth\\n\'\ \|\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ root\ fakecookie
+PAM_PROMPT_ECHO_OFF Password: 
+FAILURE
+polkit-agent-helper-1: pam_authenticate failed: Authentication failure
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## nonexistent username
+$ runuser -u selfauth -- timeout 8s bash -lc printf\ \'selfauth\\n\'\ \|\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ doesnotexist\ fakecookie
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: pam_authenticate failed: Authentication failure
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## newline in username argv
+$ runuser -u selfauth -- timeout 8s bash -lc printf\ \'selfauth\\n\'\ \|\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ \$\'selfauth\\nroot\'\ fakecookie
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: pam_authenticate failed: Authentication failure
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## empty cookie
+$ runuser -u selfauth -- timeout 8s bash -lc printf\ \'selfauth\\n\'\ \|\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ selfauth\ \'\'
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: No session for cookie
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## action id used as cookie: systemd manage-units
+$ runuser -u selfauth -- timeout 8s bash -lc printf\ \'selfauth\\n\'\ \|\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ selfauth\ org.freedesktop.systemd1.manage-units
+PAM_PROMPT_ECHO_OFF Password: 
+FAILURE
+polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: No session for cookie
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## action id used as cookie: policykit exec
+$ runuser -u selfauth -- timeout 8s bash -lc printf\ \'selfauth\\n\'\ \|\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ selfauth\ org.freedesktop.policykit.exec
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: No session for cookie
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## long cookie
+$ runuser -u selfauth -- timeout 8s bash -lc $'cookie=$(python3 - <<\'PY\'\nprint(\'C\' * 4096)\nPY\n); printf \'selfauth\\n\' | \'/usr/lib/polkit-1/polkit-agent-helper-1\' selfauth "$cookie"'
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: No session for cookie
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## stdin parse: password without newline
+$ runuser -u selfauth -- timeout 8s bash -lc printf\ \'selfauth\'\ \|\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ selfauth\ fakecookie
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: No session for cookie
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## stdin parse: extra response lines
+$ runuser -u selfauth -- timeout 8s bash -lc printf\ \'selfauth\\nEXTRA\\n\'\ \|\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ selfauth\ fakecookie
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: No session for cookie
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## stdin parse: embedded NUL before suffix
+$ runuser -u selfauth -- timeout 8s bash -lc $'python3 - <<\'PY\' | \'/usr/lib/polkit-1/polkit-agent-helper-1\' selfauth fakecookie\nimport sys\nsys.stdout.buffer.write(b\'selfauth\\0after\\n\')\nPY'
+PAM_PROMPT_ECHO_OFF Password: 
+FAILURE
+polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: No session for cookie
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## stdin parse: oversized response
+$ runuser -u selfauth -- timeout 8s bash -lc $'python3 - <<\'PY\' | \'/usr/lib/polkit-1/polkit-agent-helper-1\' selfauth fakecookie\nprint(\'A\' * 8192)\nPY'
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: pam_authenticate failed: Authentication failure
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## hostile environment/PAM env side-effect probe
+$ runuser -u selfauth -- timeout 8s bash -lc printf\ \'selfauth\\n\'\ \|\ env\ -i\ PATH=\'/tmp/polkit-agent-helper-direct/fakebin:/usr/bin:/bin\'\ HOME=\'/tmp/polkit-agent-helper-direct/home\'\ USER=selfauth\ LOGNAME=selfauth\ SHELL=\'/tmp/polkit-agent-helper-direct/fakebin/sh\'\ GCONV_PATH=\'/tmp/polkit-agent-helper-direct/gconv\'\ CHARSET=POLKITHELPERTEST\ LD_PRELOAD=\'/tmp/polkit-agent-helper-direct/fake.so\'\ LD_AUDIT=\'/tmp/polkit-agent-helper-direct/audit.so\'\ PAM_USER=root\ \'/usr/lib/polkit-1/polkit-agent-helper-1\'\ selfauth\ fakecookie
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: No session for cookie
+FAILURE
+rc=1
+shadow_hash_after_case 66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+
+## pkcheck baseline for admin-gated action as selfauth
+Authorization requires authentication and -u wasn't passed.
+pkcheck_no_interaction_rc=2
+Authorization requires authentication but no agent is available.
+pkcheck_interaction_rc=2
+
+## real cookie/action binding via minimal authentication agent
+captured_cookie=4-c4cd0a77de734a1ab4da07795098d820-1-e478c8ef0192ebf7676fa454f5d0a4df
+live_cookie_ubuntu_rc=1
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: pam_authenticate failed: Authentication failure
+FAILURE
+live_cookie_selfauth_rc=1
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: The authenticated identity is wrong
+FAILURE
+agent_process_rc=0
+--- agent stdout
+--- agent log
+REGISTERED self pid=738242 uid=1002
+BEGIN action=org.freedesktop.systemd1.manage-units cookie=4-c4cd0a77de734a1ab4da07795098d820-1-e478c8ef0192ebf7676fa454f5d0a4df identities=dbus.Array([dbus.Struct((dbus.String('unix-user'), dbus.Dictionary({dbus.String('uid'): dbus.UInt32(1000, variant_level=1)}, signature=dbus.Signature('sv'))), signature=None)], signature=dbus.Signature('(sa{sv})')) details={dbus.String('polkit.caller-pid'): dbus.String('738242'), dbus.String('polkit.subject-pid'): dbus.String('738242')}
+--- agent check result
+
+## concurrent fake-cookie race stress
+1 1
+2 1
+3 1
+4 1
+5 1
+6 1
+7 1
+8 1
+9 1
+10 1
+11 1
+12 1
+13 1
+14 1
+15 1
+16 1
+17 1
+18 1
+19 1
+20 1
+21 1
+22 1
+23 1
+24 1
+     24 FAILURE
+     24 polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: No session for cookie
+success_count=0
+
+## interrupted prompt race
+interrupted_rc=124
+PAM_PROMPT_ECHO_OFF Password: 
+
+## strace of valid-PAM fake-cookie path for root-side writes/exec
+strace_helper_rc=1
+--- helper stdout/stderr under strace
+PAM_PROMPT_ECHO_OFF Password: 
+polkit-agent-helper-1: error response to PolicyKit daemon: GDBus.Error:org.freedesktop.PolicyKit1.Error.Failed: No session for cookie
+FAILURE
+--- trace first 220 lines
+738527 execve("/usr/lib/polkit-1/polkit-agent-helper-1", ["/usr/lib/polkit-1/polkit-agent-helper-1", "selfauth", "fakecookie"], 0xffffcb01add0 /* 8 vars */) = 0
+738527 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libpolkit-gobject-1.so.0", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libpam.so.0", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libgobject-2.0.so.0", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libglib-2.0.so.0", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libgio-2.0.so.0", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libsystemd.so.0", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libaudit.so.1", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libffi.so.8", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libm.so.6", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libpcre2-8.so.0", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libgmodule-2.0.so.0", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libz.so.1", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libmount.so.1", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libselinux.so.1", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libcap.so.2", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libgcrypt.so.20", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/liblz4.so.1", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/liblzma.so.5", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libzstd.so.1", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libcap-ng.so.0", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libblkid.so.1", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libgpg-error.so.0", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/proc/sys/kernel/cap_last_cap", O_RDONLY) = 3
+738527 openat(AT_FDCWD, "/proc/filesystems", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/etc/pam.d/polkit-1", O_RDONLY) = -1 ENOENT (No such file or directory)
+738527 openat(AT_FDCWD, "/usr/lib/pam.d/polkit-1", O_RDONLY) = 3
+738527 openat(AT_FDCWD, "/etc/pam.d/common-auth", O_RDONLY) = 4
+738527 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_unix.so", O_RDONLY|O_CLOEXEC) = 5
+738527 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 5
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libcrypt.so.1", O_RDONLY|O_CLOEXEC) = 5
+738527 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_deny.so", O_RDONLY|O_CLOEXEC) = 5
+738527 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_permit.so", O_RDONLY|O_CLOEXEC) = 5
+738527 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_cap.so", O_RDONLY|O_CLOEXEC) = 5
+738527 openat(AT_FDCWD, "/etc/pam.d/common-account", O_RDONLY) = 4
+738527 openat(AT_FDCWD, "/etc/pam.d/common-password", O_RDONLY) = 4
+738527 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_env.so", O_RDONLY|O_CLOEXEC) = 4
+738527 openat(AT_FDCWD, "/etc/pam.d/common-session-noninteractive", O_RDONLY) = 4
+738527 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_umask.so", O_RDONLY|O_CLOEXEC) = 5
+738527 openat(AT_FDCWD, "/etc/pam.d/other", O_RDONLY) = 3
+738527 openat(AT_FDCWD, "/etc/pam.d/common-auth", O_RDONLY) = 4
+738527 openat(AT_FDCWD, "/etc/pam.d/common-account", O_RDONLY) = 4
+738527 openat(AT_FDCWD, "/etc/pam.d/common-password", O_RDONLY) = 4
+738527 openat(AT_FDCWD, "/etc/pam.d/common-session", O_RDONLY) = 4
+738527 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_systemd.so", O_RDONLY|O_CLOEXEC) = 5
+738527 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 5
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libpam_misc.so.0", O_RDONLY|O_CLOEXEC) = 5
+738527 openat(AT_FDCWD, "/etc/login.defs", O_RDONLY) = 3
+738527 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+738527 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+738527 openat(AT_FDCWD, "/etc/nsswitch.conf", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/etc/passwd", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/etc/shadow", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/etc/passwd", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/lib/aarch64-linux-gnu/libnss_systemd.so.2", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/etc/passwd", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/etc/shadow", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/etc/passwd", O_RDONLY|O_CLOEXEC) = 3
+738527 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+738527 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+738527 openat(AT_FDCWD, "/etc/group", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/run/systemd/userdb/", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3
+738527 connect(4, {sa_family=AF_UNIX, sun_path="/run/systemd/userdb/io.systemd.DynamicUser"}, 45) = 0
+738527 openat(AT_FDCWD, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 3
+738527 openat(3, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 7
+738527 openat(AT_FDCWD, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 8
+738527 openat(7, "etc", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = 9
+738527 openat(9, "userdb", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+738527 openat(AT_FDCWD, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 3
+738527 openat(3, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 7
+738527 openat(AT_FDCWD, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 8
+738527 openat(7, "run", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = 9
+738527 openat(9, "userdb", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+738527 openat(AT_FDCWD, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 3
+738527 openat(3, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 7
+738527 openat(AT_FDCWD, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 8
+738527 openat(7, "run", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = 9
+738527 openat(9, "host", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+738527 openat(AT_FDCWD, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 3
+738527 openat(3, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 7
+738527 openat(AT_FDCWD, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 8
+738527 openat(7, "usr", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = 9
+738527 openat(9, "local", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = 7
+738527 openat(7, "lib", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = 9
+738527 openat(9, "userdb", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+738527 openat(AT_FDCWD, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 3
+738527 openat(3, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 7
+738527 openat(AT_FDCWD, "/", O_RDONLY|O_CLOEXEC|O_PATH|O_DIRECTORY) = 8
+738527 openat(7, "usr", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = 9
+738527 openat(9, "lib", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = 7
+738527 openat(7, "userdb", O_RDONLY|O_NOFOLLOW|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+738527 openat(AT_FDCWD, "/proc/sys/kernel/random/boot_id", O_RDONLY|O_NOCTTY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/etc/group", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/etc/security/capability.conf", O_RDONLY) = 3
+738527 openat(AT_FDCWD, "/etc/login.defs", O_RDONLY) = 3
+738527 openat(AT_FDCWD, "/etc/passwd", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/etc/shadow", O_RDONLY|O_CLOEXEC) = 3
+738527 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/charset.alias", O_RDONLY) = -1 ENOENT (No such file or directory)
+738527 openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/gconv/gconv-modules.cache", O_RDONLY|O_CLOEXEC) = 6
+738527 connect(5, {sa_family=AF_UNIX, sun_path="/run/dbus/system_bus_socket"}, 110) = 0
+738527 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\0", iov_len=1}], msg_iovlen=1, msg_control=[{cmsg_len=28, cmsg_level=SOL_SOCKET, cmsg_type=SCM_CREDENTIALS, cmsg_data={pid=738527, uid=0, gid=1002}}], msg_controllen=32, msg_flags=0}, MSG_NOSIGNAL) = 1
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\0\0\0\0\1\0\0\0n\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\3\1s\0\5\0\0\0Hello\0\0\0", iov_len=128}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 128
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\2\1\1\r\0\0\0\1\0\0\0E\0\0\0", iov_len=16}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 16
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\6\1s\0\10\0\0\0:1.97665\0\0\0\0\0\0\0\0\5\1u\0\1\0\0\0\10\1g\0\1s\0\0\7\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\0\0\0:1.97665\0", iov_len=85}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 85
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\4\1\1\r\0\0\0\2\0\0\0\225\0\0\0", iov_len=16}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 16
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\252\0\0\0\2\0\0\0y\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\10\0\0\0AddMatch\0\0\0\0\0\0\0\0\245\0\0\0type='signal',sender='org.freedesktop.DBus',interfac"..., iov_len=314}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 314
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\3\1s\0\f\0\0\0NameAcquired\0\0\0\0\6\1s\0\10\0\0\0:1.97665\0\0\0\0\0\0\0\0\10\1g\0\1s\0\0\7\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\0\0\0:1.97665\0", iov_len=165}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 165
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\37\0\0\0\3\0\0\0}\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\f\0\0\0GetNameOwner\0\0\0\0\32\0\0\0org.freedesktop.PolicyKit1\0", iov_len=175}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 175
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\2\1\1\0\0\0\0\3\0\0\0=\0\0\0", iov_len=16}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 16
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\326\0\0\0\4\0\0\0y\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\10\0\0\0AddMatch\0\0\0\0\0\0\0\0\321\0\0\0type='signal',sender='org.freedesktop.PolicyKit1',in"..., iov_len=358}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 358
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\6\1s\0\10\0\0\0:1.97665\0\0\0\0\0\0\0\0\5\1u\0\2\0\0\0\7\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0", iov_len=64}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 64
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\224\0\0\0\5\0\0\0y\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\10\0\0\0AddMatch\0\0\0\0\0\0\0\0\217\0\0\0type='signal',sender='org.freedesktop.PolicyKit1',in"..., iov_len=292}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 292
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\2\1\1\t\0\0\0\4\0\0\0E\0\0\0", iov_len=16}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 16
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1$\0\0\0\6\0\0\0\203\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\2su\0\3\1s\0\22\0\0\0StartServiceByName\0\0\0\0\0\0\32\0\0\0org.freedesktop.PolicyKit1\0\0\0\0\0\0", iov_len=188}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 188
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\6\1s\0\10\0\0\0:1.97665\0\0\0\0\0\0\0\0\5\1u\0\3\0\0\0\10\1g\0\1s\0\0\7\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\4\0\0\0:1.4\0", iov_len=81}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 81
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\2\1\1\0\0\0\0\5\0\0\0=\0\0\0", iov_len=16}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 16
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\6\1s\0\10\0\0\0:1.97665\0\0\0\0\0\0\0\0\5\1u\0\4\0\0\0\7\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0", iov_len=64}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 64
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\2\1\1\0\0\0\0\6\0\0\0=\0\0\0", iov_len=16}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 16
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\6\1s\0\10\0\0\0:1.97665\0\0\0\0\0\0\0\0\5\1u\0\5\0\0\0\7\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0", iov_len=64}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 64
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\2\1\1\4\0\0\0\7\0\0\0E\0\0\0", iov_len=16}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 16
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\6\1s\0\10\0\0\0:1.97665\0\0\0\0\0\0\0\0\5\1u\0\6\0\0\0\10\1g\0\1u\0\0\7\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\2\0\0\0", iov_len=76}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 76
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\37\0\0\0\7\0\0\0}\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\f\0\0\0GetNameOwner\0\0\0\0\32\0\0\0org.freedesktop.PolicyKit1\0", iov_len=175}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 175
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\2\1\1\t\0\0\0\10\0\0\0E\0\0\0", iov_len=16}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 16
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\6\1s\0\10\0\0\0:1.97665\0\0\0\0\0\0\0\0\5\1u\0\7\0\0\0\10\1g\0\1s\0\0\7\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\4\0\0\0:1.4\0", iov_len=81}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 81
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1)\0\0\0\10\0\0\0\177\0\0\0\1\1o\0%\0\0\0/org/freedesktop/PolicyKit1/Authority\0\0\0\2\1s\0\37\0\0\0org.freedesktop.DBus.Properties\0\6\1s\0\4\0\0\0:1.4\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\6\0\0\0GetAll\0\0$\0\0\0org.freedesktop.PolicyKit1.Authority\0", iov_len=185}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 185
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\2\1\1d\0\0\0[R\4\0=\0\0\0", iov_len=16}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 16
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\6\1s\0\10\0\0\0:1.97665\0\0\0\0\0\0\0\0\10\1g\0\5a{sv}\0\0\0\0\0\0\5\1u\0\10\0\0\0\7\1s\0\4\0\0\0:1.4\0\0\0\0\\\0\0\0\0\0\0\0\v\0\0\0BackendName\0\1s\0\0\2\0\0\0js\0\0\0\0\0\0\16\0\0\0BackendVersion\0\1s\0\0\0\3\0\0\000124\0\17\0\0\0BackendFeatures\0\1u\0\0\1\0\0\0", iov_len=164}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 164
+738527 openat(AT_FDCWD, "/etc/passwd", O_RDONLY|O_CLOEXEC) = 7
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1@\0\0\0\t\0\0\0\245\0\0\0\1\1o\0%\0\0\0/org/freedesktop/PolicyKit1/Authority\0\0\0\2\1s\0$\0\0\0org.freedesktop.PolicyKit1.Authority\0\0\0\0\6\1s\0\4\0\0\0:1.4\0\0\0\0\10\1g\0\nus(sa{sv})\0\3\1s\0\34\0\0\0AuthenticationAgentResponse2\0\0\0\0\352\3\0\0\n\0\0\0fakecook"..., iov_len=248}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 248
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\3\1\1\32\0\0\0]R\4\0e\0\0\0", iov_len=16}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 16
+738530 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\4\1s\0'\0\0\0org.freedesktop.PolicyKit1.Error.Failed\0\6\1s\0\10\0\0\0:1.97665\0\0\0\0\0\0\0\0\10\1g\0\1s\0\0\5\1u\0\t\0\0\0\7\1s\0\4\0\0\0:1.4\0\0\0\0\25\0\0\0No session for cookie\0", iov_len=130}], msg_iovlen=1, msg_controllen=0, msg_flags=MSG_CMSG_CLOEXEC}, MSG_CMSG_CLOEXEC) = 130
+--- trace write/exec/connect summary
+738527 execve("/usr/lib/polkit-1/polkit-agent-helper-1", ["/usr/lib/polkit-1/polkit-agent-helper-1", "selfauth", "fakecookie"], 0xffffcb01add0 /* 8 vars */) = 0
+738527 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+738527 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+738527 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+738527 connect(3, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+738527 connect(4, {sa_family=AF_UNIX, sun_path="/run/systemd/userdb/io.systemd.DynamicUser"}, 45) = 0
+738527 connect(5, {sa_family=AF_UNIX, sun_path="/run/dbus/system_bus_socket"}, 110) = 0
+738527 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="\0", iov_len=1}], msg_iovlen=1, msg_control=[{cmsg_len=28, cmsg_level=SOL_SOCKET, cmsg_type=SCM_CREDENTIALS, cmsg_data={pid=738527, uid=0, gid=1002}}], msg_controllen=32, msg_flags=0}, MSG_NOSIGNAL) = 1
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\0\0\0\0\1\0\0\0n\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\3\1s\0\5\0\0\0Hello\0\0\0", iov_len=128}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 128
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\252\0\0\0\2\0\0\0y\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\10\0\0\0AddMatch\0\0\0\0\0\0\0\0\245\0\0\0type='signal',sender='org.freedesktop.DBus',interfac"..., iov_len=314}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 314
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\37\0\0\0\3\0\0\0}\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\f\0\0\0GetNameOwner\0\0\0\0\32\0\0\0org.freedesktop.PolicyKit1\0", iov_len=175}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 175
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\326\0\0\0\4\0\0\0y\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\10\0\0\0AddMatch\0\0\0\0\0\0\0\0\321\0\0\0type='signal',sender='org.freedesktop.PolicyKit1',in"..., iov_len=358}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 358
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\224\0\0\0\5\0\0\0y\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\10\0\0\0AddMatch\0\0\0\0\0\0\0\0\217\0\0\0type='signal',sender='org.freedesktop.PolicyKit1',in"..., iov_len=292}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 292
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1$\0\0\0\6\0\0\0\203\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\2su\0\3\1s\0\22\0\0\0StartServiceByName\0\0\0\0\0\0\32\0\0\0org.freedesktop.PolicyKit1\0\0\0\0\0\0", iov_len=188}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 188
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1\37\0\0\0\7\0\0\0}\0\0\0\1\1o\0\25\0\0\0/org/freedesktop/DBus\0\0\0\2\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\6\1s\0\24\0\0\0org.freedesktop.DBus\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\f\0\0\0GetNameOwner\0\0\0\0\32\0\0\0org.freedesktop.PolicyKit1\0", iov_len=175}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 175
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1)\0\0\0\10\0\0\0\177\0\0\0\1\1o\0%\0\0\0/org/freedesktop/PolicyKit1/Authority\0\0\0\2\1s\0\37\0\0\0org.freedesktop.DBus.Properties\0\6\1s\0\4\0\0\0:1.4\0\0\0\0\10\1g\0\1s\0\0\3\1s\0\6\0\0\0GetAll\0\0$\0\0\0org.freedesktop.PolicyKit1.Authority\0", iov_len=185}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 185
+738530 sendmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="l\1\0\1@\0\0\0\t\0\0\0\245\0\0\0\1\1o\0%\0\0\0/org/freedesktop/PolicyKit1/Authority\0\0\0\2\1s\0$\0\0\0org.freedesktop.PolicyKit1.Authority\0\0\0\0\6\1s\0\4\0\0\0:1.4\0\0\0\0\10\1g\0\nus(sa{sv})\0\3\1s\0\34\0\0\0AuthenticationAgentResponse2\0\0\0\0\352\3\0\0\n\0\0\0fakecook"..., iov_len=248}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, MSG_NOSIGNAL) = 248
+
+## root-owned state after probes
+stat -rw-r--r-- 644 root:root 1704 /etc/passwd
+e1468fa4ad17e48937e0fe2d6f1c64ea1d8477c339287f68bd3fc54aa9729ee0  /etc/passwd
+stat -rw-r----- 640 root:shadow 937 /etc/shadow
+66c417c37190ed7e6c0ba34ed2377494bd3204bfb955fa31459985540c68c17a  /etc/shadow
+stat -rw-r--r-- 644 root:root 857 /etc/group
+6f9dbca3bed6a13aa64baadf58ccdccf3d6f18eac2bf8e6e6dd3ea08634ae5be  /etc/group
+stat -rw-r----- 640 root:shadow 729 /etc/gshadow
+3470f908cc636edf0f69d37ed04b7947031ad0487977ec3973f0d8d64d3461c3  /etc/gshadow
+stat -rw-r--r-- 644 root:root 106 /etc/environment
+3d88795b8d42b87bbbf91f8d30dae43b6db9ecd4b1eb93a883062352c902ff5d  /etc/environment
+stat -rw-r--r-- 644 root:root 13 /etc/default/locale
+89dd29db91ea608d72b5b4d3d3f5816cc2d3c1dd730741dc41b20ce12f1c2b3b  /etc/default/locale
+stat -rw-r--r-- 644 root:root 2971 /etc/security/pam_env.conf
+7038e2676178dcda6a9bdd6b8948af8206af56f5291cb2cda7f563a9904c15bd  /etc/security/pam_env.conf
+stat -rw-r--r-- 644 root:root 270 /usr/lib/pam.d/polkit-1
+bc30e80027e6cd3d29900f2f8d46f4137c7c5dc06e0dffc34d5ef586476e5bfb  /usr/lib/pam.d/polkit-1
+stat -rw-r--r-- 644 root:root 1242 /etc/pam.d/common-auth
+628197de9e50b6be37421b04a67f07924f515e0b0f4c06aed9fea953d20ed6e6  /etc/pam.d/common-auth
+stat -rw-r--r-- 644 root:root 1208 /etc/pam.d/common-account
+aa8a63d72e79399b6c51ebe4e9f828c954145a799eb4b8f3224724f51cbb9fac  /etc/pam.d/common-account
+stat -rw-r--r-- 644 root:root 1427 /etc/pam.d/common-session
+f237c090d61f72820ede6f77f4889e9db292b84fafb2c5d19ae6c125ea3bd371  /etc/pam.d/common-session
+stat -rw-r--r-- 644 root:root 1435 /etc/pam.d/common-session-noninteractive
+1bd1ef2b6241fc8b3c97bbaf57e5c6038c96c275e30c62ebee6eec15701e2e07  /etc/pam.d/common-session-noninteractive
+tree 644 root:root /usr/share/polkit-1/rules.d/49-ubuntu-admin.rules
+tree 644 root:root /usr/share/polkit-1/rules.d/50-default.rules
+tree 644 root:root /usr/share/polkit-1/rules.d/org.freedesktop.bolt.rules
+tree 644 root:root /usr/share/polkit-1/rules.d/org.freedesktop.fwupd.rules
+tree 644 root:root /usr/share/polkit-1/rules.d/org.freedesktop.packagekit.rules
+tree 644 root:root /usr/share/polkit-1/rules.d/systemd-networkd.rules
+tree 750 root:polkitd /etc/polkit-1/rules.d
+tree 750 root:polkitd /var/lib/polkit-1
+tree 755 root:root /etc/polkit-1
+tree 755 root:root /usr/share/polkit-1/rules.d
+tree 755 root:root /var/lib/polkit-1/localauthority
+tree 755 root:root /var/lib/polkit-1/localauthority/10-vendor.d
+--- snapshot diff
+
+## root proof and cleanup
+ROOT_PROOF=no
+fakebin_executed=no
+cleanup_leftovers:

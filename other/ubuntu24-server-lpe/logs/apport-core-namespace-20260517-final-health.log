@@ -1,0 +1,30 @@
+== final target cleanup/status ==
+-- health
+running
+-- leftovers
+MISSING /root/apport_core_ns_hook_marker
+MISSING /root/apport_core_ns_symlink_target
+MISSING /root/apport_core_ns_env_marker
+MISSING /root/apport_core_ns_escape
+MISSING /tmp/apport-core-ns-20260517
+MISSING /tmp/apport-core-ns-forward-20260517
+MISSING /var/crash/_usr_bin_sleep.1001.crash
+-- udisks-status
+● udisks2.service - Disk Manager
+     Loaded: loaded (/usr/lib/systemd/system/udisks2.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-05-17 19:23:41 UTC; 14s ago
+       Docs: man:udisks(8)
+   Main PID: 23453 (udisksd)
+      Tasks: 7 (limit: 9517)
+     Memory: 3.9M (peak: 4.4M)
+        CPU: 132ms
+     CGroup: /docker/bf51bb670420b556386b1dab94ce9cfc181e36dc1ddf0267171ade06c2318470/system.slice/udisks2.service
+             └─23453 /usr/libexec/udisks2/udisksd
+
+May 17 19:23:41 bf51bb670420 systemd[1]: Starting udisks2.service - Disk Manager...
+May 17 19:23:41 bf51bb670420 udisksd[23453]: udisks daemon version 2.10.1 starting
+May 17 19:23:41 bf51bb670420 udisksd[23453]: Error statting /var/lib/swap: No such file or directory
+May 17 19:23:41 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:23:41 bf51bb670420 udisksd[23453]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+May 17 19:23:45 bf51bb670420 udisksd[23453]: Error statting /var/lib/swap: No such file or directory
+May 17 19:23:48 bf51bb670420 udisksd[23453]: Error statting /var/lib/swap: No such file or directory

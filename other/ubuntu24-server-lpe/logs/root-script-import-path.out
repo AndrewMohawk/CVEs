@@ -1,0 +1,1202 @@
+root script import/path/env trust-boundary probe
+target=ubuntu24-server-lpe-target attacker=attacker
+2026-05-16T14:25:00-0400
+
+## cleanup before probe
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+
+## target identity, versions, and default root consumers
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== identity ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+      1 root     systemd         /sbin/init
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+sudo:x:27:ubuntu
+adm:x:4:ubuntu,syslog
+syslog:x:104:
+staff:x:50:
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+sudo: a password is required
+sudo_rc=1
+
+== package versions ==
+apport	2.28.1-0ubuntu3.8	ii 
+apport-core-dump-handler	2.28.1-0ubuntu3.8	ii 
+appstream	1.0.2-1build6	ii 
+apt	2.8.3	ii 
+command-not-found	23.04.0	ii 
+cron	3.0pl1-184ubuntu2	ii 
+debconf	1.5.86ubuntu1	ii 
+e2fsprogs	1.47.0-2.4~exp1ubuntu4.1	ii 
+fwupd	1.9.34-0ubuntu1~24.04.1	ii 
+logrotate	3.21.0-2build1	ii 
+man-db	2.12.0-4build2	ii 
+needrestart	3.6-7ubuntu4.5	ii 
+networkd-dispatcher	2.2.4-1	ii 
+perl-base	5.38.2-3.2ubuntu0.2	ii 
+pollinate	4.33-3.1ubuntu1.3	ii 
+python3	3.12.3-0ubuntu2.1	ii 
+rsyslog	8.2312.0-3ubuntu9.2	ii 
+sudo	1.9.15p5-3ubuntu5.24.04.2	ii 
+sysstat	12.6.1-2	ii 
+systemd	255.4-1ubuntu8.15	ii 
+ubuntu-pro-client	37.2ubuntu~24.04	ii 
+ubuntu-release-upgrader-core	1:24.04.28	ii 
+ufw	0.36.2-6	ii 
+unattended-upgrades	2.9.1+nmu4ubuntu1	ii 
+update-notifier-common	3.192.68.2	ii 
+
+== default timers ==
+NEXT                            LEFT LAST                              PASSED UNIT                           ACTIVATES
+Sat 2026-05-16 18:30:00 UTC 4min 59s Sat 2026-05-16 18:20:37 UTC 4min 23s ago sysstat-collect.timer          sysstat-collect.service
+Sun 2026-05-17 00:00:00 UTC 5h 34min -                                      - dpkg-db-backup.timer           dpkg-db-backup.service
+Sun 2026-05-17 00:00:00 UTC 5h 34min -                                      - logrotate.timer                logrotate.service
+Sun 2026-05-17 00:07:00 UTC 5h 41min -                                      - sysstat-summary.timer          sysstat-summary.service
+Sun 2026-05-17 03:10:05 UTC       8h -                                      - e2scrub_all.timer              e2scrub_all.service
+Sun 2026-05-17 06:22:22 UTC      11h -                                      - apt-daily-upgrade.timer        apt-daily-upgrade.service
+Sun 2026-05-17 07:08:13 UTC      12h -                                      - man-db.timer                   man-db.service
+Sun 2026-05-17 11:02:00 UTC      16h Sat 2026-05-16 18:10:13 UTC    14min ago apt-daily.timer                apt-daily.service
+Sun 2026-05-17 11:39:05 UTC      17h Sat 2026-05-16 15:51:40 UTC 2h 33min ago motd-news.timer                motd-news.service
+Sun 2026-05-17 15:34:07 UTC      21h Sat 2026-05-16 15:34:07 UTC 2h 50min ago systemd-tmpfiles-clean.timer   systemd-tmpfiles-clean.service
+Sun 2026-05-17 18:23:20 UTC      23h Sat 2026-05-16 15:24:11 UTC  3h 0min ago update-notifier-download.timer update-notifier-download.service
+Fri 2026-05-22 01:25:24 UTC   5 days -                                      - update-notifier-motd.timer     update-notifier-motd.service
+-                                  - -                                      - apport-autoreport.timer        apport-autoreport.service
+-                                  - -                                      - fstrim.timer                   fstrim.service
+-                                  - -                                      - fwupd-refresh.timer            fwupd-refresh.service
+-                                  - -                                      - snapd.snap-repair.timer        snapd.snap-repair.service
+-                                  - -                                      - ua-timer.timer                 ua-timer.service
+
+17 timers listed.
+
+== root/helper units ==
+### apt-daily.service
+Result=success
+ExecStartPre={ path=/usr/lib/apt/apt-helper ; argv[]=/usr/lib/apt/apt-helper wait-online ; ignore_errors=yes ; start_time=[Sat 2026-05-16 18:23:46 UTC] ; stop_time=[Sat 2026-05-16 18:23:46 UTC] ; pid=778124 ; code=exited ; status=0 }
+ExecStart={ path=/usr/lib/apt/apt.systemd.daily ; argv[]=/usr/lib/apt/apt.systemd.daily update ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:46 UTC] ; stop_time=[Sat 2026-05-16 18:23:46 UTC] ; pid=778129 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apt-daily.service
+UnitFileState=static
+ConditionResult=yes
+### apt-daily-upgrade.service
+Result=success
+ExecStartPre={ path=/usr/lib/apt/apt-helper ; argv[]=/usr/lib/apt/apt-helper wait-online ; ignore_errors=yes ; start_time=[Sat 2026-05-16 18:23:46 UTC] ; stop_time=[Sat 2026-05-16 18:23:46 UTC] ; pid=778092 ; code=exited ; status=0 }
+ExecStart={ path=/usr/lib/apt/apt.systemd.daily ; argv[]=/usr/lib/apt/apt.systemd.daily install ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:46 UTC] ; stop_time=[Sat 2026-05-16 18:23:46 UTC] ; pid=778096 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apt-daily-upgrade.service
+UnitFileState=static
+ConditionResult=yes
+### apt-news.service
+Result=success
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/lib/ubuntu-advantage/apt_news.py ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apt-news.service
+UnitFileState=static
+ConditionResult=no
+### esm-cache.service
+Result=success
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/lib/ubuntu-advantage/esm_cache.py ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/esm-cache.service
+UnitFileState=static
+ConditionResult=no
+### update-notifier-download.service
+Result=success
+ExecStart={ path=/usr/lib/update-notifier/package-data-downloader ; argv[]=/usr/lib/update-notifier/package-data-downloader ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:20 UTC] ; stop_time=[Sat 2026-05-16 18:23:20 UTC] ; pid=777925 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/update-notifier-download.service
+UnitFileState=static
+ConditionResult=yes
+### update-notifier-motd.service
+Result=success
+ExecStart={ path=/usr/lib/ubuntu-release-upgrader/release-upgrade-motd ; argv[]=/usr/lib/ubuntu-release-upgrader/release-upgrade-motd ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:20 UTC] ; stop_time=[Sat 2026-05-16 18:23:20 UTC] ; pid=777930 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/update-notifier-motd.service
+UnitFileState=static
+ConditionResult=yes
+### motd-news.service
+Result=success
+ExecStart={ path=/etc/update-motd.d/50-motd-news ; argv[]=/etc/update-motd.d/50-motd-news --force ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:20 UTC] ; stop_time=[Sat 2026-05-16 18:23:21 UTC] ; pid=777938 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/motd-news.service
+UnitFileState=static
+ConditionResult=yes
+### ua-timer.service
+Result=success
+ExecStart={ path=/usr/bin/python3 ; argv[]=/usr/bin/python3 /usr/lib/ubuntu-advantage/timer.py ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:21 UTC] ; stop_time=[Sat 2026-05-16 18:23:21 UTC] ; pid=777969 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/ua-timer.service
+UnitFileState=static
+ConditionResult=yes
+### dpkg-db-backup.service
+Result=success
+ExecStart={ path=/usr/libexec/dpkg/dpkg-db-backup ; argv[]=/usr/libexec/dpkg/dpkg-db-backup ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:21 UTC] ; stop_time=[Sat 2026-05-16 18:23:21 UTC] ; pid=777974 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/dpkg-db-backup.service
+UnitFileState=static
+ConditionResult=yes
+### logrotate.service
+Result=success
+ExecStart={ path=/usr/sbin/logrotate ; argv[]=/usr/sbin/logrotate /etc/logrotate.conf ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:21 UTC] ; stop_time=[Sat 2026-05-16 18:23:21 UTC] ; pid=778031 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/logrotate.service
+UnitFileState=static
+ConditionResult=yes
+### e2scrub_all.service
+Result=success
+ExecStart={ path=/sbin/e2scrub_all ; argv[]=/sbin/e2scrub_all ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:21 UTC] ; stop_time=[Sat 2026-05-16 18:23:21 UTC] ; pid=778038 ; code=exited ; status=0 }
+Environment=SERVICE_MODE=1
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/e2scrub_all.service
+UnitFileState=static
+ConditionResult=yes
+### sysstat-collect.service
+Result=success
+ExecStart={ path=/usr/lib/sysstat/sa1 ; argv[]=/usr/lib/sysstat/sa1 1 1 ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:21 UTC] ; stop_time=[Sat 2026-05-16 18:23:21 UTC] ; pid=778043 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=root
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/sysstat-collect.service
+UnitFileState=static
+ConditionResult=yes
+### sysstat-summary.service
+Result=success
+ExecStart={ path=/usr/lib/sysstat/sa2 ; argv[]=/usr/lib/sysstat/sa2 -A ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:21 UTC] ; stop_time=[Sat 2026-05-16 18:23:21 UTC] ; pid=778048 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=root
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/sysstat-summary.service
+UnitFileState=static
+ConditionResult=yes
+### man-db.service
+Result=success
+ExecStart={ path=/usr/bin/install ; argv[]=/usr/bin/install -d -o man -g man -m 0755 /var/cache/man ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:21 UTC] ; stop_time=[Sat 2026-05-16 18:23:21 UTC] ; pid=778054 ; code=exited ; status=0 }
+ExecStart={ path=/usr/bin/mandb ; argv[]=/usr/bin/mandb --quiet ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:21 UTC] ; stop_time=[Sat 2026-05-16 18:23:21 UTC] ; pid=778056 ; code=exited ; status=0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=man
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/man-db.service
+UnitFileState=static
+ConditionResult=yes
+### apport-autoreport.service
+Result=success
+ExecStart={ path=/usr/share/apport/whoopsie-upload-all ; argv[]=/usr/share/apport/whoopsie-upload-all --timeout 20 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apport-autoreport.service
+UnitFileState=static
+ConditionResult=no
+### fwupd-refresh.service
+Result=exit-code
+ExecStart={ path=/usr/bin/fwupdmgr ; argv[]=/usr/bin/fwupdmgr refresh ; ignore_errors=no ; start_time=[Sat 2026-05-16 18:23:21 UTC] ; stop_time=[Sat 2026-05-16 18:23:46 UTC] ; pid=778066 ; code=exited ; status=1 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=fwupd-refresh
+Group=
+LoadState=loaded
+ActiveState=failed
+SubState=failed
+FragmentPath=/usr/lib/systemd/system/fwupd-refresh.service
+UnitFileState=static
+ConditionResult=yes
+### pollinate.service
+Result=success
+ExecStart={ path=/usr/bin/pollinate ; argv[]=/usr/bin/pollinate ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=pollinate
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/pollinate.service
+UnitFileState=enabled
+ConditionResult=no
+### networkd-dispatcher.service
+Result=success
+ExecStart={ path=/usr/bin/networkd-dispatcher ; argv[]=/usr/bin/networkd-dispatcher $networkd_dispatcher_args ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/networkd-dispatcher.service
+UnitFileState=enabled
+ConditionResult=no
+### cron.service
+Result=success
+ExecStart={ path=/usr/sbin/cron ; argv[]=/usr/sbin/cron -f -P $EXTRA_OPTS ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/cron.service
+UnitFileState=enabled
+ConditionResult=yes
+### ufw.service
+Result=success
+ExecStart={ path=/usr/lib/ufw/ufw-init ; argv[]=/usr/lib/ufw/ufw-init start quiet ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/ufw.service
+UnitFileState=enabled
+ConditionResult=yes
+### unattended-upgrades.service
+Result=success
+ExecStart={ path=/usr/share/unattended-upgrades/unattended-upgrade-shutdown ; argv[]=/usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+Environment=
+PassEnvironment=
+WorkingDirectory=
+User=
+Group=
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/unattended-upgrades.service
+UnitFileState=enabled
+ConditionResult=yes
+
+== apt hook commands ==
+/etc/apt/apt.conf.d/15update-stamp:1:APT::Update::Post-Invoke-Success {"touch /var/lib/apt/periodic/update-success-stamp 2>/dev/null || true";};
+/etc/apt/apt.conf.d/20apt-esm-hook.conf:1:APT::Update::Pre-Invoke {
+/etc/apt/apt.conf.d/20apt-esm-hook.conf:2:	"[ ! -e /run/systemd/system ] || [ $(id -u) -ne 0 ] || systemctl start --no-block apt-news.service esm-cache.service >/dev/null 2>&1 || true";
+/etc/apt/apt.conf.d/20packagekit:5:DPkg::Post-Invoke {
+/etc/apt/apt.conf.d/20packagekit:10:APT::Update::Post-Invoke-Success {
+/etc/apt/apt.conf.d/50appstream:1:## This file is provided by appstreamcli(1) to download DEP-11
+/etc/apt/apt.conf.d/50appstream:75:APT::Update::Post-Invoke-Success {
+/etc/apt/apt.conf.d/50appstream:76:    "if /usr/bin/test -w /var/cache/swcatalog -a -e /usr/bin/appstreamcli; then appstreamcli refresh --source=os > /dev/null || true; fi";
+/etc/apt/apt.conf.d/50command-not-found:14:APT::Update::Post-Invoke-Success {
+/etc/apt/apt.conf.d/50command-not-found:15:    "if /usr/bin/test -w /var/lib/command-not-found/ -a -e /usr/lib/cnf-update-db; then /usr/lib/cnf-update-db > /dev/null; fi";
+/etc/apt/apt.conf.d/70debconf:3:DPkg::Pre-Install-Pkgs {"/usr/sbin/dpkg-preconfigure --apt || true";};
+/etc/apt/apt.conf.d/99needrestart:1:# needrestart - Restart daemons after library updates.
+/etc/apt/apt.conf.d/99needrestart:3:# Call needrestart after package upgrades/installations and check
+/etc/apt/apt.conf.d/99needrestart:8:DPkg::Post-Invoke {"test -x /usr/lib/needrestart/apt-pinvoke && /usr/lib/needrestart/apt-pinvoke -m u || true"; };
+/etc/apt/apt.conf.d/99update-notifier:1:DPkg::Post-Invoke {"if [ -d /var/lib/update-notifier ]; then touch /var/lib/update-notifier/dpkg-run-stamp; fi; /usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";};
+/etc/apt/apt.conf.d/99update-notifier:2:APT::Update::Post-Invoke-Success {"/usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true";};
+/etc/apt/apt.conf.d/docker-clean:1:DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };
+/etc/apt/apt.conf.d/docker-clean:2:APT::Update::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };
+
+== cron and logrotate roots ==
+     1	# /etc/crontab: system-wide crontab
+     2	# Unlike any other crontab you don't have to run the `crontab'
+     3	# command to install the new version when you edit this file
+     4	# and files in /etc/cron.d. These files also have username fields,
+     5	# that none of the other crontabs do.
+     6	
+     7	SHELL=/bin/sh
+     8	# You can also override PATH, but by default, newer versions inherit it from the environment
+     9	#PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    10	
+    11	# Example of job definition:
+    12	# .---------------- minute (0 - 59)
+    13	# |  .------------- hour (0 - 23)
+    14	# |  |  .---------- day of month (1 - 31)
+    15	# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+    16	# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+    17	# |  |  |  |  |
+    18	# *  *  *  *  * user-name command to be executed
+    19	17 *	* * *	root	cd / && run-parts --report /etc/cron.hourly
+    20	25 6	* * *	root	test -x /usr/sbin/anacron || { cd / && run-parts --report /etc/cron.daily; }
+    21	47 6	* * 7	root	test -x /usr/sbin/anacron || { cd / && run-parts --report /etc/cron.weekly; }
+    22	52 6	1 * *	root	test -x /usr/sbin/anacron || { cd / && run-parts --report /etc/cron.monthly; }
+    23	#
+    24	# The first element of the path is a directory where the debian-sa1
+    25	# script is located
+    26	PATH=/usr/lib/sysstat:/usr/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+    27	
+    28	# Activity reports every 10 minutes everyday
+    29	5-55/10 * * * * root command -v debian-sa1 > /dev/null && debian-sa1 1 1
+    30	
+    31	# Additional run at 23:59 to rotate the statistics file
+    32	59 23 * * * root command -v debian-sa1 > /dev/null && debian-sa1 60 2
+    33	30 3 * * 0 root test -e /run/systemd/system || SERVICE_MODE=1 /usr/lib/aarch64-linux-gnu/e2fsprogs/e2scrub_all_cron
+    34	10 3 * * * root test -e /run/systemd/system || SERVICE_MODE=1 /sbin/e2scrub_all -A -r
+-rw-r--r-- 1 root root  102 Mar 31  2024 /etc/cron.d/.placeholder
+-rw-r--r-- 1 root root  202 Apr  8  2024 /etc/cron.d/e2scrub_all
+-rw-r--r-- 1 root root  396 Jan  9  2024 /etc/cron.d/sysstat
+-rw-r--r-- 1 root root  102 Mar 31  2024 /etc/cron.daily/.placeholder
+-rwxr-xr-x 1 root root  376 Jul  8  2025 /etc/cron.daily/apport
+-rwxr-xr-x 1 root root 1478 Mar 22  2024 /etc/cron.daily/apt-compat
+-rwxr-xr-x 1 root root  123 Feb  5  2024 /etc/cron.daily/dpkg
+-rwxr-xr-x 1 root root  377 Apr  8  2024 /etc/cron.daily/logrotate
+-rwxr-xr-x 1 root root 1395 Mar 29  2024 /etc/cron.daily/man-db
+-rwxr-xr-x 1 root root  518 Jan  9  2024 /etc/cron.daily/sysstat
+-rw-r--r-- 1 root root  102 Mar 31  2024 /etc/cron.hourly/.placeholder
+-rw-r--r-- 1 root root  102 Mar 31  2024 /etc/cron.monthly/.placeholder
+-rw-r--r-- 1 root root  102 Mar 31  2024 /etc/cron.weekly/.placeholder
+-rwxr-xr-x 1 root root 1055 Mar 29  2024 /etc/cron.weekly/man-db
+/etc/logrotate.d/rsyslog:14:	sharedscripts
+/etc/logrotate.d/rsyslog:15:	postrotate
+/etc/logrotate.d/rsyslog:17:	endscript
+/etc/logrotate.d/ubuntu-pro-client:4:    su root root
+/etc/logrotate.d/ufw:9:	sharedscripts
+/etc/logrotate.d/ufw:10:	postrotate
+/etc/logrotate.d/ufw:12:	endscript
+
+== kernel link protections ==
+fs.protected_symlinks = 1
+fs.protected_hardlinks = 1
+fs.protected_fifos = 1
+fs.protected_regular = 2
+
+## helper ownership, search paths, and writable boundaries
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== helper files ==
+### /usr/lib/apt/apt.systemd.daily
+-rwxr-xr-x 755 root:root regular file /usr/lib/apt/apt.systemd.daily
+apt: /usr/lib/apt/apt.systemd.daily
+#!/bin/sh
+/usr/lib/apt/apt.systemd.daily: POSIX shell script, ASCII text executable
+11:# which can be used with systemd OnCalendar overrides to
+107:    stamp=$(date --date="$(date -r "$stamp_file" --iso-8601)" +%s 2>/dev/null)
+110:        # certain dates (e.g. America/Sao_Paulo), if date returns with error
+113:        rm -f "$stamp_file"
+117:    now=$(date --date="$(date --iso-8601)" +%s 2>/dev/null)
+120:        # on certain dates (e.g. America/Sao_Paulo), if date returns with error
+146:         rm -f "$stamp_file"
+160:    touch "$stamp"
+190:	find $Cache -name "*.deb"  \( -mtime +$MaxAge -and -ctime +$MaxAge \) -and -not \( -mtime -$MinAge -or -ctime -$MinAge \) -print0 | xargs -r -0 rm -f
+193:	find $Cache -name "*.deb"  -ctime +$MaxAge -and -mtime +$MaxAge -print0 | xargs -r -0 rm -f
+204:	now=$(date --date="$(date --iso-8601)" +%s)
+233:		    rm -f "$file"
+290:	if [ $({ (cd $Cache 2>/dev/null; find . -name "*.deb"); (cd $Back0 2>/dev/null;find . -name "*.deb") ;}| sort|uniq -u|wc -l) -ne 0 ]; then
+292:	    rm -rf $Back$((BackupLevel-1))
+297:		    mv -f $BackZ $BackY ; 
+300:	    cp -la $Cache $Back ; mv -f $BackX $Back0
+326:    exec 3>${StateDir}/daily_lock
+327:    if ! flock -w 3600 3; then
+340:    # shameless copy from dpkg cron
+343:	    cp -p /var/lib/apt/extended_states apt.extended_states
+344:	    savelog -c 7 apt.extended_states >/dev/null
+350:if ! command -v apt-config >/dev/null; then
+362:# Set VERBOSE mode from  apt-config (or inherit from environment)
+384:if command -v apt-get >/dev/null && ! eval apt-get check $XAPTOPT $XSTDERR ; then
+390:now=$(date +%s)
+448:    # update package lists
+452:	if eval apt-get $XAPTOPT -y update $XSTDERR; then
+479:    if command -v unattended-upgrade >/dev/null && env LC_ALL=C.UTF-8 unattended-upgrade --help | grep -q download-only && check_stamp $DOWNLOAD_UPGRADEABLE_STAMP $UnattendedUpgradeInterval; then
+494:    if command -v unattended-upgrade >/dev/null && check_stamp $UPGRADE_STAMP $UnattendedUpgradeInterval; then
+### /usr/lib/update-notifier/package-data-downloader
+-rwxr-xr-x 755 root:root regular file /usr/lib/update-notifier/package-data-downloader
+update-notifier-common: /usr/lib/update-notifier/package-data-downloader
+#!/usr/bin/python3
+/usr/lib/update-notifier/package-data-downloader: Python script, ASCII text executable
+19:import glob
+20:import os
+21:import sys
+22:import subprocess
+23:import traceback
+24:import debian.deb822
+25:import string
+26:import debconf
+27:from datetime import datetime
+29:import apt_pkg
+32:import socket
+49:    """Create or update the indicated stampfile, and remove failure flags"""
+52:        with open(file, 'w'):
+79:        with open(failure_file, 'w'):
+107:        hook_date = datetime.fromtimestamp(os.stat(failure_file).st_ctime)
+139:            with open(NOTIFIER_PERMANENT_SOURCE_FILE, 'r',
+142:            output_file = open(NOTIFIER_PERMANENT_FILE, 'w', encoding='utf-8')
+144:            with open(NOTIFIER_SOURCE_FILE, 'r', encoding='utf-8') as f:
+146:            output_file = open(NOTIFIER_FILE, 'w', encoding='utf-8')
+182:        with open(dest_file, 'rb') as dest_file_obj:
+183:            # apt_pkg can directly hash from file obj, let's use that instead
+193:    ret = subprocess.call(
+236:                hook_date = os.stat(file).st_mtime
+237:                stamp_date = os.stat(stampfile).st_mtime
+238:                if hook_date < stamp_date:
+250:        for para in hook.iter_paragraphs(open(file)):
+287:                    result = subprocess.call(command)
+### /usr/lib/ubuntu-release-upgrader/release-upgrade-motd
+-rwxr-xr-x 755 root:root regular file /usr/lib/ubuntu-release-upgrader/release-upgrade-motd
+ubuntu-release-upgrader-core: /usr/lib/ubuntu-release-upgrader/release-upgrade-motd
+#!/bin/sh -e
+/usr/lib/ubuntu-release-upgrader/release-upgrade-motd: POSIX shell script, ASCII text executable
+3:#    91-release-upgrade - display upgrade message or update the cache
+26:	now=$(date +%s)
+30:		# Older than 1 day old, so update in the background
+34:		cat "$stamp"
+38:	# No cache at all, so update in the background
+### /etc/update-motd.d/50-motd-news
+-rwxr-xr-x 755 root:root regular file /etc/update-motd.d/50-motd-news
+base-files: /etc/update-motd.d/50-motd-news
+#!/bin/sh
+/etc/update-motd.d/50-motd-news: POSIX shell script, ASCII text executable
+3:#    50-motd-news - print the live news from the Ubuntu wire
+48:	cat "$1" | head -n 10 | tr -d '\000-\011\013\014\016-\037' | cut -c -80
+66:# probably from the systemd motd-news.service.  Let's update...
+72:NEWS=$(mktemp) || exit 1
+73:ERR=$(mktemp) || exit 1
+74:CLOUD=$(mktemp) || exit 1
+75:trap "rm -f $NEWS $ERR $CLOUD" HUP INT QUIT ILL TRAP KILL BUS TERM
+81:wget_ver="$(dpkg -l wget | awk '$1 == "ii" { print($3); exit(0); }')"
+85:lsb=$(echo "$DISTRIB_DESCRIPTION" | sed -e "s/ /\//g")
+91:cpu="$(grep -m1 "^model name" /proc/cpuinfo | sed -e "s/.*: //" -e "s:\s\+:/:g")"
+105:USER_AGENT="wget/$wget_ver $lsb $platform $cpu cloud_id/$cloud_id"
+127:	# from wget's manpage: 8   Server issued an error response.
+129:		if grep -q "ERROR 404" "$ERR"; then
+139:		# Try to update the cache
+145:rm -f "$NEWS" "$ERR" "$CLOUD"
+### /usr/lib/ubuntu-advantage/timer.py
+-rw-r--r-- 644 root:root regular file /usr/lib/ubuntu-advantage/timer.py
+ubuntu-pro-client: /usr/lib/ubuntu-advantage/timer.py
+"""
+/usr/lib/ubuntu-advantage/timer.py: Python script, ASCII text executable
+2:Timer used to run all jobs that need to be frequently run on the system
+5:import logging
+6:from datetime import datetime, timedelta, timezone
+7:from typing import Callable, Optional
+9:from uaclient import http, log
+10:from uaclient.config import UAConfig
+11:from uaclient.exceptions import (
+15:from uaclient.files import machine_token
+16:from uaclient.files.state_files import (
+21:from uaclient.timer.metering import metering_enabled_resources
+22:from uaclient.timer.update_messaging import update_motd_messages
+64:        """Return the run_interval for the job based on config or defaults."""
+133:        # Persist last_run and next_run UTC-based times on job success.
+### /usr/lib/ubuntu-advantage/apt_news.py
+-rw-r--r-- 644 root:root regular file /usr/lib/ubuntu-advantage/apt_news.py
+ubuntu-pro-client: /usr/lib/ubuntu-advantage/apt_news.py
+#!/usr/bin/python3
+/usr/lib/ubuntu-advantage/apt_news.py: Python script, ASCII text executable
+3:from datetime import datetime, timedelta, timezone
+5:from uaclient import apt, log
+6:from uaclient.apt_news import update_apt_news
+7:from uaclient.config import UAConfig
+14:    last_update = apt.get_apt_cache_datetime()
+16:    if last_update is not None and last_update > one_day_ago:
+### /usr/lib/ubuntu-advantage/esm_cache.py
+-rwxr-xr-x 755 root:root regular file /usr/lib/ubuntu-advantage/esm_cache.py
+ubuntu-pro-client: /usr/lib/ubuntu-advantage/esm_cache.py
+#!/usr/bin/env python3
+/usr/lib/ubuntu-advantage/esm_cache.py: Python script, ASCII text executable
+3:import logging
+5:from uaclient import log
+6:from uaclient.apt import update_esm_caches
+7:from uaclient.config import UAConfig
+### /usr/lib/sysstat/sa1
+-rwxr-xr-x 755 root:root regular file /usr/lib/sysstat/sa1
+sysstat: /usr/lib/sysstat/sa1
+#!/bin/sh
+/usr/lib/sysstat/sa1: POSIX shell script, ASCII text executable
+10:# Used only if ${SYSCONFIG_DIR}/${SYSCONFIG_FILE} doesn't exist!
+45:		DATE=`date --date=yesterday +%Y%m%d`
+47:		DATE=`date --date=yesterday +%d`
+54:	exec ${ENDIR}/sadc -F -L ${SADC_OPTIONS} -C "LINUX SLEEP MODE ($*)" ${SA_DIR}
+60:	exec ${ENDIR}/sadc -F -L ${SADC_OPTIONS} 1 1 ${SA_DIR}
+62:	exec ${ENDIR}/sadc -F -L ${SADC_OPTIONS} $* ${SA_DIR}
+### /usr/lib/sysstat/sa2
+-rwxr-xr-x 755 root:root regular file /usr/lib/sysstat/sa2
+sysstat: /usr/lib/sysstat/sa2
+#!/bin/bash
+/usr/lib/sysstat/sa2: Bourne-Again shell script, ASCII text executable
+46:	DATE=`date ${DATE_OPTS} +%Y%m%d`
+48:	DATE=`date ${DATE_OPTS} +%d`
+69:find "${SA_DIR}" -type f -mtime +${HISTORY} \
+70:	| grep -E "${SAFILES_REGEX}" \
+71:	| xargs   rm -f
+75:find "${SA_DIR}" -type f -mtime +${COMPRESSAFTER} \
+76:	| grep -E "${UNCOMPRESSED_SAFILES_REGEX}" \
+### /sbin/e2scrub_all
+-rwxr-xr-x 755 root:root regular file /sbin/e2scrub_all
+#!/bin/bash
+/sbin/e2scrub_all: Bourne-Again shell script, ASCII text executable
+21:PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+53:	# If we're being run as a service, the return code must fit the LSB
+77:# If we're in service mode and the service is not enabled via config file...
+91:# close file descriptor 3 (from cron) since it causes lvm to kvetch
+92:exec 3<&-
+100:    echo "e2scrub_all: can't find mapfile --- is bash 4.xx installed?"
+106:    echo "e2scrub_all: can't find lsblk --- is util-linux installed?"
+112:    echo "e2scrub_all: can't find lvcreate --- is lvm2 installed?"
+124:	grep FSTYPE=\"ext\[234\]\" | grep TYPE=\"lvm\" | \
+137:	--noheadings | sed -e 's/.e2scrub$//'
+150:# to the e2scrub service, which breaks things if there is a dash in the path
+154:# that log messages from the service units preserve the full path and users can
+171:	# systemd service.
+172:	if [ "${reap}" -ne 1 ] && type systemctl > /dev/null 2>&1; then
+174:		${DBG} systemctl start "e2scrub@${tgt_esc}" 2> /dev/null
+### /usr/libexec/dpkg/dpkg-db-backup
+-rwxr-xr-x 755 root:root regular file /usr/libexec/dpkg/dpkg-db-backup
+dpkg: /usr/libexec/dpkg/dpkg-db-backup
+#!/bin/sh
+/usr/libexec/dpkg/dpkg-db-backup: POSIX shell script, Unicode text, UTF-8 text executable
+42:for cmd in "$TAR" savelog; do
+43:  if ! command -v "$cmd" >/dev/null; then
+44:    error "cannot find required program '$cmd'"
+68:        cp -p "$dbdir/$db" "dpkg.$db"
+70:        touch "dpkg.$db"
+72:      savelog -c "$ROTATE" "dpkg.$db" >/dev/null
+76:  # The alternatives database is independent from the dpkg database.
+85:    savelog -c "$ROTATE" ${dbalt}.tar >/dev/null
+### /usr/share/apport/whoopsie-upload-all
+-rwxr-xr-x 755 root:root regular file /usr/share/apport/whoopsie-upload-all
+apport: /usr/share/apport/whoopsie-upload-all
+#!/usr/bin/python3
+/usr/share/apport/whoopsie-upload-all: Python script, ASCII text executable
+19:import argparse
+20:import errno
+21:import fcntl
+22:import logging
+23:import os
+24:import stat
+25:import subprocess
+26:import sys
+27:import time
+28:import zlib
+30:import apport
+31:import apport.fileutils
+32:from problem_report import MalformedProblemReport
+77:        with open(report, "rb") as f:
+79:                fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+103:        # add information from package specific hooks
+129:            fd = os.open(report, os.O_NOFOLLOW | os.O_WRONLY | os.O_NONBLOCK)
+135:            with os.fdopen(fd, "wb") as f:
+219:        subprocess.call(
+220:            ["/bin/systemctl", "--quiet", "is-enabled", "whoopsie.path"],
+221:            stdout=subprocess.PIPE,
+232:        # whoopsie.service can activate. Ideally, this directory and the one
+### /usr/share/unattended-upgrades/unattended-upgrade-shutdown
+-rwxr-xr-x 755 root:root regular file /usr/share/unattended-upgrades/unattended-upgrade-shutdown
+unattended-upgrades: /usr/share/unattended-upgrades/unattended-upgrade-shutdown
+#!/usr/bin/python3
+/usr/share/unattended-upgrades/unattended-upgrade-shutdown: Python script, ASCII text executable
+28:import copy
+29:import dbus
+30:import signal
+31:import sys
+32:import time
+33:import logging
+34:import logging.handlers
+35:import gettext
+36:import subprocess
+37:import os.path
+41:    from dbus.mainloop.glib import DBusGMainLoop
+42:    from gi.repository import GLib
+46:from optparse import OptionParser, Values
+48:from gettext import gettext as _
+49:from threading import Event
+52:    import apt_pkg
+64:        subprocess.call(["/sbin/usplash_write", "TEXT", msg])
+65:        subprocess.call(["/sbin/usplash_write", "PULSATE"])
+73:            subprocess.call(["/bin/plymouth", "message", "--text", line])
+93:        msg += "\n" + open(progress).read()
+102:        pid = int(open(pidfile).read())
+169:             _('Stop ongoing upgrades or perform upgrades before shutdown'),
+227:            # TODO iter on sigterm and sighup, too
+268:                    _("Maybe systemd-logind service is not running."))
+307:                self.on_shutdown_mode_uu_proc = subprocess.Popen(
+311:                # because it means shutdown progressed despite holding the lock
+### /etc/cron.daily/apport
+-rwxr-xr-x 755 root:root regular file /etc/cron.daily/apport
+apport: /etc/cron.daily/apport
+#!/bin/sh -e
+/etc/cron.daily/apport: POSIX shell script, ASCII text executable
+4:find /var/crash/. ! -name . -prune -type f \( \( -size 0 -a \! -name '*.upload*' -a \! -name '*.drkonqi*' \) -o -mtime +7 \) -exec rm -f -- '{}' \;
+5:find /var/crash/. ! -name . -prune -type d -regextype posix-extended -regex '.*/[0-9]{12}$' \( -mtime +7 \) -exec rm -Rf -- '{}' \;
+### /etc/cron.daily/apt-compat
+-rwxr-xr-x 755 root:root regular file /etc/cron.daily/apt-compat
+apt: /etc/cron.daily/apt-compat
+#!/bin/sh
+/etc/cron.daily/apt-compat: POSIX shell script, ASCII text executable
+6:# run. We want to randomize the apt update and unattended-upgrade
+21:    if command -v on_ac_power >/dev/null; then
+32:# (some code taken from cron-apt, thanks)
+55:exec /usr/lib/apt/apt.systemd.daily
+### /etc/cron.daily/dpkg
+-rwxr-xr-x 755 root:root regular file /etc/cron.daily/dpkg
+dpkg: /etc/cron.daily/dpkg
+#!/bin/sh
+/etc/cron.daily/dpkg: POSIX shell script, ASCII text executable
+### /etc/cron.daily/logrotate
+-rwxr-xr-x 755 root:root regular file /etc/cron.daily/logrotate
+logrotate: /etc/cron.daily/logrotate
+#!/bin/sh
+/etc/cron.daily/logrotate: POSIX shell script, ASCII text executable
+16:    /usr/bin/logger -t logrotate "ALERT exited abnormally with [$EXITVALUE]"
+### /etc/cron.daily/man-db
+-rwxr-xr-x 755 root:root regular file /etc/cron.daily/man-db
+man-db: /etc/cron.daily/man-db
+#!/bin/sh
+/etc/cron.daily/man-db: POSIX shell script, ASCII text executable
+19:if ! grep -Eq '(envID|VxID):.*[1-9]' /proc/self/status && \
+25:    # Recover from deletion, per FHS.
+35:	"find /var/cache/man -type f -name '*.gz' -atime +6 -print0 | \
+36:	 xargs -r0 rm -f"
+### /etc/cron.daily/sysstat
+-rwxr-xr-x 755 root:root regular file /etc/cron.daily/sysstat
+sysstat: /etc/cron.daily/sysstat
+#!/bin/sh
+/etc/cron.daily/sysstat: POSIX shell script, ASCII text executable
+22:exec /usr/lib/sysstat/sa2 -A
+### /etc/cron.weekly/man-db
+-rwxr-xr-x 755 root:root regular file /etc/cron.weekly/man-db
+man-db: /etc/cron.weekly/man-db
+#!/bin/sh
+/etc/cron.weekly/man-db: POSIX shell script, ASCII text executable
+19:if ! grep -Eq '(envID|VxID):.*[1-9]' /proc/self/status && \
+25:    # Recover from deletion, per FHS.
+### /usr/lib/rsyslog/rsyslog-rotate
+-rwxr-xr-x 755 root:root regular file /usr/lib/rsyslog/rsyslog-rotate
+rsyslog: /usr/lib/rsyslog/rsyslog-rotate
+#!/bin/sh
+/usr/lib/rsyslog/rsyslog-rotate: POSIX shell script, ASCII text executable
+4:    systemctl kill -s HUP rsyslog.service
+### /usr/bin/pollinate
+-rwxr-xr-x 755 root:root regular file /usr/bin/pollinate
+pollinate: /usr/bin/pollinate
+#!/bin/sh
+/usr/bin/pollinate: POSIX shell script, ASCII text executable
+23:TMPDIR=$(mktemp -d -t "${PKG}.XXXXXXXXXXXX")
+24:trap "rm -rf ${TMPDIR} 2>/dev/null || true" EXIT HUP INT QUIT TERM
+31:# Only recent logger version supports --id=[ID]
+32:logger_ver=$(logger -V 2>&1 | awk '{print $4}')
+33:dpkg --compare-versions $logger_ver ge 2.26.2 && LOGGER="logger --id=$$" || LOGGER="logger"
+70:	head -c "${BYTES}" /dev/urandom | sha512sum | awk '{print $1}'
+75:	local hex=$(cat "${TMPDIR}/out" "${TMPDIR}/err" | sha512sum | awk '{print $1}')
+89:	log "client hashed response from [${1}]"
+98:	ret=$(awk '{
+114:	ret=$(awk '{
+122:	# return virt/<value> where value is the virtualization platform the
+126:	if command -v systemd-detect-virt >/dev/null; then
+137:		elif dmesg | grep --quiet " kvm-clock:"; then
+162:	# taken from cloud-init ds-identify.
+196:	lsb=$(echo "${DISTRIB_DESCRIPTION}" | sed -e "s/ /\//g")
+197:	cpu="$(grep -m1 "^model name" /proc/cpuinfo | sed -e "s/.*: //" -e "s:\s\+:/:g")"
+225:		local challenge_response=$(printf "${challenge}" | sha512sum | awk '{print $1}')
+247:				warning "Network communication failed [$?], timeout after [${WAIT}s] $(cat ${out} ${err})"
+250:				warning "Network communication failed [$?] $(cat ${out} ${err})"
+349:	touch "${FLAG}"
+### /lib/ufw/ufw-init
+-rwxr-xr-x 755 root:root regular file /lib/ufw/ufw-init
+#!/bin/sh
+/lib/ufw/ufw-init: POSIX shell script, ASCII text executable
+3:# ufw-init: helper script to be used by ufw itself
+43:    echo "Could not find ${rootdir}/lib/ufw/ufw-init-functions (aborting)"
+54:            echo "$line" | grep -q "Skip starting" && continue
+### /usr/sbin/dpkg-preconfigure
+-rwxr-xr-x 755 root:root regular file /usr/sbin/dpkg-preconfigure
+debconf: /usr/sbin/dpkg-preconfigure
+#!/usr/bin/perl
+/usr/sbin/dpkg-preconfigure: Perl script text executable
+28:    exec "/usr/lib/cdebconf/dpkg-preconfigure", @ARGV;
+74:my $tempdir='/var/cache/debconf/tmp.ci';
+98:			open(STDOUT, ">&", $info_writer)
+101:				or die "debconf: exec apt-extracttemplates failed: $!";
+113:			printf "\r".gettext("Extracting templates from packages: %d%%"), $progress * 100 / @debs;
+### /usr/lib/cnf-update-db
+-rwxr-xr-x 755 root:root regular file /usr/lib/cnf-update-db
+command-not-found: /usr/lib/cnf-update-db
+#!/usr/bin/python3
+/usr/lib/cnf-update-db: Python script, ASCII text executable
+3:import apt_pkg
+4:import glob
+5:import logging
+6:import os
+7:import sys
+9:from CommandNotFound.db.creator import DbCreator
+10:from CommandNotFound import CommandNotFound
+35:        print("Could not find any command metadata")
+
+== directory modes ==
+drwxr-xr-x 755 root:root directory /usr/local/sbin -> '/usr/local/sbin'
+drwxr-xr-x 755 root:root directory /usr/local/bin -> '/usr/local/bin'
+drwxr-xr-x 755 root:root directory /usr/sbin -> '/usr/sbin'
+drwxr-xr-x 755 root:root directory /usr/bin -> '/usr/bin'
+drwxr-xr-x 755 root:root directory /sbin -> '/sbin'
+drwxr-xr-x 755 root:root directory /bin -> '/bin'
+drwxr-xr-x 755 root:root directory /etc/cron.d -> '/etc/cron.d'
+drwxr-xr-x 755 root:root directory /etc/cron.daily -> '/etc/cron.daily'
+drwxr-xr-x 755 root:root directory /etc/cron.hourly -> '/etc/cron.hourly'
+drwxr-xr-x 755 root:root directory /etc/cron.weekly -> '/etc/cron.weekly'
+drwxr-xr-x 755 root:root directory /etc/logrotate.d -> '/etc/logrotate.d'
+drwxr-xr-x 755 root:root directory /etc/apt/apt.conf.d -> '/etc/apt/apt.conf.d'
+drwxr-xr-x 755 root:root directory /etc/update-motd.d -> '/etc/update-motd.d'
+drwxr-xr-x 755 root:root directory /usr/lib/python3/dist-packages -> '/usr/lib/python3/dist-packages'
+drwxr-xr-x 755 root:root directory /usr/local/lib/python3.12/dist-packages -> '/usr/local/lib/python3.12/dist-packages'
+drwxr-xr-x 755 root:root directory /usr/share/perl5 -> '/usr/share/perl5'
+drwxr-xr-x 755 root:root directory /etc/networkd-dispatcher -> '/etc/networkd-dispatcher'
+drwxr-xr-x 755 root:root directory /etc/networkd-dispatcher/routable.d -> '/etc/networkd-dispatcher/routable.d'
+drwxr-xr-x 755 root:root directory /var/cache/swcatalog -> '/var/cache/swcatalog'
+drwxr-xr-x 755 root:root directory /var/lib/command-not-found -> '/var/lib/command-not-found'
+drwxr-xr-x 755 root:root directory /var/lib/update-notifier -> '/var/lib/update-notifier'
+drwxr-xr-x 755 root:root directory /var/lib/ubuntu-advantage -> '/var/lib/ubuntu-advantage'
+-rw-r--r-- 644 root:root regular file /var/cache/motd-news -> '/var/cache/motd-news'
+drwxr-xr-x 755 root:root directory /var/backups -> '/var/backups'
+drwxrwxr-x 775 root:syslog directory /var/log -> '/var/log'
+drwxr-xr-x 755 root:root directory /var/log/sysstat -> '/var/log/sysstat'
+drwxrwsrwt 3777 root:root directory /var/crash -> '/var/crash'
+drwxr-xr-x 755 root:root directory /var/lib/apport -> '/var/lib/apport'
+MISSING /var/lib/apport/autoreport
+
+== interpreter default paths ==
+python_cwd /
+python_sys_path
+''
+'/usr/lib/python312.zip'
+'/usr/lib/python3.12'
+'/usr/lib/python3.12/lib-dynload'
+'/usr/local/lib/python3.12/dist-packages'
+'/usr/lib/python3/dist-packages'
+python_sitepackages ['/usr/local/lib/python3.12/dist-packages', '/usr/lib/python3/dist-packages', '/usr/lib/python3.12/dist-packages']
+perl_inc
+/etc/perl
+/usr/local/lib/aarch64-linux-gnu/perl/5.38.2
+/usr/local/share/perl/5.38.2
+/usr/lib/aarch64-linux-gnu/perl5/5.38
+/usr/share/perl5
+/usr/lib/aarch64-linux-gnu/perl-base
+/usr/lib/aarch64-linux-gnu/perl/5.38
+/usr/share/perl/5.38
+/usr/local/lib/site_perl
+
+== attacker writability over trust dirs ==
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+NO_W /usr/local/sbin
+NO_W /usr/local/bin
+NO_W /etc/cron.d
+NO_W /etc/cron.daily
+NO_W /etc/logrotate.d
+NO_W /etc/apt/apt.conf.d
+NO_W /etc/update-motd.d
+NO_W /usr/lib/python3/dist-packages
+NO_W /usr/local/lib/python3.12/dist-packages
+NO_W /usr/share/perl5
+NO_W /etc/networkd-dispatcher
+NO_W /etc/networkd-dispatcher/routable.d
+NO_W /var/cache/swcatalog
+NO_W /var/lib/command-not-found
+NO_W /var/lib/update-notifier
+NO_W /var/lib/ubuntu-advantage
+NO_W /var/cache/motd-news
+NO_W /var/backups
+NO_W /var/log/sysstat
+W /var/crash
+NO_W /var/lib/apport
+
+## plant attacker PATH, Python, and Perl payloads
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash -s
+/home/attacker/root_script_import_path_probe/bin/appstreamcli
+/home/attacker/root_script_import_path_probe/bin/apt-config
+/home/attacker/root_script_import_path_probe/bin/apt-get
+/home/attacker/root_script_import_path_probe/bin/awk
+/home/attacker/root_script_import_path_probe/bin/basename
+/home/attacker/root_script_import_path_probe/bin/cat
+/home/attacker/root_script_import_path_probe/bin/chmod
+/home/attacker/root_script_import_path_probe/bin/chown
+/home/attacker/root_script_import_path_probe/bin/cloud-id
+/home/attacker/root_script_import_path_probe/bin/cmp
+/home/attacker/root_script_import_path_probe/bin/command
+/home/attacker/root_script_import_path_probe/bin/cut
+/home/attacker/root_script_import_path_probe/bin/date
+/home/attacker/root_script_import_path_probe/bin/dirname
+/home/attacker/root_script_import_path_probe/bin/dpkg
+/home/attacker/root_script_import_path_probe/bin/dpkg-preconfigure
+/home/attacker/root_script_import_path_probe/bin/du
+/home/attacker/root_script_import_path_probe/bin/find
+/home/attacker/root_script_import_path_probe/bin/flock
+/home/attacker/root_script_import_path_probe/bin/grep
+/home/attacker/root_script_import_path_probe/bin/head
+/home/attacker/root_script_import_path_probe/bin/id
+/home/attacker/root_script_import_path_probe/bin/install
+/home/attacker/root_script_import_path_probe/bin/invoke-rc.d
+/home/attacker/root_script_import_path_probe/bin/logger
+/home/attacker/root_script_import_path_probe/bin/ls
+/home/attacker/root_script_import_path_probe/bin/lsb_release
+/home/attacker/root_script_import_path_probe/bin/mandb
+/home/attacker/root_script_import_path_probe/bin/mkdir
+/home/attacker/root_script_import_path_probe/bin/mktemp
+/home/attacker/root_script_import_path_probe/bin/mv
+/home/attacker/root_script_import_path_probe/bin/payload
+/home/attacker/root_script_import_path_probe/bin/perl
+/home/attacker/root_script_import_path_probe/bin/python3
+/home/attacker/root_script_import_path_probe/bin/readlink
+/home/attacker/root_script_import_path_probe/bin/rm
+/home/attacker/root_script_import_path_probe/bin/run-parts
+/home/attacker/root_script_import_path_probe/bin/sadc
+/home/attacker/root_script_import_path_probe/bin/savelog
+/home/attacker/root_script_import_path_probe/bin/sed
+/home/attacker/root_script_import_path_probe/bin/service
+/home/attacker/root_script_import_path_probe/bin/sh
+/home/attacker/root_script_import_path_probe/bin/sleep
+/home/attacker/root_script_import_path_probe/bin/sort
+/home/attacker/root_script_import_path_probe/bin/stat
+/home/attacker/root_script_import_path_probe/bin/systemctl
+/home/attacker/root_script_import_path_probe/bin/tail
+/home/attacker/root_script_import_path_probe/bin/tar
+/home/attacker/root_script_import_path_probe/bin/test
+/home/attacker/root_script_import_path_probe/bin/touch
+/home/attacker/root_script_import_path_probe/bin/tr
+/home/attacker/root_script_import_path_probe/bin/uname
+/home/attacker/root_script_import_path_probe/bin/wget
+/home/attacker/root_script_import_path_probe/bin/xargs
+/home/attacker/root_script_import_path_probe/perl/Debconf/Config.pm
+/home/attacker/root_script_import_path_probe/py/CommandNotFound/__init__.py
+/home/attacker/root_script_import_path_probe/py/DistUpgrade/__init__.py
+/home/attacker/root_script_import_path_probe/py/UpdateManager/__init__.py
+/home/attacker/root_script_import_path_probe/py/apport/__init__.py
+/home/attacker/root_script_import_path_probe/py/apport/fileutils.py
+/home/attacker/root_script_import_path_probe/py/apt.py
+/home/attacker/root_script_import_path_probe/py/apt_pkg.py
+/home/attacker/root_script_import_path_probe/py/dbus.py
+/home/attacker/root_script_import_path_probe/py/gi/__init__.py
+/home/attacker/root_script_import_path_probe/py/problem_report.py
+/home/attacker/root_script_import_path_probe/py/uaclient/__init__.py
+/home/attacker/root_script_import_path_probe/py/uaclient/apt_news.py
+/home/attacker/root_script_import_path_probe/py/uaclient/esm_cache.py
+/home/attacker/root_script_import_path_probe/py/uaclient/timer.py
+
+## attacker-controlled env only affects uid1001 direct execution
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash -s
+== PATH direct script check ==
+motd_rc=1
+
+== PYTHONPATH direct script check ==
+python_rc=77
+
+== PERL5LIB direct script check ==
+perl_rc=255
+Can't locate object method "load" via package "Debconf::Config" at /usr/share/perl5/Debconf/Db.pm line 18.
+
+== user-only payload hits ==
+PATH_PAYLOAD cmd=mktemp euid=1001 ruid=1001 argv= 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PY_PAYLOAD file=/home/attacker/root_script_import_path_probe/py/uaclient/__init__.py euid=1001 uid=1001
+PERL_PAYLOAD module=Debconf::Config euid=1001 ruid=1001
+
+## uid1001 cannot write root trust roots or set system manager env
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash -s
+== write and symlink attempts ==
+touch /usr/local/bin/root_script_import_path_probe -> touch: cannot touch '/usr/local/bin/root_script_import_path_probe': Permission denied
+touch /usr/local/sbin/root_script_import_path_probe -> touch: cannot touch '/usr/local/sbin/root_script_import_path_probe': Permission denied
+touch /etc/cron.d/root_script_import_path_probe -> touch: cannot touch '/etc/cron.d/root_script_import_path_probe': Permission denied
+touch /etc/cron.daily/root_script_import_path_probe -> touch: cannot touch '/etc/cron.daily/root_script_import_path_probe': Permission denied
+touch /etc/logrotate.d/root_script_import_path_probe -> touch: cannot touch '/etc/logrotate.d/root_script_import_path_probe': Permission denied
+touch /etc/apt/apt.conf.d/99root_script_import_path_probe -> touch: cannot touch '/etc/apt/apt.conf.d/99root_script_import_path_probe': Permission denied
+touch /etc/update-motd.d/99-root_script_import_path_probe -> touch: cannot touch '/etc/update-motd.d/99-root_script_import_path_probe': Permission denied
+touch /usr/lib/python3/dist-packages/root_script_import_path_probe.py -> touch: cannot touch '/usr/lib/python3/dist-packages/root_script_import_path_probe.py': Permission denied
+touch /usr/local/lib/python3.12/dist-packages/root_script_import_path_probe.py -> touch: cannot touch '/usr/local/lib/python3.12/dist-packages/root_script_import_path_probe.py': Permission denied
+touch /usr/share/perl5/root_script_import_path_probe.pm -> touch: cannot touch '/usr/share/perl5/root_script_import_path_probe.pm': Permission denied
+touch /etc/networkd-dispatcher/routable.d/root_script_import_path_probe -> touch: cannot touch '/etc/networkd-dispatcher/routable.d/root_script_import_path_probe': Permission denied
+touch /var/cache/swcatalog/root_script_import_path_probe -> touch: cannot touch '/var/cache/swcatalog/root_script_import_path_probe': Permission denied
+touch /var/lib/command-not-found/root_script_import_path_probe -> touch: cannot touch '/var/lib/command-not-found/root_script_import_path_probe': Permission denied
+touch /var/lib/update-notifier/root_script_import_path_probe -> touch: cannot touch '/var/lib/update-notifier/root_script_import_path_probe': Permission denied
+touch /var/lib/ubuntu-advantage/root_script_import_path_probe -> touch: cannot touch '/var/lib/ubuntu-advantage/root_script_import_path_probe': Permission denied
+touch /var/backups/root_script_import_path_probe -> touch: cannot touch '/var/backups/root_script_import_path_probe': Permission denied
+touch /var/log/sysstat/root_script_import_path_probe -> touch: cannot touch '/var/log/sysstat/root_script_import_path_probe': Permission denied
+touch /var/lib/apport/autoreport -> touch: cannot touch '/var/lib/apport/autoreport': Permission denied
+touch /var/crash/root_script_import_path_probe.crash -> OK
+symlink /etc/cron.d/root_script_import_path_probe.link -> ln: failed to create symbolic link '/etc/cron.d/root_script_import_path_probe.link': Permission denied
+symlink /etc/logrotate.d/root_script_import_path_probe.link -> ln: failed to create symbolic link '/etc/logrotate.d/root_script_import_path_probe.link': Permission denied
+symlink /etc/apt/apt.conf.d/99root_script_import_path_probe.link -> ln: failed to create symbolic link '/etc/apt/apt.conf.d/99root_script_import_path_probe.link': Permission denied
+symlink /var/crash/root_script_import_path_probe.upload -> OK
+lrwxrwxrwx 1 attacker root 50 May 16 18:25 /var/crash/root_script_import_path_probe.upload -> /root/root_script_import_path_probe_symlink_target
+
+== system manager environment and service start attempts ==
+### systemctl --no-ask-password set-environment ROOT_SCRIPT_IMPORT_PATH_PROBE=1
+Failed to set environment: Access denied
+rc=1
+### systemctl --no-ask-password set-environment PATH=/home/attacker/root_script_import_path_probe/bin:/usr/bin:/bin
+Failed to set environment: Access denied
+rc=1
+### systemctl --no-ask-password set-environment PYTHONPATH=/home/attacker/root_script_import_path_probe/py
+Failed to set environment: Access denied
+rc=1
+### systemctl --no-ask-password set-environment PERL5LIB=/home/attacker/root_script_import_path_probe/perl
+Failed to set environment: Access denied
+rc=1
+### systemctl --no-ask-password import-environment PATH PYTHONPATH PERL5LIB
+Environment variable $PYTHONPATH not set, ignoring.
+Environment variable $PERL5LIB not set, ignoring.
+Failed to import environment: Access denied
+rc=1
+### systemctl --no-ask-password start motd-news.service
+Failed to start motd-news.service: Interactive authentication required.
+See system logs and 'systemctl status motd-news.service' for details.
+rc=1
+### systemctl --no-ask-password start update-notifier-download.service
+Failed to start update-notifier-download.service: Interactive authentication required.
+See system logs and 'systemctl status update-notifier-download.service' for details.
+rc=1
+### systemctl --no-ask-password start apt-news.service
+Failed to start apt-news.service: Interactive authentication required.
+See system logs and 'systemctl status apt-news.service' for details.
+rc=1
+
+## trigger default root consumers and verify no attacker payload runs as root
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+== system manager environment before root triggers ==
+LANG=C.UTF-8
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/snap/bin
+
+== systemd timer/service root triggers ==
+### systemctl start apt-news.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=no
+### systemctl start esm-cache.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=no
+### systemctl start update-notifier-download.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### systemctl start update-notifier-motd.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### systemctl start motd-news.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### systemctl start ua-timer.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### systemctl start dpkg-db-backup.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### systemctl start logrotate.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### systemctl start e2scrub_all.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### systemctl start sysstat-collect.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### systemctl start sysstat-summary.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### systemctl start man-db.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### systemctl start apport-autoreport.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=no
+### systemctl start fwupd-refresh.service
+Job for fwupd-refresh.service failed because the control process exited with error code.
+See "systemctl status fwupd-refresh.service" and "journalctl -xeu fwupd-refresh.service" for details.
+rc=1
+Result=exit-code
+ExecMainStatus=1
+ActiveState=failed
+SubState=failed
+ConditionResult=yes
+### systemctl start apt-daily.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+### systemctl start apt-daily-upgrade.service
+rc=0
+Result=success
+ExecMainStatus=0
+ActiveState=inactive
+SubState=dead
+ConditionResult=yes
+
+== cron-compatible root run-parts trigger ==
+cron_daily_rc=0
+
+== sysstat cron PATH trigger ==
+sysstat_cron_rc=0
+
+== apt periodic trigger status ==
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+APT::Periodic::Enable "0";
+apt_daily_second_rc=0
+
+== payload evidence after root triggers ==
+### /tmp/root_script_import_path_probe_payload_hits
+NO_HITS
+### /tmp/root_script_import_path_probe_python_hits
+NO_HITS
+### /tmp/root_script_import_path_probe_perl_hits
+NO_HITS
+== /var/crash probe paths after root triggers ==
+lrwxrwxrwx 1 attacker root 50 May 16 18:25 /var/crash/root_script_import_path_probe.upload -> /root/root_script_import_path_probe_symlink_target
+== root marker files ==
+NO_ROOT_MARKER
+
+## cleanup after probe
+$ docker exec -i ubuntu24-server-lpe-target bash -s
+cleanup_done
+
+probe complete: log=/Users/andrewmohawk/Documents/UbuntuLPE/ubuntu24-server-lpe/logs/root-script-import-path.out

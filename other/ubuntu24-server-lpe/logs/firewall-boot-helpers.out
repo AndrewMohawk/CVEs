@@ -1,0 +1,1230 @@
+
+## target and attacker
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+root     systemd         /sbin/init
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+running
+
+## default package proof
+initramfs-tools	0.142ubuntu25.8	ii 
+iptables	1.8.10-3ubuntu2	ii 
+iptables-persistent		un 
+kmod	31+20240202-2ubuntu7.2	ii 
+linux-base	4.5ubuntu9+24.04.2	ii 
+netfilter-persistent		un 
+nftables	1.0.9-1ubuntu0.1	ii 
+procps	2:4.0.4-4ubuntu3.2	ii 
+systemd	255.4-1ubuntu8.15	ii 
+ubuntu-server	1.539.2	ii 
+ubuntu-standard	1.539.2	ii 
+ufw	0.36.2-6	ii 
+
+## default enabled and reachable unit state
+nftables.service             disabled enabled
+systemd-modules-load.service static   -
+systemd-sysctl.service       static   -
+ufw.service                  enabled  enabled
+### ufw.service
+Result=success
+ExecStart={ path=/usr/lib/ufw/ufw-init ; argv[]=/usr/lib/ufw/ufw-init start quiet ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStop={ path=/usr/lib/ufw/ufw-init ; argv[]=/usr/lib/ufw/ufw-init stop ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/ufw.service
+UnitFileState=enabled
+ConditionResult=yes
+### nftables.service
+Result=success
+ExecStart={ path=/usr/sbin/nft ; argv[]=/usr/sbin/nft -f /etc/nftables.conf ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecReload={ path=/usr/sbin/nft ; argv[]=/usr/sbin/nft -f /etc/nftables.conf ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStop={ path=/usr/sbin/nft ; argv[]=/usr/sbin/nft flush ruleset ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/nftables.service
+UnitFileState=disabled
+ConditionResult=no
+### netfilter-persistent.service
+Result=success
+User=
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+FragmentPath=
+UnitFileState=
+ConditionResult=no
+### iptables.service
+Result=success
+User=
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+FragmentPath=
+UnitFileState=
+ConditionResult=no
+### ip6tables.service
+Result=success
+User=
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+FragmentPath=
+UnitFileState=
+ConditionResult=no
+### systemd-sysctl.service
+Result=success
+ExecStart={ path=/usr/lib/systemd/systemd-sysctl ; argv[]=/usr/lib/systemd/systemd-sysctl ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/systemd-sysctl.service
+UnitFileState=static
+ConditionResult=yes
+### systemd-modules-load.service
+Result=success
+ExecStart={ path=/usr/lib/systemd/systemd-modules-load ; argv[]=/usr/lib/systemd/systemd-modules-load ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/systemd-modules-load.service
+UnitFileState=static
+ConditionResult=yes
+### ufw status
+Status: inactive
+
+## root-executed service files and firewall config
+### /usr/lib/systemd/system/ufw.service
+-rw-r--r-- 644 root:root regular file /usr/lib/systemd/system/ufw.service
+[Unit]
+Description=Uncomplicated firewall
+Documentation=man:ufw(8)
+DefaultDependencies=no
+Before=network-pre.target
+Wants=network-pre.target local-fs.target
+After=local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/ufw/ufw-init start quiet
+ExecStop=/usr/lib/ufw/ufw-init stop
+
+[Install]
+WantedBy=multi-user.target
+### /usr/lib/systemd/system/nftables.service
+-rw-r--r-- 644 root:root regular file /usr/lib/systemd/system/nftables.service
+[Unit]
+Description=nftables
+Documentation=man:nft(8) http://wiki.nftables.org
+Wants=network-pre.target
+Before=network-pre.target shutdown.target
+Conflicts=shutdown.target
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+StandardInput=null
+ProtectSystem=full
+ProtectHome=true
+ExecStart=/usr/sbin/nft -f /etc/nftables.conf
+ExecReload=/usr/sbin/nft -f /etc/nftables.conf
+ExecStop=/usr/sbin/nft flush ruleset
+
+[Install]
+WantedBy=sysinit.target
+### /usr/lib/systemd/system/systemd-sysctl.service
+-rw-r--r-- 644 root:root regular file /usr/lib/systemd/system/systemd-sysctl.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Apply Kernel Variables
+Documentation=man:systemd-sysctl.service(8) man:sysctl.d(5)
+DefaultDependencies=no
+Conflicts=shutdown.target
+After=systemd-modules-load.service
+Before=sysinit.target shutdown.target
+ConditionPathIsReadWrite=/proc/sys/net/
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/systemd/systemd-sysctl
+TimeoutSec=90s
+ImportCredential=sysctl.*
+### /usr/lib/systemd/system/systemd-modules-load.service
+-rw-r--r-- 644 root:root regular file /usr/lib/systemd/system/systemd-modules-load.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Load Kernel Modules
+Documentation=man:systemd-modules-load.service(8) man:modules-load.d(5)
+DefaultDependencies=no
+Conflicts=shutdown.target
+Before=sysinit.target shutdown.target
+ConditionCapability=CAP_SYS_MODULE
+ConditionDirectoryNotEmpty=|/lib/modules-load.d
+ConditionDirectoryNotEmpty=|/usr/lib/modules-load.d
+ConditionDirectoryNotEmpty=|/usr/local/lib/modules-load.d
+ConditionDirectoryNotEmpty=|/etc/modules-load.d
+ConditionDirectoryNotEmpty=|/run/modules-load.d
+ConditionKernelCommandLine=|modules-load
+ConditionKernelCommandLine=|rd.modules-load
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/systemd/systemd-modules-load
+TimeoutSec=90s
+### /etc/ufw/ufw.conf
+-rw-r--r-- 644 root:root regular file /etc/ufw/ufw.conf
+# /etc/ufw/ufw.conf
+#
+
+# Set to yes to start on boot. If setting this remotely, be sure to add a rule
+# to allow your remote connection before starting ufw. Eg: 'ufw allow 22/tcp'
+ENABLED=no
+
+# Please use the 'ufw' command to set the loglevel. Eg: 'ufw logging medium'.
+# See 'man ufw' for details.
+LOGLEVEL=low
+### /etc/default/ufw
+-rw-r--r-- 644 root:root regular file /etc/default/ufw
+# /etc/default/ufw
+#
+
+# Set to yes to apply rules to support IPv6 (no means only IPv6 on loopback
+# accepted). You will need to 'disable' and then 'enable' the firewall for
+# the changes to take affect.
+IPV6=yes
+
+# Set the default input policy to ACCEPT, DROP, or REJECT. Please note that if
+# you change this you will most likely want to adjust your rules.
+DEFAULT_INPUT_POLICY="DROP"
+
+# Set the default output policy to ACCEPT, DROP, or REJECT. Please note that if
+# you change this you will most likely want to adjust your rules.
+DEFAULT_OUTPUT_POLICY="ACCEPT"
+
+# Set the default forward policy to ACCEPT, DROP or REJECT.  Please note that
+# if you change this you will most likely want to adjust your rules
+DEFAULT_FORWARD_POLICY="DROP"
+
+# Set the default application policy to ACCEPT, DROP, REJECT or SKIP. Please
+# note that setting this to ACCEPT may be a security risk. See 'man ufw' for
+# details
+DEFAULT_APPLICATION_POLICY="SKIP"
+
+# By default, ufw only touches its own chains. Set this to 'yes' to have ufw
+# manage the built-in chains too. Warning: setting this to 'yes' will break
+# non-ufw managed firewall rules
+MANAGE_BUILTINS=no
+
+#
+# IPT backend
+#
+# only enable if using iptables backend
+IPT_SYSCTL=/etc/ufw/sysctl.conf
+
+# Extra connection tracking modules to load. IPT_MODULES should typically be
+# empty for new installations and modules added only as needed. See
+# 'CONNECTION HELPERS' from 'man ufw-framework' for details. Complete list can
+# be found in net/netfilter/Kconfig of your kernel source. Some common modules:
+# nf_conntrack_irc, nf_nat_irc: DCC (Direct Client to Client) support
+# nf_conntrack_netbios_ns: NetBIOS (samba) client support
+# nf_conntrack_pptp, nf_nat_pptp: PPTP over stateful firewall/NAT
+# nf_conntrack_ftp, nf_nat_ftp: active FTP support
+# nf_conntrack_tftp, nf_nat_tftp: TFTP support (server side)
+# nf_conntrack_sane: sane support
+IPT_MODULES=""
+### /etc/ufw/before.init
+-rw-r----- 640 root:root regular file /etc/ufw/before.init
+#!/bin/sh
+#
+# before.init: if executable, called by ufw-init. See 'man ufw-framework' for
+#              details. Note that output from these scripts is not seen via the
+#              the ufw command, but instead via ufw-init.
+#
+# Copyright 2013 Canonical Ltd.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License version 3,
+#    as published by the Free Software Foundation.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+set -e
+
+case "$1" in
+start)
+    # typically required
+    ;;
+stop)
+    # typically required
+    ;;
+status)
+    # optional
+    ;;
+flush-all)
+    # optional
+    ;;
+*)
+    echo "'$1' not supported"
+    echo "Usage: before.init {start|stop|flush-all|status}"
+    ;;
+esac
+### /etc/ufw/after.init
+-rw-r----- 640 root:root regular file /etc/ufw/after.init
+#!/bin/sh
+#
+# after.init: if executable, called by ufw-init. See 'man ufw-framework' for
+#             details. Note that output from these scripts is not seen via the
+#             the ufw command, but instead via ufw-init.
+#
+# Copyright 2013 Canonical Ltd.
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License version 3,
+#    as published by the Free Software Foundation.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+set -e
+
+case "$1" in
+start)
+    # typically required
+    ;;
+stop)
+    # typically required
+    ;;
+status)
+    # optional
+    ;;
+flush-all)
+    # optional
+    ;;
+*)
+    echo "'$1' not supported"
+    echo "Usage: after.init {start|stop|flush-all|status}"
+    ;;
+esac
+### /etc/nftables.conf
+-rwxr-xr-x 755 root:root regular file /etc/nftables.conf
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet filter {
+	chain input {
+		type filter hook input priority filter;
+	}
+	chain forward {
+		type filter hook forward priority filter;
+	}
+	chain output {
+		type filter hook output priority filter;
+	}
+}
+
+## helper and import path modes
+-rwxr-xr-x 755 root:root regular file /usr/sbin/ufw -> '/usr/sbin/ufw'
+drwxr-xr-x 755 root:root directory /usr/lib/ufw -> '/usr/lib/ufw'
+-rwxr-xr-x 755 root:root regular file /usr/lib/ufw/ufw-init -> '/usr/lib/ufw/ufw-init'
+-rwxr-xr-x 755 root:root regular file /usr/lib/ufw/ufw-init-functions -> '/usr/lib/ufw/ufw-init-functions'
+drwxr-xr-x 755 root:root directory /lib/ufw -> '/lib/ufw'
+drwxr-xr-x 755 root:root directory /usr/share/ufw -> '/usr/share/ufw'
+drwxr-xr-x 755 root:root directory /etc/ufw -> '/etc/ufw'
+drwxr-xr-x 755 root:root directory /etc/ufw/applications.d -> '/etc/ufw/applications.d'
+-rw-r----- 640 root:root regular file /etc/ufw/before.rules -> '/etc/ufw/before.rules'
+-rw-r----- 640 root:root regular file /etc/ufw/after.rules -> '/etc/ufw/after.rules'
+-rw-r----- 640 root:root regular file /etc/ufw/user.rules -> '/etc/ufw/user.rules'
+-rw-r--r-- 644 root:root regular file /etc/ufw/sysctl.conf -> '/etc/ufw/sysctl.conf'
+MISSING /run/ufw
+-rw-r--r-- 644 root:root regular empty file /run/ufw.lock -> '/run/ufw.lock'
+MISSING /lib/ufw/ufw.lock
+-rwxr-xr-x 755 root:root regular file /usr/sbin/nft -> '/usr/sbin/nft'
+-rwxr-xr-x 755 root:root regular file /etc/nftables.conf -> '/etc/nftables.conf'
+MISSING /etc/default/nftables
+MISSING /etc/iptables
+MISSING /var/lib/iptables
+MISSING /usr/share/netfilter-persistent
+-rw-r--r-- 644 root:root regular file /etc/sysctl.conf -> '/etc/sysctl.conf'
+drwxr-xr-x 755 root:root directory /etc/sysctl.d -> '/etc/sysctl.d'
+drwxr-xr-x 755 root:root directory /usr/lib/sysctl.d -> '/usr/lib/sysctl.d'
+MISSING /run/sysctl.d
+drwxr-xr-x 755 root:root directory /run/credentials -> '/run/credentials'
+MISSING /run/credentials/systemd-sysctl.service
+-rw-r--r-- 644 root:root regular file /etc/modules -> '/etc/modules'
+drwxr-xr-x 755 root:root directory /etc/modules-load.d -> '/etc/modules-load.d'
+drwxr-xr-x 755 root:root directory /usr/lib/modules-load.d -> '/usr/lib/modules-load.d'
+MISSING /run/modules-load.d
+drwxr-xr-x 755 root:root directory /etc/modprobe.d -> '/etc/modprobe.d'
+drwxr-xr-x 755 root:root directory /usr/lib/modprobe.d -> '/usr/lib/modprobe.d'
+MISSING /run/modprobe.d
+drwxr-xr-x 755 root:root directory /etc/systemd/system -> '/etc/systemd/system'
+drwxr-xr-x 755 root:root directory /run/systemd/system -> '/run/systemd/system'
+
+## selected helper code trust points
+### /usr/lib/ufw/ufw-init
+     1	#!/bin/sh
+     2	#
+     3	# ufw-init: helper script to be used by ufw itself
+     4	#
+     5	# Copyright 2008-2015 Canonical Ltd.
+     6	#
+     7	#    This program is free software: you can redistribute it and/or modify
+     8	#    it under the terms of the GNU General Public License version 3,
+     9	#    as published by the Free Software Foundation.
+    10	#
+    11	#    This program is distributed in the hope that it will be useful,
+    12	#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    13	#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    14	#    GNU General Public License for more details.
+    15	#
+    16	#    You should have received a copy of the GNU General Public License
+    17	#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    18	#
+    19	set -e
+    20	
+    21	# FIXME: this shouldn't be ordered
+    22	rootdir=
+    23	if [ "$1" = "--rootdir" ] && [ -n "$2" ]; then
+    24	    rootdir="$2/" # ensure trailing slash
+    25	    shift 2
+    26	fi
+    27	datadir=
+    28	if [ "$1" = "--datadir" ] && [ -n "$2" ]; then
+    29	    datadir="$2/" # ensure trailing slash
+    30	    shift 2
+    31	fi
+    32	export DATA_DIR="$datadir"
+    33	
+    34	# Debian/Ubuntu: small boot speed improvement
+    35	. "${rootdir}/etc/ufw/ufw.conf"
+    36	if [ "$1" = "start" ] && [ "$2" = "quiet" ] && [ "$ENABLED" = "no" ]; then
+    37	    exit 0
+    38	fi
+    39	
+    40	if [ -s "${rootdir}/lib/ufw/ufw-init-functions" ]; then
+    41	    . "${rootdir}/lib/ufw/ufw-init-functions"
+    42	else
+    43	    echo "Could not find ${rootdir}/lib/ufw/ufw-init-functions (aborting)"
+    44	    exit 1
+    45	fi
+    46	
+    47	case "$1" in
+    48	start)
+    49	    # process multiple error strings
+    50	    ret=0
+    51	    output=`ufw_start` || ret="$?"
+    52	    test -n "$output" && echo "$output" | while read line ; do
+    53	        if [ "$2" = "quiet" ] || [ "$QUIET" = "yes" ]; then
+    54	            echo "$line" | grep -q "Skip starting" && continue
+    55	        fi
+    56	        echo "$line"
+    57	    done
+    58	    exit "$ret"
+    59	    ;;
+    60	stop)
+    61	    ufw_stop || exit "$?"
+    62	    ;;
+    63	force-stop)
+    64	    ufw_stop --force || exit "$?"
+    65	    ;;
+    66	restart|force-reload)
+    67	    ufw_reload || exit "$?"
+    68	    ;;
+    69	status)
+    70	    ufw_status || exit "$?"
+    71	    # If before.init and after.init support 'status', just display them after
+    72	    # ufw_status() so it is prettier
+    73	    if [ -x "$RULES_PATH/before.init" ]; then
+    74	        "$RULES_PATH/before.init" status || exit "$?"
+    75	    fi
+    76	    if [ -x "$RULES_PATH/after.init" ]; then
+    77	        "$RULES_PATH/after.init" status || exit "$?"
+    78	    fi
+    79	    ;;
+    80	flush-all)
+    81	    # Use sparingly. It flushes the built-in chains, deletes all non-builtin
+    82	    # chains and resets the policy to ACCEPT
+    83	    if [ -x "$RULES_PATH/before.init" ]; then
+    84	        "$RULES_PATH/before.init" flush-all || exit "$?"
+    85	    fi
+    86	    flush_builtins || exit "$?"
+    87	    if [ -x "$RULES_PATH/after.init" ]; then
+    88	        "$RULES_PATH/after.init" flush-all || exit "$?"
+    89	    fi
+    90	    ;;
+    91	*)
+    92	    echo "Usage: /lib/ufw/ufw-init {start|stop|restart|force-reload|force-stop|flush-all|status}"
+    93	    exit 1
+    94	    ;;
+    95	esac
+    96	
+### /usr/lib/ufw/ufw-init-functions
+     1	#!/bin/sh
+     2	#
+     3	# ufw-init-functions: functions used by ufw-init and distribution initscripts
+     4	#
+     5	# Copyright 2008-2015 Canonical Ltd.
+     6	#
+     7	#    This program is free software: you can redistribute it and/or modify
+     8	#    it under the terms of the GNU General Public License version 3,
+     9	#    as published by the Free Software Foundation.
+    10	#
+    11	#    This program is distributed in the hope that it will be useful,
+    12	#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    13	#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    14	#    GNU General Public License for more details.
+    15	#
+    16	#    You should have received a copy of the GNU General Public License
+    17	#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    18	#
+    19	set -e
+    20	
+    21	PATH="/sbin:/bin:/usr/sbin:/usr/bin"
+    22	
+    23	for s in "${DATA_DIR}/etc/default/ufw" "${DATA_DIR}/etc/ufw/ufw.conf" ; do
+    24	    if [ -s "$s" ]; then
+    25	        . "$s"
+    26	    else
+    27	        echo "Could not find $s (aborting)"
+    28	        exit 1
+    29	    fi
+    30	done
+    31	
+    32	RULES_PATH="${DATA_DIR}/etc/ufw"
+    33	USER_PATH="${DATA_DIR}/etc/ufw"
+    34	
+    35	flush_builtins() {
+    36	    error=""
+    37	    execs="iptables"
+    38	    if ip6tables -L INPUT -n >/dev/null 2>&1; then
+    39	        execs="$execs ip6tables"
+    40	    fi
+    41	
+    42	    for exe in $execs
+    43	    do
+    44	        $exe -F || error="yes"
+    45	        $exe -X || error="yes"
+    46	        $exe -P INPUT ACCEPT || error="yes"
+    47	        $exe -P OUTPUT ACCEPT || error="yes"
+    48	        $exe -P FORWARD ACCEPT || error="yes"
+    49	
+    50	        # now handle the mangle table
+    51	        if $exe -t mangle -L -n >/dev/null 2>&1; then
+    52	            for i in INPUT OUTPUT FORWARD PREROUTING POSTROUTING ; do
+    53	                $exe -t mangle -F $i || error="yes"
+    54	                $exe -t mangle -P $i ACCEPT || error="yes"
+    55	            done
+    56	        fi
+    57	    done
+    58	
+    59	    # now handle the nat table
+    60	    if iptables -t nat -L -n >/dev/null 2>&1; then
+    61	        for i in OUTPUT PREROUTING POSTROUTING ; do
+    62	            iptables -t nat -F $i || error="yes"
+    63	            iptables -t nat -P $i ACCEPT || error="yes"
+    64	        done
+    65	    fi
+    66	
+    67	    if [ "$error" = "yes" ]; then
+    68	        return 1
+    69	    fi
+    70	}
+    71	
+    72	chains_command() {
+    73	    flag="$1"
+    74	    type=""
+    75	    exe="iptables"
+    76	    if [ "$2" = "6" ]; then
+    77	        type="$2"
+    78	        exe="ip6tables"
+    79	    fi
+    80	
+    81	    for c in ufw$type-logging-deny ufw$type-logging-allow ufw$type-not-local ufw$type-user-logging-input ufw$type-user-limit-accept ufw$type-user-limit ufw$type-skip-to-policy-input ufw$type-reject-input ufw$type-after-logging-input ufw$type-after-input ufw$type-user-input ufw$type-before-input ufw$type-before-logging-input ufw$type-skip-to-policy-forward ufw$type-reject-forward ufw$type-after-logging-forward ufw$type-after-forward ufw$type-user-logging-forward ufw$type-user-forward ufw$type-before-forward ufw$type-before-logging-forward ufw$type-track-forward ufw$type-track-output ufw$type-track-input ufw$type-skip-to-policy-output ufw$type-reject-output ufw$type-after-logging-output ufw$type-after-output ufw$type-user-logging-output ufw$type-user-output ufw$type-before-output ufw$type-before-logging-output; do
+    82	        if [ "$UFW_INIT_DEBUG" = "yes" ]; then
+    83	            echo "$exe $flag $c" >&2
+    84	            $exe $flag $c || true
+    85	        else
+    86	            $exe $flag $c 2>/dev/null || true
+    87	        fi
+    88	    done
+    89	}
+    90	
+    91	delete_chains() {
+    92	    chains_command -F $1
+    93	    chains_command -Z $1
+    94	
+    95	    # Delete the secondary chains to reduce clutter, but keep the primary ones
+    96	    # so that the primary chains don't leave the built-in chains just to come
+    97	    # back later in a different place. This means that some (empty) chains will
+    98	    # linger until the next boot after disabling ufw.
+    99	    for c in ufw$type-logging-deny ufw$type-logging-allow ufw$type-not-local ufw$type-user-logging-input ufw$type-user-logging-output ufw$type-user-logging-forward ufw$type-user-limit-accept ufw$type-user-limit ufw$type-user-input ufw$type-user-forward ufw$type-user-output ufw$type-skip-to-policy-input ufw$type-skip-to-policy-output ufw$type-skip-to-policy-forward ; do
+   100	        if [ "$UFW_INIT_DEBUG" = "yes" ]; then
+   101	            echo "$exe $flag $c" >&2
+   102	            $exe -X $c || true
+   103	        else
+   104	            $exe -X $c 2>/dev/null || true
+   105	        fi
+   106	    done
+   107	}
+   108	
+   109	ufw_start() {
+   110	    out=""
+   111	    if [ "$ENABLED" = "yes" ] || [ "$ENABLED" = "YES" ]; then
+   112	        if iptables -L ufw-user-input -n >/dev/null 2>&1 ; then
+   113	            echo "Firewall already started, use 'force-reload'"
+   114	            return 0
+   115	        fi
+   116	        for m in $IPT_MODULES
+   117	        do
+   118	            modprobe $m || true
+   119	        done
+   120	
+   121	        if [ "$MANAGE_BUILTINS" = "yes" ]; then
+   122	            flush_builtins
+   123	        fi
+   124	
+   125	        if [ -x "$RULES_PATH/before.init" ]; then
+   126	            if ! "$RULES_PATH/before.init" start ; then
+   127	                error="yes"
+   128	                out="${out}\n'$RULES_PATH/before.init start' exited with error"
+   129	            fi
+   130	        fi
+   131	
+   132	        execs="iptables"
+   133	
+   134	        # IPv6 setup
+   135	        if [ "$IPV6" = "yes" ] || [ "$IPV6" = "YES" ]; then
+   136	            if ip6tables -L INPUT -n >/dev/null 2>&1; then
+   137	                execs="$execs ip6tables"
+   138	            else
+   139	                out="${out}\nProblem loading ipv6 (skipping)"
+   140	            fi
+   141	        else
+   142	            if ip6tables -L INPUT -n >/dev/null 2>&1; then
+   143	                # IPv6 support disabled but available in the kernel, so
+   144	                # default DROP and accept all on loopback
+   145	                delete_chains 6 || error="yes"
+   146	
+   147	                printf "*filter\n"\
+   148	":INPUT DROP [0:0]\n"\
+   149	":FORWARD DROP [0:0]\n"\
+   150	":OUTPUT DROP [0:0]\n"\
+   151	"-A INPUT -i lo -j ACCEPT\n"\
+   152	"-A OUTPUT -o lo -j ACCEPT\n"\
+   153	"COMMIT\n" | ip6tables-restore || error="yes"
+   154	
+   155	                if [ "$error" = "yes" ]; then
+   156	                    out="${out}\nProblem loading ipv6 (skipping)"
+   157	                fi
+   158	            fi
+   159	        fi
+   160	
+   161	        for exe in $execs
+   162	        do
+   163	            type=""
+   164	            if [ "$exe" = "ip6tables" ]; then
+   165	                type="6"
+   166	            fi
+   167	            BEFORE_RULES="$RULES_PATH/before${type}.rules"
+   168	            AFTER_RULES="$RULES_PATH/after${type}.rules"
+   169	            USER_RULES="$USER_PATH/user${type}.rules"
+   170	
+   360	            # break network rootfs w/ INPUT DROP during ufw init. LP: 1946804)
+   361	            input_pol="$DEFAULT_INPUT_POLICY"
+   362	            if [ "$DEFAULT_INPUT_POLICY" = "REJECT" ]; then
+   363	                input_pol="DROP"
+   364	            fi
+   365	
+   366	            output_pol="$DEFAULT_OUTPUT_POLICY"
+   367	            if [ "$DEFAULT_OUTPUT_POLICY" = "REJECT" ]; then
+   368	                output_pol="DROP"
+   369	            fi
+   370	
+   371	            forward_pol="$DEFAULT_FORWARD_POLICY"
+   372	            if [ "$DEFAULT_FORWARD_POLICY" = "REJECT" ]; then
+   373	                forward_pol="DROP"
+   374	            fi
+   375	
+   376	            # Since we're setting the default policy last, '-n/--noflush' is
+   377	            # important here so we don't undo what we've loaded so far.
+   378	            printf "*filter\n"\
+   379	"# builtin chains\n"\
+   380	":INPUT %s [0:0]\n"\
+   381	":FORWARD %s [0:0]\n"\
+   382	":OUTPUT %s [0:0]\n"\
+   383	"COMMIT\n" $input_pol $forward_pol $output_pol | $exe-restore -n || error="yes"
+   384	        done
+   385	
+   386	        if [ ! -z "$IPT_SYSCTL" ] && [ -s "$IPT_SYSCTL" ]; then
+   387	            sysctl -e -q -p $IPT_SYSCTL || true
+   388	        fi
+   389	
+   390	        if [ -x "$RULES_PATH/after.init" ]; then
+   391	            if ! "$RULES_PATH/after.init" start ; then
+   392	                error="yes"
+   393	                out="${out}\n'$RULES_PATH/after.init start' exited with error"
+   394	            fi
+   395	        fi
+   396	
+   397	        if [ "$error" = "yes" ]; then
+   398	            /bin/echo -e "$out"
+   399	            return 1
+   400	        fi
+   401	    else
+   402	        out="Skip starting firewall: ufw (not enabled)"
+   403	    fi
+   404	    if [ ! -z "$out" ]; then
+   405	        /bin/echo -e "$out"
+   406	    fi
+   407	}
+   408	
+   409	ufw_stop() {
+   410	    if [ "$1" != "--force" ] && [ "$ENABLED" != "yes" ] && [ "$ENABLED" != "YES" ]; then
+### /usr/sbin/ufw lock path
+   115	        ui = ufw.frontend.UFWFrontend(pr.dryrun, rootdir=rootdir,
+   116	                                      datadir=datadir)
+   117	    except UFWError as e:
+   118	        error(e.value)
+   119	    except Exception:
+   120	        raise
+   121	
+   122	    if datadir is None:
+   123	        lockfile = '/run/ufw.lock'
+   124	        if os.getuid() != 0 or 'TESTSTATE' in os.environ:
+   125	            lockfile = os.path.join(ufw.common.state_dir, 'ufw.lock')
+   126	    else:
+   127	        lockfile = os.path.join(_findpath(ufw.common.state_dir, datadir),
+   128	                                'ufw.lock')
+   129	
+   130	    lock = create_lock(lockfile=lockfile, dryrun=pr.dryrun)
+   131	    res = ""
+   132	    try:
+  1100	def create_lock(lockfile='/run/ufw.lock', dryrun=False):
+  1101	    '''Create a blocking lockfile'''
+  1102	    lock = None
+  1103	    if not dryrun:
+  1104	        lock = open(lockfile, 'w')
+  1105	        fcntl.lockf(lock, fcntl.LOCK_EX)
+  1106	    return lock
+
+## maintainer and trigger paths
+### /var/lib/dpkg/info/ufw.postinst
+3:# Only source /usr/share/debconf/confmodule when not called with 'triggered'
+5:if [ "$1" != "triggered" ]; then
+9:RULES_PATH="/etc/ufw"
+11:TEMPLATE_PATH="/usr/share/ufw"
+13:enable_ufw() {
+23:    test -f /etc/ufw/ufw.conf && sed -i "s/^ENABLED=.*/ENABLED=$ans/" /etc/ufw/ufw.conf
+27:    ufw allow "$@" >/dev/null || true
+63:    exe="iptables"
+80:            ucf --debconf-ok $TEMPLATE_PATH/iptables/$f $RULES_PATH/$f
+88:                cp $TEMPLATE_PATH/iptables/$f $USER_PATH/$f
+95:            if [ ! -e "/etc/ufw/$f" ]; then
+96:                cp $TEMPLATE_PATH/$f /etc/ufw
+97:                chmod 640 /etc/ufw/$f
+101:        if [ ! -e "/etc/ufw/ufw.conf" ]; then
+102:            cp $TEMPLATE_PATH/ufw.conf /etc/ufw
+105:        # configure ufw with debconf values
+106:        db_get ufw/enable
+109:        db_fget ufw/existing_configuration seen
+112:            db_get ufw/allow_known_ports
+118:            db_get ufw/allow_custom_ports
+124:            db_fset ufw/existing_configuration seen true
+127:        # need to do this after all 'allow_service' calls, otherwise ufw may
+128:        # try to use iptables, which breaks the installer
+129:        enable_ufw "$enabled"
+133:            add_primary_chain ufw-track-forward FORWARD
+134:            add_primary_chain ufw6-track-forward FORWARD 6
+137:    triggered)
+138:        ufw app update all || echo "Processing ufw triggers failed. Ignoring."
+152:	py3compile -p ufw 
+155:	pypy3compile -p ufw  || true
+160:dpkg-maintscript-helper rm_conffile /etc/init/ufw.conf 0.35-5\~ ufw -- "$@"
+161:dpkg-maintscript-helper rm_conffile /etc/bash_completion.d/ufw 0.34-1\~ ufw -- "$@"
+165:	if [ -x "/etc/init.d/ufw" ]; then
+166:		update-rc.d ufw defaults >/dev/null || exit 1
+173:	deb-systemd-helper unmask 'ufw.service' >/dev/null || true
+176:	if deb-systemd-helper --quiet was-enabled 'ufw.service'; then
+179:		deb-systemd-helper enable 'ufw.service' >/dev/null || true
+183:		deb-systemd-helper update-state 'ufw.service' >/dev/null || true
+### /var/lib/dpkg/info/ufw.prerm
+5:        # Unload ufw (will only happen if enabled)
+6:        if [ -x /usr/lib/ufw/ufw-init ]; then
+7:            /usr/lib/ufw/ufw-init stop || true
+13:dpkg-maintscript-helper rm_conffile /etc/init/ufw.conf 0.35-5\~ ufw -- "$@"
+14:dpkg-maintscript-helper rm_conffile /etc/bash_completion.d/ufw 0.34-1\~ ufw -- "$@"
+19:	py3clean -p ufw 
+21:	dpkg -L ufw | sed -En -e '/^(.*)\/(.+)\.py$/s,,rm "\1/__pycache__/\2".*,e'
+### /var/lib/dpkg/info/ufw.triggers
+1:interest-noawait /etc/ufw/applications.d
+### /var/lib/dpkg/info/nftables.postinst
+5:	if deb-systemd-helper debian-installed 'nftables.service'; then
+7:		deb-systemd-helper unmask 'nftables.service' >/dev/null || true
+9:		if deb-systemd-helper --quiet was-enabled 'nftables.service'; then
+11:			deb-systemd-helper enable 'nftables.service' >/dev/null || true
+17:	deb-systemd-helper update-state 'nftables.service' >/dev/null || true
+23:		systemctl --system daemon-reload >/dev/null || true
+25:			deb-systemd-invoke try-restart 'nftables.service' >/dev/null || true
+### /var/lib/dpkg/info/iptables.postinst
+7:	  --install /usr/sbin/iptables iptables /usr/sbin/iptables-legacy 10 \
+8:	  --slave /usr/sbin/iptables-restore iptables-restore /usr/sbin/iptables-legacy-restore \
+9:	  --slave /usr/sbin/iptables-save iptables-save /usr/sbin/iptables-legacy-save
+15:          --install /usr/sbin/iptables iptables /usr/sbin/iptables-nft 20 \
+16:          --slave /usr/sbin/iptables-restore iptables-restore /usr/sbin/iptables-nft-restore \
+17:          --slave /usr/sbin/iptables-save iptables-save /usr/sbin/iptables-nft-save
+19:          --install /usr/sbin/ip6tables ip6tables /usr/sbin/ip6tables-nft 20 \
+20:          --slave /usr/sbin/ip6tables-restore ip6tables-restore /usr/sbin/ip6tables-nft-restore \
+21:          --slave /usr/sbin/ip6tables-save ip6tables-save /usr/sbin/ip6tables-nft-save
+23:          --install /usr/sbin/arptables arptables /usr/sbin/arptables-nft 20 \
+24:          --slave /usr/sbin/arptables-restore arptables-restore /usr/sbin/arptables-nft-restore \
+25:          --slave /usr/sbin/arptables-save arptables-save /usr/sbin/arptables-nft-save
+27:          --install /usr/sbin/ebtables ebtables /usr/sbin/ebtables-nft 20 \
+28:          --slave /usr/sbin/ebtables-restore ebtables-restore /usr/sbin/ebtables-nft-restore \
+29:          --slave /usr/sbin/ebtables-save ebtables-save /usr/sbin/ebtables-nft-save
+### /var/lib/dpkg/info/kmod.postinst
+20:# /etc/modules is obsolete and has been replaced by /etc/modules-load.d/.
+21:# Please see modules-load.d(5) and modprobe.d(5) for details.
+### /var/lib/dpkg/info/procps.postinst
+26:# Move a conffile without triggering a dpkg question
+102:dpkg-maintscript-helper rm_conffile /etc/sysctl.d/protect-links.conf 2:3.3.16-4\~ procps -- "$@"
+103:dpkg-maintscript-helper mv_conffile /usr/lib/sysctl.d/protect-links.conf /usr/lib/sysctl.d/99-protect-links.conf 2:3.3.17-6\~ procps -- "$@"
+
+## systemd sysctl and modules-load import resolution
+### systemd-sysctl --cat-config
+# /usr/lib/sysctl.d/10-apparmor.conf
+# AppArmor restrictions of unprivileged user namespaces
+
+# Allows to restrict the use of unprivileged user namespaces to applications
+# which have an AppArmor profile loaded which specifies the userns
+# permission. All other applications (whether confined by AppArmor or not) will
+# be denied the use of unprivileged user namespaces.
+#
+# See
+# https://gitlab.com/apparmor/apparmor/-/wikis/unprivileged_userns_restriction
+#
+# If it is desired to disable this restriction, it is preferable to create an
+# additional file named /etc/sysctl.d/20-apparmor.conf which will override this
+# current file and sets this value to 0 rather than editing this current file
+kernel.apparmor_restrict_unprivileged_userns = 1
+
+# /etc/sysctl.d/10-bufferbloat.conf
+# The Fair Queue CoDel packet scheduler is an across the board improvement to
+# the default pfifo_fast qdisc. It reduces bottleneck delays, provides accurate
+# RTT estimates to elephant TCP flows, and still allows shorter (sparser) flows
+# like DNS, ARP, SYN, routing, etc packets priority access. For technical
+# details, refer to https://www.bufferbloat.net/projects/codel/wiki/
+#
+# To fight bufferbloat, set it as the default qdisc in Ubuntu.
+-net.core.default_qdisc = fq_codel
+
+# /etc/sysctl.d/10-console-messages.conf
+
+# the following stops low-level messages on console
+kernel.printk = 4 4 1 7
+
+# /etc/sysctl.d/10-ipv6-privacy.conf
+# IPv6 Privacy Extensions (RFC 4941)
+# ---
+# IPv6 typically uses a device's MAC address when choosing an IPv6 address
+# to use in autoconfiguration. Privacy extensions allow using a randomly
+# generated IPv6 address, which increases privacy.
+#
+# Acceptable values:
+#    0 - don’t use privacy extensions.
+#    1 - generate privacy addresses
+#    2 - prefer privacy addresses and use them over the normal addresses.
+net.ipv6.conf.all.use_tempaddr = 2
+net.ipv6.conf.default.use_tempaddr = 2
+
+# /etc/sysctl.d/10-kernel-hardening.conf
+# These settings are specific to hardening the kernel itself from attack
+# from userspace, rather than protecting userspace from other malicious
+# userspace things.
+#
+#
+# When an attacker is trying to exploit the local kernel, it is often
+# helpful to be able to examine where in memory the kernel, modules,
+# and data structures live. As such, kernel addresses should be treated
+# as sensitive information.
+#
+# Many files and interfaces contain these addresses (e.g. /proc/kallsyms,
+# /proc/modules, etc), and this setting can censor the addresses. A value
+# of "0" allows all users to see the kernel addresses. A value of "1"
+# limits visibility to the root user, and "2" blocks even the root user.
+kernel.kptr_restrict = 1
+
+# Access to the kernel log buffer can be especially useful for an attacker
+# attempting to exploit the local kernel, as kernel addresses and detailed
+# call traces are frequently found in kernel oops messages. Setting
+# dmesg_restrict to "0" allows all users to view the kernel log buffer,
+# and setting it to "1" restricts access to those with CAP_SYSLOG.
+#
+# dmesg_restrict defaults to 1 via CONFIG_SECURITY_DMESG_RESTRICT, only
+# uncomment the following line to disable.
+# kernel.dmesg_restrict = 0
+
+# /etc/sysctl.d/10-magic-sysrq.conf
+# The magic SysRq key enables certain keyboard combinations to be
+# interpreted by the kernel to help with debugging. The kernel will respond
+# to these keys regardless of the current running applications.
+#
+# In general, the magic SysRq key is not needed for the average Ubuntu
+# system, and having it enabled by default can lead to security issues on
+# the console such as being able to dump memory or to kill arbitrary
+# processes including the running screen lock.
+#
+# Here is the list of possible values:
+#   0 - disable sysrq completely
+#   1 - enable all functions of sysrq
+#  >1 - enable certain functions by adding up the following values:
+#          2 - enable control of console logging level
+#          4 - enable control of keyboard (SAK, unraw)
+#          8 - enable debugging dumps of processes etc.
+#         16 - enable sync command
+#         32 - enable remount read-only
+#         64 - enable signalling of processes (term, kill, oom-kill)
+#        128 - allow reboot/poweroff
+#        256 - allow nicing of all RT tasks
+#
+#   For example, to enable both control of console logging level and
+#   debugging dumps of processes: kernel.sysrq = 10
+#
+kernel.sysrq = 176
+
+# /etc/sysctl.d/10-map-count.conf
+# Increase the number of virtual memory areas that one process may request
+# https://bugs.launchpad.net/ubuntu/+source/procps/+bug/2057792
+vm.max_map_count=1048576
+
+# /etc/sysctl.d/10-network-security.conf
+
+# Turn on Source Address Verification in all interfaces to
+# prevent some spoofing attacks.
+net.ipv4.conf.default.rp_filter=2
+net.ipv4.conf.all.rp_filter=2
+
+
+# /etc/sysctl.d/10-ptrace.conf
+# The PTRACE system is used for debugging.  With it, a single user process
+# can attach to any other dumpable process owned by the same user.  In the
+# case of malicious software, it is possible to use PTRACE to access
+# credentials that exist in memory (re-using existing SSH connections,
+# extracting GPG agent information, etc).
+#
+# A PTRACE scope of "0" is the more permissive mode.  A scope of "1" limits
+# PTRACE only to direct child processes (e.g. "gdb name-of-program" and
+# "strace -f name-of-program" work, but gdb's "attach" and "strace -fp $PID"
+# do not).  The PTRACE scope is ignored when a user has CAP_SYS_PTRACE, so
+# "sudo strace -fp $PID" will work as before.  For more details see:
+# https://wiki.ubuntu.com/SecurityTeam/Roadmap/KernelHardening#ptrace
+#
+# For applications launching crash handlers that need PTRACE, exceptions can
+# be registered by the debugee by declaring in the segfault handler
+# specifically which process will be using PTRACE on the debugee:
+#   prctl(PR_SET_PTRACER, debugger_pid, 0, 0, 0);
+#
+# In general, PTRACE is not needed for the average running Ubuntu system.
+# To that end, the default is to set the PTRACE scope to "1".  This value
+# may not be appropriate for developers or servers with only admin accounts.
+kernel.yama.ptrace_scope = 1
+
+# /etc/sysctl.d/10-zeropage.conf
+# Protect the zero page of memory from userspace mmap to prevent kernel
+# NULL-dereference attacks against potential future kernel security
+# vulnerabilities.  (Added in kernel 2.6.23.)
+#
+# While this default is built into the Ubuntu kernel, there is no way to
+# restore the kernel default if the value is changed during runtime; for
+# example via package removal (e.g. wine, dosemu).  Therefore, this value
+# is reset to the secure default each time the sysctl values are loaded.
+#
+# ARM-specific default:
+vm.mmap_min_addr = 32768
+
+# /usr/lib/sysctl.d/50-pid-max.conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+# See sysctl.d(5) and core(5) for documentation.
+
+# To override settings in this file, create a local file in /etc
+# (e.g. /etc/sysctl.d/90-override.conf), and put any assignments
+# there.
+
+# Bump the numeric PID range to make PID collisions less likely.
+# 2^22 and 2^15 is possible maximum of 64bit and 32bit kernels respectively.
+kernel.pid_max = 4194304
+
+# /usr/lib/sysctl.d/99-protect-links.conf
+###################################################################
+# Protected links
+#
+# Protects against creating or following links under certain conditions
+# Debian kernels have both set to 1 (restricted) 
+# See https://www.kernel.org/doc/Documentation/sysctl/fs.txt
+fs.protected_fifos = 1
+fs.protected_hardlinks = 1
+fs.protected_regular = 2
+fs.protected_symlinks = 1
+
+# /etc/sysctl.d/99-sysctl.conf
+#
+# /etc/sysctl.conf - Configuration file for setting system variables
+# See /etc/sysctl.d/ for additional system variables.
+# See sysctl.conf (5) for information.
+#
+
+#kernel.domainname = example.com
+
+# Uncomment the following to stop low-level messages on console
+#kernel.printk = 3 4 1 3
+
+###################################################################
+# Functions previously found in netbase
+#
+
+# Uncomment the next two lines to enable Spoof protection (reverse-path filter)
+# Turn on Source Address Verification in all interfaces to
+# prevent some spoofing attacks
+#net.ipv4.conf.default.rp_filter=1
+#net.ipv4.conf.all.rp_filter=1
+
+# Uncomment the next line to enable TCP/IP SYN cookies
+# See http://lwn.net/Articles/277146/
+# Note: This may impact IPv6 TCP sessions too
+#net.ipv4.tcp_syncookies=1
+
+# Uncomment the next line to enable packet forwarding for IPv4
+#net.ipv4.ip_forward=1
+
+# Uncomment the next line to enable packet forwarding for IPv6
+#  Enabling this option disables Stateless Address Autoconfiguration
+#  based on Router Advertisements for this host
+#net.ipv6.conf.all.forwarding=1
+
+
+###################################################################
+# Additional settings - these settings can improve the network
+# security of the host and prevent against some network attacks
+# including spoofing attacks and man in the middle attacks through
+### modules-load config tree
+drwxr-xr-x root:root /etc/modules-load.d -> 
+lrwxrwxrwx root:root /etc/modules-load.d/modules.conf -> ../modules
+-rw-r--r-- root:root /usr/lib/modules-load.d/multipath.conf -> 
+drwxr-xr-x root:root /usr/lib/modules-load.d -> 
+-rw-r--r-- root:root /etc/modprobe.d/blacklist-ath_pci.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/blacklist-firewire.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/blacklist-framebuffer.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/blacklist-rare-network.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/blacklist.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/disable-algif_aead.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/iwlwifi.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/mdadm.conf -> 
+drwxr-xr-x root:root /etc/modprobe.d -> 
+-rw-r--r-- root:root /usr/lib/modprobe.d/aliases.conf -> 
+-rw-r--r-- root:root /usr/lib/modprobe.d/fbdev-blacklist.conf -> 
+-rw-r--r-- root:root /usr/lib/modprobe.d/systemd.conf -> 
+drwxr-xr-x root:root /usr/lib/modprobe.d -> 
+
+## attacker write attempts to root trust paths
+
+### attacker: write firewall/sysctl/modules hook paths
+touch /etc/ufw/ufw.conf -> touch: cannot touch '/etc/ufw/ufw.conf': Permission denied
+touch /etc/default/ufw -> touch: cannot touch '/etc/default/ufw': Permission denied
+touch /etc/ufw/before.rules -> touch: cannot touch '/etc/ufw/before.rules': Permission denied
+touch /etc/ufw/after.rules -> touch: cannot touch '/etc/ufw/after.rules': Permission denied
+touch /etc/ufw/user.rules -> touch: cannot touch '/etc/ufw/user.rules': Permission denied
+touch /etc/ufw/before.init -> touch: cannot touch '/etc/ufw/before.init': Permission denied
+touch /etc/ufw/after.init -> touch: cannot touch '/etc/ufw/after.init': Permission denied
+touch /etc/ufw/applications.d/firewall-boot-helpers -> touch: cannot touch '/etc/ufw/applications.d/firewall-boot-helpers': Permission denied
+touch /run/ufw.lock -> touch: cannot touch '/run/ufw.lock': Permission denied
+touch /lib/ufw/ufw.lock -> touch: cannot touch '/lib/ufw/ufw.lock': Permission denied
+touch /usr/lib/ufw/ufw-init-functions -> touch: cannot touch '/usr/lib/ufw/ufw-init-functions': Permission denied
+touch /etc/nftables.conf -> touch: cannot touch '/etc/nftables.conf': Permission denied
+touch /etc/default/nftables -> touch: cannot touch '/etc/default/nftables': Permission denied
+touch /etc/iptables/rules.v4 -> mkdir: cannot create directory '/etc/iptables': Permission denied
+touch /var/lib/iptables/rules-save -> mkdir: cannot create directory '/var/lib/iptables': Permission denied
+touch /etc/sysctl.conf -> touch: cannot touch '/etc/sysctl.conf': Permission denied
+touch /etc/sysctl.d/99-firewall-boot-helpers.conf -> touch: cannot touch '/etc/sysctl.d/99-firewall-boot-helpers.conf': Permission denied
+touch /usr/lib/sysctl.d/99-firewall-boot-helpers.conf -> touch: cannot touch '/usr/lib/sysctl.d/99-firewall-boot-helpers.conf': Permission denied
+touch /run/sysctl.d/99-firewall-boot-helpers.conf -> mkdir: cannot create directory '/run/sysctl.d': Permission denied
+touch /run/credentials/systemd-sysctl.service/sysctl.firewall -> mkdir: cannot create directory '/run/credentials/systemd-sysctl.service': Permission denied
+touch /etc/modules -> touch: cannot touch '/etc/modules': Permission denied
+touch /etc/modules-load.d/firewall-boot-helpers.conf -> touch: cannot touch '/etc/modules-load.d/firewall-boot-helpers.conf': Permission denied
+touch /usr/lib/modules-load.d/firewall-boot-helpers.conf -> touch: cannot touch '/usr/lib/modules-load.d/firewall-boot-helpers.conf': Permission denied
+touch /run/modules-load.d/firewall-boot-helpers.conf -> mkdir: cannot create directory '/run/modules-load.d': Permission denied
+touch /etc/modprobe.d/firewall-boot-helpers.conf -> touch: cannot touch '/etc/modprobe.d/firewall-boot-helpers.conf': Permission denied
+touch /usr/lib/modprobe.d/firewall-boot-helpers.conf -> touch: cannot touch '/usr/lib/modprobe.d/firewall-boot-helpers.conf': Permission denied
+touch /run/modprobe.d/firewall-boot-helpers.conf -> mkdir: cannot create directory '/run/modprobe.d': Permission denied
+touch /etc/systemd/system/ufw.service.d/firewall.conf -> mkdir: cannot create directory '/etc/systemd/system/ufw.service.d': Permission denied
+touch /run/systemd/system/ufw.service.d/firewall.conf -> mkdir: cannot create directory '/run/systemd/system/ufw.service.d': Permission denied
+rc=0
+
+## attacker systemd re-entry attempts
+### attacker systemctl start ufw.service
+Failed to start ufw.service: Interactive authentication required.
+See system logs and 'systemctl status ufw.service' for details.
+### attacker systemctl restart ufw.service
+Failed to restart ufw.service: Interactive authentication required.
+See system logs and 'systemctl status ufw.service' for details.
+### attacker systemctl reload ufw.service
+Failed to reload ufw.service: Interactive authentication required.
+See system logs and 'systemctl status ufw.service' for details.
+### attacker systemctl stop ufw.service
+Failed to stop ufw.service: Interactive authentication required.
+See system logs and 'systemctl status ufw.service' for details.
+### attacker systemctl start nftables.service
+Failed to start nftables.service: Interactive authentication required.
+See system logs and 'systemctl status nftables.service' for details.
+### attacker systemctl restart nftables.service
+Failed to restart nftables.service: Interactive authentication required.
+See system logs and 'systemctl status nftables.service' for details.
+### attacker systemctl reload nftables.service
+Failed to reload nftables.service: Interactive authentication required.
+See system logs and 'systemctl status nftables.service' for details.
+### attacker systemctl stop nftables.service
+Failed to stop nftables.service: Interactive authentication required.
+See system logs and 'systemctl status nftables.service' for details.
+### attacker systemctl start systemd-sysctl.service
+Failed to start systemd-sysctl.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-sysctl.service' for details.
+### attacker systemctl restart systemd-sysctl.service
+Failed to restart systemd-sysctl.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-sysctl.service' for details.
+### attacker systemctl reload systemd-sysctl.service
+Failed to reload systemd-sysctl.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-sysctl.service' for details.
+### attacker systemctl stop systemd-sysctl.service
+Failed to stop systemd-sysctl.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-sysctl.service' for details.
+### attacker systemctl start systemd-modules-load.service
+Failed to start systemd-modules-load.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-modules-load.service' for details.
+### attacker systemctl restart systemd-modules-load.service
+Failed to restart systemd-modules-load.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-modules-load.service' for details.
+### attacker systemctl reload systemd-modules-load.service
+Failed to reload systemd-modules-load.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-modules-load.service' for details.
+### attacker systemctl stop systemd-modules-load.service
+Failed to stop systemd-modules-load.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-modules-load.service' for details.
+### attacker systemctl start netfilter-persistent.service
+Failed to start netfilter-persistent.service: Interactive authentication required.
+See system logs and 'systemctl status netfilter-persistent.service' for details.
+### attacker systemctl restart netfilter-persistent.service
+Failed to restart netfilter-persistent.service: Interactive authentication required.
+See system logs and 'systemctl status netfilter-persistent.service' for details.
+### attacker systemctl reload netfilter-persistent.service
+Failed to reload netfilter-persistent.service: Interactive authentication required.
+See system logs and 'systemctl status netfilter-persistent.service' for details.
+### attacker systemctl stop netfilter-persistent.service
+Failed to stop netfilter-persistent.service: Interactive authentication required.
+See system logs and 'systemctl status netfilter-persistent.service' for details.
+
+## attacker direct helper boundary probes
+
+### attacker: ufw direct status and dry-run are unprivileged
+ERROR: You need to be root to run this script
+ERROR: You need to be root to run this script
+rc=0
+
+### attacker: ufw-init direct execution with hostile PATH stays uid1001
+ufw_init_status_rc=3
+Firewall is not running
+no_hostile_path_marker
+rc=0
+
+### attacker: ufw-init fake rootdir is caller-controlled but not privileged
+fake_start
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+rc=0
+
+### attacker: nft and check-requirements need netfilter privilege
+/etc/nftables.conf:3:1-14: Error: Could not process rule: Operation not permitted
+flush ruleset
+^^^^^^^^^^^^^^
+/etc/nftables.conf:5:1-2: Error: Could not process rule: Operation not permitted
+table inet filter {
+^^
+/etc/nftables.conf:6:8-12: Error: Could not process rule: Operation not permitted
+	chain input {
+	      ^^^^^
+/etc/nftables.conf:9:8-14: Error: Could not process rule: Operation not permitted
+	chain forward {
+	      ^^^^^^^
+/etc/nftables.conf:12:8-13: Error: Could not process rule: Operation not permitted
+	chain output {
+	      ^^^^^^
+Has python: pass (binary: python3, version: 3.12.3, py3)
+Has iptables: pass
+Has ip6tables: pass
+
+Has /proc/net/dev: pass
+Has /proc/net/if_inet6: pass
+
+This script will now attempt to create various rules using the iptables
+and ip6tables commands. This may result in module autoloading (eg, for
+IPv6).
+Proceed with checks (Y/n)? Aborting
+rc=0
+
+### attacker: systemd sysctl/modules-load direct execution is not root
+Failed to find module 'dm-multipath'
+rc=0
+
+## root proof sweep and cleanup
+-rw-r--r-- attacker:attacker /tmp/firewall_boot_helpers.fake_rootdir_id
+-rw-r--r-- attacker:attacker /tmp/firewall_boot_helpers.ufw_init_status.err
+-rw-r--r-- attacker:attacker /tmp/firewall_boot_helpers.ufw_init_status.out
+drwxr-xr-x attacker:attacker /home/attacker/firewall_boot_helpers
+NO_ROOT_MARKER
+cleanup_done

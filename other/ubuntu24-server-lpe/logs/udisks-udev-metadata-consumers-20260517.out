@@ -1,0 +1,1364 @@
+# udisks udev metadata consumers aggregate log
+2026-05-17T19:22:01+00:00
+
+## target/default proof
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux bf51bb670420 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+
+## packages
+bcache-tools	1.0.8-5build1	ii 
+btrfs-progs	6.6.3-1.1build2	ii 
+dosfstools	4.2-1.1build1	ii 
+e2fsprogs	1.47.0-2.4~exp1ubuntu4.1	ii 
+gdisk	1.0.10-1build1	ii 
+libudisks2-0:arm64	2.10.1-6ubuntu1.3	ii 
+lvm2	2.03.16-3ubuntu3.2	ii 
+mdadm	4.3-1ubuntu2.1	ii 
+parted	3.6-4build1	ii 
+polkitd	124-2ubuntu1.24.04.3	ii 
+systemd	255.4-1ubuntu8.15	ii 
+udev	255.4-1ubuntu8.15	ii 
+udisks2	2.10.1-6ubuntu1.3	ii 
+util-linux	2.39.3-9ubuntu6.5	ii 
+xfsprogs	6.6.0-1ubuntu2.1	ii 
+
+## service/timer state
+running
+UNIT FILE                STATE    PRESET
+e2scrub_all.service      static   -
+fstrim.service           static   -
+lvm2-monitor.service     enabled  enabled
+mdmon@.service           static   -
+mdmonitor.service        static   -
+systemd-udevd.service    static   -
+udisks2.service          enabled  enabled
+xfs_scrub@.service       static   -
+xfs_scrub_all.service    static   -
+lvm2-lvmpolld.socket     enabled  enabled
+e2scrub_all.timer        enabled  enabled
+fstrim.timer             enabled  enabled
+mdadm-last-resort@.timer static   -
+xfs_scrub_all.timer      disabled enabled
+
+14 unit files listed.
+  UNIT                 LOAD   ACTIVE   SUB       DESCRIPTION
+  lvm2-monitor.service loaded inactive dead      Monitoring of LVM2 mirrors, snapshots etc. using dmeventd or progress polling
+  udisks2.service      loaded active   running   Disk Manager
+  lvm2-lvmpolld.socket loaded active   listening LVM2 poll daemon socket
+  e2scrub_all.timer    loaded active   waiting   Periodic ext4 Online Metadata Check for All Filesystems
+  fstrim.timer         loaded inactive dead      Discard unused filesystem blocks once a week
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+5 loaded units listed.
+To show all installed unit files use 'systemctl list-unit-files'.
+
+## harness loop nodes created
+/dev/loop8
+/dev/loop9
+/dev/loop10
+/dev/loop11
+/dev/loop12
+/dev/loop13
+/dev/loop14
+/dev/loop15
+/dev/loop16
+/dev/loop17
+/dev/loop18
+/dev/loop19
+/dev/loop20
+/dev/loop21
+/dev/loop22
+/dev/loop23
+/dev/loop24
+/dev/loop25
+/dev/loop26
+/dev/loop27
+/dev/loop28
+/dev/loop29
+/dev/loop30
+/dev/loop31
+
+## active-user UDisks policy
+  <action id="org.freedesktop.udisks2.loop-setup">
+    <description>Manage loop devices</description>
+    <description xml:lang="zh_TW">管理迴圈裝置</description>
+    <description xml:lang="zh_CN">管理回环设备</description>
+    <description xml:lang="uk">Керування петльовими пристроями</description>
+    <description xml:lang="tr">Döngü aygıtlarını yönet</description>
+    <description xml:lang="sv">Hantera loop-enheter</description>
+    <description xml:lang="sr">Управљајте уређајима петље</description>
+    <description xml:lang="sl">Upravljaj z zančnimi napravami</description>
+    <description xml:lang="sk">Spravovať zariadenia loop</description>
+    <description xml:lang="ru">Управление петлевыми устройствами</description>
+    <description xml:lang="pt_BR">Gerenciar dispositivos de loop</description>
+    <description xml:lang="pl">Zarządzanie urządzeniami zwrotnymi</description>
+    <description xml:lang="pa">ਲੂਪ ਜੰਤਰ ਪਰਬੰਧ</description>
+    <description xml:lang="nn">Handsam loop-einingar</description>
+    <description xml:lang="nl">Manage loop-devices</description>
+    <description xml:lang="lv">Pārvaldīt cikla ierīces</description>
+    <description xml:lang="lt">Tvarkyti ciklinius įrenginius</description>
+    <description xml:lang="ko">루프 장치 관리</description>
+    <description xml:lang="kk">Loop құрылғыларын басқару</description>
+    <description xml:lang="ka">მარყუჟის მოწყობილობის მართვა</description>
+    <description xml:lang="ja">ループデバイスを管理します。</description>
+    <description xml:lang="it">Gestisce device di loop</description>
+    <description xml:lang="id">Kelola perangkat loop</description>
+    <description xml:lang="ia">Gerer dispositivos de bucla</description>
+    <description xml:lang="hu">Hurokeszközök kezelése</description>
+    <description xml:lang="hr">Upravljanje virtualnim uređajima</description>
+    <description xml:lang="gl">Xestionar os dispositivos loop</description>
+    <description xml:lang="fur">Gjestìs dispositîfs di loop</description>
+    <description xml:lang="fr">Gérer les périphériques virtuels</description>
+    <description xml:lang="es">Gestiona sus dispositivos de «loop»</description>
+    <description xml:lang="en_GB">Manage loop devices</description>
+    <description xml:lang="el">Διαχείριση συσκευών βρόχου</description>
+    <description xml:lang="de">Schleifen-Geräte verwalten</description>
+    <description xml:lang="da">Håndter loop-enheder</description>
+    <description xml:lang="cs">Spravovat zařízení místních smyček</description>
+    <description xml:lang="ca">Gestiona els dispositius de bucles</description>
+    <description xml:lang="af">Bestuur lustoestelle</description>
+    <message>Authentication is required to set up a loop device</message>
+    <message xml:lang="zh_TW">要設置迴圈裝置需要先核對身分</message>
+    <message xml:lang="zh_CN">设定回环设备需要身份验证</message>
+    <message xml:lang="uk">Щоб отримати доступ до визначення петльового пристрою, слід пройти розпізнавання</message>
+    <message xml:lang="tr">Döngü aygıtı kurmak için kimlik doğrulaması gerekli</message>
+    <message xml:lang="sv">Autentisering krävs för att konfigurera en loop-enhet</message>
+    <message xml:lang="sr">Потребно је потврђивање идентитета за подешавање уређаја петље</message>
+    <message xml:lang="sl">Za vzpostavitev zančne naprave je zahtevana overitev.</message>
+    <message xml:lang="sk">Nastavenie zariadenia loop vyžaduje overenie totožnosti</message>
+    <message xml:lang="ru">Для настройки петлевого устройства требуется подтверждение подлинности пользователя</message>
+    <message xml:lang="pt_BR">Autenticação é necessária para criar um dispositivo de loop</message>
+    <message xml:lang="pl">Wymagane jest uwierzytelnienie, aby ustawić urządzenie zwrotne</message>
+    <message xml:lang="nn">Treng autentisering for å setja opp ei loop-eining</message>
+    <message xml:lang="nl">Authenticatie is vereist om een loop-device op te zetten</message>
+    <message xml:lang="lv">Vajag autentificēties, lai iestatītu cikla ierīci</message>
+    <message xml:lang="lt">Norint nustatyti ciklinį įrenginį, reikia patvirtinti tapatybę</message>
+    <message xml:lang="ko">루프 장치를 설정하려면 인증이 필요합니다</message>
+    <message xml:lang="kk">Loop құрылғысын жасау үшін аутентификация керек</message>
+    <message xml:lang="ka">მარყუჟმოწყობილობის დაყენებას ავთენტიკაცია სჭირდება</message>
+    <message xml:lang="ja">ループデバイスをセットアップするには、認証が必要です。</message>
+    <message xml:lang="it">È richiesto autenticarsi per impostare il device di loop</message>
+    <message xml:lang="id">Otentikasi diperlukan untuk menyiapkan suatu perangkat loop</message>
+    <message xml:lang="ia">Authentication es necessari pro crear un dispositivo de bucla</message>
+    <message xml:lang="hu">Hitelesítés szükséges egy hurokeszköz beállításához</message>
+    <message xml:lang="hr">Potrebna je provjera za postavljanje virtualnog uređaja</message>
+    <message xml:lang="gl">Debe autenticarse para configurar un dispositivo loop</message>
+    <message xml:lang="fur">La autenticazion e je necessarie par configurâ un dispositîf di loop</message>
+    <message xml:lang="fr">Une authentification est nécessaire pour configurer un périphérique virtuel</message>
+    <message xml:lang="es">Se requiere autenticación para configurar un dispositivo de «loop»</message>
+    <message xml:lang="en_GB">Authentication is required to set up a loop device</message>
+    <message xml:lang="el">Απαιτείται πιστοποίηση για ρύθμιση μιας συσκευής βρόχου</message>
+    <message xml:lang="de">Legitimierung ist zum Einrichten eines Schleifengeräts notwendig</message>
+    <message xml:lang="da">Der kræves godkendelse for at opsætte en loop-enhed</message>
+    <message xml:lang="cs">Pro nastavení zařízení místní smyčky je vyžadována autentizace</message>
+    <message xml:lang="ca">Es requereix autenticació per gestionar els dispositius de bucles</message>
+    <message xml:lang="af">Verifiëring is nodig om ’n lustoestel op te stel</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <!-- NOTE: this is not a DoS because we are using /dev/loop-control -->
+      <allow_active>yes</allow_active>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+  </action>
+  <action id="org.freedesktop.udisks2.filesystem-mount">
+    <description>Mount a filesystem</description>
+    <description xml:lang="zh_TW">掛載檔案系統</description>
+    <description xml:lang="zh_CN">挂载文件系统</description>
+    <description xml:lang="uk">Змонтувати файлову систему</description>
+    <description xml:lang="tr">Bir dosya sistemi bağla</description>
+    <description xml:lang="sv">Montera ett filsystem</description>
+    <description xml:lang="sr">Прикачите систем датотека</description>
+    <description xml:lang="sl">Priklopi datotečni sistem</description>
+    <description xml:lang="sk">Pripojiť súborový systém</description>
+    <description xml:lang="ru">Монтировать файловую систему</description>
+    <description xml:lang="pt_BR">Montar um sistema de arquivos</description>
+    <description xml:lang="pt">Montar um sistema de ficheiros</description>
+    <description xml:lang="pl">Zamontowanie systemu plików</description>
+    <description xml:lang="pa">ਫਾਇਲ ਸਿਸਟਮ ਮਾਊਂਟ ਕਰੋ</description>
+    <description xml:lang="nn">Monter eit filsystem</description>
+    <description xml:lang="nl">Koppel een bestandssysteem aan</description>
+    <description xml:lang="lv">Montēt datņu sistēmu</description>
+    <description xml:lang="lt">Prijungti failų sistemą</description>
+    <description xml:lang="ko">파일 시스템 마운트</description>
+    <description xml:lang="kk">Файлдық жүйені тіркеу</description>
+    <description xml:lang="ka">ფაილური სისტემის მიმაგრება</description>
+    <description xml:lang="ja">ファイルシステムをマウントします。</description>
+    <description xml:lang="it">Monta un file system</description>
+    <description xml:lang="id">Kaitkan suatu sistem berkas</description>
+    <description xml:lang="ia">Montar un systema de files</description>
+    <description xml:lang="hu">Fájlrendszer csatolása</description>
+    <description xml:lang="hr">Montiraj datotečni sustav</description>
+    <description xml:lang="gl">Modificar un sistema de ficheiros</description>
+    <description xml:lang="fur">Monte un filesystem</description>
+    <description xml:lang="fr">Monter un système de fichiers</description>
+    <description xml:lang="fi">Liitä tiedostojärjestelmä</description>
+    <description xml:lang="eu">Muntatu fitxategi-sistema bat</description>
+    <description xml:lang="es">Montar un sistema de archivos</description>
+    <description xml:lang="en_GB">Mount a filesystem</description>
+    <description xml:lang="el">Προσάρτηση συστήματος αρχείων</description>
+    <description xml:lang="de">Ein Dateisystem einhängen</description>
+    <description xml:lang="da">Monter et filsystem</description>
+    <description xml:lang="cs">Připojit souborový systém</description>
+    <description xml:lang="ca">Munta un sistema de fitxers</description>
+    <description xml:lang="af">Heg ’n lêerstelsel</description>
+    <message>Authentication is required to mount the filesystem</message>
+    <message xml:lang="zh_TW">要掛載檔案系統需要先核對身分</message>
+    <message xml:lang="zh_CN">挂载文件系统需要身份验证</message>
+    <message xml:lang="uk">Щоб змонтувати файлову систему, слід пройти розпізнавання</message>
+    <message xml:lang="tr">Dosya sistemini bağlamak için kimlik doğrulaması gerekli</message>
+    <message xml:lang="sv">Autentisering krävs för att montera filsystemet</message>
+    <message xml:lang="sr">Потребно је потврђивање идентитета за прикачињање система датотека</message>
+    <message xml:lang="sl">Za priklop datotečnega sistema je zahtevana overitev.</message>
+    <message xml:lang="sk">Pripojenie súborového systému vyžaduje overenie totožnosti</message>
+    <message xml:lang="ru">Для монтирования файловой системы требуется подтверждение подлинности пользователя</message>
+    <message xml:lang="pt_BR">Autenticação é necessária para montar um sistema de arquivos</message>
+    <message xml:lang="pt">É necessária autenticação para montar o sistema de ficheiros</message>
+    <message xml:lang="pl">Wymagane jest uwierzytelnienie, aby zamontować system plików</message>
+    <message xml:lang="pa">ਫਾਇਲ ਸਿਸਟਮ ਮਾਊਂਟ ਕਰਨ ਲਈ ਪਰਮਾਣਕਿਤਾ ਦੀ ਲੋੜ ਹੈ</message>
+    <message xml:lang="nn">Treng autentisering for å montera filsystemet</message>
+    <message xml:lang="nl">Authenticatie is vereist om het bestandssysteem aan te koppelen</message>
+    <message xml:lang="lv">Vajag autentificēties, lai montētu datņu sistēmas</message>
+    <message xml:lang="lt">Norint prijungti failų sistemą, reikia patvirtinti tapatybę</message>
+    <message xml:lang="ko">파일 시스템을 마운트 하려면 인증이 필요합니다</message>
+    <message xml:lang="kk">Файлдық жүйені тіркеу үшін аутентификация керек</message>
+    <message xml:lang="ka">ფაილური სისტემის მისამაგრებლად საჭიროა ავტორიზაცია</message>
+    <message xml:lang="ja">ファイルシステムをマウントするには、認証が必要です。</message>
+    <message xml:lang="it">È richiesto autenticarsi per montare il file system</message>
+    <message xml:lang="id">Otentikasi diperlukan untuk mengait sistem berkas</message>
+    <message xml:lang="ia">Authentication es necessari pro montar le systema de files</message>
+    <message xml:lang="hu">Hitelesítés szükséges a fájlrendszer csatolásához</message>
+    <message xml:lang="hr">Potrebna je provjera za montiranje datotečnog sustava</message>
+    <message xml:lang="gl">Debe autenticarse para montar o sistema de ficheiros</message>
+    <message xml:lang="fur">La autenticazion e je necesarie par montâ il filesystem</message>
+    <message xml:lang="fr">Une authentification est requise pour monter le système de fichiers</message>
+    <message xml:lang="fi">Tunnistautuminen vaaditaan tiedostojärjestelmän liittämistä varten</message>
+    <message xml:lang="eu">Autentifikazioa behar da fitxategi-sistema muntatzeko</message>
+    <message xml:lang="es">Se requiere autenticación para montar el sistema de archivos</message>
+    <message xml:lang="en_GB">Authentication is required to mount the filesystem</message>
+    <message xml:lang="el">Απαιτείται πιστοποίηση για προσάρτηση συστήματος αρχείων</message>
+    <message xml:lang="de">Legitimierung ist erforderlich, um ein Dateisystem einzuhängen</message>
+    <message xml:lang="da">Der kræves godkendelse for at montere filsystemet</message>
+    <message xml:lang="cs">Pro připojení souborového systému je vyžadována autentizace</message>
+    <message xml:lang="ca">Es requereix autenticació per muntar el sistema de fitxers</message>
+    <message xml:lang="af">Verifiëring is nodig om die lêerstelsel te heg</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>yes</allow_active>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+  </action>
+
+## root udev/systemd consumer map
+### /usr/lib/udev/rules.d/60-persistent-storage.rules
+    15	# For partitions import parent disk ID_* information, except ID_FS_*.
+    22	# was detected on the parent disk, the ID_FS_* information is already
+    25	# filesystem, merging the parent ID_FS_ properties would lead to
+    28	  IMPORT{parent}="ID_[!F]*", IMPORT{parent}="ID_", \
+    29	  IMPORT{parent}="ID_F[!S]*", IMPORT{parent}="ID_F", \
+    30	  IMPORT{parent}="ID_FS[!_]*", IMPORT{parent}="ID_FS"
+    44	ENV{ID_WWN}=="?*", SYMLINK+="disk/by-id/nvme-$env{ID_WWN}$env{.PART_SUFFIX}"
+    48	  ENV{ID_SERIAL}="$env{ID_MODEL}_$env{ID_SERIAL_SHORT}", SYMLINK+="disk/by-id/nvme-$env{ID_SERIAL}$env{.PART_SUFFIX}"
+    51	  ENV{ID_SERIAL}="$env{ID_MODEL}_$env{ID_SERIAL_SHORT}", SYMLINK+="disk/by-id/nvme-$env{ID_SERIAL}$env{.PART_SUFFIX}"
+    53	  ENV{ID_SERIAL}="$env{ID_MODEL}_$env{ID_SERIAL_SHORT}_$env{ID_NSID}", SYMLINK+="disk/by-id/nvme-$env{ID_SERIAL}$env{.PART_SUFFIX}"
+    58	KERNEL=="vd*", ATTRS{serial}=="?*", ENV{ID_SERIAL}="$attr{serial}", SYMLINK+="disk/by-id/virtio-$env{ID_SERIAL}$env{.PART_SUFFIX}"
+    61	KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", SUBSYSTEMS=="scsi", ATTRS{vendor}=="ATA", IMPORT{program}="ata_id --export $devnode"
+    63	  SYMLINK+="disk/by-id/scsi-$result$env{.PART_SUFFIX}"
+    66	KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", SUBSYSTEMS=="scsi", ATTRS{type}=="5", ATTRS{scsi_level}=="[6-9]*", IMPORT{program}="ata_id --export $devnode"
+    69	KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", ATTR{removable}=="0", SUBSYSTEMS=="usb", IMPORT{program}="ata_id --export $devnode"
+    72	KERNEL=="sd*[!0-9]|sr*", SUBSYSTEMS=="usb", IMPORT{builtin}="usb_id"
+    75	KERNEL=="sd*[!0-9]|sr*", ENV{ID_SERIAL}!="?*", IMPORT{program}="scsi_id --export --allowlisted -d $devnode", ENV{ID_BUS}="scsi"
+    76	KERNEL=="cciss*", ENV{DEVTYPE}=="disk", ENV{ID_SERIAL}!="?*", IMPORT{program}="scsi_id --export --allowlisted -d $devnode", ENV{ID_BUS}="cciss"
+    78	KERNEL=="sd*|sr*|cciss*", ENV{ID_SERIAL}=="?*", SYMLINK+="disk/by-id/$env{ID_BUS}-$env{ID_SERIAL}$env{.PART_SUFFIX}"
+    83	KERNEL=="sd*|sr*|cciss*", ENV{ID_USB_SERIAL}=="?*", SYMLINK+="disk/by-id/usb-$env{ID_USB_SERIAL}$env{.PART_SUFFIX}"
+    86	KERNEL=="pmem*", ATTRS{uuid}=="?*", SYMLINK+="disk/by-id/pmem-$attr{uuid}$env{.PART_SUFFIX}"
+    89	KERNEL=="sd*|sr*", ATTRS{ieee1394_id}=="?*", SYMLINK+="disk/by-id/ieee1394-$attr{ieee1394_id}$env{.PART_SUFFIX}"
+    97	ENV{ID_NAME}=="?*", ENV{ID_SERIAL}=="?*", SYMLINK+="disk/by-id/mmc-$env{ID_NAME}_$env{ID_SERIAL}$env{.PART_SUFFIX}"
+   106	ENV{ID_NAME}=="?*", ENV{ID_SERIAL}=="?*", SYMLINK+="disk/by-id/memstick-$env{ID_NAME}_$env{ID_SERIAL}$env{.PART_SUFFIX}"
+   110	ENV{DEVTYPE}=="disk", DEVPATH!="*/virtual/*", IMPORT{builtin}="path_id"
+   111	ENV{DEVTYPE}=="disk", SUBSYSTEMS=="nvme-subsystem", IMPORT{builtin}="path_id"
+   112	KERNEL=="mmcblk[0-9]boot[0-9]", ENV{DEVTYPE}=="disk", ENV{ID_PATH}=="?*",                   SYMLINK+="disk/by-path/$env{ID_PATH}-boot%n"
+   113	KERNEL=="mmcblk[0-9]boot[0-9]", ENV{DEVTYPE}=="disk", ENV{ID_PATH_WITH_USB_REVISION}=="?*", SYMLINK+="disk/by-path/$env{ID_PATH_WITH_USB_REVISION}-boot%n"
+   114	KERNEL!="mmcblk[0-9]boot[0-9]",                       ENV{ID_PATH}=="?*",                   SYMLINK+="disk/by-path/$env{ID_PATH}$env{.PART_SUFFIX}"
+   115	KERNEL!="mmcblk[0-9]boot[0-9]",                       ENV{ID_PATH_ATA_COMPAT}=="?*",        SYMLINK+="disk/by-path/$env{ID_PATH_ATA_COMPAT}$env{.PART_SUFFIX}"
+   116	KERNEL!="mmcblk[0-9]boot[0-9]",                       ENV{ID_PATH_WITH_USB_REVISION}=="?*", SYMLINK+="disk/by-path/$env{ID_PATH_WITH_USB_REVISION}$env{.PART_SUFFIX}"
+   119	KERNEL=="vd*", ENV{ID_PATH}=="pci-*",                   SYMLINK+="disk/by-path/virtio-$env{ID_PATH}$env{.PART_SUFFIX}"
+   120	KERNEL=="vd*", ENV{ID_PATH_WITH_USB_REVISION}=="pci-*", SYMLINK+="disk/by-path/virtio-$env{ID_PATH_WITH_USB_REVISION}$env{.PART_SUFFIX}"
+   127	  IMPORT{builtin}="blkid --hint=session_offset=$env{ID_CDROM_MEDIA_SESSION_LAST_OFFSET}"
+   130	  IMPORT{builtin}="blkid --noraid"
+   133	KERNEL!="sr*|mmcblk[0-9]boot[0-9]", IMPORT{builtin}="blkid"
+   139	ENV{ID_FS_TYPE}=="bcache", GOTO="skip_bcache_fs_type"
+   140	ENV{ID_FS_USAGE}=="filesystem|other|crypto", ENV{ID_FS_UUID_ENC}=="?*", SYMLINK+="disk/by-uuid/$env{ID_FS_UUID_ENC}"
+   141	ENV{ID_FS_USAGE}=="filesystem|other|crypto", ENV{ID_FS_LABEL_ENC}=="?*", SYMLINK+="disk/by-label/$env{ID_FS_LABEL_ENC}"
+   145	ENV{ID_WWN_WITH_EXTENSION}=="?*", SYMLINK+="disk/by-id/wwn-$env{ID_WWN_WITH_EXTENSION}$env{.PART_SUFFIX}"
+   148	ENV{ID_PART_ENTRY_UUID}=="?*", SYMLINK+="disk/by-partuuid/$env{ID_PART_ENTRY_UUID}"
+   149	ENV{ID_PART_ENTRY_SCHEME}=="gpt", ENV{ID_PART_ENTRY_NAME}=="?*", SYMLINK+="disk/by-partlabel/$env{ID_PART_ENTRY_NAME}"
+   154	ENV{DISKSEQ}=="?*", ENV{ID_IGNORE_DISKSEQ}!="1", SYMLINK+="disk/by-diskseq/$env{DISKSEQ}$env{.PART_SUFFIX}"
+   157	ENV{ID_LOOP_BACKING_DEVICE}!="", ENV{ID_LOOP_BACKING_INODE}!="", SYMLINK+="disk/by-loop-inode/$env{ID_LOOP_BACKING_DEVICE}-$env{ID_LOOP_BACKING_INODE}$env{.PART_SUFFIX}"
+   163	ENV{ID_LOOP_BACKING_FILENAME_ENC}!="", SYMLINK+="disk/by-loop-ref/$env{ID_LOOP_BACKING_FILENAME_ENC}$env{.PART_SUFFIX}"
+### /usr/lib/udev/rules.d/60-persistent-storage-dm.rules
+    17	SYMLINK+="disk/by-id/dm-name-$env{DM_NAME}"
+    18	ENV{DM_UUID}=="?*", SYMLINK+="disk/by-id/dm-uuid-$env{DM_UUID}"
+    25	IMPORT{builtin}="blkid"
+    29	ENV{ID_FS_USAGE}=="filesystem|other|crypto", ENV{ID_FS_UUID_ENC}=="?*", SYMLINK+="disk/by-uuid/$env{ID_FS_UUID_ENC}"
+    30	ENV{ID_FS_USAGE}=="filesystem|other", ENV{ID_FS_LABEL_ENC}=="?*", SYMLINK+="disk/by-label/$env{ID_FS_LABEL_ENC}"
+    31	ENV{ID_PART_ENTRY_UUID}=="?*", SYMLINK+="disk/by-partuuid/$env{ID_PART_ENTRY_UUID}"
+    32	ENV{ID_PART_ENTRY_SCHEME}=="gpt", ENV{ID_PART_ENTRY_NAME}=="?*", SYMLINK+="disk/by-partlabel/$env{ID_PART_ENTRY_NAME}"
+    33	ENV{ID_PART_ENTRY_SCHEME}=="gpt", ENV{ID_PART_GPT_AUTO_ROOT}=="1", SYMLINK+="gpt-auto-root"
+### /usr/lib/udev/rules.d/63-md-raid-arrays.rules
+    16	TEST!="md/array_state", ENV{SYSTEMD_READY}="0", GOTO="md_end"
+    17	ATTR{md/array_state}=="clear*|inactive", ENV{SYSTEMD_READY}="0", GOTO="md_end"
+    21	IMPORT{program}="/sbin/mdadm --detail --no-devices --export $devnode"
+    22	ENV{DEVTYPE}=="disk", ENV{MD_NAME}=="?*", SYMLINK+="disk/by-id/md-name-$env{MD_NAME}", OPTIONS+="string_escape=replace"
+    23	ENV{DEVTYPE}=="disk", ENV{MD_UUID}=="?*", SYMLINK+="disk/by-id/md-uuid-$env{MD_UUID}"
+    24	ENV{DEVTYPE}=="disk", ENV{MD_DEVNAME}=="?*", SYMLINK+="md/$env{MD_DEVNAME}"
+    25	ENV{DEVTYPE}=="partition", ENV{MD_NAME}=="?*", SYMLINK+="disk/by-id/md-name-$env{MD_NAME}-part%n", OPTIONS+="string_escape=replace"
+    26	ENV{DEVTYPE}=="partition", ENV{MD_UUID}=="?*", SYMLINK+="disk/by-id/md-uuid-$env{MD_UUID}-part%n"
+    27	ENV{DEVTYPE}=="partition", ENV{MD_DEVNAME}=="*[^0-9]", SYMLINK+="md/$env{MD_DEVNAME}%n"
+    28	ENV{DEVTYPE}=="partition", ENV{MD_DEVNAME}=="*[0-9]", SYMLINK+="md/$env{MD_DEVNAME}p%n"
+    30	IMPORT{builtin}="blkid"
+    33	ENV{ID_FS_USAGE}=="filesystem|other|crypto", ENV{ID_FS_UUID_ENC}=="?*", SYMLINK+="disk/by-uuid/$env{ID_FS_UUID_ENC}"
+    34	ENV{ID_FS_USAGE}=="filesystem|other", ENV{ID_PART_ENTRY_UUID}=="?*", SYMLINK+="disk/by-partuuid/$env{ID_PART_ENTRY_UUID}"
+    35	ENV{ID_FS_USAGE}=="filesystem|other", ENV{ID_FS_LABEL_ENC}=="?*", SYMLINK+="disk/by-label/$env{ID_FS_LABEL_ENC}"
+    37	ENV{MD_LEVEL}=="raid[1-9]*", ENV{SYSTEMD_WANTS}+="mdmonitor.service"
+    40	ENV{MD_LEVEL}=="raid[1-9]*", ENV{MD_CONTAINER}=="?*", PROGRAM="/bin/readlink $env{MD_CONTAINER}", ENV{MD_MON_THIS}="%c"
+    41	ENV{MD_MON_THIS}=="?*", TEST=="/etc/initrd-release", PROGRAM="/bin/basename $env{MD_MON_THIS}", ENV{SYSTEMD_WANTS}+="mdmon@initrd-%c.service"
+    42	ENV{MD_MON_THIS}=="?*", TEST!="/etc/initrd-release", PROGRAM="/bin/basename $env{MD_MON_THIS}", ENV{SYSTEMD_WANTS}+="mdmon@%c.service"
+    43	ENV{RESHAPE_ACTIVE}=="yes", PROGRAM="/bin/basename $env{MD_MON_THIS}", ENV{SYSTEMD_WANTS}+="mdadm-grow-continue@%c.service"
+### /usr/lib/udev/rules.d/64-md-raid-assembly.rules
+    11	ENV{SYSTEMD_READY}=="0", GOTO="md_inc_end"
+    17	# When adding md/dm devices, ID_FS_TYPE can only be linux_raid_member
+    19	ENV{ID_FS_TYPE}=="linux_raid_member", GOTO="md_inc"
+    25	IMPORT{cmdline}="noiswmd"
+    26	IMPORT{cmdline}="nodmraid"
+    29	ENV{ID_FS_TYPE}=="ddf_raid_member", GOTO="md_inc"
+    31	ENV{ID_FS_TYPE}=="isw_raid_member", ACTION!="change", GOTO="md_inc"
+    41	ACTION!="remove", IMPORT{program}="/sbin/mdadm --incremental --export $devnode --offroot $env{DEVLINKS}"
+    42	ACTION!="remove", ENV{MD_STARTED}=="*unsafe*", ENV{MD_FOREIGN}=="no", ENV{SYSTEMD_WANTS}+="mdadm-last-resort@$env{MD_DEVICE}.timer"
+    44	ACTION=="remove", ENV{ID_PATH}=="?*", RUN+="/sbin/mdadm -If $name --path $env{ID_PATH}"
+    45	ACTION=="remove", ENV{ID_PATH}!="?*", RUN+="/sbin/mdadm -If $name"
+### /usr/lib/udev/rules.d/64-btrfs.rules
+     5	ENV{ID_FS_TYPE}!="btrfs", GOTO="btrfs_end"
+     6	ENV{SYSTEMD_READY}=="0", GOTO="btrfs_end"
+     9	IMPORT{builtin}="btrfs ready $devnode"
+    12	ENV{ID_BTRFS_READY}=="0", ENV{SYSTEMD_READY}="0"
+    15	ENV{ID_BTRFS_READY}=="1", RUN+="/usr/bin/udevadm trigger -s block -p ID_BTRFS_READY=0"
+### /usr/lib/udev/rules.d/69-bcache.rules
+    11	ENV{ID_FS_TYPE}=="bcache", GOTO="bcache_backing_found"
+    13	ENV{ID_FS_TYPE}=="?*", GOTO="bcache_backing_end"
+    16	IMPORT{program}="probe-bcache -o udev $tempnode"
+    17	ENV{ID_FS_TYPE}!="bcache", GOTO="bcache_backing_end"
+    18	ENV{ID_FS_UUID_ENC}=="?*", SYMLINK+="disk/by-uuid/$env{ID_FS_UUID_ENC}"
+    21	RUN{builtin}+="kmod load bcache"
+    22	RUN+="bcache-register $tempnode"
+    26	IMPORT{program}="bcache-export-cached $tempnode"
+    27	ENV{CACHED_UUID}=="?*", SYMLINK+="bcache/by-uuid/$env{CACHED_UUID}"
+    28	ENV{CACHED_LABEL}=="?*", SYMLINK+="bcache/by-label/$env{CACHED_LABEL}"
+### /usr/lib/udev/rules.d/69-lvm.rules
+     6	# used as LVM PVs are processed (ID_FS_TYPE="LVM2_member").
+    14	ENV{ID_FS_TYPE}!="LVM2_member", GOTO="lvm_end"
+    19	ENV{ID_FS_UUID_ENC}=="?*", SYMLINK+="disk/by-id/lvm-pv-uuid-$env{ID_FS_UUID_ENC}"
+    37	IMPORT{db}="LVM_MD_PV_ACTIVATED"
+    38	ACTION=="add", ENV{LVM_MD_PV_ACTIVATED}=="1", GOTO="lvm_scan"
+    39	ACTION=="change", ENV{LVM_MD_PV_ACTIVATED}!="1", TEST=="md/array_state", ENV{LVM_MD_PV_ACTIVATED}="1", GOTO="lvm_scan"
+    41	ENV{LVM_MD_PV_ACTIVATED}!="1", ENV{SYSTEMD_READY}="0"
+    47	ACTION=="add", ENV{LVM_LOOP_PV_ACTIVATED}=="1", GOTO="lvm_scan"
+    48	ACTION=="change", ENV{LVM_LOOP_PV_ACTIVATED}!="1", TEST=="loop/backing_file", ENV{LVM_LOOP_PV_ACTIVATED}="1", GOTO="lvm_scan"
+    49	ENV{LVM_LOOP_PV_ACTIVATED}!="1", ENV{SYSTEMD_READY}="0"
+    57	ENV{SYSTEMD_READY}="1"
+    62	# LVM_VG_NAME_COMPLETE='foo'
+    82	IMPORT{program}="/usr/sbin/lvm pvscan --cache --listvg --checkcomplete --vgonline --autoactivation event --udevoutput --journal=output $env{DEVNAME}"
+    85	ENV{LVM_VG_NAME_COMPLETE}=="?*", RUN+="/usr/bin/systemd-run --no-block --property DefaultDependencies=no --unit lvm-activate-$env{LVM_VG_NAME_COMPLETE} /usr/sbin/lvm vgchange -aay --autoactivation event $env{LVM_VG_NAME_COMPLETE}"
+    89	ENV{LVM_VG_NAME_COMPLETE}=="?*", RUN+="/usr/sbin/lvm vgchange -aay --autoactivation event $env{LVM_VG_NAME_COMPLETE}"
+### /usr/lib/udev/rules.d/80-udisks2.rules
+    18	# TODO: file bug against mdadm(8) to have --export-prefix option that can be used with e.g. UDISKS_MD_MEMBER
+    20	SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="raid", ENV{ID_FS_TYPE}=="linux_raid_member", ENV{UDISKS_MD_MEMBER_LEVEL}=="", IMPORT{program}="/bin/sh -c '/sbin/mdadm --examine --export $tempnode | /bin/sed s/^MD_/UDISKS_MD_MEMBER_/g'"
+    22	SUBSYSTEM=="block", KERNEL=="md*", ENV{DEVTYPE}!="partition", IMPORT{program}="/bin/sh -c '/sbin/mdadm --detail --export $tempnode | /bin/sed s/^MD_/UDISKS_MD_/g'"
+    42	KERNEL=="mmcblk[0-9]*", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", IMPORT{parent}="MMC_TYPE"
+    52	KERNEL=="mmcblk[0-9]boot[0-9]*", SUBSYSTEMS=="mmc", ENV{DEVTYPE}=="disk", IMPORT{parent}="ID_*"
+    57	# (e.g. UDISKS_PRESENTATION_HIDE -> UDISKS_IGNORE)
+   116	# interface so setting UDISKS_IGNORE at first does not seem to achieve
+   121	ENV{ID_PART_ENTRY_SCHEME}=="mac", ENV{ID_PART_ENTRY_TYPE}=="Apple_Bootstrap", ENV{UDISKS_IGNORE}="1"
+   124	ENV{ID_PART_ENTRY_SCHEME}=="gpt", ENV{ID_PART_ENTRY_TYPE}=="426f6f74-0000-11aa-aa11-00306543ecac", ENV{UDISKS_IGNORE}="1"
+   128	ENV{ID_PART_ENTRY_SCHEME}=="dos", \
+   129	  ENV{ID_PART_ENTRY_TYPE}=="0x0|0x11|0x12|0x14|0x16|0x17|0x1b|0x1c|0x1e|0x27|0x3d|0x84|0x8d|0x8e|0x90|0x91|0x92|0x93|0x97|0x98|0x9a|0x9b|0xab|0xbb|0xc2|0xc3|0xdd|0xef|0xfd", \
+   130	  ENV{UDISKS_IGNORE}="1"
+   134	ENV{ID_PART_ENTRY_SCHEME}=="gpt", \
+   135	  ENV{ID_PART_ENTRY_TYPE}=="c12a7328-f81f-11d2-ba4b-00a0c93ec93b|21686148-6449-6e6f-744e-656564454649|a19d880f-05fc-4d3b-a006-743f0f84911e|e6d6d379-f507-44c2-a23c-238f2a3df928|e3c9e316-0b5c-4db8-817d-f92df00215ae|de94bba4-06d1-4d40-a16a-bfd50179d6ac", \
+   136	  ENV{UDISKS_IGNORE}="1"
+   140	ENV{ID_PART_ENTRY_SCHEME}=="gpt", \
+   141	  ENV{ID_PART_ENTRY_TYPE}=="bc13c2ff-59e6-4262-a352-b275fd6f7172", \
+   142	  ENV{UDISKS_IGNORE}="1"
+   145	ENV{ID_PART_ENTRY_SCHEME}=="gpt", \
+   146	  ENV{ID_FS_TYPE}=="zfs_member", ENV{ID_PART_ENTRY_TYPE}=="6a898cc3-1dd2-11b2-99a6-080020736631", \
+   147	  ENV{UDISKS_IGNORE}="1"
+   150	ENV{ID_PART_ENTRY_SCHEME}=="mac", \
+   151	  ENV{ID_CDROM}=="?*", ENV{ID_FS_TYPE}=="udf", ENV{ID_FS_LABEL}=="WD*SmartWare", \
+   152	  ENV{UDISKS_IGNORE}="1"
+   154	  ENV{ID_CDROM}=="?*", ENV{ID_FS_TYPE}=="udf", ENV{ID_FS_LABEL}=="WD*SmartWare", \
+   155	  ENV{UDISKS_IGNORE}="1"
+   158	ENV{ID_FS_TYPE}=="ntfs|vfat", \
+   159	  ENV{ID_FS_LABEL}=="Recovery|RECOVERY|Lenovo_Recovery|HP_RECOVERY|Recovery_Partition|DellUtility|DellRestore|IBM_SERVICE|SERVICEV001|SERVICEV002|SYSTEM_RESERVED|System_Reserved|WINRE_DRV|DIAGS|IntelRST", \
+   160	  ENV{UDISKS_IGNORE}="1"
+   163	ENV{ID_VENDOR}=="Sony", ENV{ID_MODEL}=="PRS*Launcher", ENV{UDISKS_IGNORE}="1"
+   166	KERNEL=="sr*", ENV{ID_VENDOR}=="SanDisk", ENV{ID_MODEL}=="Cruzer", ENV{ID_FS_LABEL}=="U3_System", ENV{UDISKS_IGNORE}="1"
+   169	KERNEL=="sr*", ENV{ID_VENDOR}=="ASMT", ENV{ID_MODEL}=="VirtualCDROM", ENV{ID_FS_LABEL}=="ASUS_+Speed_ZENDISK*", ENV{UDISKS_IGNORE}="1"
+   172	KERNEL=="sr*", ENV{ID_VENDOR}=="Linux", ENV{ID_MODEL}=="File-CD_Gadget*", ENV{ID_FS_LABEL}=="CDROM*", ATTRS{manufacturer}=="HMD Global", ENV{UDISKS_IGNORE}="1"
+   184	ENV{ID_PART_TABLE_TYPE}=="dos", ENV{ID_PART_ENTRY_TYPE}=="0x0|0x17", ENV{ID_PART_ENTRY_NUMBER}=="1|2", ENV{ID_FS_TYPE}=="iso9660|udf", ENV{UDISKS_IGNORE}="0"
+   187	KERNEL=="ram*", ENV{UDISKS_IGNORE}="1"
+   188	KERNEL=="zram*", ENV{UDISKS_IGNORE}="1"
+### /usr/lib/udev/rules.d/99-systemd.rules
+    21	# We can't make any conclusions about suspended DM devices so let's just import previous SYSTEMD_READY state and skip other rules
+    22	SUBSYSTEM=="block", ENV{DM_SUSPENDED}=="1", IMPORT{db}="SYSTEMD_READY"
+    25	SUBSYSTEM=="block", ACTION=="add", ENV{DM_UDEV_DISABLE_OTHER_RULES_FLAG}=="1", ENV{SYSTEMD_READY}="0"
+    29	SUBSYSTEM=="block", ENV{DM_UUID}=="CRYPT-*", ENV{ID_PART_TABLE_TYPE}=="", ENV{ID_FS_USAGE}=="", ENV{SYSTEMD_READY}="0"
+    31	# Explicitly set SYSTEMD_READY=1 for DM devices that don't have it set yet, so that we always have something to import above
+    32	SUBSYSTEM=="block", ENV{DM_UUID}=="?*", ENV{SYSTEMD_READY}=="", ENV{SYSTEMD_READY}="1"
+    35	SUBSYSTEM=="block", ENV{ID_PART_GPT_AUTO_ROOT}=="1", ENV{ID_FS_TYPE}!="crypto_LUKS", SYMLINK+="gpt-auto-root"
+    36	SUBSYSTEM=="block", ENV{ID_PART_GPT_AUTO_ROOT}=="1", ENV{ID_FS_TYPE}=="crypto_LUKS", SYMLINK+="gpt-auto-root-luks"
+    37	SUBSYSTEM=="block", ENV{DM_UUID}=="CRYPT-*", ENV{DM_NAME}=="root", SYMLINK+="gpt-auto-root"
+    40	SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="md*", TEST!="md/array_state", ENV{SYSTEMD_READY}="0"
+    41	SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", KERNEL=="md*", ATTR{md/array_state}=="|clear|inactive", ENV{SYSTEMD_READY}="0"
+    44	SUBSYSTEM=="block", KERNEL=="loop[0-9]*", ENV{DEVTYPE}=="disk", TEST!="loop/backing_file", ENV{SYSTEMD_READY}="0"
+    47	SUBSYSTEM=="block", KERNEL=="nbd*", ENV{DEVTYPE}=="disk", TEST!="pid", ENV{SYSTEMD_READY}="0"
+    56	SUBSYSTEM=="net", KERNEL!="lo", TAG+="systemd", ENV{SYSTEMD_ALIAS}+="/sys/subsystem/net/devices/$name"
+    57	SUBSYSTEM=="bluetooth", TAG+="systemd", ENV{SYSTEMD_ALIAS}+="/sys/subsystem/bluetooth/devices/%k", \
+    58	  ENV{SYSTEMD_WANTS}+="bluetooth.target", ENV{SYSTEMD_USER_WANTS}+="bluetooth.target"
+    60	ENV{ID_SMARTCARD_READER}=="?*", TAG+="systemd", ENV{SYSTEMD_WANTS}+="smartcard.target", ENV{SYSTEMD_USER_WANTS}+="smartcard.target"
+    61	SUBSYSTEM=="sound", KERNEL=="controlC*", TAG+="systemd", ENV{SYSTEMD_WANTS}+="sound.target", ENV{SYSTEMD_USER_WANTS}+="sound.target"
+    63	SUBSYSTEM=="printer", TAG+="systemd", ENV{SYSTEMD_WANTS}+="printer.target", ENV{SYSTEMD_USER_WANTS}+="printer.target"
+    64	SUBSYSTEM=="usb", KERNEL=="lp*", TAG+="systemd", ENV{SYSTEMD_WANTS}+="printer.target", ENV{SYSTEMD_USER_WANTS}+="printer.target"
+    65	SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{ID_USB_INTERFACES}=="*:0701??:*", TAG+="systemd", ENV{SYSTEMD_WANTS}+="printer.target", ENV{SYSTEMD_USER_WANTS}+="printer.target"
+    67	SUBSYSTEM=="udc", TAG+="systemd", ENV{SYSTEMD_WANTS}+="usb-gadget.target"
+    70	ACTION=="add", SUBSYSTEM=="net", KERNEL!="lo", RUN+="/usr/lib/systemd/systemd-sysctl --prefix=/net/ipv4/conf/$name --prefix=/net/ipv4/neigh/$name --prefix=/net/ipv6/conf/$name --prefix=/net/ipv6/neigh/$name"
+    74	SUBSYSTEM=="backlight", TAG+="systemd", IMPORT{builtin}="path_id", ENV{SYSTEMD_WANTS}+="systemd-backlight@backlight:$name.service"
+    75	SUBSYSTEM=="leds", KERNEL=="*kbd_backlight*", TAG+="systemd", IMPORT{builtin}="path_id", ENV{SYSTEMD_WANTS}+="systemd-backlight@leds:$name.service"
+    78	SUBSYSTEM=="rfkill", ENV{SYSTEMD_RFKILL}="1"
+    79	SUBSYSTEM=="rfkill", IMPORT{builtin}="path_id"
+    80	SUBSYSTEM=="misc", KERNEL=="rfkill", TAG+="systemd", ENV{SYSTEMD_WANTS}+="systemd-rfkill.socket"
+    83	SUBSYSTEM=="module", KERNEL=="fuse", TAG+="systemd", ENV{SYSTEMD_WANTS}+="sys-fs-fuse-connections.mount"
+    84	SUBSYSTEM=="module", KERNEL=="configfs", TAG+="systemd", ENV{SYSTEMD_WANTS}+="sys-kernel-config.mount"
+
+## maintenance/generator units under this slice
+### /usr/lib/systemd/system/e2scrub_all.service
+     1	[Unit]
+     2	Description=Online ext4 Metadata Check for All Filesystems
+     3	ConditionACPower=true
+     4	ConditionCapability=CAP_SYS_ADMIN
+     5	ConditionCapability=CAP_SYS_RAWIO
+     6	Documentation=man:e2scrub_all(8)
+     7	
+     8	[Service]
+     9	Type=oneshot
+    10	Environment=SERVICE_MODE=1
+    11	ExecStart=/sbin/e2scrub_all
+    12	SyslogIdentifier=e2scrub_all
+### /usr/lib/systemd/system/e2scrub_all.timer
+     1	[Unit]
+     2	Description=Periodic ext4 Online Metadata Check for All Filesystems
+     3	
+     4	[Timer]
+     5	# Run on Sunday at 3:10am, to avoid running afoul of DST changes
+     6	OnCalendar=Sun *-*-* 03:10:00
+     7	RandomizedDelaySec=60
+     8	Persistent=true
+     9	
+    10	[Install]
+    11	WantedBy=timers.target
+### /usr/lib/systemd/system/fstrim.service
+     1	[Unit]
+     2	Description=Discard unused blocks on filesystems from /etc/fstab
+     3	Documentation=man:fstrim(8)
+     4	ConditionVirtualization=!container
+     5	
+     6	[Service]
+     7	Type=oneshot
+     8	ExecStart=/sbin/fstrim --listed-in /etc/fstab:/proc/self/mountinfo --verbose --quiet-unsupported
+     9	PrivateDevices=no
+    10	PrivateNetwork=yes
+    11	PrivateUsers=no
+    12	ProtectKernelTunables=yes
+    13	ProtectKernelModules=yes
+    14	ProtectControlGroups=yes
+    15	MemoryDenyWriteExecute=yes
+    16	SystemCallFilter=@default @file-system @basic-io @system-service
+### /usr/lib/systemd/system/fstrim.timer
+     1	[Unit]
+     2	Description=Discard unused filesystem blocks once a week
+     3	Documentation=man:fstrim
+     4	ConditionVirtualization=!container
+     5	ConditionPathExists=!/etc/initrd-release
+     6	
+     7	[Timer]
+     8	OnCalendar=weekly
+     9	AccuracySec=1h
+    10	Persistent=true
+    11	RandomizedDelaySec=100min
+    12	
+    13	[Install]
+    14	WantedBy=timers.target
+### /usr/lib/systemd/system/xfs_scrub_all.service
+     1	# SPDX-License-Identifier: GPL-2.0-or-later
+     2	#
+     3	# Copyright (C) 2018-2024 Oracle.  All Rights Reserved.
+     4	# Author: Darrick J. Wong <djwong@kernel.org>
+     5	
+     6	[Unit]
+     7	Description=Online XFS Metadata Check for All Filesystems
+     8	ConditionACPower=true
+     9	Documentation=man:xfs_scrub_all(8)
+    10	After=paths.target multi-user.target network.target network-online.target systemd-networkd.service NetworkManager.service connman.service
+    11	
+    12	[Service]
+    13	Type=oneshot
+    14	Environment=SERVICE_MODE=1
+    15	ExecStart=/usr/sbin/xfs_scrub_all
+    16	SyslogIdentifier=xfs_scrub_all
+### /usr/lib/systemd/system/xfs_scrub_all.timer
+     1	# SPDX-License-Identifier: GPL-2.0-or-later
+     2	#
+     3	# Copyright (C) 2018-2024 Oracle.  All Rights Reserved.
+     4	# Author: Darrick J. Wong <djwong@kernel.org>
+     5	
+     6	[Unit]
+     7	Description=Periodic XFS Online Metadata Check for All Filesystems
+     8	
+     9	[Timer]
+    10	# Run on Sunday at 3:10am, to avoid running afoul of DST changes
+    11	OnCalendar=Sun *-*-* 03:10:00
+    12	RandomizedDelaySec=60
+    13	Persistent=true
+    14	
+    15	[Install]
+    16	WantedBy=timers.target
+### /usr/lib/systemd/system/xfs_scrub@.service
+     1	# SPDX-License-Identifier: GPL-2.0-or-later
+     2	#
+     3	# Copyright (C) 2018-2024 Oracle.  All Rights Reserved.
+     4	# Author: Darrick J. Wong <djwong@kernel.org>
+     5	
+     6	[Unit]
+     7	Description=Online XFS Metadata Check for %f
+     8	OnFailure=xfs_scrub_fail@%i.service
+     9	Documentation=man:xfs_scrub(8)
+    10	
+    11	[Service]
+    12	Type=oneshot
+    13	PrivateNetwork=true
+    14	ProtectSystem=full
+    15	ProtectHome=read-only
+    16	# Disable private /tmp just in case %f is a path under /tmp.
+    17	PrivateTmp=no
+    18	AmbientCapabilities=CAP_SYS_ADMIN CAP_FOWNER CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_SYS_RAWIO
+    19	NoNewPrivileges=yes
+    20	User=nobody
+    21	IOSchedulingClass=idle
+    22	CPUSchedulingPolicy=idle
+    23	Environment=SERVICE_MODE=1
+    24	ExecStart=/usr/sbin/xfs_scrub -b -n %f
+    25	SyslogIdentifier=%N
+### /usr/lib/systemd/system-generators/systemd-fstab-generator
+-rwxr-xr-x 1 root root 68312 Mar 24 13:45 /usr/lib/systemd/system-generators/systemd-fstab-generator
+fstab_is_bind
+mount_point_ignore
+fstab_enabled_full
+fstab_filter_options
+fstab_node_to_udev_node
+mount_point_is_api
+generator_enable_remount_fs_service
+../src/fstab-generator/fstab-generator.c
+Mount '%s' is mandatory, ignoring 'noauto', 'nofail', and 'x-systemd.automount' options.
+.mount
+%s should be mounted in the initrd, will request daemon-reload.
+Documentation=man:fstab(5) man:systemd-fstab-generator(8)
+../src/shared/fstab-util.h
+fstab_filter_options(opts, yes_no, &opt, NULL, NULL, NULL) >= 0
+x-systemd.mount-timeout=infinity,retry=10000,nofail,
+.automount
+Documentation=man:fstab(5) man:systemd-fstab-generator(8)
+[Automount]
+gpt-auto
+Could not find a mount.usr= entry on the kernel command line.
+Skipping /usr/ directory handling, as gpt-auto was requested.
+fstab
+Using initrd's fstab for /sysroot/usr/ configuration.
+Skipping root directory handling, as gpt-auto was requested.
+Using initrd's fstab for /sysroot/ configuration.
+Failed to parse fstab switch %s. Ignoring.
+mount.usr
+mount.usrfstype
+mount.usrflags
+Failed to parse systemd.mount-extra= option, ignoring: %s
+SYSTEMD_SYSFS_CHECK
+Failed to parse $SYSTEMD_SYSFS_CHECK, ignoring: %m
+/sys/ is read-only (running in a container?), ignoring mount for %s.
+Synthesizing fstab entry what=/sysusr/usr where=/sysroot/usr opts=bind
+/sysroot/etc/fstab
+SYSTEMD_SYSROOT_FSTAB
+SYSTEMD_FSTAB
+fstab.extra.initrd
+fstab.extra
+systemd-sysroot-fstab-check
+sysroot.mount
+systemd.mount-extra
+rd.systemd.mount-extra
+rd.fstab
+mount_array_add_internal
+mandatory_mount_drop_unapplicable_options
+x-systemd.automount
+add_mount
+fstab_test_yes_no_option
+x-systemd.requires-mounts-for
+write_requires_mounts_for
+x-systemd.mount-timeout
+add_sysroot_usr_mount
+add_sysroot_mount
+mount_array_add
+mount_array_add_swap
+canonicalize_mount_path
+parse_fstab_one
+x-initrd.mount
+comment=systemd.automount
+x-systemd.automount
+parse_fstab
+add_mounts_from_creds
+SYSTEMD_STATIC_DESTRUCT
+### /usr/lib/systemd/system-generators/systemd-gpt-auto-generator
+-rwxr-xr-x 1 root root 67968 Mar 24 13:45 /usr/lib/systemd/system-generators/systemd-gpt-auto-generator
+path_is_mount_point
+partition_pick_mount_options
+fstab_has_fstype
+fstab_is_mount_point_full
+generator_enable_remount_fs_service
+../src/gpt-auto-generator/gpt-auto-generator.c
+Before=umount.target cryptsetup.target
+Conflicts=umount.target
+# Automatically generated by systemd-gpt-auto-generator
+Refusing to automatically mount uncommon file system '%s' to '%s'.
+.mount
+Documentation=man:systemd-gpt-auto-generator(8)
+.automount
+Documentation=man:systemd-gpt-auto-generator(8)
+[Automount]
+Cannot check if "%s" is a mount point: %m
+Parameter ro/rw specified on kernel command line, not generating drop-in for systemd-remount-fs.service.
+Root partition marked read-only in GPT partition table, not generating drop-in for systemd-remount-fs.service.
+# Automatically generated by systemd-gpt-auto-generator
+Environment=SYSTEMD_REMOUNT_ROOT_RW=1
+/systemd-remount-fs.service.d/50-remount-rw.conf
+systemd.gpt_auto
+rd.systemd.gpt_auto
+Failed to parse gpt-auto switch "%s", ignoring: %m
+gpt-auto
+Failed to parse fstab: %m
+Not an EFI boot, not creating root mount.
+/dev/gpt-auto-root
+/dev/gpt-auto-root-luks
+Failed to pick root mount options: %m
+swap specified in fstab, ignoring.
+Documentation=man:systemd-gpt-auto-generator(8)
+EFI loader partition unknown, skipping ESP and XBOOTLDR mounts.
+/boot/ specified in fstab, ignoring XBOOTLDR partition.
+Failed to determine default mount options for /boot/: %m
+Failed to check if fstab entry for device '%s' exists: %m
+Failed to determine default mount options for %s: %m
+EFI System Partition Automount
+add_mount
+add_automount
+slash_boot_in_fstab
+add_root_mount
+add_mounts
+slash_efi_in_fstab
+SYSTEMD_STATIC_DESTRUCT
+
+## create attacker-supplied metadata images
+ext_label_repr=$'\nSYSTEMD_WANTS=u'
+ID_FS_LABEL=SYSTEMD_WANTS=u
+ID_FS_LABEL_ENC=\x0aSYSTEMD_WANTS=u
+ID_FS_UUID=850fefda-1045-4056-9330-cd0944ee016f
+ID_FS_UUID_ENC=850fefda-1045-4056-9330-cd0944ee016f
+ID_FS_VERSION=1.0
+ID_FS_FSBLOCKSIZE=4096
+ID_FS_BLOCK_SIZE=4096
+ID_FS_FSLASTBLOCK=16384
+ID_FS_FSSIZE=67108864
+ID_FS_TYPE=ext4
+ID_FS_USAGE=filesystem
+
+btrfs_label_repr=$'BT\nSYSTEMD_WANTS=u.service'
+ID_FS_LABEL=BT_SYSTEMD_WANTS=u.service
+ID_FS_LABEL_ENC=BT\x0aSYSTEMD_WANTS=u.service
+ID_FS_UUID=971486d7-bf86-4a9c-8798-09ba0b2725b4
+ID_FS_UUID_ENC=971486d7-bf86-4a9c-8798-09ba0b2725b4
+ID_FS_UUID_SUB=b485b89d-6c08-427d-b5e8-b10818c2c5f6
+ID_FS_UUID_SUB_ENC=b485b89d-6c08-427d-b5e8-b10818c2c5f6
+ID_FS_FSBLOCKSIZE=4096
+ID_FS_BLOCK_SIZE=4096
+ID_FS_FSLASTBLOCK=40960
+ID_FS_FSSIZE=167772160
+ID_FS_TYPE=btrfs
+ID_FS_USAGE=filesystem
+
+Partition GUID code: 0FC63DAF-8483-4772-8E79-3D69D8477DE4 (Linux filesystem)
+Partition unique GUID: 0337AAFE-D5A8-4C3B-AC2B-5B4E64BDFD23
+First sector: 2048 (at 1024.0 KiB)
+Last sector: 67583 (at 33.0 MiB)
+Partition size: 65536 sectors (32.0 MiB)
+Attribute flags: 0000000000000000
+Partition name: 'pt
+SYSTEMD_WANTS=u.service'
+
+ID_FS_LABEL=--help
+ID_FS_LABEL_ENC=--help
+ID_FS_UUID=e3c914a9-6560-42c6-9d07-17324113ebb0
+ID_FS_UUID_ENC=e3c914a9-6560-42c6-9d07-17324113ebb0
+ID_FS_FSSIZE=469762048
+ID_FS_FSLASTBLOCK=131072
+ID_FS_FSBLOCKSIZE=4096
+ID_FS_BLOCK_SIZE=512
+ID_FS_TYPE=xfs
+ID_FS_USAGE=filesystem
+
+           Name : md
+SYSTEMD_WANTS=u.service
+  Creation Time : Sun May 17 19:22:03 2026
+     Raid Level : raid1
+   Raid Devices : 2
+
+ Avail Dev Size : 120000 sectors (58.59 MiB 61.44 MB)
+     Array Size : 60000 KiB (58.59 MiB 61.44 MB)
+MD_LEVEL=raid1
+MD_DEVICES=2
+MD_NAME=md
+MD_ARRAY_SIZE=61.44MB
+MD_UUID=bc0a6508:41435eae:860cf5b3:fc86af43
+MD_UPDATE_TIME=1779045723
+MD_DEV_UUID=a3d43601:b83f2102:a59c058c:e6d5a57f
+MD_EVENTS=1
+
+## lvm name gate and fixture
+name_test=bad\ space
+  Name contains invalid character, valid set includes: [a-zA-Z0-9.-_+].
+  New volume group name "bad space" is invalid.
+  Run `vgcreate --help' for more information.
+name_test_rc=3
+name_test=a/b
+  Name contains invalid character, valid set includes: [a-zA-Z0-9.-_+].
+  New volume group name "a/b" is invalid.
+  Run `vgcreate --help' for more information.
+name_test_rc=3
+name_test=a\;b
+  Name contains invalid character, valid set includes: [a-zA-Z0-9.-_+].
+  New volume group name "a;b" is invalid.
+  Run `vgcreate --help' for more information.
+name_test_rc=3
+name_test=$'a\nb'
+  Name contains invalid character, valid set includes: [a-zA-Z0-9.-_+].
+  New volume group name "a
+b" is invalid.
+  Run `vgcreate --help' for more information.
+name_test_rc=3
+name_test=--property=Environment=X=Y
+vgcreate: unrecognized option '--property=Environment=X=Y'
+  Error during parsing of command line.
+name_test_rc=3
+name_test=uulvm.service
+  Volume group "uulvm.service" successfully created
+name_test_rc=0
+
+## bcache fixture
+UUID:			8a17242e-a418-43fe-b6e9-b79db9d23614
+Set UUID:		6ef68220-c2af-4765-b33d-71e6414ab866
+version:		1
+block_size:		1
+data_offset:		16
+sb.magic		ok
+sb.first_sector		8 [match]
+sb.csum			8FF7CBBD62D7B940 [match]
+sb.version		1 [backing device]
+
+dev.label		(empty)
+dev.uuid		8a17242e-a418-43fe-b6e9-b79db9d23614
+dev.sectors_per_block	1
+dev.sectors_per_bucket	1024
+dev.data.first_sector	16
+dev.data.cache_mode	0 [writethrough]
+dev.data.cache_state	0 [detached]
+
+cset.uuid		6ef68220-c2af-4765-b33d-71e6414ab866
+ID_FS_UUID=8a17242e-a418-43fe-b6e9-b79db9d23614
+ID_FS_UUID_ENC=8a17242e-a418-43fe-b6e9-b79db9d23614
+ID_FS_TYPE=bcache
+ID_FS_USAGE=other
+bcache.img	67108864 bytes
+btrfs-line.img	167772160 bytes
+ext-line.img	67108864 bytes
+gpt-line.img	83886080 bytes
+lvm-uulvm.service.img	67108864 bytes
+md-line.img	67108864 bytes
+xfs-help.img	536870912 bytes
+
+## active selfauth UDisks trigger
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/tty1
+XDG_SESSION_ID=68
+Id=68
+User=1002
+Name=selfauth
+Seat=seat0
+TTY=tty1
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+## udisks loop-setup /home/selfauth/udisks-udev-meta-consumers-20260517/bcache.img
+Mapped file /home/selfauth/udisks-udev-meta-consumers-20260517/bcache.img as /dev/loop6.
+loop_setup_rc=0
+## udisks loop-setup /home/selfauth/udisks-udev-meta-consumers-20260517/btrfs-line.img
+Mapped file /home/selfauth/udisks-udev-meta-consumers-20260517/btrfs-line.img as /dev/loop7.
+loop_setup_rc=0
+## udisks mount /dev/loop7
+Mounted /dev/loop7 at /media/selfauth/BT_SYSTEMD_WANTS=u.service
+## udisks loop-setup /home/selfauth/udisks-udev-meta-consumers-20260517/ext-line.img
+Mapped file /home/selfauth/udisks-udev-meta-consumers-20260517/ext-line.img as /dev/loop8.
+loop_setup_rc=0
+## udisks mount /dev/loop8
+Mounted /dev/loop8 at /media/selfauth/_SYSTEMD_WANTS=u
+## udisks loop-setup /home/selfauth/udisks-udev-meta-consumers-20260517/gpt-line.img
+Mapped file /home/selfauth/udisks-udev-meta-consumers-20260517/gpt-line.img as /dev/loop9.
+loop_setup_rc=0
+## udisks loop-setup /home/selfauth/udisks-udev-meta-consumers-20260517/lvm-uulvm.service.img
+Mapped file /home/selfauth/udisks-udev-meta-consumers-20260517/lvm-uulvm.service.img as /dev/loop10.
+loop_setup_rc=0
+## udisks loop-setup /home/selfauth/udisks-udev-meta-consumers-20260517/md-line.img
+Mapped file /home/selfauth/udisks-udev-meta-consumers-20260517/md-line.img as /dev/loop11.
+loop_setup_rc=0
+## udisks loop-setup /home/selfauth/udisks-udev-meta-consumers-20260517/xfs-help.img
+Mapped file /home/selfauth/udisks-udev-meta-consumers-20260517/xfs-help.img as /dev/loop12.
+loop_setup_rc=0
+## udisks mount /dev/loop12
+Mounted /dev/loop12 at /media/selfauth/--help
+
+## root-observed metadata after active trigger
+NAME="loop0" TYPE="loop" FSTYPE="ext4" LABEL="" UUID="e93a0d5e-83a8-45ad-94d3-2e31ad838cb8" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/loop0"
+NAME="loop1" TYPE="loop" FSTYPE="ext4" LABEL="" UUID="8615d975-0f80-4f36-93ff-b6a371ac1e2a" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/loop1"
+NAME="loop2" TYPE="loop" FSTYPE="ext4" LABEL="" UUID="775e1be4-b634-477c-99b8-85f50bb1bdba" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/loop2"
+NAME="loop3" TYPE="loop" FSTYPE="ext4" LABEL="" UUID="c8258b07-7a77-4802-b38d-a28048afa450" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/loop3"
+NAME="loop4" TYPE="loop" FSTYPE="ext4" LABEL="" UUID="133af48a-4c7a-4774-baf3-4c151059e332" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/loop4"
+NAME="loop5" TYPE="loop" FSTYPE="ext4" LABEL="" UUID="eee9e4a6-16e2-412b-843d-6faa07d42ee2" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/loop5"
+NAME="loop6" TYPE="loop" FSTYPE="bcache" LABEL="" UUID="8a17242e-a418-43fe-b6e9-b79db9d23614" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/loop6"
+NAME="loop7" TYPE="loop" FSTYPE="btrfs" LABEL="BT\x0aSYSTEMD_WANTS=u.service" UUID="971486d7-bf86-4a9c-8798-09ba0b2725b4" PARTLABEL="" PARTUUID="" MOUNTPOINT="/media/selfauth/BT_SYSTEMD_WANTS=u.service" PATH="/dev/loop7"
+NAME="loop8" TYPE="loop" FSTYPE="ext4" LABEL="\x0aSYSTEMD_WANTS=u" UUID="850fefda-1045-4056-9330-cd0944ee016f" PARTLABEL="" PARTUUID="" MOUNTPOINT="/media/selfauth/_SYSTEMD_WANTS=u" PATH="/dev/loop8"
+NAME="loop9" TYPE="loop" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/loop9"
+NAME="loop9p1" TYPE="part" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/loop9p1"
+NAME="loop10" TYPE="loop" FSTYPE="LVM2_member" LABEL="" UUID="ao8ImC-7aAk-gmkf-23gk-IskS-kw2b-Pi62fM" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/loop10"
+NAME="loop11" TYPE="loop" FSTYPE="linux_raid_member" LABEL="md\x0aSYSTEMD_WANTS=u.service" UUID="bc0a6508-4143-5eae-860c-f5b3fc86af43" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/loop11"
+NAME="loop12" TYPE="loop" FSTYPE="xfs" LABEL="--help" UUID="e3c914a9-6560-42c6-9d07-17324113ebb0" PARTLABEL="" PARTUUID="" MOUNTPOINT="/media/selfauth/--help" PATH="/dev/loop12"
+NAME="loop13" TYPE="loop" FSTYPE="vfat" LABEL="" UUID="569B-7464" PARTLABEL="" PARTUUID="" MOUNTPOINT="/media/selfauth/569B-7464" PATH="/dev/loop13"
+NAME="nbd0" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd0"
+NAME="nbd1" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd1"
+NAME="nbd2" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd2"
+NAME="nbd3" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd3"
+NAME="nbd4" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd4"
+NAME="nbd5" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd5"
+NAME="nbd6" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd6"
+NAME="nbd7" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd7"
+NAME="vda" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/vda"
+NAME="vda1" TYPE="part" FSTYPE="ext4" LABEL="" UUID="55897b87-5d1f-4f12-8931-37b6e249877b" PARTLABEL="" PARTUUID="7b0c49f7-01" MOUNTPOINT="/etc/hosts" PATH="/dev/vda1"
+NAME="vdb" TYPE="disk" FSTYPE="erofs" LABEL="" UUID="27685418-1790-40c3-bbc1-ea2342957362" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/vdb"
+NAME="nbd8" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd8"
+NAME="nbd9" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd9"
+NAME="nbd10" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd10"
+NAME="nbd11" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd11"
+NAME="nbd12" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd12"
+NAME="nbd13" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd13"
+NAME="nbd14" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd14"
+NAME="nbd15" TYPE="disk" FSTYPE="" LABEL="" UUID="" PARTLABEL="" PARTUUID="" MOUNTPOINT="" PATH="/dev/nbd15"
+### root props /dev/loop6 /home/selfauth/udisks-udev-meta-consumers-20260517/bcache.img
+NAME       SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                                                     DIO LOG-SEC
+/dev/loop6         0      0         0  0 /home/selfauth/udisks-udev-meta-consumers-20260517/bcache.img   0     512
+DEVLINKS=/dev/disk/by-loop-inode/0:60-16155127 /dev/disk/by-diskseq/107
+DEVNAME=/dev/loop6
+ID_FS_TYPE=bcache
+ID_FS_USAGE=other
+ID_FS_UUID=8a17242e-a418-43fe-b6e9-b79db9d23614
+ID_FS_UUID_ENC=8a17242e-a418-43fe-b6e9-b79db9d23614
+### root props /dev/loop7 /home/selfauth/udisks-udev-meta-consumers-20260517/btrfs-line.img
+NAME       SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                                                         DIO LOG-SEC
+/dev/loop7         0      0         0  0 /home/selfauth/udisks-udev-meta-consumers-20260517/btrfs-line.img   0     512
+DEVLINKS=/dev/disk/by-loop-inode/0:60-16155120 /dev/disk/by-uuid/971486d7-bf86-4a9c-8798-09ba0b2725b4 /dev/disk/by-diskseq/108 /dev/disk/by-label/BT\x0aSYSTEMD_WANTS=u.service
+DEVNAME=/dev/loop7
+ID_BTRFS_READY=1
+ID_FS_BLOCKSIZE=4096
+ID_FS_LABEL=BT_SYSTEMD_WANTS=u.service
+ID_FS_LABEL_ENC=BT\x0aSYSTEMD_WANTS=u.service
+ID_FS_LASTBLOCK=40960
+ID_FS_SIZE=167772160
+ID_FS_TYPE=btrfs
+ID_FS_USAGE=filesystem
+ID_FS_UUID=971486d7-bf86-4a9c-8798-09ba0b2725b4
+ID_FS_UUID_ENC=971486d7-bf86-4a9c-8798-09ba0b2725b4
+ID_FS_UUID_SUB=b485b89d-6c08-427d-b5e8-b10818c2c5f6
+ID_FS_UUID_SUB_ENC=b485b89d-6c08-427d-b5e8-b10818c2c5f6
+### root props /dev/loop8 /home/selfauth/udisks-udev-meta-consumers-20260517/ext-line.img
+NAME       SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                                                       DIO LOG-SEC
+/dev/loop8         0      0         0  0 /home/selfauth/udisks-udev-meta-consumers-20260517/ext-line.img   0     512
+DEVLINKS=/dev/disk/by-label/\x0aSYSTEMD_WANTS=u /dev/disk/by-diskseq/109 /dev/disk/by-loop-inode/0:60-16155119 /dev/disk/by-uuid/850fefda-1045-4056-9330-cd0944ee016f
+DEVNAME=/dev/loop8
+ID_FS_BLOCKSIZE=4096
+ID_FS_LABEL=SYSTEMD_WANTS=u
+ID_FS_LABEL_ENC=\x0aSYSTEMD_WANTS=u
+ID_FS_LASTBLOCK=16384
+ID_FS_SIZE=67108864
+ID_FS_TYPE=ext4
+ID_FS_USAGE=filesystem
+ID_FS_UUID=850fefda-1045-4056-9330-cd0944ee016f
+ID_FS_UUID_ENC=850fefda-1045-4056-9330-cd0944ee016f
+ID_FS_VERSION=1.0
+### root props /dev/loop9 /home/selfauth/udisks-udev-meta-consumers-20260517/gpt-line.img
+NAME       SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                                                       DIO LOG-SEC
+/dev/loop9         0      0         0  0 /home/selfauth/udisks-udev-meta-consumers-20260517/gpt-line.img   0     512
+DEVLINKS=/dev/disk/by-loop-inode/0:60-16155122 /dev/disk/by-diskseq/110
+DEVNAME=/dev/loop9
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=50e0857b-6aeb-44ed-8a88-1f85746a92b4
+### root child loop9p1
+DEVLINKS=/dev/disk/by-diskseq/110-part1 /dev/disk/by-loop-inode/0:60-16155122-part1
+DEVNAME=/dev/loop9p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=50e0857b-6aeb-44ed-8a88-1f85746a92b4
+### udevadm test loop9p1 excerpt
+loop9p1: Failed to open block device /dev/loop9p1, ignoring: No such file or directory
+loop9p1: /usr/lib/udev/rules.d/60-persistent-storage.rules:154 Added SYMLINK 'disk/by-diskseq/110-part1'
+loop9p1: /usr/lib/udev/rules.d/60-persistent-storage.rules:157 Added SYMLINK 'disk/by-loop-inode/0:60-16155122-part1'
+PARTNAME=pt!SYSTEMD_WANTS=u.service
+DEVLINKS=/dev/disk/by-diskseq/110-part1 /dev/disk/by-loop-inode/0:60-16155122-part1
+### root child loop9p1
+DEVLINKS=/dev/disk/by-diskseq/110-part1 /dev/disk/by-loop-inode/0:60-16155122-part1
+DEVNAME=/dev/loop9p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=50e0857b-6aeb-44ed-8a88-1f85746a92b4
+### udevadm test loop9p1 excerpt
+loop9p1: Failed to open block device /dev/loop9p1, ignoring: No such file or directory
+loop9p1: /usr/lib/udev/rules.d/60-persistent-storage.rules:154 Added SYMLINK 'disk/by-diskseq/110-part1'
+loop9p1: /usr/lib/udev/rules.d/60-persistent-storage.rules:157 Added SYMLINK 'disk/by-loop-inode/0:60-16155122-part1'
+PARTNAME=pt!SYSTEMD_WANTS=u.service
+DEVLINKS=/dev/disk/by-loop-inode/0:60-16155122-part1 /dev/disk/by-diskseq/110-part1
+### root props /dev/loop10 /home/selfauth/udisks-udev-meta-consumers-20260517/lvm-uulvm.service.img
+NAME        SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                                                                DIO LOG-SEC
+/dev/loop10         0      0         0  0 /home/selfauth/udisks-udev-meta-consumers-20260517/lvm-uulvm.service.img   0     512
+DEVLINKS=/dev/disk/by-id/lvm-pv-uuid-ao8ImC-7aAk-gmkf-23gk-IskS-kw2b-Pi62fM /dev/disk/by-diskseq/111 /dev/disk/by-loop-inode/0:60-16155094
+DEVNAME=/dev/loop10
+ID_FS_TYPE=LVM2_member
+ID_FS_USAGE=raid
+ID_FS_UUID=ao8ImC-7aAk-gmkf-23gk-IskS-kw2b-Pi62fM
+ID_FS_UUID_ENC=ao8ImC-7aAk-gmkf-23gk-IskS-kw2b-Pi62fM
+ID_FS_VERSION=LVM2 001
+LVM_LOOP_PV_ACTIVATED=1
+SYSTEMD_READY=1
+### root props /dev/loop11 /home/selfauth/udisks-udev-meta-consumers-20260517/md-line.img
+NAME        SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                                                      DIO LOG-SEC
+/dev/loop11         0      0         0  0 /home/selfauth/udisks-udev-meta-consumers-20260517/md-line.img   0     512
+DEVLINKS=/dev/disk/by-loop-inode/0:60-16155124 /dev/disk/by-diskseq/112
+DEVNAME=/dev/loop11
+ID_FS_LABEL=md_SYSTEMD_WANTS=u.service
+ID_FS_LABEL_ENC=md\x0aSYSTEMD_WANTS=u.service
+ID_FS_TYPE=linux_raid_member
+ID_FS_USAGE=raid
+ID_FS_UUID=bc0a6508-4143-5eae-860c-f5b3fc86af43
+ID_FS_UUID_ENC=bc0a6508-4143-5eae-860c-f5b3fc86af43
+ID_FS_UUID_SUB=a3d43601-b83f-2102-a59c-058ce6d5a57f
+ID_FS_UUID_SUB_ENC=a3d43601-b83f-2102-a59c-058ce6d5a57f
+ID_FS_VERSION=1.2
+UDISKS_MD_MEMBER_ARRAY_SIZE=61.44MB
+UDISKS_MD_MEMBER_DEVICES=2
+UDISKS_MD_MEMBER_DEV_UUID=a3d43601:b83f2102:a59c058c:e6d5a57f
+UDISKS_MD_MEMBER_EVENTS=1
+UDISKS_MD_MEMBER_LEVEL=raid1
+UDISKS_MD_MEMBER_NAME=md
+UDISKS_MD_MEMBER_UPDATE_TIME=1779045723
+UDISKS_MD_MEMBER_UUID=bc0a6508:41435eae:860cf5b3:fc86af43
+### root props /dev/loop12 /home/selfauth/udisks-udev-meta-consumers-20260517/xfs-help.img
+NAME        SIZELIMIT OFFSET AUTOCLEAR RO BACK-FILE                                                       DIO LOG-SEC
+/dev/loop12         0      0         0  0 /home/selfauth/udisks-udev-meta-consumers-20260517/xfs-help.img   0     512
+DEVLINKS=/dev/disk/by-uuid/e3c914a9-6560-42c6-9d07-17324113ebb0 /dev/disk/by-loop-inode/0:60-16155123 /dev/disk/by-diskseq/113 /dev/disk/by-label/--help
+DEVNAME=/dev/loop12
+ID_FS_BLOCKSIZE=4096
+ID_FS_LABEL=--help
+ID_FS_LABEL_ENC=--help
+ID_FS_LASTBLOCK=131072
+ID_FS_SIZE=469762048
+ID_FS_TYPE=xfs
+ID_FS_USAGE=filesystem
+ID_FS_UUID=e3c914a9-6560-42c6-9d07-17324113ebb0
+ID_FS_UUID_ENC=e3c914a9-6560-42c6-9d07-17324113ebb0
+UDISKS_AUTO=0
+
+## marker unit / SYSTEMD_WANTS injection check
+○ u.service - udisks udev metadata consumer injected wants detector
+     Loaded: loaded (/etc/systemd/system/u.service; static)
+     Active: inactive (dead)
+ROOT_PROOF_ABSENT /root/udisks-udev-meta-consumers-20260517-root
+ROOT_PROOF_ABSENT /run/udisks-udev-meta-consumers-20260517-root
+ROOT_PROOF_ABSENT /tmp/udisks-udev-meta-consumers-20260517-root
+
+## lvm root consumer result
+  PV          VG            Fmt  Attr PSize  PFree 
+  /dev/loop10 uulvm.service lvm2 a--  60.00m 60.00m
+  VG            #PV #LV #SN Attr   VSize  VFree 
+  uulvm.service   1   0   0 wz--n- 60.00m 60.00m
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.
+To show all installed unit files use 'systemctl list-unit-files'.
+May 17 19:18:29 bf51bb670420 systemd[1]: Started lvm-activate-uulvm.service - /usr/sbin/lvm vgchange -aay --autoactivation event uulvm.service.
+May 17 19:18:29 bf51bb670420 lvm[18185]:   Volume group "uulvm.service" not found
+May 17 19:18:29 bf51bb670420 lvm[18185]:   Cannot process volume group uulvm.service
+May 17 19:18:29 bf51bb670420 systemd[1]: lvm-activate-uulvm.service: Main process exited, code=exited, status=5/NOTINSTALLED
+May 17 19:18:29 bf51bb670420 systemd[1]: lvm-activate-uulvm.service: Failed with result 'exit-code'.
+May 17 19:22:06 bf51bb670420 systemd[1]: Started lvm-activate-uulvm.service - /usr/sbin/lvm vgchange -aay --autoactivation event uulvm.service.
+May 17 19:22:06 bf51bb670420 lvm[21831]:   0 logical volume(s) in volume group "uulvm.service" now active
+May 17 19:22:07 bf51bb670420 systemd[1]: lvm-activate-uulvm.service: Deactivated successfully.
+
+## fstab/gpt generator check with attacker mounts present
+### /etc/fstab
+-rw-r--r-- root:root /etc/fstab
+# UNCONFIGURED FSTAB FOR BASE SYSTEM
+Found container virtualization docker.
+Parsing /etc/fstab...
+lrwxrwxrwx 1 root root 50 May 17 19:22 /tmp/udgen-udisks-udev-meta-consumers-20260517/normal/local-fs.target.wants/systemd-remount-fs.service -> /usr/lib/systemd/system/systemd-remount-fs.service
+
+## e2scrub/fstrim/xfs_scrub root consumers with UDisks mounts present
+### current relevant mounts
+/media/selfauth/BT_SYSTEMD_WANTS=u.service /dev/loop7 btrfs rw,nosuid,nodev,relatime,ssd,discard=async,noacl,space_cache=v2,subvolid=5,subvol=/
+/media/selfauth/--help /dev/loop12 xfs rw,nosuid,nodev,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota
+### e2scrub default service mode
+/etc/e2scrub.conf:5:# periodic_e2scrub=1
+/sbin/e2scrub_all:28:periodic_e2scrub=0
+/sbin/e2scrub_all:78:if [ -n "${SERVICE_MODE}" -a "${periodic_e2scrub}" -ne 1 ]; then
++ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
++ ((  0 != 0  ))
++ periodic_e2scrub=0
++ scrub_all=0
++ snap_size_mb=256
++ reap=0
++ conffile=/etc/e2scrub.conf
++ test -f /etc/e2scrub.conf
++ . /etc/e2scrub.conf
++ scrub_args=
++ getopts nrAV opt
++ case "${opt}" in
++ DBG='echo Would execute: '
++ getopts nrAV opt
++ shift 1
++ '[' -n 1 -a 0 -ne 1 ']'
++ '[' 0 -eq 0 ']'
++ exitcode 0
++ ret=0
++ '[' -n 1 -a 0 -ne 0 ']'
++ exit 0
+May 17 03:15:54 bf51bb670420 systemd[1]: Starting e2scrub_all.service - Online ext4 Metadata Check for All Filesystems...
+May 17 03:15:54 bf51bb670420 systemd[1]: e2scrub_all.service: Deactivated successfully.
+May 17 03:15:54 bf51bb670420 systemd[1]: Finished e2scrub_all.service - Online ext4 Metadata Check for All Filesystems.
+-- Boot 96caf4622a634ac080c0ac1044cba492 --
+May 17 19:18:51 bf51bb670420 systemd[1]: Starting e2scrub_all.service - Online ext4 Metadata Check for All Filesystems...
+May 17 19:18:51 bf51bb670420 systemd[1]: e2scrub_all.service: Deactivated successfully.
+May 17 19:18:51 bf51bb670420 systemd[1]: Finished e2scrub_all.service - Online ext4 Metadata Check for All Filesystems.
+May 17 19:22:26 bf51bb670420 systemd[1]: Starting e2scrub_all.service - Online ext4 Metadata Check for All Filesystems...
+May 17 19:22:26 bf51bb670420 systemd[1]: e2scrub_all.service: Deactivated successfully.
+May 17 19:22:26 bf51bb670420 systemd[1]: Finished e2scrub_all.service - Online ext4 Metadata Check for All Filesystems.
+### fstrim service
+○ fstrim.service - Discard unused blocks on filesystems from /etc/fstab
+     Loaded: loaded (/usr/lib/systemd/system/fstrim.service; static)
+     Active: inactive (dead)
+TriggeredBy: ○ fstrim.timer
+  Condition: start condition unmet at Sun 2026-05-17 19:22:26 UTC; 7ms ago
+             └─ ConditionVirtualization=!container was not met
+       Docs: man:fstrim(8)
+
+May 17 19:18:51 bf51bb670420 systemd[1]: fstrim.service - Discard unused blocks on filesystems from /etc/fstab was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 17 19:22:26 bf51bb670420 systemd[1]: fstrim.service - Discard unused blocks on filesystems from /etc/fstab was skipped because of an unmet condition check (ConditionVirtualization=!container).
+
+○ fstrim.timer - Discard unused filesystem blocks once a week
+     Loaded: loaded (/usr/lib/systemd/system/fstrim.timer; enabled; preset: enabled)
+     Active: inactive (dead)
+    Trigger: n/a
+   Triggers: ● fstrim.service
+  Condition: start condition unmet at Sun 2026-05-17 18:21:19 UTC; 1h 1min ago
+       Docs: man:fstrim
+
+May 17 18:21:19 bf51bb670420 systemd[1]: fstrim.timer - Discard unused filesystem blocks once a week was skipped because of an unmet condition check (ConditionVirtualization=!container).
+### xfs_scrub_all service
+Job for xfs_scrub_all.service failed because the control process exited with error code.
+See "systemctl status xfs_scrub_all.service" and "journalctl -xeu xfs_scrub_all.service" for details.
+May 17 19:18:51 bf51bb670420 systemd[1]: Starting xfs_scrub_all.service - Online XFS Metadata Check for All Filesystems...
+May 17 19:18:53 bf51bb670420 systemd[1]: xfs_scrub_all.service: Deactivated successfully.
+May 17 19:18:53 bf51bb670420 systemd[1]: Finished xfs_scrub_all.service - Online XFS Metadata Check for All Filesystems.
+May 17 19:22:26 bf51bb670420 systemd[1]: Starting xfs_scrub_all.service - Online XFS Metadata Check for All Filesystems...
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]: Scrubbing /media/selfauth/--help...
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]: Exception in thread Thread-1 (run_scrub):
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]: Traceback (most recent call last):
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]:   File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]:     self.run()
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]:   File "/usr/lib/python3.12/threading.py", line 1010, in run
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]:     self._target(*self._args, **self._kwargs)
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]:   File "/usr/sbin/xfs_scrub_all", line 166, in run_scrub
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]:     unitname = path_to_serviceunit(path)
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]:                                    ^^^^
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]: NameError: name 'path' is not defined
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]: Traceback (most recent call last):
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]:   File "/usr/sbin/xfs_scrub_all", line 318, in <module>
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]:     main()
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]:   File "/usr/sbin/xfs_scrub_all", line 299, in main
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]:     if wait_for_termination(cond, killfuncs):
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]:        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]:   File "/usr/sbin/xfs_scrub_all", line 218, in wait_for_termination
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]:     if debug:
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]:        ^^^^^
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]: NameError: name 'debug' is not defined
+May 17 19:22:32 bf51bb670420 systemd[1]: xfs_scrub_all.service: Main process exited, code=exited, status=1/FAILURE
+May 17 19:22:32 bf51bb670420 systemd[1]: xfs_scrub_all.service: Failed with result 'exit-code'.
+May 17 19:22:32 bf51bb670420 systemd[1]: Failed to start xfs_scrub_all.service - Online XFS Metadata Check for All Filesystems.
+May 17 19:22:32 bf51bb670420 systemd[1]: xfs_scrub_all.service: Consumed 6.247s CPU time.
+  UNIT                  LOAD   ACTIVE SUB    DESCRIPTION
+● xfs_scrub_all.service loaded failed failed Online XFS Metadata Check for All Filesystems
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+1 loaded units listed.
+To show all installed unit files use 'systemctl list-unit-files'.
+
+## recent udev/storage journal excerpt
+May 17 19:22:32 bf51bb670420 systemd[1]: xfs_scrub_all.service: Consumed 6.247s CPU time.
+May 17 19:22:32 bf51bb670420 systemd[1]: Failed to start xfs_scrub_all.service - Online XFS Metadata Check for All Filesystems.
+May 17 19:22:32 bf51bb670420 systemd[1]: xfs_scrub_all.service: Failed with result 'exit-code'.
+May 17 19:22:32 bf51bb670420 systemd[1]: xfs_scrub_all.service: Main process exited, code=exited, status=1/FAILURE
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]:   File "/usr/sbin/xfs_scrub_all", line 218, in wait_for_termination
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]:   File "/usr/sbin/xfs_scrub_all", line 299, in main
+May 17 19:22:32 bf51bb670420 xfs_scrub_all[22543]:   File "/usr/sbin/xfs_scrub_all", line 318, in <module>
+May 17 19:22:26 bf51bb670420 xfs_scrub_all[22543]:   File "/usr/sbin/xfs_scrub_all", line 166, in run_scrub
+May 17 19:22:26 bf51bb670420 systemd[1]: Starting xfs_scrub_all.service - Online XFS Metadata Check for All Filesystems...
+May 17 19:22:26 bf51bb670420 systemd[1]: fstrim.service - Discard unused blocks on filesystems from /etc/fstab was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 17 19:22:26 bf51bb670420 systemd[1]: Finished e2scrub_all.service - Online ext4 Metadata Check for All Filesystems.
+May 17 19:22:26 bf51bb670420 systemd[1]: e2scrub_all.service: Deactivated successfully.
+May 17 19:22:26 bf51bb670420 systemd[1]: Starting e2scrub_all.service - Online ext4 Metadata Check for All Filesystems...
+May 17 19:22:22 bf51bb670420 udisksd[22051]: Mounted /dev/loop13 at /media/selfauth/569B-7464 on behalf of uid 1002
+May 17 19:22:20 bf51bb670420 kernel:  loop13:
+May 17 19:22:19 bf51bb670420 udisksd[22051]: Set up loop device /dev/loop13 (backed by /home/selfauth/udisks-missing-goto-active/vfat-Check.img)
+May 17 19:22:18 bf51bb670420 kernel:  loop13:
+May 17 19:22:18 bf51bb670420 kernel:  loop13:
+May 17 19:22:18 bf51bb670420 kernel: loop13: detected capacity change from 0 to 131072
+May 17 19:22:07 bf51bb670420 udisksd[18324]: Mounted /dev/loop12 at /media/selfauth/--help on behalf of uid 1002
+May 17 19:22:07 bf51bb670420 kernel: XFS (loop12): Ending clean mount
+May 17 19:22:07 bf51bb670420 kernel: XFS (loop12): Mounting V5 Filesystem e3c914a9-6560-42c6-9d07-17324113ebb0
+May 17 19:22:07 bf51bb670420 udisksd[18324]: Set up loop device /dev/loop12 (backed by /home/selfauth/udisks-udev-meta-consumers-20260517/xfs-help.img)
+May 17 19:22:07 bf51bb670420 kernel: loop12: detected capacity change from 0 to 1048576
+May 17 19:22:07 bf51bb670420 udisksd[18324]: Set up loop device /dev/loop11 (backed by /home/selfauth/udisks-udev-meta-consumers-20260517/md-line.img)
+May 17 19:22:07 bf51bb670420 kernel: loop11: detected capacity change from 0 to 131072
+May 17 19:22:07 bf51bb670420 systemd[1]: lvm-activate-uulvm.service: Deactivated successfully.
+May 17 19:22:06 bf51bb670420 lvm[21837]: PV /dev/loop10 online, VG uulvm.service is complete.
+May 17 19:22:06 bf51bb670420 systemd[1]: Started lvm-activate-uulvm.service - /usr/sbin/lvm vgchange -aay --autoactivation event uulvm.service.
+May 17 19:22:06 bf51bb670420 udisksd[18324]: Set up loop device /dev/loop10 (backed by /home/selfauth/udisks-udev-meta-consumers-20260517/lvm-uulvm.service.img)
+May 17 19:22:06 bf51bb670420 lvm[21828]: PV /dev/loop10 online, VG uulvm.service is complete.
+May 17 19:22:06 bf51bb670420 kernel: loop10: detected capacity change from 0 to 131072
+May 17 19:22:06 bf51bb670420 udisksd[18324]: Set up loop device /dev/loop9 (backed by /home/selfauth/udisks-udev-meta-consumers-20260517/gpt-line.img)
+May 17 19:22:06 bf51bb670420 kernel:  loop9: p1
+May 17 19:22:06 bf51bb670420 kernel:  loop9: p1
+May 17 19:22:06 bf51bb670420 kernel: loop9: detected capacity change from 0 to 163840
+May 17 19:22:06 bf51bb670420 udisksd[18324]: Mounted /dev/loop8 at /media/selfauth/_SYSTEMD_WANTS=u on behalf of uid 1002
+May 17 19:22:06 bf51bb670420 kernel: EXT4-fs (loop8): mounted filesystem 850fefda-1045-4056-9330-cd0944ee016f r/w with ordered data mode. Quota mode: none.
+May 17 19:22:06 bf51bb670420 udisksd[18324]: Set up loop device /dev/loop8 (backed by /home/selfauth/udisks-udev-meta-consumers-20260517/ext-line.img)
+May 17 19:22:06 bf51bb670420 kernel: loop8: detected capacity change from 0 to 131072
+May 17 19:22:06 bf51bb670420 udisksd[18324]: Mounted /dev/loop7 at /media/selfauth/BT_SYSTEMD_WANTS=u.service on behalf of uid 1002
+May 17 19:22:06 bf51bb670420 kernel: BTRFS info (device loop7): checking UUID tree
+May 17 19:22:05 bf51bb670420 kernel: BTRFS info (device loop7): using free-space-tree
+May 17 19:22:05 bf51bb670420 kernel: BTRFS info (device loop7): using crc32c (crc32c-generic) checksum algorithm
+May 17 19:22:05 bf51bb670420 kernel: BTRFS info (device loop7): first mount of filesystem 971486d7-bf86-4a9c-8798-09ba0b2725b4
+May 17 19:22:05 bf51bb670420 kernel: BTRFS: device label BT
+                                     SYSTEMD_WANTS=u.service devid 1 transid 6 /dev/loop7 (7:7) scanned by pool-udisksd (117457)
+May 17 19:22:05 bf51bb670420 udisksd[18324]: Set up loop device /dev/loop7 (backed by /home/selfauth/udisks-udev-meta-consumers-20260517/btrfs-line.img)
+May 17 19:22:05 bf51bb670420 kernel: loop7: detected capacity change from 0 to 327680
+May 17 19:22:05 bf51bb670420 (udev-worker)[21575]: loop6: Process 'bcache-register /dev/loop6' failed with exit code 1.
+May 17 19:22:05 bf51bb670420 udisksd[18324]: Set up loop device /dev/loop6 (backed by /home/selfauth/udisks-udev-meta-consumers-20260517/bcache.img)
+May 17 19:22:05 bf51bb670420 (udev-worker)[21575]: loop6: Process 'bcache-register /dev/loop6' failed with exit code 1.
+May 17 19:22:05 bf51bb670420 kernel: loop6: detected capacity change from 0 to 131072
+May 17 19:22:04 bf51bb670420 kernel: loop6: detected capacity change from 0 to 131072
+May 17 19:22:04 bf51bb670420 lvm[21535]: PV /dev/loop7 online, VG uulvm.service is complete.
+May 17 19:22:04 bf51bb670420 lvm[21528]: PV /dev/loop7 not used.
+May 17 19:22:04 bf51bb670420 kernel: loop7: detected capacity change from 0 to 131072
+May 17 19:22:04 bf51bb670420 lvm[21516]: PV /dev/loop6 not used.
+May 17 19:22:04 bf51bb670420 lvm[21511]: PV /dev/loop6 not used.
+May 17 19:22:03 bf51bb670420 lvm[21505]: PV /dev/loop6 online, VG uulvm.service is complete.
+May 17 19:22:03 bf51bb670420 lvm[21479]: PV /dev/loop6 not used.
+May 17 19:22:03 bf51bb670420 kernel: loop6: detected capacity change from 0 to 131072
+May 17 19:18:53 bf51bb670420 udisksd[18324]: No longer watching loop device /dev/loop7
+May 17 19:18:53 bf51bb670420 udisksd[18324]: Deleted loop device /dev/loop7 (was backed by /home/selfauth/udisks-udev-meta-consumers-20260517/btrfs-line.img)
+May 17 19:18:53 bf51bb670420 udisksd[18324]: No longer watching loop device /dev/loop6
+May 17 19:18:53 bf51bb670420 udisksd[18324]: Deleted loop device /dev/loop6 (was backed by /home/selfauth/udisks-udev-meta-consumers-20260517/bcache.img)
+May 17 19:18:53 bf51bb670420 kernel: EXT4-fs (loop4): unmounting filesystem 133af48a-4c7a-4774-baf3-4c151059e332.
+May 17 19:18:53 bf51bb670420 kernel: BTRFS info (device loop7): last unmount of filesystem 348a7fc3-dfdf-4aa4-896c-3eeb0dc50f2a
+May 17 19:18:53 bf51bb670420 udisksd[18324]: Cleaning up mount point /media/selfauth/BT_SYSTEMD_WANTS=u.service (device 7:7 is not mounted)
+May 17 19:18:53 bf51bb670420 systemd[1]: media-selfauth-BT_SYSTEMD_WANTS\x3du.service.mount: Deactivated successfully.
+May 17 19:18:53 bf51bb670420 kernel: EXT4-fs (loop5): unmounting filesystem eee9e4a6-16e2-412b-843d-6faa07d42ee2.
+May 17 19:18:53 bf51bb670420 systemd[1]: Finished xfs_scrub_all.service - Online XFS Metadata Check for All Filesystems.
+May 17 19:18:53 bf51bb670420 systemd[1]: xfs_scrub_all.service: Deactivated successfully.
+May 17 19:18:51 bf51bb670420 systemd[1]: Starting xfs_scrub_all.service - Online XFS Metadata Check for All Filesystems...
+May 17 19:18:51 bf51bb670420 systemd[1]: fstrim.service - Discard unused blocks on filesystems from /etc/fstab was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 17 19:18:51 bf51bb670420 systemd[1]: Finished e2scrub_all.service - Online ext4 Metadata Check for All Filesystems.
+May 17 19:18:51 bf51bb670420 systemd[1]: e2scrub_all.service: Deactivated successfully.
+May 17 19:18:51 bf51bb670420 systemd[1]: Starting e2scrub_all.service - Online ext4 Metadata Check for All Filesystems...
+May 17 19:18:31 bf51bb670420 udisksd[18324]: Mounted /dev/loop7 at /media/selfauth/BT_SYSTEMD_WANTS=u.service on behalf of uid 1002
+May 17 19:18:31 bf51bb670420 kernel: BTRFS info (device loop7): checking UUID tree
+May 17 19:18:31 bf51bb670420 kernel: BTRFS info (device loop7): using free-space-tree
+May 17 19:18:31 bf51bb670420 kernel: BTRFS info (device loop7): using crc32c (crc32c-generic) checksum algorithm
+May 17 19:18:31 bf51bb670420 kernel: BTRFS info (device loop7): first mount of filesystem 348a7fc3-dfdf-4aa4-896c-3eeb0dc50f2a
+May 17 19:18:31 bf51bb670420 kernel: BTRFS: device label BT
+                                     SYSTEMD_WANTS=u.service devid 1 transid 6 /dev/loop7 (7:7) scanned by pool-udisksd (43464)
+May 17 19:18:30 bf51bb670420 udisksd[18324]: Set up loop device /dev/loop7 (backed by /home/selfauth/udisks-udev-meta-consumers-20260517/btrfs-line.img)
+May 17 19:18:30 bf51bb670420 kernel: loop7: detected capacity change from 0 to 327680
+May 17 19:18:30 bf51bb670420 (udev-worker)[18152]: loop6: Process 'bcache-register /dev/loop6' failed with exit code 1.
+May 17 19:18:30 bf51bb670420 udisksd[18324]: Set up loop device /dev/loop6 (backed by /home/selfauth/udisks-udev-meta-consumers-20260517/bcache.img)
+May 17 19:18:30 bf51bb670420 (udev-worker)[18152]: loop6: Process 'bcache-register /dev/loop6' failed with exit code 1.
+May 17 19:18:30 bf51bb670420 kernel: loop6: detected capacity change from 0 to 131072
+May 17 19:18:29 bf51bb670420 kernel: loop6: detected capacity change from 0 to 131072
+May 17 19:18:29 bf51bb670420 lvm[18207]: PV /dev/loop7 online, VG uulvm.service is complete.
+May 17 19:18:29 bf51bb670420 lvm[18202]: PV /dev/loop7 not used.
+May 17 19:18:29 bf51bb670420 kernel: loop7: detected capacity change from 0 to 131072
+May 17 19:18:29 bf51bb670420 lvm[18191]: PV /dev/loop6 not used.
+May 17 19:18:29 bf51bb670420 systemd[1]: lvm-activate-uulvm.service: Failed with result 'exit-code'.
+May 17 19:18:29 bf51bb670420 systemd[1]: lvm-activate-uulvm.service: Main process exited, code=exited, status=5/NOTINSTALLED
+May 17 19:18:29 bf51bb670420 lvm[18187]: PV /dev/loop6 not used.
+May 17 19:18:29 bf51bb670420 systemd[1]: Started lvm-activate-uulvm.service - /usr/sbin/lvm vgchange -aay --autoactivation event uulvm.service.
+May 17 19:18:29 bf51bb670420 lvm[18180]: PV /dev/loop6 online, VG uulvm.service is complete.
+May 17 19:18:29 bf51bb670420 lvm[18156]: PV /dev/loop6 not used.
+May 17 19:18:29 bf51bb670420 kernel: loop6: detected capacity change from 0 to 131072
+May 17 19:17:07 bf51bb670420 udisksd[17174]: Mounted /dev/loop5 at /media/selfauth/eee9e4a6-16e2-412b-843d-6faa07d42ee2 on behalf of uid 1002
+May 17 19:17:07 bf51bb670420 kernel: EXT4-fs (loop5): mounted filesystem eee9e4a6-16e2-412b-843d-6faa07d42ee2 r/w with ordered data mode. Quota mode: none.
+May 17 19:17:05 bf51bb670420 udisksd[17174]: Set up loop device /dev/loop5 (backed by /home/selfauth/udisks-missing-goto-active/ext4-Repair.img)
+May 17 19:17:04 bf51bb670420 kernel: loop5: detected capacity change from 0 to 196608
+May 17 19:15:45 bf51bb670420 udisksd[16360]: Mounted /dev/loop4 at /media/selfauth/133af48a-4c7a-4774-baf3-4c151059e332 on behalf of uid 1002
+May 17 19:15:45 bf51bb670420 kernel: EXT4-fs (loop4): mounted filesystem 133af48a-4c7a-4774-baf3-4c151059e332 r/w with ordered data mode. Quota mode: none.
+May 17 19:15:43 bf51bb670420 udisksd[16360]: Set up loop device /dev/loop4 (backed by /home/selfauth/udisks-missing-goto-active/ext4-Check.img)
+May 17 19:15:42 bf51bb670420 udisksd[16360]: No longer watching loop device /dev/loop3
+May 17 19:15:42 bf51bb670420 udisksd[16360]: udisks_state_check_loop_entry: unexpected name for /dev/loop3 - expected `/home/selfauth/udisks-missing-goto-active/ext4-Check.img' but got `/home/selfauth/udisks-missing-goto-active/ext4-Check.img (deleted)'
+May 17 19:15:42 bf51bb670420 kernel: EXT4-fs (loop3): unmounting filesystem c8258b07-7a77-4802-b38d-a28048afa450.
+May 17 19:15:42 bf51bb670420 udisksd[16360]: udisks_state_check_loop_entry: unexpected name for /dev/loop3 - expected `/home/selfauth/udisks-missing-goto-active/ext4-Check.img' but got `/home/selfauth/udisks-missing-goto-active/ext4-Check.img (deleted)'
+May 17 19:15:42 bf51bb670420 kernel: loop4: detected capacity change from 0 to 196608
+May 17 19:14:49 bf51bb670420 udisksd[16006]: Mounted /dev/loop3 at /media/selfauth/c8258b07-7a77-4802-b38d-a28048afa450 on behalf of uid 1002
+May 17 19:14:49 bf51bb670420 kernel: EXT4-fs (loop3): mounted filesystem c8258b07-7a77-4802-b38d-a28048afa450 r/w with ordered data mode. Quota mode: none.
+May 17 19:14:47 bf51bb670420 udisksd[16006]: No longer watching loop device /dev/loop2
+May 17 19:14:47 bf51bb670420 udisksd[16006]: udisks_state_check_loop_entry: unexpected name for /dev/loop2 - expected `/home/selfauth/udisks-missing-goto-active/ext4-Check.img' but got `/home/selfauth/udisks-missing-goto-active/ext4-Check.img (deleted)'
+May 17 19:14:47 bf51bb670420 kernel: EXT4-fs (loop2): unmounting filesystem 775e1be4-b634-477c-99b8-85f50bb1bdba.
+May 17 19:14:47 bf51bb670420 udisksd[16006]: Set up loop device /dev/loop3 (backed by /home/selfauth/udisks-missing-goto-active/ext4-Check.img)
+May 17 19:14:47 bf51bb670420 udisksd[16006]: udisks_state_check_loop_entry: unexpected name for /dev/loop2 - expected `/home/selfauth/udisks-missing-goto-active/ext4-Check.img' but got `/home/selfauth/udisks-missing-goto-active/ext4-Check.img (deleted)'
+May 17 19:14:47 bf51bb670420 kernel: loop3: detected capacity change from 0 to 196608
+May 17 19:13:51 bf51bb670420 udisksd[15539]: Mounted /dev/loop2 at /media/selfauth/775e1be4-b634-477c-99b8-85f50bb1bdba on behalf of uid 1002
+May 17 19:13:51 bf51bb670420 kernel: EXT4-fs (loop2): mounted filesystem 775e1be4-b634-477c-99b8-85f50bb1bdba r/w with ordered data mode. Quota mode: none.
+May 17 19:13:49 bf51bb670420 udisksd[15539]: Set up loop device /dev/loop2 (backed by /home/selfauth/udisks-missing-goto-active/ext4-Check.img)
+May 17 19:13:49 bf51bb670420 udisksd[15539]: No longer watching loop device /dev/loop1
+May 17 19:13:49 bf51bb670420 udisksd[15539]: udisks_state_check_loop_entry: unexpected name for /dev/loop1 - expected `/home/selfauth/udisks-missing-goto-active/ext4-Check.img' but got `/home/selfauth/udisks-missing-goto-active/ext4-Check.img (deleted)'
+May 17 19:13:49 bf51bb670420 kernel: EXT4-fs (loop1): unmounting filesystem 8615d975-0f80-4f36-93ff-b6a371ac1e2a.
+May 17 19:13:49 bf51bb670420 udisksd[15539]: udisks_state_check_loop_entry: unexpected name for /dev/loop1 - expected `/home/selfauth/udisks-missing-goto-active/ext4-Check.img' but got `/home/selfauth/udisks-missing-goto-active/ext4-Check.img (deleted)'
+May 17 19:13:49 bf51bb670420 kernel: loop2: detected capacity change from 0 to 196608
+May 17 19:13:02 bf51bb670420 udisksd[15160]: Mounted /dev/loop1 at /media/selfauth/8615d975-0f80-4f36-93ff-b6a371ac1e2a on behalf of uid 1002
+May 17 19:13:01 bf51bb670420 kernel: EXT4-fs (loop1): mounted filesystem 8615d975-0f80-4f36-93ff-b6a371ac1e2a r/w with ordered data mode. Quota mode: none.
+May 17 19:12:59 bf51bb670420 udisksd[15160]: Set up loop device /dev/loop1 (backed by /home/selfauth/udisks-missing-goto-active/ext4-Check.img)
+May 17 19:12:59 bf51bb670420 kernel: loop1: detected capacity change from 0 to 196608
+May 17 19:05:47 bf51bb670420 udisksd[13662]: No longer watching loop device /dev/loop1
+May 17 19:04:01 bf51bb670420 kernel: EXT4-fs (loop1): unmounting filesystem 29d2e91b-633b-42c5-9f68-7d1c7aaed2b9.
+May 17 19:03:59 bf51bb670420 udisksd[13396]: Mounted /dev/loop1 at /media/selfauth/29d2e91b-633b-42c5-9f68-7d1c7aaed2b9 on behalf of uid 1002
+May 17 19:03:59 bf51bb670420 kernel: EXT4-fs (loop1): mounted filesystem 29d2e91b-633b-42c5-9f68-7d1c7aaed2b9 r/w with ordered data mode. Quota mode: none.
+May 17 19:03:59 bf51bb670420 udisksd[13396]: Set up loop device /dev/loop1 (backed by /tmp/udisks-gdb-uaf/img.ext4)
+May 17 19:03:59 bf51bb670420 kernel: loop1: detected capacity change from 0 to 65536
+May 17 18:58:57 bf51bb670420 udisksd[11270]: No longer watching loop device /dev/loop1
+May 17 18:58:57 bf51bb670420 udisksd[11270]: Deleted loop device /dev/loop1 (was backed by /tmp/udisks-missing-goto-nostrace/img.ext4)
+May 17 18:58:57 bf51bb670420 udisksd[11270]: Unmounted /dev/loop1 on behalf of uid 1002
+May 17 18:58:57 bf51bb670420 kernel: EXT4-fs (loop1): unmounting filesystem 3204ac1f-ff3c-4dad-b712-ca29e08a1a4c.
+May 17 18:58:57 bf51bb670420 dbus-daemon[252]: [system] Activating via systemd: service name='org.freedesktop.UDisks2' unit='udisks2.service' requested by ':1.250' (uid=1002 pid=11266 comm="udisksctl unmount -b /dev/loop1")
+May 17 18:58:56 bf51bb670420 kernel: EXT4-fs (loop1): mounted filesystem 3204ac1f-ff3c-4dad-b712-ca29e08a1a4c r/w with ordered data mode. Quota mode: none.
+May 17 18:58:56 bf51bb670420 udisksd[10849]: Mounted /dev/loop1 at /media/selfauth/3204ac1f-ff3c-4dad-b712-ca29e08a1a4c on behalf of uid 1002
+May 17 18:58:56 bf51bb670420 udisksd[10849]: Set up loop device /dev/loop1 (backed by /tmp/udisks-missing-goto-nostrace/img.ext4)
+May 17 18:58:56 bf51bb670420 kernel: loop1: detected capacity change from 0 to 65536
+May 17 18:57:39 bf51bb670420 udisksd[10849]: No longer watching loop device /dev/loop1
+May 17 18:57:39 bf51bb670420 kernel: EXT4-fs (loop1): unmounting filesystem e1ce81e3-4d6b-4ad2-889d-6820b33fd726.
+May 17 18:57:27 bf51bb670420 udisksd[10849]: Deleted loop device /dev/loop1 (was backed by /tmp/udisks-missing-goto-checkonly/img.ext4)
+May 17 18:57:27 bf51bb670420 dbus-daemon[252]: [system] Activating via systemd: service name='org.freedesktop.UDisks2' unit='udisks2.service' requested by ':1.234' (uid=1002 pid=10845 comm="udisksctl loop-delete -b /dev/loop1")
+May 17 18:57:27 bf51bb670420 udisksd[10472]: Mounted /dev/loop1 at /media/selfauth/e1ce81e3-4d6b-4ad2-889d-6820b33fd726 on behalf of uid 1002
+May 17 18:57:27 bf51bb670420 kernel: EXT4-fs (loop1): mounted filesystem e1ce81e3-4d6b-4ad2-889d-6820b33fd726 r/w with ordered data mode. Quota mode: none.
+May 17 18:57:27 bf51bb670420 udisksd[10472]: Set up loop device /dev/loop1 (backed by /tmp/udisks-missing-goto-checkonly/img.ext4)
+May 17 18:57:26 bf51bb670420 kernel: loop1: detected capacity change from 0 to 131072
+May 17 18:56:19 bf51bb670420 udisksd[10472]: No longer watching loop device /dev/loop1
+May 17 18:56:19 bf51bb670420 udisksd[10472]: Deleted loop device /dev/loop1 (was backed by /tmp/udisks-missing-goto-validate/mounted-repair.ext4)
+May 17 18:56:19 bf51bb670420 udisksd[10472]: Unmounted /dev/loop1 on behalf of uid 1002
+May 17 18:56:19 bf51bb670420 kernel: EXT4-fs (loop1): unmounting filesystem 2a35fce5-d26a-4742-be3f-ac85209ee0ce.
+May 17 18:56:18 bf51bb670420 dbus-daemon[252]: [system] Activating via systemd: service name='org.freedesktop.UDisks2' unit='udisks2.service' requested by ':1.217' (uid=1002 pid=10468 comm="udisksctl unmount -b /dev/loop1")
+May 17 18:56:18 bf51bb670420 udisksd[262]: Mounted /dev/loop1 at /media/selfauth/2a35fce5-d26a-4742-be3f-ac85209ee0ce on behalf of uid 1002
+May 17 18:56:18 bf51bb670420 kernel: EXT4-fs (loop1): mounted filesystem 2a35fce5-d26a-4742-be3f-ac85209ee0ce r/w with ordered data mode. Quota mode: none.
+May 17 18:56:18 bf51bb670420 udisksd[262]: Set up loop device /dev/loop1 (backed by /tmp/udisks-missing-goto-validate/mounted-repair.ext4)
+May 17 18:56:18 bf51bb670420 kernel: loop1: detected capacity change from 0 to 131072
+May 17 18:53:07 bf51bb670420 kernel: loop2: detected capacity change from 0 to 131072
+May 17 18:53:07 bf51bb670420 kernel: loop1: detected capacity change from 0 to 131072
+May 17 18:52:47 bf51bb670420 kernel: loop1: detected capacity change from 0 to 262144
+May 17 18:52:32 bf51bb670420 kernel: loop1: detected capacity change from 0 to 262144
+May 17 18:46:20 bf51bb670420 kernel: EXT4-fs (loop1): unmounting filesystem c2592443-d9ce-42c3-9e31-8737261f47c3.
+May 17 18:46:20 bf51bb670420 kernel: EXT4-fs (loop1): mounted filesystem c2592443-d9ce-42c3-9e31-8737261f47c3 r/w with ordered data mode. Quota mode: none.
+May 17 18:46:20 bf51bb670420 kernel: loop1: detected capacity change from 0 to 131072
+May 17 18:35:12 bf51bb670420 kernel: loop0: detected capacity change from 0 to 65536
+May 17 18:21:19 bf51bb670420 systemd[1]: Finished e2scrub_reap.service - Remove Stale Online ext4 Metadata Check Snapshots.
+May 17 18:21:19 bf51bb670420 systemd[1]: e2scrub_reap.service: Deactivated successfully.
+May 17 18:21:19 bf51bb670420 systemd[1]: Starting e2scrub_reap.service - Remove Stale Online ext4 Metadata Check Snapshots...
+May 17 18:21:19 bf51bb670420 systemd[1]: fstrim.timer - Discard unused filesystem blocks once a week was skipped because of an unmet condition check (ConditionVirtualization=!container).
+May 17 18:21:19 bf51bb670420 systemd[1]: Started e2scrub_all.timer - Periodic ext4 Online Metadata Check for All Filesystems.
+
+## cleanup health before cleanup
+degraded
+● udisks2.service       loaded failed failed Disk Manager
+● xfs_scrub_all.service loaded failed failed Online XFS Metadata Check for All Filesystems
+
+## cleanup verification
+marker_unit_removed=yes
+removed /root/udisks-udev-meta-consumers-20260517-root
+removed /run/udisks-udev-meta-consumers-20260517-root
+removed /tmp/udisks-udev-meta-consumers-20260517-root
+removed /dev/loop8
+removed /dev/loop9
+removed /dev/loop10
+removed /dev/loop11
+removed /dev/loop12
+removed /dev/loop14
+removed /dev/loop15
+removed /dev/loop16
+removed /dev/loop17
+removed /dev/loop18
+removed /dev/loop19
+removed /dev/loop20
+removed /dev/loop21
+removed /dev/loop22
+removed /dev/loop23
+removed /dev/loop24
+removed /dev/loop25
+removed /dev/loop26
+removed /dev/loop27
+removed /dev/loop28
+removed /dev/loop29
+removed /dev/loop30
+removed /dev/loop31
+running

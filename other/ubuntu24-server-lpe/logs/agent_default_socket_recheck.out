@@ -1,0 +1,1907 @@
+repo=/Users/andrewmohawk/Documents/UbuntuLPE/ubuntu24-server-lpe
+container=ubuntu24-server-lpe-target
+container=ubuntu24-server-lpe-target image=ubuntu24-server-default-lpe:20260516-standard status=Up 2 hours
+
+### target baseline
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux bf51bb670420 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+
+$ id attacker
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+[rc=0]
+
+$ groups attacker
+attacker : attacker
+[rc=0]
+
+$ systemctl is-system-running
+running
+[rc=0]
+apport	2.28.1-0ubuntu3.8	ii 
+apport-core-dump-handler	2.28.1-0ubuntu3.8	ii 
+dmeventd	2:1.02.185-3ubuntu3.2	ii 
+dmsetup	2:1.02.185-3ubuntu3.2	ii 
+libopeniscsiusr	2.1.9-3ubuntu5.4	ii 
+libuuid1:arm64	2.39.3-9ubuntu6.5	ii 
+lvm2	2.03.16-3ubuntu3.2	ii 
+lxd-installer	4ubuntu0.1	ii 
+multipath-tools	0.9.4-5ubuntu8.1	ii 
+open-iscsi	2.1.9-3ubuntu5.4	ii 
+python3-apport	2.28.1-0ubuntu3.8	ii 
+rsyslog	8.2312.0-3ubuntu9.2	ii 
+snapd	2.74.1+ubuntu24.04.4	ii 
+systemd	255.4-1ubuntu8.15	ii 
+systemd-sysv	255.4-1ubuntu8.15	ii 
+udev	255.4-1ubuntu8.15	ii 
+util-linux	2.39.3-9ubuntu6.5	ii 
+uuid-runtime	2.39.3-9ubuntu6.5	ii 
+
+### default socket inventory
+
+$ systemctl list-sockets --all --no-pager --plain
+LISTEN                                UNIT                            ACTIVATES
+@/org/kernel/linux/storage/multipathd multipathd.socket               multipathd.service
+@ISCSIADM_ABSTRACT_NAMESPACE          iscsid.socket                   iscsid.service
+audit 1                               systemd-journald-audit.socket   systemd-journald.service
+kobject-uevent 1                      systemd-udevd-kernel.socket     systemd-udevd.service
+route 1361                            systemd-networkd.socket         systemd-networkd.service
+/run/apport.socket                    apport-forward.socket           -
+/run/dbus/system_bus_socket           dbus.socket                     dbus.service
+/run/dmeventd-client                  dm-event.socket                 dm-event.service
+/run/dmeventd-server                  dm-event.socket                 dm-event.service
+/run/initctl                          systemd-initctl.socket          systemd-initctl.service
+/run/lvm/lvmpolld.socket              lvm2-lvmpolld.socket            lvm2-lvmpolld.service
+/run/lxd-installer.socket             lxd-installer.socket            -
+/run/snapd-snap.socket                snapd.socket                    snapd.service
+/run/snapd.socket                     snapd.socket                    snapd.service
+/run/systemd/fsck.progress            systemd-fsckd.socket            systemd-fsckd.service
+/run/systemd/io.systemd.PCRExtend     systemd-pcrextend.socket        -
+/run/systemd/io.systemd.sysext        systemd-sysext.socket           -
+/run/systemd/journal/dev-log          systemd-journald-dev-log.socket systemd-journald.service
+/run/systemd/journal/socket           systemd-journald.socket         systemd-journald.service
+/run/systemd/journal/stdout           systemd-journald.socket         systemd-journald.service
+/run/systemd/journal/syslog           syslog.socket                   rsyslog.service
+/run/udev/control                     systemd-udevd-control.socket    systemd-udevd.service
+/run/uuidd/request                    uuidd.socket                    uuidd.service
+
+23 sockets listed.
+[rc=0]
+--- systemctl show multipathd.socket
+SocketUser=
+SocketGroup=
+SocketMode=0666
+Listen=@/org/kernel/linux/storage/multipathd (Stream)
+User=
+Group=
+Id=multipathd.socket
+Triggers=multipathd.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/multipathd.socket
+UnitFileState=enabled
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show multipathd.service
+ExecStart={ path=/sbin/multipathd ; argv[]=/sbin/multipathd -d -s ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+Id=multipathd.service
+Triggers=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/multipathd.service
+UnitFileState=enabled
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show iscsid.socket
+SocketUser=
+SocketGroup=
+SocketMode=0666
+Listen=@ISCSIADM_ABSTRACT_NAMESPACE (Stream)
+User=
+Group=
+Id=iscsid.socket
+Triggers=iscsid.service
+LoadState=loaded
+ActiveState=active
+SubState=listening
+FragmentPath=/usr/lib/systemd/system/iscsid.socket
+UnitFileState=enabled
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show iscsid.service
+ExecStart={ path=/usr/sbin/iscsid ; argv[]=/usr/sbin/iscsid ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+Id=iscsid.service
+Triggers=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/iscsid.service
+UnitFileState=disabled
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show open-iscsi.service
+ExecStart={ path=/usr/sbin/iscsiadm ; argv[]=/usr/sbin/iscsiadm -m node --loginall=automatic ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStart={ path=/usr/lib/open-iscsi/activate-storage.sh ; argv[]=/usr/lib/open-iscsi/activate-storage.sh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+Id=open-iscsi.service
+Triggers=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/open-iscsi.service
+UnitFileState=enabled
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show dm-event.socket
+SocketUser=
+SocketGroup=
+SocketMode=0600
+Listen=/run/dmeventd-server (FIFO)
+Listen=/run/dmeventd-client (FIFO)
+User=
+Group=
+Id=dm-event.socket
+Triggers=dm-event.service
+LoadState=loaded
+ActiveState=active
+SubState=listening
+FragmentPath=/usr/lib/systemd/system/dm-event.socket
+UnitFileState=enabled
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show dm-event.service
+ExecStart={ path=/usr/sbin/dmeventd ; argv[]=/usr/sbin/dmeventd -f ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+Id=dm-event.service
+Triggers=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/dm-event.service
+UnitFileState=static
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show lvm2-lvmpolld.socket
+SocketUser=
+SocketGroup=
+SocketMode=0600
+Listen=/run/lvm/lvmpolld.socket (Stream)
+User=
+Group=
+Id=lvm2-lvmpolld.socket
+Triggers=lvm2-lvmpolld.service
+LoadState=loaded
+ActiveState=active
+SubState=listening
+FragmentPath=/usr/lib/systemd/system/lvm2-lvmpolld.socket
+UnitFileState=enabled
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show lvm2-lvmpolld.service
+ExecStart={ path=/usr/sbin/lvmpolld ; argv[]=/usr/sbin/lvmpolld -t 60 -f ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+Id=lvm2-lvmpolld.service
+Triggers=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/lvm2-lvmpolld.service
+UnitFileState=static
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show apport-forward.socket
+SocketUser=
+SocketGroup=
+SocketMode=0600
+Listen=/run/apport.socket (Stream)
+User=
+Group=
+Id=apport-forward.socket
+Triggers=
+LoadState=loaded
+ActiveState=active
+SubState=listening
+FragmentPath=/usr/lib/systemd/system/apport-forward.socket
+UnitFileState=enabled
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show apport-forward@.service
+Failed to get properties: Unit name apport-forward@.service is neither a valid invocation ID nor unit name.
+--- systemctl show systemd-fsckd.socket
+SocketUser=
+SocketGroup=
+SocketMode=0600
+Listen=/run/systemd/fsck.progress (Stream)
+User=
+Group=
+Id=systemd-fsckd.socket
+Triggers=systemd-fsckd.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/systemd-fsckd.socket
+UnitFileState=static
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show systemd-fsckd.service
+ExecStart={ path=/usr/lib/systemd/systemd-fsckd ; argv[]=/usr/lib/systemd/systemd-fsckd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+Id=systemd-fsckd.service
+Triggers=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/systemd-fsckd.service
+UnitFileState=static
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show systemd-pcrextend.socket
+SocketUser=
+SocketGroup=
+SocketMode=0600
+Listen=/run/systemd/io.systemd.PCRExtend (Stream)
+User=
+Group=
+Id=systemd-pcrextend.socket
+Triggers=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/systemd-pcrextend.socket
+UnitFileState=disabled
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show systemd-pcrextend.service
+User=
+Group=
+Id=systemd-pcrextend.service
+Triggers=
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+FragmentPath=
+UnitFileState=
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show systemd-sysext.socket
+SocketUser=
+SocketGroup=
+SocketMode=0600
+Listen=/run/systemd/io.systemd.sysext (Stream)
+User=
+Group=
+Id=systemd-sysext.socket
+Triggers=
+LoadState=loaded
+ActiveState=active
+SubState=listening
+FragmentPath=/usr/lib/systemd/system/systemd-sysext.socket
+UnitFileState=disabled
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show systemd-sysext.service
+ExecStart={ path=systemd-sysext ; argv[]=systemd-sysext refresh ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+Id=systemd-sysext.service
+Triggers=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/systemd-sysext.service
+UnitFileState=disabled
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show systemd-sysext@.service
+Failed to get properties: Unit name systemd-sysext@.service is neither a valid invocation ID nor unit name.
+--- systemctl show systemd-initctl.socket
+SocketUser=
+SocketGroup=
+SocketMode=0600
+Listen=/run/initctl (FIFO)
+User=
+Group=
+Id=systemd-initctl.socket
+Triggers=systemd-initctl.service
+LoadState=loaded
+ActiveState=active
+SubState=listening
+FragmentPath=/usr/lib/systemd/system/systemd-initctl.socket
+UnitFileState=static
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show systemd-initctl.service
+ExecStart={ path=/usr/lib/systemd/systemd-initctl ; argv[]=/usr/lib/systemd/systemd-initctl ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+Id=systemd-initctl.service
+Triggers=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/systemd-initctl.service
+UnitFileState=static
+ConditionResult=no
+Conditions=[unprintable]
+--- systemctl show snapd.socket
+SocketUser=root
+SocketGroup=root
+SocketMode=0666
+Listen=/run/snapd.socket (Stream)
+Listen=/run/snapd-snap.socket (Stream)
+User=
+Group=
+Id=snapd.socket
+Triggers=snapd.service
+LoadState=loaded
+ActiveState=active
+SubState=listening
+FragmentPath=/usr/lib/systemd/system/snapd.socket
+UnitFileState=enabled
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show snapd.service
+ExecStart={ path=/usr/lib/snapd/snapd ; argv[]=/usr/lib/snapd/snapd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+Id=snapd.service
+Triggers=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/snapd.service
+UnitFileState=enabled
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show lxd-installer.socket
+SocketUser=root
+SocketGroup=lxd
+SocketMode=0660
+Listen=/run/lxd-installer.socket (Stream)
+User=
+Group=
+Id=lxd-installer.socket
+Triggers=
+LoadState=loaded
+ActiveState=active
+SubState=listening
+FragmentPath=/usr/lib/systemd/system/lxd-installer.socket
+UnitFileState=enabled
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show lxd-installer@.service
+Failed to get properties: Unit name lxd-installer@.service is neither a valid invocation ID nor unit name.
+--- systemctl show uuidd.socket
+SocketUser=
+SocketGroup=
+SocketMode=0666
+Listen=/run/uuidd/request (Stream)
+User=
+Group=
+Id=uuidd.socket
+Triggers=uuidd.service
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/uuidd.socket
+UnitFileState=enabled
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show uuidd.service
+ExecStart={ path=/usr/sbin/uuidd ; argv[]=/usr/sbin/uuidd --socket-activation ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=uuidd
+Group=uuidd
+Id=uuidd.service
+Triggers=
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/uuidd.service
+UnitFileState=indirect
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show systemd-journald.socket
+SocketUser=
+SocketGroup=
+SocketMode=0666
+Listen=/run/systemd/journal/socket (Datagram)
+Listen=/run/systemd/journal/stdout (Stream)
+User=
+Group=
+Id=systemd-journald.socket
+Triggers=systemd-journald.service
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/systemd-journald.socket
+UnitFileState=static
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show systemd-journald-dev-log.socket
+SocketUser=
+SocketGroup=
+SocketMode=0666
+Listen=/run/systemd/journal/dev-log (Datagram)
+User=
+Group=
+Id=systemd-journald-dev-log.socket
+Triggers=systemd-journald.service
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/systemd-journald-dev-log.socket
+UnitFileState=static
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show systemd-journald.service
+ExecStart={ path=/usr/lib/systemd/systemd-journald ; argv[]=/usr/lib/systemd/systemd-journald ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+Id=systemd-journald.service
+Triggers=
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/systemd-journald.service
+UnitFileState=static
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show syslog.socket
+SocketUser=
+SocketGroup=
+SocketMode=0666
+Listen=/run/systemd/journal/syslog (Datagram)
+User=
+Group=
+Id=syslog.socket
+Triggers=rsyslog.service
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/syslog.socket
+UnitFileState=static
+ConditionResult=yes
+Conditions=[unprintable]
+--- systemctl show rsyslog.service
+ExecStart={ path=/usr/sbin/rsyslogd ; argv[]=/usr/sbin/rsyslogd -n -iNONE ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+Id=rsyslog.service
+Triggers=
+LoadState=loaded
+ActiveState=active
+SubState=running
+FragmentPath=/usr/lib/systemd/system/rsyslog.service
+UnitFileState=enabled
+ConditionResult=yes
+Conditions=[unprintable]
+
+### unit file line anchors
+--- /usr/lib/systemd/system/multipathd.socket
+     1	[Unit]
+     2	Description=multipathd control socket
+     3	DefaultDependencies=no
+     4	ConditionKernelCommandLine=!nompath
+     5	ConditionKernelCommandLine=!multipath=off
+     6	ConditionVirtualization=!container
+     7	Before=sockets.target
+     8	
+     9	[Socket]
+    10	ListenStream=@/org/kernel/linux/storage/multipathd
+    11	
+    12	[Install]
+    13	WantedBy=sockets.target
+--- /usr/lib/systemd/system/multipathd.service
+     1	[Unit]
+     2	Description=Device-Mapper Multipath Device Controller
+     3	Before=lvm2-activation-early.service
+     4	Before=local-fs-pre.target blk-availability.service shutdown.target
+     5	Wants=systemd-udevd-kernel.socket
+     6	After=systemd-udevd-kernel.socket
+     7	After=multipathd.socket systemd-remount-fs.service
+     8	Before=initrd-cleanup.service
+     9	DefaultDependencies=no
+    10	Conflicts=shutdown.target
+    11	Conflicts=initrd-cleanup.service
+    12	ConditionKernelCommandLine=!nompath
+    13	ConditionKernelCommandLine=!multipath=off
+    14	ConditionVirtualization=!container
+    15	
+    16	[Service]
+    17	Type=notify
+    18	NotifyAccess=main
+    19	ExecStartPre=-/sbin/modprobe dm-multipath
+    20	ExecStart=/sbin/multipathd -d -s
+    21	ExecReload=/sbin/multipathd reconfigure
+    22	TasksMax=infinity
+    23	
+    24	[Install]
+    25	WantedBy=sysinit.target
+    26	Also=multipathd.socket
+--- /usr/lib/systemd/system/iscsid.socket
+     1	[Unit]
+     2	Description=Open-iSCSI iscsid Socket
+     3	Documentation=man:iscsid(8) man:iscsiadm(8)
+     4	
+     5	[Socket]
+     6	ListenStream=@ISCSIADM_ABSTRACT_NAMESPACE
+     7	
+     8	[Install]
+     9	WantedBy=sockets.target
+--- /usr/lib/systemd/system/iscsid.service
+     1	[Unit]
+     2	Description=iSCSI initiator daemon (iscsid)
+     3	Documentation=man:iscsid(8)
+     4	Wants=network-online.target remote-fs-pre.target
+     5	Before=remote-fs-pre.target
+     6	After=network.target network-online.target
+     7	DefaultDependencies=no
+     8	Conflicts=shutdown.target
+     9	Before=shutdown.target
+    10	ConditionVirtualization=!private-users
+    11	
+    12	[Service]
+    13	Type=forking
+    14	PIDFile=/run/iscsid.pid
+    15	ExecStartPre=/usr/lib/open-iscsi/startup-checks.sh
+    16	ExecStart=/usr/sbin/iscsid
+    17	
+    18	[Install]
+    19	WantedBy=sysinit.target
+--- /usr/lib/systemd/system/open-iscsi.service
+     1	[Unit]
+     2	Description=Login to default iSCSI targets
+     3	Documentation=man:iscsiadm(8) man:iscsid(8)
+     4	Wants=network-online.target remote-fs-pre.target
+     5	After=network-online.target iscsid.service
+     6	Before=remote-fs-pre.target
+     7	DefaultDependencies=no
+     8	Conflicts=shutdown.target
+     9	Before=shutdown.target
+    10	# Must have some pre-defined targets to login to
+    11	ConditionDirectoryNotEmpty=|/etc/iscsi/nodes
+    12	# or have a session to use via iscsid
+    13	ConditionDirectoryNotEmpty=|/sys/class/iscsi_session
+    14	
+    15	[Service]
+    16	Type=oneshot
+    17	RemainAfterExit=true
+    18	# iscsiadm --login will return 21 if no nodes are configured,
+    19	# and 15 if a session is alread logged in (which we do not
+    20	# consider an error)
+    21	SuccessExitStatus=15 21
+    22	# Note: iscsid will be socket activated by iscsiadm
+    23	ExecStart=/usr/sbin/iscsiadm -m node --loginall=automatic
+    24	ExecStart=/usr/lib/open-iscsi/activate-storage.sh
+    25	ExecStop=/usr/lib/open-iscsi/umountiscsi.sh
+    26	ExecStop=/bin/sync
+    27	ExecStop=/usr/lib/open-iscsi/logout-all.sh
+    28	
+    29	[Install]
+    30	WantedBy=sysinit.target
+    31	Alias=iscsi.service
+--- /usr/lib/systemd/system/dm-event.socket
+     1	[Unit]
+     2	Description=Device-mapper event daemon FIFOs
+     3	Documentation=man:dmeventd(8)
+     4	DefaultDependencies=no
+     5	
+     6	[Socket]
+     7	ListenFIFO=/run/dmeventd-server
+     8	ListenFIFO=/run/dmeventd-client
+     9	SocketMode=0600
+    10	RemoveOnStop=true
+    11	
+    12	[Install]
+    13	WantedBy=sockets.target
+--- /usr/lib/systemd/system/dm-event.service
+     1	[Unit]
+     2	Description=Device-mapper event daemon
+     3	Documentation=man:dmeventd(8)
+     4	Requires=dm-event.socket
+     5	After=dm-event.socket
+     6	Before=local-fs-pre.target shutdown.target
+     7	Conflicts=shutdown.target
+     8	DefaultDependencies=no
+     9	
+    10	[Service]
+    11	Type=simple
+    12	ExecStart=/usr/sbin/dmeventd -f
+    13	Environment=SD_ACTIVATION=1
+    14	PIDFile=/run/dmeventd.pid
+    15	OOMScoreAdjust=-1000
+--- /usr/lib/systemd/system/lvm2-lvmpolld.socket
+     1	[Unit]
+     2	Description=LVM2 poll daemon socket
+     3	Documentation=man:lvmpolld(8)
+     4	DefaultDependencies=no
+     5	Conflicts=shutdown.target
+     6	
+     7	[Socket]
+     8	ListenStream=/run/lvm/lvmpolld.socket
+     9	SocketMode=0600
+    10	RemoveOnStop=true
+    11	
+    12	[Install]
+    13	WantedBy=sysinit.target
+--- /usr/lib/systemd/system/lvm2-lvmpolld.service
+     1	[Unit]
+     2	Description=LVM2 poll daemon
+     3	Documentation=man:lvmpolld(8)
+     4	Requires=lvm2-lvmpolld.socket
+     5	Before=shutdown.target
+     6	After=lvm2-lvmpolld.socket
+     7	DefaultDependencies=no
+     8	Conflicts=shutdown.target
+     9	
+    10	[Service]
+    11	Type=simple
+    12	NonBlocking=true
+    13	ExecStart=/usr/sbin/lvmpolld -t 60 -f
+    14	Environment=SD_ACTIVATION=1
+    15	PIDFile=/run/lvmpolld.pid
+--- /usr/lib/systemd/system/apport-forward.socket
+     1	[Unit]
+     2	Description=Unix socket for apport crash forwarding
+     3	ConditionVirtualization=container
+     4	
+     5	[Socket]
+     6	ListenStream=/run/apport.socket
+     7	SocketMode=0600
+     8	Accept=yes
+     9	MaxConnections=10
+    10	Backlog=5
+    11	PassCredentials=true
+    12	
+    13	[Install]
+    14	WantedBy=sockets.target
+--- /usr/lib/systemd/system/apport-forward@.service
+     1	[Unit]
+     2	Description=Apport crash forwarding receiver
+     3	Requires=apport-forward.socket
+     4	
+     5	[Service]
+     6	Type=oneshot
+     7	ExecStart=/usr/share/apport/apport
+--- /usr/lib/systemd/system/systemd-fsckd.socket
+     1	#  This file is part of systemd.
+     2	#
+     3	#  systemd is free software; you can redistribute it and/or modify it
+     4	#  under the terms of the GNU Lesser General Public License as published by
+     5	#  the Free Software Foundation; either version 2.1 of the License, or
+     6	#  (at your option) any later version.
+     7	
+     8	[Unit]
+     9	Description=fsck to fsckd communication Socket
+    10	Documentation=man:systemd-fsckd.service(8) man:systemd-fsck@.service(8) man:systemd-fsck-root.service(8)
+    11	DefaultDependencies=no
+    12	
+    13	[Socket]
+    14	ListenStream=/run/systemd/fsck.progress
+    15	SocketMode=0600
+--- /usr/lib/systemd/system/systemd-pcrextend.socket
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[Unit]
+    11	Description=TPM2 PCR Extension (Varlink)
+    12	Documentation=man:systemd-pcrextend(8)
+    13	DefaultDependencies=no
+    14	Before=sockets.target
+    15	ConditionSecurity=measured-uki
+    16	
+    17	[Socket]
+    18	ListenStream=/run/systemd/io.systemd.PCRExtend
+    19	FileDescriptorName=varlink
+    20	SocketMode=0600
+    21	Accept=yes
+    22	
+    23	[Install]
+    24	WantedBy=sockets.target
+--- /usr/lib/systemd/system/systemd-sysext.socket
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[Unit]
+    11	Description=System Extension Image Management (Varlink)
+    12	Documentation=man:systemd-sysext(8)
+    13	DefaultDependencies=no
+    14	After=local-fs.target
+    15	Before=sockets.target
+    16	ConditionCapability=CAP_SYS_ADMIN
+    17	
+    18	[Socket]
+    19	ListenStream=/run/systemd/io.systemd.sysext
+    20	FileDescriptorName=varlink
+    21	SocketMode=0600
+    22	Accept=yes
+    23	
+    24	[Install]
+    25	WantedBy=sockets.target
+--- /usr/lib/systemd/system/systemd-initctl.socket
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[Unit]
+    11	Description=initctl Compatibility Named Pipe
+    12	Documentation=man:systemd-initctl.socket(8)
+    13	DefaultDependencies=no
+    14	Before=sockets.target
+    15	
+    16	[Socket]
+    17	ListenFIFO=/run/initctl
+    18	Symlinks=/dev/initctl
+    19	SocketMode=0600
+--- /usr/lib/systemd/system/systemd-initctl.service
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[Unit]
+    11	Description=initctl Compatibility Daemon
+    12	Documentation=man:systemd-initctl.service(8)
+    13	DefaultDependencies=no
+    14	
+    15	[Service]
+    16	ExecStart=/usr/lib/systemd/systemd-initctl
+    17	NoNewPrivileges=yes
+    18	NotifyAccess=all
+    19	SystemCallArchitectures=native
+--- /usr/lib/systemd/system/snapd.socket
+     1	[Unit]
+     2	Description=Socket activation for snappy daemon
+     3	
+     4	[Socket]
+     5	ListenStream=/run/snapd.socket
+     6	ListenStream=/run/snapd-snap.socket
+     7	SocketMode=0666
+     8	# these are the defaults, but can't hurt to specify them anyway:
+     9	SocketUser=root
+    10	SocketGroup=root
+    11	
+    12	[Install]
+    13	WantedBy=sockets.target
+--- /usr/lib/systemd/system/lxd-installer.socket
+     1	[Unit]
+     2	Description=Helper to install lxd snap on demand
+     3	
+     4	[Socket]
+     5	ListenStream=/run/lxd-installer.socket
+     6	SocketUser=root
+     7	SocketGroup=lxd
+     8	SocketMode=0660
+     9	Accept=true
+    10	
+    11	[Install]
+    12	WantedBy=multi-user.target
+--- /usr/lib/systemd/system/lxd-installer@.service
+     1	[Unit]
+     2	Description=Helper to install lxd snap on demand
+     3	
+     4	[Service]
+     5	ExecStart=/bin/sh -eux /usr/share/lxd-installer/lxd-installer-service
+     6	StandardInput=socket
+     7	StandardOutput=socket
+     8	StandardError=journal
+     9	Restart=no
+--- /usr/lib/systemd/system/uuidd.socket
+     1	[Unit]
+     2	Description=UUID daemon activation socket
+     3	
+     4	[Socket]
+     5	ListenStream=/run/uuidd/request
+     6	
+     7	[Install]
+     8	WantedBy=sockets.target
+--- /usr/lib/systemd/system/uuidd.service
+     1	[Unit]
+     2	Description=Daemon for generating UUIDs
+     3	Documentation=man:uuidd(8)
+     4	Requires=uuidd.socket
+     5	
+     6	[Service]
+     7	ExecStart=/usr/sbin/uuidd --socket-activation
+     8	Restart=no
+     9	User=uuidd
+    10	Group=uuidd
+    11	ProtectSystem=strict
+    12	ProtectHome=yes
+    13	PrivateDevices=yes
+    14	PrivateUsers=yes
+    15	ProtectKernelTunables=yes
+    16	ProtectKernelModules=yes
+    17	ProtectControlGroups=yes
+    18	MemoryDenyWriteExecute=yes
+    19	ReadWritePaths=/var/lib/libuuid/
+    20	SystemCallFilter=@default @file-system @basic-io @system-service @signal @io-event @network-io
+    21	
+    22	[Install]
+    23	Also=uuidd.socket
+--- /usr/lib/systemd/system/systemd-journald.socket
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[Unit]
+    11	Description=Journal Socket
+    12	Documentation=man:systemd-journald.service(8) man:journald.conf(5)
+    13	DefaultDependencies=no
+    14	Before=sockets.target
+    15	
+    16	# Mount and swap units need this. If this socket unit is removed by an isolate
+    17	# request the mount and swap units would be removed too, hence let's exclude
+    18	# systemd-journald and its sockets from isolate requests.
+    19	IgnoreOnIsolate=yes
+    20	
+    21	[Socket]
+    22	ListenDatagram=/run/systemd/journal/socket
+    23	ListenStream=/run/systemd/journal/stdout
+    24	PassCredentials=yes
+    25	PassSecurity=yes
+    26	ReceiveBuffer=8M
+    27	Service=systemd-journald.service
+    28	SocketMode=0666
+    29	Timestamping=us
+--- /usr/lib/systemd/system/systemd-journald-dev-log.socket
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[Unit]
+    11	Description=Journal Socket (/dev/log)
+    12	Documentation=man:systemd-journald.service(8) man:journald.conf(5)
+    13	DefaultDependencies=no
+    14	Before=sockets.target
+    15	
+    16	# Mount and swap units need this. If this socket unit is removed by an isolate
+    17	# request the mount and swap units would be removed too, hence let's exclude
+    18	# systemd-journald and its sockets from isolate requests.
+    19	IgnoreOnIsolate=yes
+    20	
+    21	[Socket]
+    22	ListenDatagram=/run/systemd/journal/dev-log
+    23	PassCredentials=yes
+    24	PassSecurity=yes
+    25	Service=systemd-journald.service
+    26	SocketMode=0666
+    27	Symlinks=/dev/log
+    28	Timestamping=us
+    29	
+    30	# Increase both the send and receive buffer, so that things don't
+    31	# block early. Note that journald internally uses the this socket both
+    32	# for receiving syslog messages, and for forwarding them to any other
+    33	# syslog, hence we bump both values.
+    34	ReceiveBuffer=8M
+    35	SendBuffer=8M
+--- /usr/lib/systemd/system/syslog.socket
+     1	#  SPDX-License-Identifier: LGPL-2.1-or-later
+     2	#
+     3	#  This file is part of systemd.
+     4	#
+     5	#  systemd is free software; you can redistribute it and/or modify it
+     6	#  under the terms of the GNU Lesser General Public License as published by
+     7	#  the Free Software Foundation; either version 2.1 of the License, or
+     8	#  (at your option) any later version.
+     9	
+    10	[Unit]
+    11	Description=Syslog Socket
+    12	Documentation=man:systemd.special(7)
+    13	Documentation=https://www.freedesktop.org/wiki/Software/systemd/syslog
+    14	DefaultDependencies=no
+    15	Before=sockets.target
+    16	
+    17	# Don't allow logging until the very end
+    18	Conflicts=shutdown.target
+    19	Before=shutdown.target
+    20	
+    21	# Don't try to activate syslog.service if sysinit.target has failed.
+    22	Conflicts=emergency.service
+    23	Before=emergency.service
+    24	
+    25	[Socket]
+    26	ListenDatagram=/run/systemd/journal/syslog
+    27	SocketMode=0666
+    28	PassCredentials=yes
+    29	PassSecurity=yes
+    30	ReceiveBuffer=8M
+    31	
+    32	# The default syslog implementation should make syslog.service a
+    33	# symlink to itself, so that this socket activates the right actual
+    34	# syslog service.
+    35	#
+    36	# Examples:
+    37	#
+    38	# /etc/systemd/system/syslog.service -> /lib/systemd/system/rsyslog.service
+    39	# /etc/systemd/system/syslog.service -> /lib/systemd/system/syslog-ng.service
+    40	#
+    41	# Best way to achieve that is by adding this to your unit file
+    42	# (i.e. to rsyslog.service or syslog-ng.service):
+    43	#
+    44	# [Install]
+    45	# Alias=syslog.service
+    46	#
+    47	# See https://www.freedesktop.org/wiki/Software/systemd/syslog for details.
+
+### runtime path modes
+srw------- 600 root:root socket /run/apport.socket -> '/run/apport.socket'
+prw------- 600 root:root fifo /run/dmeventd-client -> '/run/dmeventd-client'
+prw------- 600 root:root fifo /run/dmeventd-server -> '/run/dmeventd-server'
+drwx------ 700 root:root directory /run/lvm -> '/run/lvm'
+srw------- 600 root:root socket /run/lvm/lvmpolld.socket -> '/run/lvm/lvmpolld.socket'
+srw-rw---- 660 root:lxd socket /run/lxd-installer.socket -> '/run/lxd-installer.socket'
+srw-rw-rw- 666 root:root socket /run/snapd.socket -> '/run/snapd.socket'
+srw-rw-rw- 666 root:root socket /run/snapd-snap.socket -> '/run/snapd-snap.socket'
+prw------- 600 root:root fifo /run/initctl -> '/run/initctl'
+prw------- 600 root:root fifo /dev/initctl -> '/dev/initctl'
+drwxr-xr-x 755 root:root directory /run/uuidd -> '/run/uuidd'
+srw-rw-rw- 666 root:root socket /run/uuidd/request -> '/run/uuidd/request'
+drwxrwsr-x 2775 uuidd:uuidd directory /var/lib/libuuid -> '/var/lib/libuuid'
+-rw-rw---- 660 uuidd:uuidd regular file /var/lib/libuuid/clock.txt -> '/var/lib/libuuid/clock.txt'
+MISSING /run/systemd/fsck.progress
+MISSING /run/systemd/io.systemd.PCRExtend
+srw------- 600 root:root socket /run/systemd/io.systemd.sysext -> '/run/systemd/io.systemd.sysext'
+srw-rw-rw- 666 root:root socket /run/systemd/journal/socket -> '/run/systemd/journal/socket'
+srw-rw-rw- 666 root:root socket /run/systemd/journal/stdout -> '/run/systemd/journal/stdout'
+srw-rw-rw- 666 root:root socket /run/systemd/journal/dev-log -> '/run/systemd/journal/dev-log'
+srw-rw-rw- 666 root:root socket /run/systemd/journal/syslog -> '/run/systemd/journal/syslog'
+srw-rw-rw- 666 root:root socket /dev/log -> '/dev/log'
+srw------- 600 root:root socket /run/systemd/journal/io.systemd.journal -> '/run/systemd/journal/io.systemd.journal'
+drwx------ 700 root:root directory /run/multipath -> '/run/multipath'
+-rw-r--r-- 644 root:root regular file /etc/multipath.conf -> '/etc/multipath.conf'
+drwxr-xr-x 755 root:root directory /etc/iscsi -> '/etc/iscsi'
+-rw-r--r-- 644 root:root regular file /etc/iscsi/iscsid.conf -> '/etc/iscsi/iscsid.conf'
+-rw------- 600 root:root regular file /etc/iscsi/initiatorname.iscsi -> '/etc/iscsi/initiatorname.iscsi'
+drwxrwxrwt 1777 root:root directory /run/lock -> '/run/lock'
+MISSING /run/lock/iscsi
+--- /proc/net/unix filtered
+Num       RefCount Protocol Flags    Type St Inode Path
+ffff0000cad70000: 00000003 00000000 00000000 0001 03 12400 /run/systemd/journal/stdout
+ffff0000cd17b000: 00000002 00000000 00010000 0001 01  3639 /run/lvm/lvmpolld.socket
+ffff0000cd17a800: 00000002 00000000 00000000 0002 03  3641 /run/systemd/journal/syslog
+ffff0000e8905400: 00000003 00000000 00000000 0001 03 10823 /run/systemd/journal/stdout
+ffff0000d4e81000: 00000003 00000000 00000000 0001 03  1540 /run/systemd/journal/stdout
+ffff0000cd17e400: 00000006 00000000 00000000 0002 03  3643 /run/systemd/journal/dev-log
+ffff0000cd17ec00: 00000006 00000000 00000000 0002 03  3645 /run/systemd/journal/socket
+ffff0000cd17bc00: 00000002 00000000 00010000 0001 01  3647 /run/systemd/journal/stdout
+ffff0000c825d400: 00000002 00000000 00010000 0001 01 12325 /run/systemd/journal/io.systemd.journal
+ffff0000c80f8000: 00000002 00000000 00010000 0001 01  8180 /run/apport.socket
+ffff0000c80fe000: 00000002 00000000 00010000 0001 01  8184 /run/lxd-installer.socket
+ffff0000c80fd800: 00000002 00000000 00010000 0001 01  8186 /run/snapd.socket
+ffff0000c80fdc00: 00000002 00000000 00010000 0001 01  8188 /run/snapd-snap.socket
+ffff0000ccce5400: 00000003 00000000 00000000 0001 03 12463 /run/systemd/journal/stdout
+ffff0000c80f9c00: 00000002 00000000 00010000 0001 01  8190 /run/uuidd/request
+ffff0000ccf36000: 00000003 00000000 00000000 0001 03 299784 /run/systemd/journal/stdout
+ffff0000c825a400: 00000002 00000000 00010000 0001 01 12373 /run/systemd/io.systemd.sysext
+ffff0000cce34000: 00000003 00000000 00000000 0001 03 118731 /run/systemd/journal/stdout
+ffff0000cad76c00: 00000003 00000000 00000000 0001 03 12473 /run/systemd/journal/stdout
+ffff00017a22d400: 00000003 00000000 00000000 0001 03 676035 /run/systemd/journal/stdout
+ffff0000cd0f4c00: 00000003 00000000 00000000 0001 03  6923 /run/systemd/journal/stdout
+ffff00017a229000: 00000003 00000000 00000000 0001 03 676036 /run/systemd/journal/stdout
+ffff0000cc7b6000: 00000003 00000000 00000000 0001 03   733 /run/systemd/journal/stdout
+ffff000119dd3800: 00000003 00000000 00000000 0001 03 613423 /run/systemd/journal/stdout
+ffff0000c80fb400: 00000002 00000000 00010000 0001 01  8183 @ISCSIADM_ABSTRACT_NAMESPACE
+
+### generic pathname socket reachability from attacker
+-- STREAM /run/apport.socket
+connect_error=13:Permission denied
+-- STREAM /run/lvm/lvmpolld.socket
+connect_error=13:Permission denied
+-- STREAM /run/lxd-installer.socket
+connect_error=13:Permission denied
+-- STREAM /run/snapd.socket
+connect=ok
+send=105
+recv_len=103 recv=b'HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain; charset=utf-8\r\nConnection: close\r\n\r\n400 Bad Request'
+-- STREAM /run/snapd-snap.socket
+connect=ok
+send=105
+recv_len=103 recv=b'HTTP/1.1 400 Bad Request\r\nContent-Type: text/plain; charset=utf-8\r\nConnection: close\r\n\r\n400 Bad Request'
+-- STREAM /run/initctl
+connect_error=13:Permission denied
+-- STREAM /dev/initctl
+connect_error=13:Permission denied
+-- STREAM /run/uuidd/request
+connect=ok
+send=105
+recv_error=ConnectionResetError:[Errno 104] Connection reset by peer
+-- STREAM /run/systemd/fsck.progress
+connect_error=2:No such file or directory
+-- STREAM /run/systemd/io.systemd.PCRExtend
+connect_error=2:No such file or directory
+-- STREAM /run/systemd/io.systemd.sysext
+connect_error=13:Permission denied
+-- STREAM /run/systemd/journal/stdout
+connect=ok
+send=105
+recv_len=0 recv=b''
+[attacker python rc=0]
+
+### generic datagram journal/syslog reachability from attacker
+-- DGRAM /run/systemd/journal/socket
+sendto[0]=ok len=184
+sendto[1]=ok len=116
+-- DGRAM /run/systemd/journal/dev-log
+sendto[0]=ok len=184
+sendto[1]=ok len=116
+-- DGRAM /dev/log
+sendto[0]=ok len=184
+sendto[1]=ok len=116
+-- DGRAM /run/systemd/journal/syslog
+sendto[0]=ok len=184
+sendto[1]=ok len=116
+[attacker python rc=0]
+
+### abstract socket recheck: iscsid and multipathd
+
+$ attacker: mkdir -p /run/lock/iscsi && ln -s '/root/agent_default_socket_recheck_root' /run/lock/iscsi/lock && ls -ld /run/lock/iscsi && ls -l /run/lock/iscsi/lock
+drwxr-xr-x 2 attacker attacker 60 May 17 20:35 /run/lock/iscsi
+lrwxrwxrwx 1 attacker attacker 39 May 17 20:35 /run/lock/iscsi/lock -> /root/agent_default_socket_recheck_root
+[attacker rc=0]
+-- ABSTRACT iscsid payload_len=128
+connect=ok
+send=ok
+recv_error=ConnectionResetError:[Errno 104] Connection reset by peer
+-- ABSTRACT iscsid payload_len=105
+connect_or_send_error=111:Connection refused
+-- ABSTRACT multipathd payload_len=12
+connect_or_send_error=111:Connection refused
+-- ABSTRACT multipathd payload_len=12
+connect_or_send_error=111:Connection refused
+-- ABSTRACT multipathd payload_len=11
+connect_or_send_error=111:Connection refused
+-- ABSTRACT multipathd payload_len=12
+connect_or_send_error=111:Connection refused
+-- ABSTRACT multipathd payload_len=72
+connect_or_send_error=111:Connection refused
+[attacker python rc=0]
+
+$ journalctl -u iscsid.service -u iscsid.socket -n 30 --no-pager
+May 17 20:35:05 bf51bb670420 systemd[1]: Started iscsid.service - iSCSI initiator daemon (iscsid).
+May 17 20:35:05 bf51bb670420 iscsid[81446]: iSCSI daemon with pid=81447 started!
+May 17 20:35:05 bf51bb670420 iscsid[81446]: can not create NETLINK_ISCSI socket [Protocol not supported]
+May 17 20:35:05 bf51bb670420 systemd[1]: iscsid.service: Main process exited, code=exited, status=1/FAILURE
+May 17 20:35:05 bf51bb670420 systemd[1]: iscsid.service: Failed with result 'exit-code'.
+May 17 20:35:05 bf51bb670420 systemd[1]: Starting iscsid.service - iSCSI initiator daemon (iscsid)...
+May 17 20:35:05 bf51bb670420 iscsid[81452]: iSCSI logger with pid=81454 started!
+May 17 20:35:05 bf51bb670420 systemd[1]: Started iscsid.service - iSCSI initiator daemon (iscsid).
+May 17 20:35:05 bf51bb670420 iscsid[81454]: iSCSI daemon with pid=81455 started!
+May 17 20:35:05 bf51bb670420 iscsid[81454]: can not create NETLINK_ISCSI socket [Protocol not supported]
+May 17 20:35:05 bf51bb670420 systemd[1]: iscsid.service: Main process exited, code=exited, status=1/FAILURE
+May 17 20:35:05 bf51bb670420 systemd[1]: iscsid.service: Failed with result 'exit-code'.
+May 17 20:35:05 bf51bb670420 systemd[1]: Starting iscsid.service - iSCSI initiator daemon (iscsid)...
+May 17 20:35:05 bf51bb670420 iscsid[81460]: iSCSI logger with pid=81462 started!
+May 17 20:35:05 bf51bb670420 systemd[1]: Started iscsid.service - iSCSI initiator daemon (iscsid).
+May 17 20:35:05 bf51bb670420 iscsid[81462]: iSCSI daemon with pid=81463 started!
+May 17 20:35:05 bf51bb670420 iscsid[81462]: can not create NETLINK_ISCSI socket [Protocol not supported]
+May 17 20:35:05 bf51bb670420 systemd[1]: iscsid.service: Main process exited, code=exited, status=1/FAILURE
+May 17 20:35:05 bf51bb670420 systemd[1]: iscsid.service: Failed with result 'exit-code'.
+May 17 20:35:05 bf51bb670420 systemd[1]: Starting iscsid.service - iSCSI initiator daemon (iscsid)...
+May 17 20:35:05 bf51bb670420 iscsid[81468]: iSCSI logger with pid=81470 started!
+May 17 20:35:05 bf51bb670420 systemd[1]: Started iscsid.service - iSCSI initiator daemon (iscsid).
+May 17 20:35:05 bf51bb670420 iscsid[81470]: iSCSI daemon with pid=81471 started!
+May 17 20:35:05 bf51bb670420 iscsid[81470]: can not create NETLINK_ISCSI socket [Protocol not supported]
+May 17 20:35:05 bf51bb670420 systemd[1]: iscsid.service: Main process exited, code=exited, status=1/FAILURE
+May 17 20:35:05 bf51bb670420 systemd[1]: iscsid.service: Failed with result 'exit-code'.
+May 17 20:35:05 bf51bb670420 systemd[1]: iscsid.service: Start request repeated too quickly.
+May 17 20:35:05 bf51bb670420 systemd[1]: iscsid.service: Failed with result 'exit-code'.
+May 17 20:35:05 bf51bb670420 systemd[1]: Failed to start iscsid.service - iSCSI initiator daemon (iscsid).
+May 17 20:35:05 bf51bb670420 systemd[1]: iscsid.socket: Failed with result 'service-start-limit-hit'.
+[rc=0]
+
+$ attacker: iscsiadm -m node
+iscsiadm: No records found
+[attacker rc=21]
+
+$ attacker: iscsiadm -m discoverydb -t sendtargets -p 127.0.0.1:3260 --op new
+Failed to start iscsid.socket: Interactive authentication required.
+See system logs and 'systemctl status iscsid.socket' for details.
+iscsiadm: can not connect to iSCSI daemon (111)!
+iscsiadm: Could not make /etc/iscsi/send_targets: Permission denied
+iscsiadm: Could not add new discovery record.
+[attacker rc=6]
+
+$ attacker: iscsiadm -m discovery -t sendtargets -p 127.0.0.1:3260
+Failed to start iscsid.socket: Interactive authentication required.
+See system logs and 'systemctl status iscsid.socket' for details.
+iscsiadm: can not connect to iSCSI daemon (111)!
+iscsiadm: Could not make /etc/iscsi/send_targets: Permission denied
+iscsiadm: Could not add new discovery record.
+[attacker rc=6]
+
+$ attacker: multipath -ll
+need to be root
+[attacker rc=1]
+
+$ attacker: timeout 3 multipathd -k'show daemon'
+[attacker rc=1]
+
+$ attacker: timeout 3 multipathd -k'reconfigure'
+[attacker rc=1]
+
+### dm-event and lvmpolld client commands
+
+$ attacker: printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\n' > /run/dmeventd-client
+bash: line 1: /run/dmeventd-client: Permission denied
+[attacker rc=1]
+
+$ attacker: printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\n' > /run/dmeventd-server
+bash: line 1: /run/dmeventd-server: Permission denied
+[attacker rc=1]
+
+$ attacker: timeout 2 cat /run/dmeventd-client >/tmp/agent-default-socket-recheck-dmeventd-client
+cat: /run/dmeventd-client: Permission denied
+[attacker rc=1]
+
+$ attacker: timeout 2 cat /run/dmeventd-server >/tmp/agent-default-socket-recheck-dmeventd-server
+cat: /run/dmeventd-server: Permission denied
+[attacker rc=1]
+
+$ attacker: lvm version
+device-mapper: version ioctl on   failed: Permission denied
+Incompatible libdevmapper 1.02.185 (2022-05-18) and kernel driver (unknown version).
+  LVM version:     2.03.16(2) (2022-05-18)
+  Library version: 1.02.185 (2022-05-18)
+  Configuration:   ./configure --build=aarch64-linux-gnu --prefix=/usr --includedir=${prefix}/include --mandir=${prefix}/share/man --infodir=${prefix}/share/info --sysconfdir=/etc --localstatedir=/var --disable-option-checking --disable-silent-rules --libdir=${prefix}/lib/aarch64-linux-gnu --runstatedir=/run --disable-maintainer-mode --disable-dependency-tracking --prefix=/usr --exec-prefix=/usr --with-usrlibdir=/usr/lib/aarch64-linux-gnu --with-optimisation=-O2 --with-cache=internal --with-device-uid=0 --with-device-gid=6 --with-device-mode=0660 --with-default-pid-dir=/run --with-default-run-dir=/run/lvm --with-default-locking-dir=/run/lock/lvm --with-thin=internal --with-thin-check=/usr/sbin/thin_check --with-thin-dump=/usr/sbin/thin_dump --with-thin-repair=/usr/sbin/thin_repair --enable-applib --enable-blkid_wiping --enable-cmdlib --enable-dmeventd --enable-editline --enable-lvmlockd-dlm --enable-lvmlockd-sanlock --enable-lvmpolld --enable-notify-dbus --enable-pkgconfig --enable-udev_rules --enable-udev_sync --disable-readline
+[attacker rc=0]
+
+$ attacker: pvscan --cache
+  WARNING: Running as a non-root user. Functionality may be unavailable.
+  pvscan[81555] Failed to create /run/lvm/pvs_online 13
+  pvscan[81555] Failed to create /run/lvm/vgs_online 13
+  pvscan[81555] Failed to create /run/lvm/pvs_lookup 13
+  unlock_hints no existing fd
+[attacker rc=0]
+
+$ attacker: lvs
+  WARNING: Running as a non-root user. Functionality may be unavailable.
+  /run/lock/lvm/P_global:aux: open failed: Permission denied
+[attacker rc=5]
+
+$ attacker: lvm fullreport --config 'global { use_lvmpolld=1 }'
+  WARNING: Running as a non-root user. Functionality may be unavailable.
+  /run/lock/lvm/P_global:aux: open failed: Permission denied
+[attacker rc=5]
+
+$ attacker: dmsetup version
+device-mapper: version ioctl on   failed: Permission denied
+Incompatible libdevmapper 1.02.185 (2022-05-18) and kernel driver (unknown version).
+Command failed.
+Library version:   1.02.185 (2022-05-18)
+[attacker rc=1]
+
+### apport, fsckd, pcrextend, sysext, initctl
+
+$ attacker: python3 - <<'PY'
+import socket
+for path in ['/run/apport.socket','/run/systemd/fsck.progress','/run/systemd/io.systemd.PCRExtend','/run/systemd/io.systemd.sysext']:
+    s=socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    s.settimeout(1.0)
+    try:
+        s.connect(path)
+        print(path, 'connect_ok')
+        s.sendall(b'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\n')
+    except OSError as e:
+        print(path, 'error', e.errno, e.strerror)
+    finally:
+        s.close()
+PY
+/run/apport.socket error 13 Permission denied
+/run/systemd/fsck.progress error 2 No such file or directory
+/run/systemd/io.systemd.PCRExtend error 2 No such file or directory
+/run/systemd/io.systemd.sysext error 13 Permission denied
+[attacker rc=0]
+
+$ attacker: printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\n' >/run/initctl
+bash: line 1: /run/initctl: Permission denied
+[attacker rc=1]
+
+$ attacker: printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\n' >/dev/initctl
+bash: line 1: /dev/initctl: Permission denied
+[attacker rc=1]
+
+$ attacker: telinit q
+kill() failed: Operation not permitted
+[attacker rc=1]
+
+$ attacker: telinit 3
+Failed to open /run/initctl: Permission denied
+Failed to talk to init daemon: Permission denied
+[attacker rc=1]
+
+$ attacker: systemctl start systemd-fsckd.socket systemd-pcrextend.socket
+Failed to start systemd-fsckd.socket: Interactive authentication required.
+See system logs and 'systemctl status systemd-fsckd.socket' for details.
+Failed to start systemd-pcrextend.socket: Interactive authentication required.
+See system logs and 'systemctl status systemd-pcrextend.socket' for details.
+[attacker rc=1]
+
+$ attacker: varlinkctl info /run/systemd/io.systemd.sysext
+Failed to connect to '/run/systemd/io.systemd.sysext': Permission denied
+[attacker rc=1]
+
+$ attacker: systemd-sysext list
+No OS extensions found.
+[attacker rc=0]
+
+$ attacker: systemd-sysext merge
+Need to be privileged.
+[attacker rc=1]
+
+### snapd and lxd-installer privilege gates
+
+$ attacker: curl --max-time 5 --silent --show-error --unix-socket /run/snapd.socket -i http://localhost/v2/system-info | sed -n '1,18p'
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sun, 17 May 2026 20:35:08 GMT
+Transfer-Encoding: chunked
+
+{"type":"sync","status-code":200,"status":"OK","result":{"architecture":"arm64","build-id":"13476c98a1eccfcc83435dda3ccbd6db1b4f65be","confinement":"partial","features":{"apparmor-prompting":{"supported":false,"unsupported-reason":"cannot check apparmor kernel features: open /sys/kernel/security/apparmor/features: no such file or directory","enabled":false},"check-disk-space-install":{"supported":true,"enabled":false},"check-disk-space-refresh":{"supported":true,"enabled":false},"check-disk-space-remove":{"supported":true,"enabled":false},"classic-preserves-xdg-runtime-dir":{"supported":true,"enabled":true},"clustering":{"supported":true,"enabled":false},"confdb":{"supported":true,"enabled":false},"confdb-control":{"supported":true,"enabled":false},"content-compatibility-label":{"supported":true,"enabled":false},"dbus-activation":{"supported":true,"enabled":true},"gate-auto-refresh-hook":{"supported":true,"enabled":false},"hidden-snap-folder":{"supported":true,"enabled":false},"hotplug":{"supported":true,"enabled":false},"layouts":{"supported":true,"enabled":true},"move-snap-home-dir":{"supported":true,"enabled":false},"parallel-instances":{"supported":true,"enabled":false},"per-user-mount-namespace":{"supported":true,"enabled":false},"quota-groups":{"supported":true,"enabled":false},"refresh-app-awareness":{"supported":true,"enabled":true},"refresh-app-awareness-ux":{"supported":true,"enabled":false},"user-daemons":{"supported":true,"enabled":false}},"kernel-version":"6.10.14-linuxkit","locations":{"snap-bin-dir":"/snap/bin","snap-mount-dir":"/snap"},"managed":false,"on-classic":true,"os-release":{"id":"ubuntu","version-id":"24.04"},"refresh":{"timer":"00:00~24:00/4","hold":"2026-05-17T00:51:00Z"},"sandbox-features":{"configfiles":["mediated-configfiles"],"confinement-options":["classic","devmode"],"dbus":["mediated-bus-access"],"kmod":["mediated-modprobe"],"ldconfig":["mediated-ldconfig"],"mount":["layouts","mount-namespace","per-snap-persistency","per-snap-profiles","per-snap-updates","per-snap-user-profiles","stale-base-invalidation"],"seccomp":["bpf-actlog","bpf-argument-filtering","kernel:allow","kernel:errno","kernel:kill_process","kernel:kill_thread","kernel:log","kernel:trace","kernel:trap","kernel:user_notif"],"symlinks":["mediated-symlinks"],"udev":["device-cgroup-v2","device-filtering","tagging"]},"series":"16","snapd-bin-from":"native-package","system-mode":"run","version":"2.74.1+ubuntu24.04.4","virtualization":"docker"}}[attacker rc=0]
+
+$ attacker: curl --max-time 5 --silent --show-error --unix-socket /run/snapd.socket -i -H 'Content-Type: application/json' -X POST --data '{"action":"install","snaps":["agent-default-socket-recheck"],"marker":"/root/agent_default_socket_recheck_root"}' http://localhost/v2/snaps | sed -n '1,24p'
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sun, 17 May 2026 20:35:08 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}[attacker rc=0]
+
+$ attacker: curl --max-time 5 --silent --show-error --unix-socket /run/snapd.socket -i -H 'Content-Type: application/json' -X POST --data '{"action":"start","names":["agent-default-socket-recheck.service"],"scope":["system"],"marker":"/root/agent_default_socket_recheck_root"}' http://localhost/v2/apps | sed -n '1,24p'
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sun, 17 May 2026 20:35:08 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}[attacker rc=0]
+
+$ attacker: curl --max-time 5 --silent --show-error --unix-socket /run/snapd-snap.socket -i http://localhost/v2/system-info | sed -n '1,18p'
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sun, 17 May 2026 20:35:08 GMT
+Content-Length: 155
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"could not determine snap name for pid: not supported","kind":"login-required"}}[attacker rc=0]
+
+$ attacker: /sbin/lxc version
+Unable to trigger the installation of the LXD snap.
+Please make sure you're a member of the 'lxd' system group.
+[attacker rc=1]
+
+$ attacker: python3 - <<'PY'
+import socket
+path='/run/lxd-installer.socket'
+s=socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+try:
+    s.connect(path)
+    print('lxd-installer connect_ok')
+    s.sendall(b'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\n')
+    print('recv', s.recv(32))
+except OSError as e:
+    print('lxd-installer error', e.errno, e.strerror)
+finally:
+    s.close()
+PY
+lxd-installer error 13 Permission denied
+[attacker rc=0]
+
+### uuidd service account boundary
+
+$ attacker: /usr/sbin/uuidd --time --uuids 2
+e54f6028-522f-11f1-812a-e25d1637c107 and 1 subsequent UUID
+[attacker rc=0]
+
+$ attacker: /usr/sbin/uuidd --random --uuids 2
+List of UUIDs:
+	f11ab2b9-d21e-479e-9f45-a8baf6265f56
+	e01bec8f-17ea-491a-8a64-7d544b72d5a8
+[attacker rc=0]
+
+$ attacker: rm -f /run/uuidd/request
+rm: cannot remove '/run/uuidd/request': Permission denied
+[attacker rc=1]
+
+$ ps -eo user:18\,uid\,gid\,pid\,ppid\,comm\,args
+USER                 UID   GID     PID    PPID COMMAND         COMMAND
+root                   0     0       1       0 systemd         /sbin/init
+root                   0     0      35       1 systemd-journal /usr/lib/systemd/systemd-journald
+root                   0     0      83       1 systemd-udevd   /usr/lib/systemd/systemd-udevd
+systemd-resolve      991   991      98       1 systemd-resolve /usr/lib/systemd/systemd-resolved
+root                   0     0     251       1 cron            /usr/sbin/cron -f -P
+messagebus           102   103     252       1 dbus-daemon     @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+root                   0     0     260       1 systemd-logind  /usr/lib/systemd/systemd-logind
+syslog               103   104     267       1 rsyslogd        /usr/sbin/rsyslogd -n -iNONE
+root                   0     0     302       1 unattended-upgr /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+root                   0     0    3156       1 boltd           /usr/libexec/boltd
+uuidd                101   102   11902       1 uuidd           /usr/sbin/uuidd --socket-activation
+root                   0     0   22045       1 agetty          /sbin/agetty -o -p -- \u --noclear - linux
+root                   0     0   35096       1 udisksd         /usr/libexec/udisks2/udisksd
+root                   0     0   61296       1 netplan-dbus    /usr/libexec/netplan/netplan-dbus
+root                   0     0   79018       1 agetty          /sbin/agetty -o -p -- \u --noclear - linux
+root                   0     0   81182       1 agetty          /sbin/agetty -o -p -- \u --noclear - linux
+polkitd              989   989   81242       1 polkitd         /usr/lib/polkit-1/polkitd --no-debug
+root                   0     0   81257       0 bash            bash
+root                   0     0   81383       1 snapd           /usr/lib/snapd/snapd
+root                   0     0   81416       1 systemd-timedat /usr/lib/systemd/systemd-timedated
+root                   0     0   81708   81257 ps              ps -eo user:18,uid,gid,pid,ppid,comm,args
+[rc=0]
+
+$ stat -Lc %A\ %a\ %U:%G\ %F\ %n /var/lib/libuuid /var/lib/libuuid/clock.txt
+drwxrwsr-x 2775 uuidd:uuidd directory /var/lib/libuuid
+-rw-rw---- 660 uuidd:uuidd regular file /var/lib/libuuid/clock.txt
+[rc=0]
+
+### journal attribution for spoof attempts
+    _CMDLINE=runuser -u attacker -- python3 - AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root
+    _SOURCE_REALTIME_TIMESTAMP=1779050104740013
+Sun 2026-05-17 20:35:04.811767 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44a0;b=96caf4622a634ac080c0ac1044cba492;m=1e13b3fc6;t=652096188f506;x=2cf039ac879a8be5]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _CAP_EFFECTIVE=1ffffffffff
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    SYSLOG_FACILITY=3
+    _TRANSPORT=journal
+    TID=1
+    CODE_FILE=src/core/job.c
+    CODE_LINE=609
+    CODE_FUNC=job_emit_start_message
+    SYSLOG_IDENTIFIER=systemd
+    JOB_TYPE=start
+    MESSAGE_ID=7d4958e842da4a758f6c1cdc7b36dcc5
+    _PID=1
+    _COMM=systemd
+    _EXE=/usr/lib/systemd/systemd
+    _CMDLINE=/sbin/init
+    MESSAGE=Starting snapd.service - Snap Daemon...
+    UNIT=snapd.service
+    JOB_ID=37322
+    INVOCATION_ID=22c402ca306f4b75bd8a8f887c777f6f
+    _SOURCE_REALTIME_TIMESTAMP=1779050104811767
+Sun 2026-05-17 20:35:04.956771 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44a1;b=96caf4622a634ac080c0ac1044cba492;m=1e13d7223;t=65209618b2763;x=b8a486ca0ec35f5d]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _CMDLINE=runuser -u attacker -- python3 - AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root
+    SYSLOG_TIMESTAMP=May 17 20:35:05 
+    _SOURCE_REALTIME_TIMESTAMP=1779050105091720
+Sun 2026-05-17 20:35:05.142076 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44ad;b=96caf4622a634ac080c0ac1044cba492;m=1e140536d;t=65209618e08ae;x=8775afbcacea3aaa]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _CAP_EFFECTIVE=1ffffffffff
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    SYSLOG_FACILITY=3
+    _TRANSPORT=journal
+    TID=1
+    CODE_FILE=src/core/job.c
+    CODE_LINE=609
+    CODE_FUNC=job_emit_start_message
+    SYSLOG_IDENTIFIER=systemd
+    JOB_TYPE=start
+    MESSAGE_ID=7d4958e842da4a758f6c1cdc7b36dcc5
+    _PID=1
+    _COMM=systemd
+    _EXE=/usr/lib/systemd/systemd
+    _CMDLINE=/sbin/init
+    MESSAGE=Starting systemd-timedated.service - Time & Date Service...
+    UNIT=systemd-timedated.service
+    JOB_ID=37410
+    INVOCATION_ID=9d78a5cc679f4cc08a1e63da53e0820f
+    _SOURCE_REALTIME_TIMESTAMP=1779050105142076
+Sun 2026-05-17 20:35:05.147068 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44ae;b=96caf4622a634ac080c0ac1044cba492;m=1e1405b0c;t=65209618e104d;x=d2eb536db5075672]
+    PRIORITY=6
+    _UID=0
+    _CMDLINE=runuser -u attacker -- python3 - AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root
+    SYSLOG_TIMESTAMP=May 17 20:35:05 
+    _PID=81415
+    _SOURCE_REALTIME_TIMESTAMP=1779050105147068
+Sun 2026-05-17 20:35:05.186650 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44af;b=96caf4622a634ac080c0ac1044cba492;m=1e140f54e;t=65209618eaa8e;x=4cf633da1e492b59]
+    _UID=1001
+    _GID=1001
+    _CAP_EFFECTIVE=0
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=journal
+    PRIORITY=2
+    MESSAGE=AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 native _UID=0 _PID=1 marker=/root/agent_default_socket_recheck_root
+    SYSLOG_IDENTIFIER=root
+    _PID=81417
+    _COMM=python3
+    _EXE=/usr/bin/python3.12
+    _CMDLINE=python3 - AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root
+    _SOURCE_REALTIME_TIMESTAMP=1779050105186650
+Sun 2026-05-17 20:35:05.186709 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44b0;b=96caf4622a634ac080c0ac1044cba492;m=1e1410236;t=65209618eb777;x=824be98e9d1cffbe]
+    _TRANSPORT=syslog
+    PRIORITY=6
+    _UID=1001
+    _GID=1001
+    _CAP_EFFECTIVE=0
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _CMDLINE=python3 - AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root
+    MESSAGE=MESSAGE=AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 native _UID=0 _PID=1 marker=/root/agent_default_socket_recheck_root
+            PRIORITY=2
+            SYSLOG_IDENTIFIER=root
+            _UID=0
+            _PID=1
+            _COMM=systemd
+    SYSLOG_RAW=MESSAGE=AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 native _UID=0 _PID=1 marker=/root/agent_default_socket_recheck_root
+               PRIORITY=2
+               SYSLOG_IDENTIFIER=root
+               _UID=0
+               _PID=1
+               _COMM=systemd
+    _SOURCE_REALTIME_TIMESTAMP=1779050105186709
+Sun 2026-05-17 20:35:05.186717 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44b1;b=96caf4622a634ac080c0ac1044cba492;m=1e1410e69;t=65209618ec3aa;x=372f83644d048c69]
+    _TRANSPORT=syslog
+    _UID=1001
+    _GID=1001
+    _CAP_EFFECTIVE=0
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    PRIORITY=5
+    SYSLOG_FACILITY=1
+    SYSLOG_IDENTIFIER=root
+    _PID=81417
+    _COMM=python3
+    _EXE=/usr/bin/python3.12
+    _CMDLINE=python3 - AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root
+    SYSLOG_PID=AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257
+    MESSAGE=syslog spoof marker=/root/agent_default_socket_recheck_root
+    SYSLOG_RAW=<13>root[AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257]: syslog spoof marker=/root/agent_default_socket_recheck_root
+    _CMDLINE=python3 - AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root
+    MESSAGE=MESSAGE=AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 native _UID=0 _PID=1 marker=/root/agent_default_socket_recheck_root
+            PRIORITY=2
+            SYSLOG_IDENTIFIER=root
+            _UID=0
+            _PID=1
+            _COMM=systemd
+    SYSLOG_RAW=MESSAGE=AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 native _UID=0 _PID=1 marker=/root/agent_default_socket_recheck_root
+               PRIORITY=2
+               SYSLOG_IDENTIFIER=root
+               _UID=0
+               _PID=1
+               _COMM=systemd
+    _SOURCE_REALTIME_TIMESTAMP=1779050105186730
+Sun 2026-05-17 20:35:05.186737 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44b3;b=96caf4622a634ac080c0ac1044cba492;m=1e1410f23;t=65209618ec464;x=3e7106567627164a]
+    _TRANSPORT=syslog
+    _UID=1001
+    _GID=1001
+    _CAP_EFFECTIVE=0
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    PRIORITY=5
+    SYSLOG_FACILITY=1
+    SYSLOG_IDENTIFIER=root
+    _PID=81417
+    _COMM=python3
+    _EXE=/usr/bin/python3.12
+    _CMDLINE=python3 - AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root
+    SYSLOG_PID=AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257
+    MESSAGE=syslog spoof marker=/root/agent_default_socket_recheck_root
+    SYSLOG_RAW=<13>root[AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257]: syslog spoof marker=/root/agent_default_socket_recheck_root
+    _CMDLINE=runuser -u attacker -- python3 - AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root
+    SYSLOG_TIMESTAMP=May 17 20:35:05 
+    _PID=81415
+    _SOURCE_REALTIME_TIMESTAMP=1779050105193740
+Sun 2026-05-17 20:35:05.213632 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44b5;b=96caf4622a634ac080c0ac1044cba492;m=1e1416f7d;t=65209618f24bf;x=b9c42ac66b5f684a]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    _COMM=runuser
+    _EXE=/usr/sbin/runuser
+    _CAP_EFFECTIVE=1ffffffffff
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    MESSAGE=pam_unix(runuser:session): session opened for user attacker(uid=1001) by (uid=0)
+    SYSLOG_TIMESTAMP=May 17 20:35:05 
+    _PID=81422
+    _CMDLINE=runuser -u attacker -- bash -lc "mkdir -p /run/lock/iscsi && ln -s '/root/agent_default_socket_recheck_root' /run/lock/iscsi/lock && ls -ld /run/lock/iscsi && ls -l /run/lock/iscsi/lock"
+    _SOURCE_REALTIME_TIMESTAMP=1779050105213632
+Sun 2026-05-17 20:35:05.247678 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44b6;b=96caf4622a634ac080c0ac1044cba492;m=1e141f3b1;t=65209618fa8f2;x=bf985ce261b37a77]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    _CMDLINE=runuser -u attacker -- python3 - AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root
+    SYSLOG_TIMESTAMP=May 17 20:35:05 
+    _PID=81431
+    _SOURCE_REALTIME_TIMESTAMP=1779050105268656
+Sun 2026-05-17 20:35:05.279016 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44ba;b=96caf4622a634ac080c0ac1044cba492;m=1e1425ce7;t=6520961901228;x=8332120399a079ff]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _SYSTEMD_SLICE=system.slice
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _CAP_EFFECTIVE=1ffffffffff
+    SYSLOG_FACILITY=3
+    _TRANSPORT=stdout
+    SYSLOG_IDENTIFIER=snapd
+    _COMM=snapd
+    _EXE=/usr/lib/snapd/snapd
+    _CMDLINE=/usr/lib/snapd/snapd
+    _SYSTEMD_CGROUP=/system.slice/snapd.service
+    _SYSTEMD_UNIT=snapd.service
+    MESSAGE=snapmgr.go:1659: performing periodic snap downloads cache cleanup
+    _STREAM_ID=cfca41e712ed40a8890b208c2f9d76fe
+    _PID=81383
+    _SYSTEMD_INVOCATION_ID=22c402ca306f4b75bd8a8f887c777f6f
+Sun 2026-05-17 20:35:05.279016 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44bb;b=96caf4622a634ac080c0ac1044cba492;m=1e1425ce7;t=6520961901228;x=f92288d415e7913]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _SYSTEMD_SLICE=system.slice
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _CAP_EFFECTIVE=1ffffffffff
+    _CMDLINE=runuser -u attacker -- python3 - AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root
+    SYSLOG_TIMESTAMP=May 17 20:35:05 
+    _PID=81431
+    _SOURCE_REALTIME_TIMESTAMP=1779050105529130
+Sun 2026-05-17 20:35:05.551317 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44e4;b=96caf4622a634ac080c0ac1044cba492;m=1e14686a6;t=6520961943be7;x=b741b159f2e88006]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    _COMM=runuser
+    _EXE=/usr/sbin/runuser
+    _CAP_EFFECTIVE=1ffffffffff
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    MESSAGE=pam_unix(runuser:session): session opened for user attacker(uid=1001) by (uid=0)
+    SYSLOG_TIMESTAMP=May 17 20:35:05 
+    _PID=81474
+    _CMDLINE=runuser -u attacker -- bash -lc "iscsiadm -m node"
+    _SOURCE_REALTIME_TIMESTAMP=1779050105551317
+Sun 2026-05-17 20:35:05.562039 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44e5;b=96caf4622a634ac080c0ac1044cba492;m=1e146b06b;t=65209619465ac;x=94e0e447a450e524]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    _CMDLINE=runuser -u attacker -- bash -lc "printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n' > /run/dmeventd-client"
+    _SOURCE_REALTIME_TIMESTAMP=1779050107761912
+Sun 2026-05-17 20:35:07.775671 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44f1;b=96caf4622a634ac080c0ac1044cba492;m=1e16876c7;t=6520961b62c07;x=8db3615def2872e5]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    MESSAGE=pam_unix(runuser:session): session closed for user attacker
+    _COMM=runuser
+    _EXE=/usr/sbin/runuser
+    _CAP_EFFECTIVE=1ffffffffff
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    SYSLOG_TIMESTAMP=May 17 20:35:07 
+    _PID=81520
+    _CMDLINE=runuser -u attacker -- bash -lc "printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n' > /run/dmeventd-client"
+    _SOURCE_REALTIME_TIMESTAMP=1779050107775671
+Sun 2026-05-17 20:35:07.782616 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44f2;b=96caf4622a634ac080c0ac1044cba492;m=1e16890da;t=6520961b6461a;x=8af7e0dbaf4faaa1]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    _COMM=runuser
+    _CMDLINE=runuser -u attacker -- bash -lc "printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n' > /run/dmeventd-server"
+    _SOURCE_REALTIME_TIMESTAMP=1779050107782616
+Sun 2026-05-17 20:35:07.798428 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44f3;b=96caf4622a634ac080c0ac1044cba492;m=1e168ce8e;t=6520961b683cf;x=532d7aaf6cfd9f35]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    MESSAGE=pam_unix(runuser:session): session closed for user attacker
+    _COMM=runuser
+    _EXE=/usr/sbin/runuser
+    _CAP_EFFECTIVE=1ffffffffff
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    SYSLOG_TIMESTAMP=May 17 20:35:07 
+    _PID=81526
+    _CMDLINE=runuser -u attacker -- bash -lc "printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n' > /run/dmeventd-server"
+    _SOURCE_REALTIME_TIMESTAMP=1779050107798428
+Sun 2026-05-17 20:35:07.811103 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=44f4;b=96caf4622a634ac080c0ac1044cba492;m=1e1690386;t=6520961b6b8c6;x=93e116edb6a1cd8e]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    _COMM=runuser
+    _CMDLINE=runuser -u attacker -- bash -lc "python3 - <<'PY'\nimport socket\nfor path in ['/run/apport.socket','/run/systemd/fsck.progress','/run/systemd/io.systemd.PCRExtend','/run/systemd/io.systemd.sysext']:\n    s=socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)\n    s.settimeout(1.0)\n    try:\n        s.connect(path)\n        print(path, 'connect_ok')\n        s.sendall(b'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n')\n    except OSError as e:\n        print(path, 'error', e.errno, e.strerror)\n    finally:\n        s.close()\nPY"
+    _SOURCE_REALTIME_TIMESTAMP=1779050108002034
+Sun 2026-05-17 20:35:08.038887 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=4503;b=96caf4622a634ac080c0ac1044cba492;m=1e16c7a5c;t=6520961ba2f9d;x=9e2a8f4a1cf24a62]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    MESSAGE=pam_unix(runuser:session): session closed for user attacker
+    _COMM=runuser
+    _EXE=/usr/sbin/runuser
+    _CAP_EFFECTIVE=1ffffffffff
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    SYSLOG_TIMESTAMP=May 17 20:35:08 
+    _PID=81578
+    _CMDLINE=runuser -u attacker -- bash -lc "python3 - <<'PY'\nimport socket\nfor path in ['/run/apport.socket','/run/systemd/fsck.progress','/run/systemd/io.systemd.PCRExtend','/run/systemd/io.systemd.sysext']:\n    s=socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)\n    s.settimeout(1.0)\n    try:\n        s.connect(path)\n        print(path, 'connect_ok')\n        s.sendall(b'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n')\n    except OSError as e:\n        print(path, 'error', e.errno, e.strerror)\n    finally:\n        s.close()\nPY"
+    _SOURCE_REALTIME_TIMESTAMP=1779050108038887
+Sun 2026-05-17 20:35:08.043796 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=4504;b=96caf4622a634ac080c0ac1044cba492;m=1e16c8d09;t=6520961ba424a;x=ce8f0af2ba95afe1]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    _COMM=runuser
+    _CMDLINE=runuser -u attacker -- bash -lc "printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n' >/run/initctl"
+    _SOURCE_REALTIME_TIMESTAMP=1779050108043796
+Sun 2026-05-17 20:35:08.050355 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=4505;b=96caf4622a634ac080c0ac1044cba492;m=1e16ca6b9;t=6520961ba5bfa;x=f405a33ad05c181f]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    MESSAGE=pam_unix(runuser:session): session closed for user attacker
+    _COMM=runuser
+    _EXE=/usr/sbin/runuser
+    _CAP_EFFECTIVE=1ffffffffff
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    SYSLOG_TIMESTAMP=May 17 20:35:08 
+    _PID=81585
+    _CMDLINE=runuser -u attacker -- bash -lc "printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n' >/run/initctl"
+    _SOURCE_REALTIME_TIMESTAMP=1779050108050355
+Sun 2026-05-17 20:35:08.055033 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=4506;b=96caf4622a634ac080c0ac1044cba492;m=1e16cb8dc;t=6520961ba6e1d;x=63e015ff16e3a1a0]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    _COMM=runuser
+    _CMDLINE=runuser -u attacker -- bash -lc "printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n' >/dev/initctl"
+    _SOURCE_REALTIME_TIMESTAMP=1779050108055033
+Sun 2026-05-17 20:35:08.061329 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=4507;b=96caf4622a634ac080c0ac1044cba492;m=1e16cd1f7;t=6520961ba8738;x=2ffd2482f543621c]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    MESSAGE=pam_unix(runuser:session): session closed for user attacker
+    _COMM=runuser
+    _EXE=/usr/sbin/runuser
+    _CAP_EFFECTIVE=1ffffffffff
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    SYSLOG_TIMESTAMP=May 17 20:35:08 
+    _PID=81591
+    _CMDLINE=runuser -u attacker -- bash -lc "printf 'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n' >/dev/initctl"
+    _SOURCE_REALTIME_TIMESTAMP=1779050108061329
+Sun 2026-05-17 20:35:08.065016 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=4508;b=96caf4622a634ac080c0ac1044cba492;m=1e16cdfdb;t=6520961ba951c;x=7131a5d7e5b1046a]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    _COMM=runuser
+    _CMDLINE=runuser -u attacker -- bash -lc "python3 - <<'PY'\nimport socket\npath='/run/lxd-installer.socket'\ns=socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)\ntry:\n    s.connect(path)\n    print('lxd-installer connect_ok')\n    s.sendall(b'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n')\n    print('recv', s.recv(32))\nexcept OSError as e:\n    print('lxd-installer error', e.errno, e.strerror)\nfinally:\n    s.close()\nPY"
+    _SOURCE_REALTIME_TIMESTAMP=1779050108829301
+Sun 2026-05-17 20:35:08.913593 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=4521;b=96caf4622a634ac080c0ac1044cba492;m=1e179d2d5;t=6520961c78816;x=c5175e735170a660]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    MESSAGE=pam_unix(runuser:session): session closed for user attacker
+    _COMM=runuser
+    _EXE=/usr/sbin/runuser
+    _CAP_EFFECTIVE=1ffffffffff
+    _SYSTEMD_CGROUP=/init.scope
+    _SYSTEMD_UNIT=init.scope
+    _SYSTEMD_SLICE=-.slice
+    SYSLOG_TIMESTAMP=May 17 20:35:08 
+    _PID=81683
+    _CMDLINE=runuser -u attacker -- bash -lc "python3 - <<'PY'\nimport socket\npath='/run/lxd-installer.socket'\ns=socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)\ntry:\n    s.connect(path)\n    print('lxd-installer connect_ok')\n    s.sendall(b'AGENT_DEFAULT_SOCKET_RECHECK_1779050103_81257 /root/agent_default_socket_recheck_root\\n')\n    print('recv', s.recv(32))\nexcept OSError as e:\n    print('lxd-installer error', e.errno, e.strerror)\nfinally:\n    s.close()\nPY"
+    _SOURCE_REALTIME_TIMESTAMP=1779050108913593
+Sun 2026-05-17 20:35:08.920634 UTC [s=cb573503c1d24c49bc0c54790dde430a;i=4522;b=96caf4622a634ac080c0ac1044cba492;m=1e179ee3b;t=6520961c7a37c;x=16f47be83646d4c2]
+    PRIORITY=6
+    _UID=0
+    _GID=0
+    _BOOT_ID=96caf4622a634ac080c0ac1044cba492
+    _MACHINE_ID=d1550bbf3ee64a61a434283f6f6d03db
+    _HOSTNAME=bf51bb670420
+    _RUNTIME_SCOPE=system
+    _TRANSPORT=syslog
+    SYSLOG_FACILITY=10
+    SYSLOG_IDENTIFIER=runuser
+    _COMM=runuser
+
+### root marker and cleanup
+absent /root/agent_default_socket_recheck_root
+absent /tmp/agent_default_socket_recheck_root
+MARKER_OR_ARTIFACT_PRESENT /tmp/agent-default-socket-recheck-dmeventd-client
+-rw-r--r-- 1 attacker attacker 0 May 17 20:35 /tmp/agent-default-socket-recheck-dmeventd-client
+MARKER_OR_ARTIFACT_PRESENT /tmp/agent-default-socket-recheck-dmeventd-server
+-rw-r--r-- 1 attacker attacker 0 May 17 20:35 /tmp/agent-default-socket-recheck-dmeventd-server
+absent /tmp/agent-default-socket-recheck-iscsi-lock-created
+ROOT_PROOF=NO
+
+$ systemctl is-system-running
+running
+[rc=0]
+
+$ systemctl --failed --no-legend
+[rc=0]
+
+$ losetup -a
+[rc=0]
+
+Wrote /Users/andrewmohawk/Documents/UbuntuLPE/ubuntu24-server-lpe/logs/agent_default_socket_recheck.out

@@ -1,0 +1,416 @@
+
+===== target and fixed helper inventory =====
++ cat /etc/os-release | sed -n "1,8p"; uname -a; id attacker; groups attacker
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux bf51bb670420 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+attacker : attacker
+rc=0
++ apt-get -s full-upgrade 2>&1 | sed -n "1,80p"
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Calculating upgrade...
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+rc=0
++ dpkg-query -W -f='${binary:Package}\t${Version}\t${Architecture}\t${db:Status-Abbrev}\n' ubuntu-minimal ubuntu-standard ubuntu-server fuse3 mount util-linux passwd login sudo openssh-client libutempter0 dbus polkitd iputils-ping mtr-tiny libgstreamer1.0-0 2>&1
+dbus	1.14.10-4ubuntu4.1	arm64	ii 
+fuse3	3.14.0-5build1	arm64	ii 
+iputils-ping	3:20240117-1ubuntu0.1	arm64	ii 
+libgstreamer1.0-0:arm64	1.24.2-1ubuntu0.1	arm64	ii 
+libutempter0:arm64	1.2.1-3build1	arm64	ii 
+login	1:4.13+dfsg1-4ubuntu3.2	arm64	ii 
+mount	2.39.3-9ubuntu6.5	arm64	ii 
+mtr-tiny	0.95-1.1ubuntu0.1	arm64	ii 
+openssh-client	1:9.6p1-3ubuntu13.16	arm64	ii 
+passwd	1:4.13+dfsg1-4ubuntu3.2	arm64	ii 
+polkitd	124-2ubuntu1.24.04.3	arm64	ii 
+sudo	1.9.15p5-3ubuntu5.24.04.2	arm64	ii 
+ubuntu-minimal	1.539.2	arm64	ii 
+ubuntu-server	1.539.2	arm64	ii 
+ubuntu-standard	1.539.2	arm64	ii 
+util-linux	2.39.3-9ubuntu6.5	arm64	ii 
+rc=0
++ stat -c '%A %a %U:%G %n' /usr/bin/mount /usr/bin/umount /usr/bin/fusermount3 /usr/bin/crontab /usr/bin/sudo /usr/bin/newgrp /usr/bin/ssh-agent /usr/lib/openssh/ssh-keysign /usr/lib/dbus-1.0/dbus-daemon-launch-helper /usr/lib/polkit-1/polkit-agent-helper-1 /usr/bin/ping /usr/bin/mtr-packet '/usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper' '/usr/lib/aarch64-linux-gnu/utempter/utempter' /usr/sbin/unix_chkpwd /usr/sbin/pam_extrausers_chkpwd 2>&1
+-rwsr-xr-x 4755 root:root /usr/bin/mount
+-rwsr-xr-x 4755 root:root /usr/bin/umount
+-rwsr-xr-x 4755 root:root /usr/bin/fusermount3
+-rwxr-sr-x 2755 root:crontab /usr/bin/crontab
+-rwsr-xr-x 4755 root:root /usr/bin/sudo
+-rwsr-xr-x 4755 root:root /usr/bin/newgrp
+-rwxr-sr-x 2755 root:_ssh /usr/bin/ssh-agent
+-rwsr-xr-x 4755 root:root /usr/lib/openssh/ssh-keysign
+-rwsr-xr-- 4754 root:messagebus /usr/lib/dbus-1.0/dbus-daemon-launch-helper
+-rwsr-xr-x 4755 root:root /usr/lib/polkit-1/polkit-agent-helper-1
+-rwxr-xr-x 755 root:root /usr/bin/ping
+-rwxr-xr-x 755 root:root /usr/bin/mtr-packet
+-rwxr-xr-x 755 root:root /usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper
+-rwxr-sr-x 2755 root:utmp /usr/lib/aarch64-linux-gnu/utempter/utempter
+-rwxr-sr-x 2755 root:shadow /usr/sbin/unix_chkpwd
+-rwxr-sr-x 2755 root:shadow /usr/sbin/pam_extrausers_chkpwd
+rc=0
++ getcap -v /usr/bin/ping /usr/bin/mtr-packet '/usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper' /usr/lib/snapd/snap-confine 2>&1
+/usr/bin/ping cap_net_raw=ep
+/usr/bin/mtr-packet cap_net_raw=ep
+/usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper cap_net_bind_service,cap_net_admin,cap_sys_nice=ep
+/usr/lib/snapd/snap-confine cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+rc=0
++ sha256sum /etc/passwd /etc/shadow /etc/group /etc/gshadow /run/utmp /var/log/wtmp /var/log/btmp 2>/dev/null | tee /tmp/agent_setuid_secureexec_edges.before.sha256
+e1468fa4ad17e48937e0fe2d6f1c64ea1d8477c339287f68bd3fc54aa9729ee0  /etc/passwd
+0f8fc7e1080707f5ab9951b14262ed4d862f5e7fb0a2ae8168a0cc16ab9f9fb7  /etc/shadow
+6f9dbca3bed6a13aa64baadf58ccdccf3d6f18eac2bf8e6e6dd3ea08634ae5be  /etc/group
+3470f908cc636edf0f69d37ed04b7947031ad0487977ec3973f0d8d64d3461c3  /etc/gshadow
+698e7c69cd5e5745e25dcf31b2c08a85950c0e2a1f9924384ef159966d4568c5  /run/utmp
+726e3b15b40a39e40cf9e0232f871b5dde266ad6c49e7f57ae6e3ad3b4d2078d  /var/log/wtmp
+e88ffb31f27ecc80b2aae77fa7855ab0def528a63f6b3c96773af654beb1847c  /var/log/btmp
+rc=0
++ runuser -u attacker -- id; grep -E "^(Uid|Gid|Groups|Cap(Inh|Prm|Eff|Bnd|Amb)|NoNewPrivs|Seccomp):" /proc/self/status
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+Uid:	1001	1001	1001	1001
+Gid:	1001	1001	1001	1001
+Groups:	1001 
+CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+Seccomp:	0
+rc=0
+
+===== root-side trace of secure-exec environment filtering =====
++ trace ping_version: /usr/bin/ping -V
+trace_rc=0
+stdout_tail:
+ping from iputils 20240117
+libcap: yes, IDN: yes, NLS: no, error.h: yes, getrandom(): yes, __fpending(): yes
+
+stderr_tail:
+
+attacker_path_trace_hits:
+
+privilege_transition_trace:
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78306:execve("/usr/sbin/runuser", ["runuser", "-u", "attacker", "--", "env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/ping", "-V"], 0xffffe2a7b570 /* 8 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78306:setregid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78306:setreuid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78306:setreuid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78306:setregid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78307:setgid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78307:setuid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78307:execve("/usr/local/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/ping", "-V"], 0xaaaaf37e8050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78307:execve("/usr/local/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/ping", "-V"], 0xaaaaf37e8050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78307:execve("/usr/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/ping", "-V"], 0xaaaaf37e8050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78307:execve("/usr/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/ping", "-V"], 0xaaaaf37e8050 /* 10 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78307:execve("/usr/bin/ping", ["/usr/bin/ping", "-V"], 0xaaaad4612400 /* 12 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78307:capset({version=_LINUX_CAPABILITY_VERSION_3, pid=0}, {effective=0, permitted=1<<CAP_NET_RAW, inheritable=0}) = 0
+/tmp/agent_setuid_secureexec_edges/traces/ping_version.78307:setuid(1001)                            = 0
++ trace gst_direct: /usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper -i eth0 --clock-id 0x0102030405060708
+trace_rc=0
+stdout_tail:
+?
+stderr_tail:
+/net.rs?gst_ptp_helper::net::imp???|Interface sit0 is not up?Z?../libs/gst/helpers/ptp/net.rs?gst_ptp_helper::net::imp???|Interface ip6tnl0 is not up?Z?../libs/gst/helpers/ptp/net.rs?gst_ptp_helper::net::imp???|Interface ip6gre0 is not up?w?../libs/gst/helpers/ptp/net.rs?gst_ptp_helper::net::imp???ÊInterface eth0 has MAC address [226, 93, 22, 55, 193, 7]?a?../libs/gst/helpers/ptp/net.rs?gst_ptp_helper::net::imp???xInterface lo is loopback interface?i?../libs/gst/helpers/ptp/net.rs?gst_ptp_helper::net::imp???¯Interface eth0 has IPv4 address 172.17.0.2?a?../libs/gst/helpers/ptp/net.rs?gst_ptp_helper::net::imp???xInterface lo is loopback interface?O?../libs/gst/helpers/ptp/main.rs?gst_ptp_helper???~Binding to interface eth0?]?../libs/gst/helpers/ptp/main.rs?gst_ptp_helper???›Using clock ID [1, 2, 3, 4, 5, 6, 7, 8]?—?../libs/gst/helpers/ptp/main.rs?gst_ptp_helper??¤Exited with error: Failed polling
+
+Caused by:
+
+  Hang up during polling on stdin for interface 1
+
+attacker_path_trace_hits:
+
+privilege_transition_trace:
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78320:execve("/usr/sbin/runuser", ["runuser", "-u", "attacker", "--", "env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/lib/aarch64-linux-gnu/gstre"..., "-i", "eth0", "--clock-id", "0x0102030405060708"], 0xffffe69b38b8 /* 8 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78320:setregid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78320:setreuid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78320:setreuid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78320:setregid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78321:setgid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78321:setuid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78321:execve("/usr/local/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/lib/aarch64-linux-gnu/gstre"..., "-i", "eth0", "--clock-id", "0x0102030405060708"], 0xaaaae9ae8050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78321:execve("/usr/local/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/lib/aarch64-linux-gnu/gstre"..., "-i", "eth0", "--clock-id", "0x0102030405060708"], 0xaaaae9ae8050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78321:execve("/usr/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/lib/aarch64-linux-gnu/gstre"..., "-i", "eth0", "--clock-id", "0x0102030405060708"], 0xaaaae9ae8050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78321:execve("/usr/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/lib/aarch64-linux-gnu/gstre"..., "-i", "eth0", "--clock-id", "0x0102030405060708"], 0xaaaae9ae8050 /* 10 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78321:execve("/usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper", ["/usr/lib/aarch64-linux-gnu/gstre"..., "-i", "eth0", "--clock-id", "0x0102030405060708"], 0xaaaade5eb400 /* 12 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/gst_direct.78321:capset({version=_LINUX_CAPABILITY_VERSION_3, pid=0}, {effective=0, permitted=0, inheritable=0}) = 0
++ trace chage_self: /usr/bin/chage -l attacker
+trace_rc=0
+stdout_tail:
+Last password change					: May 16, 2026
+Password expires					: never
+Password inactive					: never
+Account expires						: never
+Minimum number of days between password change		: 0
+Maximum number of days between password change		: 99999
+Number of days of warning before password expires	: 7
+
+stderr_tail:
+
+attacker_path_trace_hits:
+
+privilege_transition_trace:
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78334:execve("/usr/sbin/runuser", ["runuser", "-u", "attacker", "--", "env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/chage", "-l", "attacker"], 0xffffef4e9648 /* 8 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78334:setregid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78334:setreuid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78334:setreuid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78334:setregid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78335:setgid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78335:setuid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78335:execve("/usr/local/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/chage", "-l", "attacker"], 0xaaab10e6a050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78335:execve("/usr/local/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/chage", "-l", "attacker"], 0xaaab10e6a050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78335:execve("/usr/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/chage", "-l", "attacker"], 0xaaab10e6a050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78335:execve("/usr/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/chage", "-l", "attacker"], 0xaaab10e6a050 /* 10 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78335:execve("/usr/bin/chage", ["/usr/bin/chage", "-l", "attacker"], 0xaaab0ca2c400 /* 12 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78335:setregid(1001, 1001)                    = 0
+/tmp/agent_setuid_secureexec_edges/traces/chage_self.78335:setreuid(1001, 1001)                    = 0
++ trace passwd_status: /usr/bin/passwd -S attacker
+trace_rc=0
+stdout_tail:
+attacker L 2026-05-16 0 99999 7 -1
+
+stderr_tail:
+
+attacker_path_trace_hits:
+
+privilege_transition_trace:
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78348:execve("/usr/sbin/runuser", ["runuser", "-u", "attacker", "--", "env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/passwd", "-S", "attacker"], 0xffffdcb467c8 /* 8 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78348:setregid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78348:setreuid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78348:setreuid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78348:setregid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78349:setgid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78349:setuid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78349:execve("/usr/local/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/passwd", "-S", "attacker"], 0xaaaafe524050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78349:execve("/usr/local/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/passwd", "-S", "attacker"], 0xaaaafe524050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78349:execve("/usr/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/passwd", "-S", "attacker"], 0xaaaafe524050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78349:execve("/usr/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/passwd", "-S", "attacker"], 0xaaaafe524050 /* 10 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/passwd_status.78349:execve("/usr/bin/passwd", ["/usr/bin/passwd", "-S", "attacker"], 0xaaaad7250400 /* 12 vars */) = 0
++ trace ssh_keysign: /usr/lib/openssh/ssh-keysign
+trace_rc=255
+stdout_tail:
+
+stderr_tail:
+ssh-keysign not enabled in /etc/ssh/ssh_config
+
+attacker_path_trace_hits:
+
+privilege_transition_trace:
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78362:execve("/usr/sbin/runuser", ["runuser", "-u", "attacker", "--", "env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/lib/openssh/ssh-keysign"], 0xfffff7478558 /* 8 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78362:setregid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78362:setreuid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78362:setreuid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78362:setregid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78363:setgid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78363:setuid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78363:execve("/usr/local/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/lib/openssh/ssh-keysign"], 0xaaaaea2ea050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78363:execve("/usr/local/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/lib/openssh/ssh-keysign"], 0xaaaaea2ea050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78363:execve("/usr/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/lib/openssh/ssh-keysign"], 0xaaaaea2ea050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78363:execve("/usr/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/lib/openssh/ssh-keysign"], 0xaaaaea2ea050 /* 10 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78363:execve("/usr/lib/openssh/ssh-keysign", ["/usr/lib/openssh/ssh-keysign"], 0xaaaafac54400 /* 12 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78363:setresgid(1001, 1001, 1001)             = 0
+/tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78363:setresuid(1001, 1001, 1001)             = 0
++ trace fusermount_version: /usr/bin/fusermount3 -V
+trace_rc=0
+stdout_tail:
+fusermount3 version: 3.14.0
+
+stderr_tail:
+
+attacker_path_trace_hits:
+
+privilege_transition_trace:
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78376:execve("/usr/sbin/runuser", ["runuser", "-u", "attacker", "--", "env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/fusermount3", "-V"], 0xffffe9349580 /* 8 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78376:setregid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78376:setreuid(1001, -1)                      = 0
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78376:setreuid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78376:setregid(0, -1)                         = 0
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78377:setgid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78377:setuid(1001)                            = 0
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78377:execve("/usr/local/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/fusermount3", "-V"], 0xaaaaf6ec3050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78377:execve("/usr/local/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/fusermount3", "-V"], 0xaaaaf6ec3050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78377:execve("/usr/sbin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/fusermount3", "-V"], 0xaaaaf6ec3050 /* 10 vars */) = -1 ENOENT (No such file or directory)
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78377:execve("/usr/bin/env", ["env", "-i", "HOME=/home/attacker/agent_setuid"..., "USER=attacker", "LOGNAME=attacker", "PATH=/home/attacker/agent_setuid"..., "TMPDIR=/home/attacker/agent_setu"..., "LD_PRELOAD=/home/attacker/agent_"..., "LD_AUDIT=/home/attacker/agent_se"..., "GCONV_PATH=/home/attacker/agent_"..., "LOCPATH=/home/attacker/agent_set"..., "NLSPATH=/home/attacker/agent_set"..., "BASH_ENV=/home/attacker/agent_se"..., "ENV=/home/attacker/agent_setuid_"..., "/usr/bin/fusermount3", "-V"], 0xaaaaf6ec3050 /* 10 vars */) = 0
+/tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78377:execve("/usr/bin/fusermount3", ["/usr/bin/fusermount3", "-V"], 0xaaaaf753f400 /* 12 vars */) = 0
+
+===== attacker-controlled helper execution boundaries =====
++ runuser -u attacker -- mkdir -p '/tmp/agent_setuid_secureexec_edges/mnt' '/tmp/agent_setuid_secureexec_edges/src'; PATH='/home/attacker/agent_setuid_secureexec_edges/bin:/usr/bin:/bin:/usr/sbin:/sbin' /usr/bin/mount -t fuse.agentedge none '/tmp/agent_setuid_secureexec_edges/mnt' 2>&1; echo mount_fuse_helper_rc=$?
+mount_fuse_helper_rc=73
+rc=0
++ runuser -u attacker -- VISUAL='/home/attacker/agent_setuid_secureexec_edges/bin/editor' EDITOR='/home/attacker/agent_setuid_secureexec_edges/bin/editor' crontab -e </dev/null >/tmp/agent_setuid_secureexec_edges.crontab.out 2>/tmp/agent_setuid_secureexec_edges.crontab.err; echo crontab_e_rc=$?; tail -n 20 /tmp/agent_setuid_secureexec_edges.crontab.err
+crontab_e_rc=1
+no crontab for attacker - using an empty one
+crontab: "/home/attacker/agent_setuid_secureexec_edges/bin/editor" exited with status 73
+rc=0
++ runuser -u attacker -- SUDO_ASKPASS='/home/attacker/agent_setuid_secureexec_edges/bin/askpass' sudo -A -k id >/tmp/agent_setuid_secureexec_edges.sudo.out 2>/tmp/agent_setuid_secureexec_edges.sudo.err; echo sudo_askpass_rc=$?; tail -n 20 /tmp/agent_setuid_secureexec_edges.sudo.err
+sudo_askpass_rc=1
+sudo: no password was provided
+sudo: a password is required
+rc=0
++ runuser -u attacker -- SSH_PKCS11_HELPER='/home/attacker/agent_setuid_secureexec_edges/bin/pkcs11-helper' timeout 8 ssh-agent sh -c 'ssh-add -s /usr/lib/aarch64-linux-gnu/libc.so.6 </dev/null >/tmp/agent_setuid_secureexec_edges.sshadd.out 2>/tmp/agent_setuid_secureexec_edges.sshadd.err; echo sshadd_rc=$?; cat /tmp/agent_setuid_secureexec_edges.sshadd.err' 2>&1; echo ssh_agent_rc=$?
+sshadd_rc=1
+Enter passphrase for PKCS#11: Could not add card "/usr/lib/aarch64-linux-gnu/libc.so.6": agent refused operation
+ssh_agent_rc=0
+rc=0
++ runuser -u attacker -- SHELL='/home/attacker/agent_setuid_secureexec_edges/bin/shell' timeout 8 newgrp attacker </dev/null >/tmp/agent_setuid_secureexec_edges.newgrp.out 2>/tmp/agent_setuid_secureexec_edges.newgrp.err; echo newgrp_rc=$?; cat /tmp/agent_setuid_secureexec_edges.newgrp.err
+newgrp_rc=73
+rc=0
++ printf 'helper_runs_log:\n'; sed -n '1,220p' '/home/attacker/agent_setuid_secureexec_edges/helper-runs.log' 2>/dev/null || true
+helper_runs_log:
+helper=/home/attacker/agent_setuid_secureexec_edges/bin/agentedge
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+Uid:	1001	1001	1001	1001
+Gid:	1001	1001	1001	1001
+Groups:	1001 
+CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+Seccomp:	0
+argv: <none> </tmp/agent_setuid_secureexec_edges/mnt> <-o> <rw,dev,suid>
+---
+helper=/home/attacker/agent_setuid_secureexec_edges/bin/editor
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+Uid:	1001	1001	1001	1001
+Gid:	1001	1001	1001	1001
+Groups:	1001 
+CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+Seccomp:	0
+argv: </tmp/crontab.a6LZf1/crontab>
+---
+helper=/home/attacker/agent_setuid_secureexec_edges/bin/askpass
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+Uid:	1001	1001	1001	1001
+Gid:	1001	1001	1001	1001
+Groups:	1001 
+CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+Seccomp:	0
+argv: <[sudo] password for attacker: >
+---
+helper=/home/attacker/agent_setuid_secureexec_edges/bin/pkcs11-helper
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+Uid:	1001	1001	1001	1001
+Gid:	1001	1001	1001	1001
+Groups:	1001 
+CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+Seccomp:	0
+argv:
+---
+helper=/home/attacker/agent_setuid_secureexec_edges/bin/shell
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+Uid:	1001	1001	1001	1001
+Gid:	1001	1001	1001	1001
+Groups:	1001 
+CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+Seccomp:	0
+argv:
+---
+rc=0
++ test -e '/root/agent_setuid_secureexec_edges_root_marker'; echo helper_root_marker_rc=$?; [ ! -e '/root/agent_setuid_secureexec_edges_root_marker' ] || cat '/root/agent_setuid_secureexec_edges_root_marker'
+helper_root_marker_rc=1
+rc=0
+
+===== symlink and hardlink edge checks =====
++ runuser -u attacker -- ln -sf /root/agent_setuid_secureexec_edges_socket '/home/attacker/agent_setuid_secureexec_edges/agent.sock'; ssh-agent -D -a '/home/attacker/agent_setuid_secureexec_edges/agent.sock' >/tmp/agent_setuid_secureexec_edges.agentlink.out 2>/tmp/agent_setuid_secureexec_edges.agentlink.err & pid=$!; sleep 0.5; kill $pid 2>/dev/null; wait $pid 2>/dev/null; echo ssh_agent_symlink_rc=$?; cat /tmp/agent_setuid_secureexec_edges.agentlink.err; test -e /root/agent_setuid_secureexec_edges_socket; echo root_socket_exists_rc=$?
+ssh_agent_symlink_rc=1
+unix_listener: cannot bind to path /home/attacker/agent_setuid_secureexec_edges/agent.sock: Address already in use
+root_socket_exists_rc=1
+rc=0
++ runuser -u attacker -- mkdir -p '/tmp/agent_setuid_secureexec_edges/fuse-root' '/tmp/agent_setuid_secureexec_edges/linkdir'; ln -s / '/tmp/agent_setuid_secureexec_edges/linkdir/rootlink'; fusermount3 -o allow_other '/tmp/agent_setuid_secureexec_edges/fuse-root' 2>&1; echo fuse_allow_other_rc=$?; fusermount3 -u '/tmp/agent_setuid_secureexec_edges/linkdir/rootlink' 2>&1; echo fuse_symlink_umount_rc=$?
+fusermount3: old style mounting not supported
+fuse_allow_other_rc=1
+fusermount3: entry for /tmp/agent_setuid_secureexec_edges/linkdir/rootlink not found in /etc/mtab
+fuse_symlink_umount_rc=1
+rc=0
++ runuser -u attacker -- mount --mkdir '/tmp/agent_setuid_secureexec_edges/src' /root/agent_setuid_secureexec_edges_mount 2>&1; echo mount_root_mkdir_rc=$?; test -e /root/agent_setuid_secureexec_edges_mount; echo root_mount_exists_rc=$?
+mount: /root/agent_setuid_secureexec_edges_mount: operation permitted for root only.
+mount_root_mkdir_rc=1
+root_mount_exists_rc=1
+rc=0
++ runuser -u attacker -- ln /etc/shadow '/home/attacker/agent_setuid_secureexec_edges/shadow.hardlink' 2>&1; echo hardlink_shadow_rc=$?; ln /usr/bin/sudo '/home/attacker/agent_setuid_secureexec_edges/sudo.hardlink' 2>&1; echo hardlink_sudo_rc=$?; stat -c '%A %U:%G %n' '/home/attacker/agent_setuid_secureexec_edges/'*.hardlink 2>&1
+ln: failed to create hard link '/home/attacker/agent_setuid_secureexec_edges/shadow.hardlink' => '/etc/shadow': Operation not permitted
+hardlink_shadow_rc=1
+ln: failed to create hard link '/home/attacker/agent_setuid_secureexec_edges/sudo.hardlink' => '/usr/bin/sudo': Operation not permitted
+hardlink_sudo_rc=1
+stat: cannot statx '/home/attacker/agent_setuid_secureexec_edges/*.hardlink': No such file or directory
+rc=1
+
+===== mtr-packet retained-cap parser sanity =====
++ runuser -u attacker -- mkfifo '/tmp/agent_setuid_secureexec_edges/mtr.in'; /usr/bin/mtr-packet <'/tmp/agent_setuid_secureexec_edges/mtr.in' >'/tmp/agent_setuid_secureexec_edges/mtr.out' 2>'/tmp/agent_setuid_secureexec_edges/mtr.err' & pid=$!; exec 9>'/tmp/agent_setuid_secureexec_edges/mtr.in'; sleep 0.2; echo mtr_pid=$pid; grep -E '^(Uid|Gid|Groups|Cap(Inh|Prm|Eff|Bnd|Amb)|NoNewPrivs):' /proc/$pid/status; getpcaps $pid 2>&1; printf '1 check-support feature send-probe\n2 check-support feature mark\n3 send-probe ip-4 127.0.0.1 protocol icmp timeout 1\n4 /bin/sh -c id\n5 send-probe ip-4 ../../etc/shadow protocol icmp timeout 1\n' >&9; sleep 1; exec 9>&-; wait $pid; echo mtr_wait_rc=$?; cat '/tmp/agent_setuid_secureexec_edges/mtr.out' '/tmp/agent_setuid_secureexec_edges/mtr.err' 2>/dev/null
+mtr_pid=78510
+Uid:	1001	1001	1001	1001
+Gid:	1001	1001	1001	1001
+Groups:	1001 
+CapInh:	0000000000000000
+CapPrm:	0000000000002000
+CapEff:	0000000000002000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+78510: cap_net_raw=ep
+mtr_wait_rc=0
+1 feature-support support ok
+2 feature-support support ok
+4 unknown-command
+5 invalid-argument
+3 reply ip-4 127.0.0.1 round-trip-time 53
+rc=0
+
+===== final integrity and cleanup proof =====
++ sha256sum /etc/passwd /etc/shadow /etc/group /etc/gshadow /run/utmp /var/log/wtmp /var/log/btmp 2>/dev/null | tee /tmp/agent_setuid_secureexec_edges.after.sha256
+e1468fa4ad17e48937e0fe2d6f1c64ea1d8477c339287f68bd3fc54aa9729ee0  /etc/passwd
+0f8fc7e1080707f5ab9951b14262ed4d862f5e7fb0a2ae8168a0cc16ab9f9fb7  /etc/shadow
+6f9dbca3bed6a13aa64baadf58ccdccf3d6f18eac2bf8e6e6dd3ea08634ae5be  /etc/group
+3470f908cc636edf0f69d37ed04b7947031ad0487977ec3973f0d8d64d3461c3  /etc/gshadow
+698e7c69cd5e5745e25dcf31b2c08a85950c0e2a1f9924384ef159966d4568c5  /run/utmp
+726e3b15b40a39e40cf9e0232f871b5dde266ad6c49e7f57ae6e3ad3b4d2078d  /var/log/wtmp
+e88ffb31f27ecc80b2aae77fa7855ab0def528a63f6b3c96773af654beb1847c  /var/log/btmp
+rc=0
++ diff -u /tmp/agent_setuid_secureexec_edges.before.sha256 /tmp/agent_setuid_secureexec_edges.after.sha256 2>&1 || true
+rc=0
++ find /root -maxdepth 1 \( -name 'agent_setuid_secureexec_edges*' -o -name 'setuid-cap-tail-20260517*' \) -printf '%m %u:%g %p\n' 2>/dev/null || true
+rc=0
++ find '/home/attacker/agent_setuid_secureexec_edges' '/tmp/agent_setuid_secureexec_edges' -maxdepth 3 -type f -printf '%m %u:%g %s %p\n' 2>/dev/null | sort
+644 attacker:attacker 0 /tmp/agent_setuid_secureexec_edges/mtr.err
+644 attacker:attacker 137 /tmp/agent_setuid_secureexec_edges/mtr.out
+644 attacker:attacker 1875 /home/attacker/agent_setuid_secureexec_edges/helper-runs.log
+644 root:root 2862 /tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78377
+644 root:root 3701 /tmp/agent_setuid_secureexec_edges/traces/ping_version.78307
+644 root:root 3917 /tmp/agent_setuid_secureexec_edges/traces/gst_direct.78321
+644 root:root 4016 /tmp/agent_setuid_secureexec_edges/traces/chage_self.78335
+644 root:root 4250 /tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78363
+644 root:root 4404 /tmp/agent_setuid_secureexec_edges/traces/passwd_status.78349
+644 root:root 9728 /tmp/agent_setuid_secureexec_edges/traces/ping_version.78306
+644 root:root 9735 /tmp/agent_setuid_secureexec_edges/traces/fusermount_version.78376
+644 root:root 9739 /tmp/agent_setuid_secureexec_edges/traces/ssh_keysign.78362
+644 root:root 9741 /tmp/agent_setuid_secureexec_edges/traces/chage_self.78334
+644 root:root 9742 /tmp/agent_setuid_secureexec_edges/traces/passwd_status.78348
+644 root:root 9794 /tmp/agent_setuid_secureexec_edges/traces/gst_direct.78320
+755 attacker:attacker 629 /home/attacker/agent_setuid_secureexec_edges/bin/edge-helper
+rc=0

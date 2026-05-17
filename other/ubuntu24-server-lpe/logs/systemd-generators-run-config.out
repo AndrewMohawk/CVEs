@@ -1,0 +1,1507 @@
+systemd generators / run config / credential LPE probe
+target=ubuntu24-server-lpe-target
+2026-05-16T13:27:42-0400
+
+## target identity and default package proof
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+systemd 255 (255.4-1ubuntu8.15)
+kmod	31+20240202-2ubuntu7.2	arm64	ii 
+libkmod2:arm64	31+20240202-2ubuntu7.2	arm64	ii 
+systemd	255.4-1ubuntu8.15	arm64	ii 
+systemd-dev	255.4-1ubuntu8.15	all	ii 
+systemd-sysv	255.4-1ubuntu8.15	arm64	ii 
+udev	255.4-1ubuntu8.15	arm64	ii 
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+attacker : attacker
+selfauth : selfauth
+sudo:x:27:ubuntu
+adm:x:4:ubuntu,syslog
+lxd:x:101:
+systemd-journal:x:999:
+
+## root-running unit proof
+UNIT FILE                                STATE  PRESET
+kmod-static-nodes.service                static -
+systemd-binfmt.service                   static -
+systemd-firstboot.service                static -
+systemd-hwdb-update.service              static -
+systemd-journal-catalog-update.service   static -
+systemd-sysusers.service                 static -
+systemd-tmpfiles-setup-dev-early.service static -
+systemd-tmpfiles-setup-dev.service       static -
+systemd-tmpfiles-setup.service           static -
+
+9 unit files listed.
+  UNIT                                     LOAD   ACTIVE   SUB    DESCRIPTION
+  kmod-static-nodes.service                loaded inactive dead   Create List of Static Device Nodes
+  systemd-binfmt.service                   loaded active   exited Set Up Additional Binary Formats
+  systemd-firstboot.service                loaded inactive dead   First Boot Wizard
+  systemd-hwdb-update.service              loaded inactive dead   Rebuild Hardware Database
+  systemd-journal-catalog-update.service   loaded active   exited Rebuild Journal Catalog
+  systemd-sysusers.service                 loaded active   exited Create System Users
+  systemd-tmpfiles-setup-dev-early.service loaded active   exited Create Static Device Nodes in /dev gracefully
+  systemd-tmpfiles-setup-dev.service       loaded active   exited Create Static Device Nodes in /dev
+  systemd-tmpfiles-setup.service           loaded active   exited Create Volatile Files and Directories
+
+Legend: LOAD   -> Reflects whether the unit definition was properly loaded.
+        ACTIVE -> The high-level unit activation state, i.e. generalization of SUB.
+        SUB    -> The low-level unit activation state, values depend on unit type.
+
+9 loaded units listed.
+To show all installed unit files use 'systemctl list-unit-files'.
+### systemd-hwdb-update.service
+ExecStart={ path=systemd-hwdb ; argv[]=systemd-hwdb update ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+SetCredential=[unprintable]
+LoadCredential=[unprintable]
+ImportCredential=
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/systemd-hwdb-update.service
+UnitFileState=static
+ConditionResult=no
+# /usr/lib/systemd/system/systemd-hwdb-update.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Rebuild Hardware Database
+Documentation=man:hwdb(7) man:systemd-hwdb(8)
+
+ConditionNeedsUpdate=/etc
+ConditionPathExists=|!/usr/lib/udev/hwdb.bin
+ConditionPathExists=|/etc/udev/hwdb.bin
+ConditionDirectoryNotEmpty=|/etc/udev/hwdb.d/
+
+DefaultDependencies=no
+After=systemd-remount-fs.service
+Before=sysinit.target systemd-update-done.service
+Conflicts=shutdown.target
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=systemd-hwdb update
+TimeoutSec=90s
+### systemd-binfmt.service
+ExecStart={ path=/usr/lib/systemd/systemd-binfmt ; argv[]=/usr/lib/systemd/systemd-binfmt ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+SetCredential=[unprintable]
+LoadCredential=[unprintable]
+ImportCredential=
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/systemd-binfmt.service
+UnitFileState=static
+ConditionResult=yes
+# /usr/lib/systemd/system/systemd-binfmt.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Set Up Additional Binary Formats
+Documentation=man:systemd-binfmt.service(8) man:binfmt.d(5)
+Documentation=https://docs.kernel.org/admin-guide/binfmt-misc.html
+Documentation=https://www.freedesktop.org/wiki/Software/systemd/APIFileSystems
+DefaultDependencies=no
+Conflicts=shutdown.target
+After=proc-sys-fs-binfmt_misc.automount
+After=proc-sys-fs-binfmt_misc.mount
+After=local-fs.target
+Before=sysinit.target shutdown.target
+ConditionPathIsMountPoint=/proc/sys/fs/binfmt_misc
+ConditionDirectoryNotEmpty=|/lib/binfmt.d
+ConditionDirectoryNotEmpty=|/usr/lib/binfmt.d
+ConditionDirectoryNotEmpty=|/usr/local/lib/binfmt.d
+ConditionDirectoryNotEmpty=|/etc/binfmt.d
+ConditionDirectoryNotEmpty=|/run/binfmt.d
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/systemd/systemd-binfmt
+ExecStop=/usr/lib/systemd/systemd-binfmt --unregister
+TimeoutSec=90s
+### systemd-sysusers.service
+ExecStart={ path=systemd-sysusers ; argv[]=systemd-sysusers ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+SetCredential=[unprintable]
+LoadCredential=[unprintable]
+ImportCredential="sysusers.*" passwd.shell.root passwd.hashed-password.root passwd.plaintext-password.root
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/systemd-sysusers.service
+UnitFileState=static
+ConditionResult=yes
+# /usr/lib/systemd/system/systemd-sysusers.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Create System Users
+Documentation=man:sysusers.d(5) man:systemd-sysusers.service(8)
+
+ConditionNeedsUpdate=|/etc
+ConditionCredential=|sysusers.extra
+
+DefaultDependencies=no
+After=systemd-remount-fs.service
+After=systemd-tmpfiles-setup-dev-early.service
+Before=systemd-tmpfiles-setup-dev.service
+Before=sysinit.target systemd-update-done.service
+Conflicts=shutdown.target initrd-switch-root.target
+Before=shutdown.target initrd-switch-root.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=systemd-sysusers
+TimeoutSec=90s
+
+# Optionally, pick up a root password and shell for the root user from a
+# credential passed to the service manager. This is useful for importing this
+# data from nspawn's --set-credential= switch.
+ImportCredential=passwd.hashed-password.root
+ImportCredential=passwd.plaintext-password.root
+ImportCredential=passwd.shell.root
+
+# Also, allow configuring extra sysusers lines via a credential
+ImportCredential=sysusers.*
+### systemd-tmpfiles-setup.service
+ExecStart={ path=systemd-tmpfiles ; argv[]=systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+SetCredential=[unprintable]
+LoadCredential=[unprintable]
+ImportCredential=ssh.authorized_keys.root login.issue "tmpfiles.*" login.motd network.hosts
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/systemd-tmpfiles-setup.service
+UnitFileState=static
+ConditionResult=yes
+# /usr/lib/systemd/system/systemd-tmpfiles-setup.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Create Volatile Files and Directories
+Documentation=man:tmpfiles.d(5) man:systemd-tmpfiles(8)
+
+DefaultDependencies=no
+After=local-fs.target systemd-sysusers.service systemd-journald.service
+Before=sysinit.target
+Conflicts=shutdown.target initrd-switch-root.target
+Before=shutdown.target initrd-switch-root.target
+RefuseManualStop=yes
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=systemd-tmpfiles --create --remove --boot --exclude-prefix=/dev
+SuccessExitStatus=DATAERR CANTCREAT
+ImportCredential=tmpfiles.*
+ImportCredential=login.motd
+ImportCredential=login.issue
+ImportCredential=network.hosts
+ImportCredential=ssh.authorized_keys.root
+### systemd-tmpfiles-setup-dev.service
+ExecStart={ path=systemd-tmpfiles ; argv[]=systemd-tmpfiles --prefix=/dev --create --boot ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+SetCredential=[unprintable]
+LoadCredential=[unprintable]
+ImportCredential="tmpfiles.*"
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/systemd-tmpfiles-setup-dev.service
+UnitFileState=static
+ConditionResult=yes
+# /usr/lib/systemd/system/systemd-tmpfiles-setup-dev.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Create Static Device Nodes in /dev
+Documentation=man:tmpfiles.d(5) man:systemd-tmpfiles(8)
+
+DefaultDependencies=no
+After=systemd-tmpfiles-setup-dev-early.service
+Before=sysinit.target local-fs-pre.target systemd-udevd.service
+Wants=local-fs-pre.target
+Conflicts=shutdown.target initrd-switch-root.target
+Before=shutdown.target initrd-switch-root.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=systemd-tmpfiles --prefix=/dev --create --boot
+SuccessExitStatus=DATAERR CANTCREAT
+ImportCredential=tmpfiles.*
+### systemd-tmpfiles-setup-dev-early.service
+ExecStart={ path=systemd-tmpfiles ; argv[]=systemd-tmpfiles --prefix=/dev --create --boot --graceful ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+SetCredential=[unprintable]
+LoadCredential=[unprintable]
+ImportCredential="tmpfiles.*"
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/systemd-tmpfiles-setup-dev-early.service
+UnitFileState=static
+ConditionResult=yes
+# /usr/lib/systemd/system/systemd-tmpfiles-setup-dev-early.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Create Static Device Nodes in /dev gracefully
+Documentation=man:tmpfiles.d(5) man:systemd-tmpfiles(8)
+
+DefaultDependencies=no
+Before=sysinit.target local-fs-pre.target systemd-udevd.service
+Wants=local-fs-pre.target
+Conflicts=shutdown.target initrd-switch-root.target
+Before=shutdown.target initrd-switch-root.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=systemd-tmpfiles --prefix=/dev --create --boot --graceful
+SuccessExitStatus=DATAERR CANTCREAT
+ImportCredential=tmpfiles.*
+### kmod-static-nodes.service
+ExecStart={ path=/usr/bin/kmod ; argv[]=/usr/bin/kmod static-nodes --format=tmpfiles --output=/run/tmpfiles.d/static-nodes.conf ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+SetCredential=[unprintable]
+LoadCredential=[unprintable]
+ImportCredential=
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/kmod-static-nodes.service
+UnitFileState=static
+ConditionResult=no
+# /usr/lib/systemd/system/kmod-static-nodes.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Create List of Static Device Nodes
+DefaultDependencies=no
+Before=sysinit.target systemd-tmpfiles-setup-dev-early.service
+ConditionCapability=CAP_SYS_MODULE
+ConditionFileNotEmpty=/lib/modules/%v/modules.devname
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/kmod static-nodes --format=tmpfiles --output=/run/tmpfiles.d/static-nodes.conf
+### systemd-journal-catalog-update.service
+ExecStart={ path=journalctl ; argv[]=journalctl --update-catalog ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+SetCredential=[unprintable]
+LoadCredential=[unprintable]
+ImportCredential=
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/systemd-journal-catalog-update.service
+UnitFileState=static
+ConditionResult=yes
+# /usr/lib/systemd/system/systemd-journal-catalog-update.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Rebuild Journal Catalog
+Documentation=man:systemd-journald.service(8) man:journald.conf(5)
+
+ConditionNeedsUpdate=/var
+
+DefaultDependencies=no
+After=local-fs.target systemd-tmpfiles-setup.service
+Before=sysinit.target systemd-update-done.service
+Conflicts=shutdown.target
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=journalctl --update-catalog
+TimeoutSec=90s
+### systemd-firstboot.service
+ExecStart={ path=systemd-firstboot ; argv[]=systemd-firstboot --prompt-locale --prompt-timezone --prompt-root-password ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+SetCredential=[unprintable]
+LoadCredential=[unprintable]
+ImportCredential="firstboot.*" passwd.shell.root passwd.hashed-password.root passwd.plaintext-password.root
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/systemd-firstboot.service
+UnitFileState=static
+ConditionResult=no
+# /usr/lib/systemd/system/systemd-firstboot.service
+#  SPDX-License-Identifier: LGPL-2.1-or-later
+#
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=First Boot Wizard
+Documentation=man:systemd-firstboot(1)
+
+ConditionPathIsReadWrite=/etc
+ConditionFirstBoot=yes
+
+DefaultDependencies=no
+# This service may need to write to the file system:
+After=systemd-remount-fs.service
+# Both systemd-sysusers and systemd-tmpfiles may create the root account
+# (via factory files or credentials), obviating the need for us to do that:
+After=systemd-sysusers.service systemd-tmpfiles-setup.service
+# Let vconsole-setup do its setup before starting user interaction:
+After=systemd-vconsole-setup.service
+
+Wants=first-boot-complete.target
+Before=first-boot-complete.target sysinit.target
+Conflicts=shutdown.target
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=systemd-firstboot --prompt-locale --prompt-timezone --prompt-root-password
+StandardOutput=tty
+StandardInput=tty
+StandardError=tty
+
+# Optionally, pick up basic fields from credentials passed to the service
+# manager. This is useful for importing this data from nspawn's
+# --set-credential= switch.
+ImportCredential=passwd.hashed-password.root
+ImportCredential=passwd.plaintext-password.root
+ImportCredential=passwd.shell.root
+ImportCredential=firstboot.*
+
+## helper binary proof
+-rwxr-xr-x root:root 199584 /usr/bin/systemd-hwdb
+-rwxr-xr-x root:root 67880 /usr/lib/systemd/systemd-binfmt
+-rwxr-xr-x root:root 68040 /usr/bin/systemd-sysusers
+-rwxr-xr-x root:root 133680 /usr/bin/systemd-tmpfiles
+-rwxr-xr-x root:root 198776 /usr/bin/kmod
+-rwxr-xr-x root:root 133824 /usr/bin/journalctl
+-rwxr-xr-x root:root 68200 /usr/bin/systemd-firstboot
+-rwxr-xr-x root:root 68112 /usr/bin/systemd-creds
+-rwxr-xr-x root:root 67736 /usr/lib/systemd/systemd-update-done
+--w------- root:root /proc/sys/fs/binfmt_misc/register
+stat: cannot statx '/lib/modules/6.10.14-linuxkit/modules.devname': No such file or directory
+stat: cannot statx '/usr/lib/modules/6.10.14-linuxkit/modules.devname': No such file or directory
+-r--r--r-- root:root /usr/lib/udev/hwdb.bin
+stat: cannot statx '/etc/udev/hwdb.bin': No such file or directory
+-rw-r--r-- root:root /var/lib/systemd/catalog/database
+tmpfs on /run type tmpfs (rw,nosuid,nodev,relatime,mode=755)
+cgroup2 on /sys/fs/cgroup type cgroup2 (rw,nosuid,nodev,noexec,relatime)
+systemd-1 on /proc/sys/fs/binfmt_misc type autofs (rw,relatime,fd=30,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=8630)
+binfmt_misc on /proc/sys/fs/binfmt_misc type binfmt_misc (rw,nosuid,nodev,noexec,relatime)
+kernel.modules_disabled = 0
+
+## systemd config/search view
+### systemd-analyze cat-config binfmt.d
+# /usr/lib/binfmt.d/python3.12.conf
+:python3.12:M::\xcb\x0d\x0d\x0a::/usr/bin/python3.12:
+### systemd-analyze cat-config sysusers.d
+# /usr/lib/sysusers.d/basic.conf
+# generated from /usr/share/base-passwd/{passwd,group}.master
+g adm        4     -
+g tty        5     -
+g disk       6     -
+g man        12    -
+g kmem       15    -
+g dialout    20    -
+g fax        21    -
+g voice      22    -
+g cdrom      24    -
+g floppy     25    -
+g tape       26    -
+g sudo       27    -
+g audio      29    -
+g dip        30    -
+g operator   37    -
+g src        40    -
+g shadow     42    -
+g utmp       43    -
+g video      44    -
+g sasl       45    -
+g plugdev    46    -
+g staff      50    -
+g games      60    -
+g users      100   -
+g nogroup    65534 -
+
+u root       0       - /root                /bin/bash
+u daemon     1       - /usr/sbin            /usr/sbin/nologin
+u bin        2       - /bin                 /usr/sbin/nologin
+u sys        3       - /dev                 /usr/sbin/nologin
+u sync       4:65534 - /bin                 /bin/sync
+u games      5:60    - /usr/games           /usr/sbin/nologin
+u man        6:12    - /var/cache/man       /usr/sbin/nologin
+u lp         7       - /var/spool/lpd       /usr/sbin/nologin
+u mail       8       - /var/mail            /usr/sbin/nologin
+u news       9       - /var/spool/news      /usr/sbin/nologin
+u uucp       10      - /var/spool/uucp      /usr/sbin/nologin
+u proxy      13      - /bin                 /usr/sbin/nologin
+u www-data   33      - /var/www             /usr/sbin/nologin
+u backup     34      - /var/backups         /usr/sbin/nologin
+u list       38      - /var/list            /usr/sbin/nologin
+u irc        39      - /run/ircd            /usr/sbin/nologin
+u _apt       42:65534 - /nonexistent         /usr/sbin/nologin
+u nobody     65534:65534 - /nonexistent         /usr/sbin/nologin
+
+# /usr/lib/sysusers.d/cron-daemon-common.conf
+g crontab - -
+
+# /usr/lib/sysusers.d/dbus.conf
+# sysusers.d snippet for creating the D-Bus system user automatically
+# at boot on systemd-based systems that ship with an unpopulated
+# /etc. See sysusers.d(5) for details.
+
+u messagebus - "System Message Bus"
+
+# /usr/lib/sysusers.d/debian-udev.conf
+# System groups used by udev rules
+g input  -
+g sgx    -
+
+# Group for /dev/kvm
+g kvm    -
+
+# Group for /dev/dri/renderD*
+g render -
+
+# /usr/lib/sysusers.d/fwupd.conf
+u fwupd-refresh - "Firmware update daemon" /var/lib/fwupd
+
+# /usr/lib/sysusers.d/polkit.conf
+u polkitd - "User for polkitd"
+
+# /usr/lib/sysusers.d/systemd-journal.conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+g systemd-journal - -
+
+# /usr/lib/sysusers.d/systemd-network.conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+u systemd-network - "systemd Network Management"
+
+# /usr/lib/sysusers.d/systemd-resolve.conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+u systemd-resolve - "systemd Resolver"
+
+# /usr/lib/sysusers.d/systemd-timesync.conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+u systemd-timesync - "systemd Time Synchronization"
+### systemd-analyze cat-config tmpfiles.d
+# /usr/lib/tmpfiles.d/00rsyslog.conf
+# Override systemd's default tmpfiles.d/var.conf to make /var/log writable by
+# the syslog group, so that rsyslog can run as user.
+# See tmpfiles.d(5) for details.
+
+# Type Path    Mode UID  GID  Age Argument
+z /var/log 0775 root syslog -
+z /var/log/auth.log 0640 syslog adm -
+z /var/log/mail.err 0640 syslog adm -
+z /var/log/mail.log 0640 syslog adm -
+z /var/log/kern.log 0640 syslog adm -
+z /var/log/syslog 0640 syslog adm -
+d /var/spool/rsyslog 0700 syslog adm -
+
+# /usr/lib/tmpfiles.d/apport.conf
+d /var/lib/apport 0755 root root -
+d /var/lib/apport/coredump 0755 root root 3d
+
+# /usr/lib/tmpfiles.d/credstore.conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+# See tmpfiles.d(5) for details
+
+d /etc/credstore 0700 root root
+d /etc/credstore.encrypted 0700 root root
+z /run/credstore 0700 root root
+z /run/credstore.encrypted 0700 root root
+
+# /usr/lib/tmpfiles.d/cron-daemon-common.conf
+d /var/spool/cron/crontabs 1730 root crontab
+
+# /usr/lib/tmpfiles.d/cryptsetup.conf
+d /run/cryptsetup 0700 root root -
+
+# /usr/lib/tmpfiles.d/dbus.conf
+# Fields: type; path; mode; uid; gid; age; argument (symlink target)
+
+# Make ${localstatedir}/lib/dbus (required for systemd < 237)
+# Adjust mode and ownership if it already exists.
+d /var/lib/dbus 0755 - - -
+
+# Make ${localstatedir}/lib/dbus/machine-id a symlink to /etc/machine-id
+# if it does not already exist
+L /var/lib/dbus/machine-id - - - - /etc/machine-id
+
+# Create ${runstatedir}/dbus/containers owned by the system bus user.
+# org.freedesktop.DBus.Containers1 uses this to create sockets.
+d /run/dbus/containers 0755 messagebus - - -
+
+# /usr/lib/tmpfiles.d/debian.conf
+#  This file is part of the debianisation of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+
+# See tmpfiles.d(5) for details
+
+# Type Path    Mode UID  GID  Age Argument
+L /run/shm     -    -    -    -   /dev/shm
+d /run/sendsigs.omit.d 0755 root root -
+
+L+ /etc/mtab   -    -    -    -  ../proc/self/mounts
+L+ /etc/default/locale - - -  -  ../locale.conf
+L+ /etc/vconsole.conf  - - -  -  default/keyboard
+
+# /usr/lib/tmpfiles.d/home.conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+# See tmpfiles.d(5) for details
+
+Q /home 0755 - - -
+q /srv 0755 - - -
+
+# /usr/lib/tmpfiles.d/journal-nocow.conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+# See tmpfiles.d(5) for details
+
+# Set the NOCOW attribute for directories of journal files. This flag
+# is inherited by their new files and sub-directories. Matters only
+# for btrfs filesystems.
+#
+# WARNING: Enabling the NOCOW attribute improves journal performance
+#     substantially, but also disables the btrfs checksum logic. In
+#     btrfs RAID filesystems the checksums are needed for rebuilding
+#     corrupted files. Without checksums such rebuilds are not
+#     possible.
+#
+# In a single-disk filesystem (or a filesystem without redundancy)
+# enabling the NOCOW attribute for journal files is safe, because
+# they have their own checksums and a rebuilding wouldn't be possible
+# in any case.
+
+h /var/log/journal - - - - +C
+h /var/log/journal/%m - - - - +C
+h /var/log/journal/remote - - - - +C
+
+# /usr/lib/tmpfiles.d/legacy.conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+# See tmpfiles.d(5) for details
+
+# These files are considered legacy and are unnecessary on legacy-free
+# systems.
+
+L /var/lock - - - - ../run/lock
+L /var/log/README - - - - ../../usr/share/doc/systemd/README.logs
+
+# /run/lock/subsys is used for serializing SysV service execution, and
+# hence without use on SysV-less systems.
+
+d /run/lock/subsys 0755 root root -
+
+# /forcefsck, /fastboot and /forcequotacheck are deprecated in favor of the
+# kernel command line options 'fsck.mode=force', 'fsck.mode=skip' and
+# 'quotacheck.mode=force'
+
+r! /forcefsck
+r! /fastboot
+r! /forcequotacheck
+
+# /usr/lib/tmpfiles.d/libselinux1.conf
+# See tmpfiles.d(5) for details
+
+# Type Path    Mode UID  GID  Age Argument
+d /run/setrans 0755 root root -   -
+
+# /usr/lib/tmpfiles.d/lvm2.conf
+d /run/lock/lvm 0700 root root -
+d /run/lvm 0700 root root -
+
+# /usr/lib/tmpfiles.d/man-db.conf
+d /var/cache/man 0755 man man 1w
+
+# /usr/lib/tmpfiles.d/multipath.conf
+d /run/multipath 0700 root root -
+
+# /usr/lib/tmpfiles.d/passwd.conf
+### systemd-analyze cat-config hwdb.d
+### systemd-analyze cat-config modules-load.d
+# /etc/modules-load.d/modules.conf
+# /etc/modules is obsolete and has been replaced by /etc/modules-load.d/.
+# Please see modules-load.d(5) and modprobe.d(5) for details.
+#
+# Updating this file still works, but it is undocumented and unsupported.
+
+# /usr/lib/modules-load.d/multipath.conf
+# load dm-multipath early, both multipathd and multipath depend on it
+# (note that multipath may be called from udev rules!)
+dm-multipath
+### systemd-analyze cat-config modprobe.d
+# /usr/lib/modprobe.d/aliases.conf
+# These are the standard aliases and dependencies.
+# This file does not need to be modified.
+
+# prevent unusual drivers from appearing as the first sound device ###########
+options snd-pcsp index=-2
+options cx88_alsa index=-2
+options snd-atiixp-modem index=-2
+options snd-intel8x0m index=-2
+options snd-via82xx-modem index=-2
+
+# work around other kernel issues ############################################
+# The EHCI driver should be loaded before the ones for low speed controllers
+# or some devices may be confused when they are disconnected and reconnected.
+softdep uhci-hcd pre: ehci-hcd
+softdep ohci-hcd pre: ehci-hcd
+
+
+# /etc/modprobe.d/blacklist-ath_pci.conf
+# For some Atheros 5K RF MACs, the madwifi driver loads buts fails to
+# correctly initialize the hardware, leaving it in a state from
+# which ath5k cannot recover. To prevent this condition, stop
+# madwifi from loading by default. Use Jockey to select one driver
+# or the other. (Ubuntu: #315056, #323830)
+blacklist ath_pci
+
+
+# /etc/modprobe.d/blacklist-firewire.conf
+# Select the legacy firewire stack over the new CONFIG_FIREWIRE one.
+
+blacklist ohci1394
+blacklist sbp2
+blacklist dv1394
+blacklist raw1394
+blacklist video1394
+
+#blacklist firewire-ohci
+#blacklist firewire-sbp2
+
+# /etc/modprobe.d/blacklist-framebuffer.conf
+# Framebuffer drivers are generally buggy and poorly-supported, and cause
+# suspend failures, kernel panics and general mayhem.  For this reason we
+# never load them automatically.
+blacklist aty128fb
+blacklist atyfb
+blacklist radeonfb
+blacklist cirrusfb
+blacklist cyber2000fb
+blacklist cyblafb
+blacklist gx1fb
+blacklist hgafb
+blacklist i810fb
+blacklist intelfb
+blacklist kyrofb
+blacklist lxfb
+blacklist matroxfb_base
+blacklist neofb
+blacklist nvidiafb
+blacklist pm2fb
+blacklist rivafb
+blacklist s1d13xxxfb
+blacklist savagefb
+blacklist sisfb
+blacklist sstfb
+blacklist tdfxfb
+blacklist tridentfb
+#blacklist vesafb
+blacklist vfb
+blacklist viafb
+blacklist vt8623fb
+blacklist udlfb
+
+# /etc/modprobe.d/blacklist-rare-network.conf
+# Many less commonly used network protocols have recently had various
+# security flaws discovered. In an effort to reduce the scope of future
+# vulnerability exploitations, they are being blacklisted here so that
+# unprivileged users cannot use them by default. System owners can still
+# either modify this file, or specifically modprobe any needed protocols.
+
+# ax25
+alias net-pf-3 off
+# netrom
+alias net-pf-6 off
+# x25
+alias net-pf-9 off
+# rose
+alias net-pf-11 off
+# decnet
+alias net-pf-12 off
+# econet
+alias net-pf-19 off
+# rds
+alias net-pf-21 off
+# af_802154
+alias net-pf-36 off
+
+# /etc/modprobe.d/blacklist.conf
+# This file lists those modules which we don't want to be loaded by
+# alias expansion, usually so some other driver will be loaded for the
+# device instead.
+
+# evbug is a debug tool that should be loaded explicitly
+blacklist evbug
+
+# these drivers are very simple, the HID drivers are usually preferred
+blacklist usbmouse
+blacklist usbkbd
+
+# replaced by e100
+blacklist eepro100
+
+# replaced by tulip
+blacklist de4x5
+
+# causes no end of confusion by creating unexpected network interfaces
+blacklist eth1394
+
+# snd_intel8x0m can interfere with snd_intel8x0, doesn't seem to support much
+# hardware on its own (Ubuntu bug #2011, #6810)
+blacklist snd_intel8x0m
+
+# Conflicts with dvb driver (which is better for handling this device)
+blacklist snd_aw2
+
+# replaced by p54pci
+blacklist prism54
+
+# replaced by b43 and ssb.
+blacklist bcm43xx
+
+# most apps now use garmin usb driver directly (Ubuntu: #114565)
+blacklist garmin_gps
+
+# replaced by asus-laptop (Ubuntu: #184721)
+blacklist asus_acpi
+
+# low-quality, just noise when being used for sound playback, causes
+# hangs at desktop session start (Ubuntu: #246969)
+blacklist snd_pcsp
+
+# ugly and loud noise, getting on everyone's nerves; this should be done by a
+# nice pulseaudio bing (Ubuntu: #77010)
+blacklist pcspkr
+
+# EDAC driver for amd76x clashes with the agp driver preventing the aperture
+# from being initialised (Ubuntu: #297750). Blacklist so that the driver
+# continues to build and is installable for the few cases where its
+# really needed.
+blacklist amd76x_edac
+
+# /etc/modprobe.d/disable-algif_aead.conf
+# Disable algif_aead module due to CVE-2026-31431 (AKA copy.fail)
+# This will likely be re-enabled in a subsequent update once an updated
+# kernel has been deployed.
+# Blacklisting the module isn't sufficient, we need to do as below:
+install algif_aead /bin/false
+
+# /usr/lib/modprobe.d/fbdev-blacklist.conf
+# This file blacklists most old-style PCI framebuffer drivers.
+
+### /usr/lib/tmpfiles.d/provision.conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+# See tmpfiles.d(5) for details
+
+# Provision additional login messages from credentials, if they are set. Note
+# that these lines are NOPs if the credentials are not set or if the files
+# already exist.
+f^ /etc/motd.d/50-provision.conf - - - - login.motd
+f^ /etc/issue.d/50-provision.conf - - - - login.issue
+
+# Provision a /etc/hosts file from credentials.
+f^ /etc/hosts - - - - network.hosts
+
+# Provision SSH key for root
+d- /root :0700 root :root -
+d- /root/.ssh :0700 root :root -
+f^ /root/.ssh/authorized_keys :0600 root :root - ssh.authorized_keys.root
+### /usr/lib/tmpfiles.d/credstore.conf
+#  This file is part of systemd.
+#
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+# See tmpfiles.d(5) for details
+
+d /etc/credstore 0700 root root
+d /etc/credstore.encrypted 0700 root root
+z /run/credstore 0700 root root
+z /run/credstore.encrypted 0700 root root
+
+## run and credential directory modes
+drwxr-xr-x root:root /run
+MISSING /run/binfmt.d parent=drwxr-xr-x root:root /run
+MISSING /run/sysusers.d parent=drwxr-xr-x root:root /run
+MISSING /run/tmpfiles.d parent=drwxr-xr-x root:root /run
+drwxr-xr-x root:root /run/udev
+MISSING /run/udev/hwdb.d parent=drwxr-xr-x root:root /run/udev
+MISSING /run/modules-load.d parent=drwxr-xr-x root:root /run
+MISSING /run/modprobe.d parent=drwxr-xr-x root:root /run
+drwxr-xr-x root:root /run/systemd
+drwxr-xr-x root:root /run/systemd/system
+drwxr-xr-x root:root /run/systemd/generator
+MISSING /run/systemd/generator.early parent=drwxr-xr-x root:root /run/systemd
+MISSING /run/systemd/generator.late parent=drwxr-xr-x root:root /run/systemd
+MISSING /run/systemd/catalog parent=drwxr-xr-x root:root /run/systemd
+drwxr-xr-x root:root /run/systemd/userdb
+drwxr-xr-x root:root /run/credentials
+MISSING /run/credentials/systemd-sysusers.service parent=drwxr-xr-x root:root /run/credentials
+MISSING /run/credentials/systemd-tmpfiles-setup.service parent=drwxr-xr-x root:root /run/credentials
+MISSING /run/credentials/systemd-tmpfiles-setup-dev.service parent=drwxr-xr-x root:root /run/credentials
+MISSING /run/credentials/systemd-tmpfiles-setup-dev-early.service parent=drwxr-xr-x root:root /run/credentials
+MISSING /run/credentials/systemd-firstboot.service parent=drwxr-xr-x root:root /run/credentials
+MISSING /run/credstore parent=drwxr-xr-x root:root /run
+MISSING /run/credstore.encrypted parent=drwxr-xr-x root:root /run
+drwx------ root:root /etc/credstore
+drwx------ root:root /etc/credstore.encrypted
+-r--r--r-- root:root /proc/cmdline
+MISSING /sys/power/resume parent=stat: cannot statx '/sys/power': No such file or directory
+MISSING /sys/power/resume_offset parent=stat: cannot statx '/sys/power': No such file or directory
+
+## default files under candidate roots
+-rw-r--r-- root:root /etc/modprobe.d/blacklist-ath_pci.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/blacklist-firewire.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/blacklist-framebuffer.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/blacklist-rare-network.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/blacklist.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/disable-algif_aead.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/iwlwifi.conf -> 
+-rw-r--r-- root:root /etc/modprobe.d/mdadm.conf -> 
+-rw-r--r-- root:root /etc/tmpfiles.d/screen-cleanup.conf -> 
+-rw-r--r-- root:root /lib/binfmt.d/python3.12.conf -> 
+-rw-r--r-- root:root /run/systemd/generator/netplan.stamp -> 
+-rw-r--r-- root:root /run/systemd/generator/snap.mount -> 
+-rw-r--r-- root:root /run/systemd/system/netplan-ovs-cleanup.service -> 
+-rw-r--r-- root:root /usr/lib/binfmt.d/python3.12.conf -> 
+-rw-r--r-- root:root /usr/lib/modprobe.d/aliases.conf -> 
+-rw-r--r-- root:root /usr/lib/modprobe.d/fbdev-blacklist.conf -> 
+-rw-r--r-- root:root /usr/lib/modprobe.d/systemd.conf -> 
+-rw-r--r-- root:root /usr/lib/modules-load.d/multipath.conf -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.be.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.be@latin.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.bg.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.da.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.de.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.fr.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.hr.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.hu.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.it.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.ko.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.pl.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.pt_BR.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.ru.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.sr.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.zh_CN.catalog -> 
+-rw-r--r-- root:root /usr/lib/systemd/catalog/systemd.zh_TW.catalog -> 
+-rw-r--r-- root:root /usr/lib/sysusers.d/basic.conf -> 
+-rw-r--r-- root:root /usr/lib/sysusers.d/cron-daemon-common.conf -> 
+-rw-r--r-- root:root /usr/lib/sysusers.d/dbus.conf -> 
+-rw-r--r-- root:root /usr/lib/sysusers.d/debian-udev.conf -> 
+-rw-r--r-- root:root /usr/lib/sysusers.d/fwupd.conf -> 
+-rw-r--r-- root:root /usr/lib/sysusers.d/polkit.conf -> 
+-rw-r--r-- root:root /usr/lib/sysusers.d/systemd-journal.conf -> 
+-rw-r--r-- root:root /usr/lib/sysusers.d/systemd-network.conf -> 
+-rw-r--r-- root:root /usr/lib/sysusers.d/systemd-resolve.conf -> 
+-rw-r--r-- root:root /usr/lib/sysusers.d/systemd-timesync.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/00rsyslog.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/apport.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/credstore.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/cron-daemon-common.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/cryptsetup.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/dbus.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/debian.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/home.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/journal-nocow.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/legacy.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/libselinux1.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/lvm2.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/man-db.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/multipath.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/passwd.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/polkitd.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/provision.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/screen-cleanup.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/snapd.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/static-nodes-permissions.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/sudo.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/systemd-network.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/systemd-nologin.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/systemd-pstore.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/systemd-resolve.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/systemd-tmp.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/systemd.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/tmp.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/var.conf -> 
+-rw-r--r-- root:root /usr/lib/tmpfiles.d/x11.conf -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-OUI.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-acpi-vendor.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-bluetooth-vendor-product.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-dmi-id.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-net-ifname.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-pci-classes.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-pci-vendor-model.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-sdio-classes.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-sdio-vendor-model.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-usb-classes.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-usb-vendor-model.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/20-vmbus-class.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/60-autosuspend-chromiumos.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/60-autosuspend-fingerprint-reader.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/60-autosuspend.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/60-evdev.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/60-input-id.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/60-keyboard.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/60-seat.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/60-sensor.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/70-analyzers.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/70-av-production.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/70-cameras.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/70-joystick.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/70-mouse.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/70-pda.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/70-pointingstick.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/70-sound-card.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/70-touchpad.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/80-ieee1394-unit-function.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/90-autosuspend-ubuntu.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/90-hwe-ubuntu.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/90-keyboard-ubuntu.hwdb -> 
+-rw-r--r-- root:root /usr/lib/udev/hwdb.d/90-pci-vendor-model-ubuntu.hwdb -> 
+drwxr-xr-x root:root /etc/binfmt.d -> 
+drwxr-xr-x root:root /etc/modprobe.d -> 
+drwxr-xr-x root:root /etc/modules-load.d -> 
+drwxr-xr-x root:root /etc/tmpfiles.d -> 
+drwxr-xr-x root:root /etc/udev/hwdb.d -> 
+drwxr-xr-x root:root /lib/binfmt.d -> 
+drwxr-xr-x root:root /run/systemd/generator -> 
+drwxr-xr-x root:root /run/systemd/generator/getty.target.wants -> 
+drwxr-xr-x root:root /run/systemd/generator/local-fs.target.wants -> 
+drwxr-xr-x root:root /run/systemd/system -> 
+drwxr-xr-x root:root /run/systemd/system/systemd-networkd.service.wants -> 
+drwxr-xr-x root:root /usr/lib/binfmt.d -> 
+drwxr-xr-x root:root /usr/lib/modprobe.d -> 
+drwxr-xr-x root:root /usr/lib/modules-load.d -> 
+drwxr-xr-x root:root /usr/lib/systemd/catalog -> 
+drwxr-xr-x root:root /usr/lib/sysusers.d -> 
+drwxr-xr-x root:root /usr/lib/tmpfiles.d -> 
+drwxr-xr-x root:root /usr/lib/udev/hwdb.d -> 
+lrwxrwxrwx root:root /etc/modules-load.d/modules.conf -> ../modules
+lrwxrwxrwx root:root /run/systemd/generator/getty.target.wants/console-getty.service -> /usr/lib/systemd/system/console-getty.service
+lrwxrwxrwx root:root /run/systemd/generator/local-fs.target.wants/systemd-remount-fs.service -> /usr/lib/systemd/system/systemd-remount-fs.service
+lrwxrwxrwx root:root /run/systemd/system/systemd-networkd.service.wants/netplan-ovs-cleanup.service -> /run/systemd/system/netplan-ovs-cleanup.service
+
+## credential store view
+No credentials passed to system.
+drwx------ root:root /etc/credstore -> 
+drwx------ root:root /etc/credstore.encrypted -> 
+drwxr-xr-x root:root /run/credentials -> 
+
+## uid write probes for exact /run paths
+
+### as attacker: write candidate /run config and credential paths
+DIR /run/binfmt.d mkdir: mkdir: cannot create directory '/run/binfmt.d': Permission denied  rc=1
+DIR /run/binfmt.d write: environment: line 20: /run/binfmt.d/lpe_attacker_750154.conf: No such file or directory
+mkdir: cannot create directory '/run/binfmt.d': Permission denied  rc=1
+DIR /run/sysusers.d mkdir: mkdir: cannot create directory '/run/sysusers.d': Permission denied  rc=1
+DIR /run/sysusers.d write: environment: line 20: /run/sysusers.d/lpe_attacker_750154.conf: No such file or directory
+mkdir: cannot create directory '/run/sysusers.d': Permission denied  rc=1
+DIR /run/tmpfiles.d mkdir: mkdir: cannot create directory '/run/tmpfiles.d': Permission denied  rc=1
+DIR /run/tmpfiles.d write: environment: line 20: /run/tmpfiles.d/lpe_attacker_750154.conf: No such file or directory
+mkdir: cannot create directory '/run/tmpfiles.d': Permission denied  rc=1
+DIR /run/udev/hwdb.d mkdir: mkdir: cannot create directory '/run/udev/hwdb.d': Permission denied environment: line 20: /run/udev/hwdb.d/lpe_attacker_750154.conf: No such file or directory
+ rc=1
+DIR /run/udev/hwdb.d write: mkdir: cannot create directory '/run/udev/hwdb.d': Permission denied  rc=1
+DIR /run/modules-load.d mkdir: mkdir: cannot create directory '/run/modules-load.d': Permission denied  rc=1
+DIR /run/modules-load.d write: environment: line 20: /run/modules-load.d/lpe_attacker_750154.conf: No such file or directory
+mkdir: cannot create directory '/run/modules-load.d': Permission denied  rc=1
+DIR /run/modprobe.d mkdir: mkdir: cannot create directory '/run/modprobe.d': Permission denied environment: line 20: /run/modprobe.d/lpe_attacker_750154.conf: No such file or directory
+ rc=1
+DIR /run/modprobe.d write: mkdir: cannot create directory '/run/modprobe.d': Permission denied  rc=1
+DIR /run/systemd/system mkdir: environment: line 20: /run/systemd/system/lpe_attacker_750154.conf: Permission denied
+ rc=0
+DIR /run/systemd/system write:  rc=1
+DIR /run/systemd/generator mkdir:  rc=0
+DIR /run/systemd/generator write: environment: line 20: /run/systemd/generator/lpe_attacker_750154.conf: Permission denied
+ rc=1
+DIR /run/systemd/generator.early mkdir: mkdir: cannot create directory '/run/systemd/generator.early': Permission denied  rc=1
+DIR /run/systemd/generator.early write: environment: line 20: /run/systemd/generator.early/lpe_attacker_750154.conf: No such file or directory
+mkdir: cannot create directory '/run/systemd/generator.early': Permission denied  rc=1
+DIR /run/systemd/generator.late mkdir: mkdir: cannot create directory '/run/systemd/generator.late': Permission denied  rc=1
+DIR /run/systemd/generator.late write: environment: line 20: /run/systemd/generator.late/lpe_attacker_750154.conf: No such file or directory
+mkdir: cannot create directory '/run/systemd/generator.late': Permission denied  rc=1
+DIR /run/systemd/catalog mkdir: mkdir: cannot create directory '/run/systemd/catalog': Permission denied  rc=1
+DIR /run/systemd/catalog write: environment: line 20: /run/systemd/catalog/lpe_attacker_750154.conf: No such file or directory
+mkdir: cannot create directory '/run/systemd/catalog': Permission denied  rc=1
+DIR /run/credstore mkdir: mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+DIR /run/credstore write: environment: line 20: /run/credstore/lpe_attacker_750154.conf: No such file or directory
+mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+DIR /run/credstore.encrypted mkdir: mkdir: cannot create directory '/run/credstore.encrypted': Permission denied  rc=1
+DIR /run/credstore.encrypted write: environment: line 20: /run/credstore.encrypted/lpe_attacker_750154.conf: No such file or directory
+mkdir: cannot create directory '/run/credstore.encrypted': Permission denied  rc=1
+FILE /run/credentials/systemd-sysusers.service/sysusers.extra mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-sysusers.service': Permission denied  rc=1
+FILE /run/credentials/systemd-sysusers.service/sysusers.extra write: environment: line 40: /run/credentials/systemd-sysusers.service/sysusers.extra: No such file or directory
+mkdir: cannot create directory '/run/credentials/systemd-sysusers.service': Permission denied  rc=1
+FILE /run/credentials/systemd-sysusers.service/passwd.plaintext-password.root mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-sysusers.service': Permission denied  rc=1
+FILE /run/credentials/systemd-sysusers.service/passwd.plaintext-password.root write: environment: line 40: /run/credentials/systemd-sysusers.service/passwd.plaintext-password.root: No such file or directory
+mkdir: cannot create directory '/run/credentials/systemd-sysusers.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup.service/tmpfiles.extra mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup.service/tmpfiles.extra write: environment: line 40: /run/credentials/systemd-tmpfiles-setup.service/tmpfiles.extra: No such file or directory
+mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup.service/ssh.authorized_keys.root mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup.service': Permission denied environment: line 40: /run/credentials/systemd-tmpfiles-setup.service/ssh.authorized_keys.root: No such file or directory
+ rc=1
+FILE /run/credentials/systemd-tmpfiles-setup.service/ssh.authorized_keys.root write: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup-dev.service/tmpfiles.extra mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup-dev.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup-dev.service/tmpfiles.extra write: environment: line 40: /run/credentials/systemd-tmpfiles-setup-dev.service/tmpfiles.extra: No such file or directory
+mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup-dev.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup-dev-early.service/tmpfiles.extra mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup-dev-early.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup-dev-early.service/tmpfiles.extra write: environment: line 40: /run/credentials/systemd-tmpfiles-setup-dev-early.service/tmpfiles.extra: No such file or directory
+mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup-dev-early.service': Permission denied  rc=1
+FILE /run/credentials/systemd-firstboot.service/passwd.plaintext-password.root mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-firstboot.service': Permission denied environment: line 40: /run/credentials/systemd-firstboot.service/passwd.plaintext-password.root: No such file or directory
+ rc=1
+FILE /run/credentials/systemd-firstboot.service/passwd.plaintext-password.root write: mkdir: cannot create directory '/run/credentials/systemd-firstboot.service': Permission denied  rc=1
+FILE /run/credentials/systemd-firstboot.service/firstboot.locale mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-firstboot.service': Permission denied  rc=1
+FILE /run/credentials/systemd-firstboot.service/firstboot.locale write: environment: line 40: /run/credentials/systemd-firstboot.service/firstboot.locale: No such file or directory
+mkdir: cannot create directory '/run/credentials/systemd-firstboot.service': Permission denied  rc=1
+FILE /run/credstore/sysusers.extra mkdir-parent: mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+FILE /run/credstore/sysusers.extra write: environment: line 40: /run/credstore/sysusers.extra: No such file or directory
+mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+FILE /run/credstore/tmpfiles.extra mkdir-parent: mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+FILE /run/credstore/tmpfiles.extra write: environment: line 40: /run/credstore/tmpfiles.extra: No such file or directory
+mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+FILE /run/credstore/ssh.authorized_keys.root mkdir-parent: mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+FILE /run/credstore/ssh.authorized_keys.root write: environment: line 40: /run/credstore/ssh.authorized_keys.root: No such file or directory
+mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+FILE /run/credstore.encrypted/tmpfiles.extra mkdir-parent: mkdir: cannot create directory '/run/credstore.encrypted': Permission denied environment: line 40: /run/credstore.encrypted/tmpfiles.extra: No such file or directory
+ rc=1
+FILE /run/credstore.encrypted/tmpfiles.extra write: mkdir: cannot create directory '/run/credstore.encrypted': Permission denied  rc=1
+FILE /etc/credstore/tmpfiles.extra mkdir-parent: environment: line 40: /etc/credstore/tmpfiles.extra: Permission denied
+ rc=0
+FILE /etc/credstore/tmpfiles.extra write:  rc=1
+bash: line 80: /proc/cmdline: Permission denied
+PROC /proc/cmdline write:  rc=1
+rc=0
+
+### as selfauth: write candidate /run config and credential paths
+DIR /run/binfmt.d mkdir: mkdir: cannot create directory '/run/binfmt.d': Permission denied  rc=1
+DIR /run/binfmt.d write: environment: line 20: /run/binfmt.d/lpe_selfauth_750288.conf: No such file or directory
+mkdir: cannot create directory '/run/binfmt.d': Permission denied  rc=1
+DIR /run/sysusers.d mkdir: mkdir: cannot create directory '/run/sysusers.d': Permission denied  rc=1
+DIR /run/sysusers.d write: environment: line 20: /run/sysusers.d/lpe_selfauth_750288.conf: No such file or directory
+mkdir: cannot create directory '/run/sysusers.d': Permission denied  rc=1
+DIR /run/tmpfiles.d mkdir: mkdir: cannot create directory '/run/tmpfiles.d': Permission denied  rc=1
+DIR /run/tmpfiles.d write: environment: line 20: /run/tmpfiles.d/lpe_selfauth_750288.conf: No such file or directory
+mkdir: cannot create directory '/run/tmpfiles.d': Permission denied  rc=1
+DIR /run/udev/hwdb.d mkdir: mkdir: cannot create directory '/run/udev/hwdb.d': Permission denied environment: line 20: /run/udev/hwdb.d/lpe_selfauth_750288.conf: No such file or directory
+ rc=1
+DIR /run/udev/hwdb.d write: mkdir: cannot create directory '/run/udev/hwdb.d': Permission denied  rc=1
+DIR /run/modules-load.d mkdir: mkdir: cannot create directory '/run/modules-load.d': Permission denied  rc=1
+DIR /run/modules-load.d write: environment: line 20: /run/modules-load.d/lpe_selfauth_750288.conf: No such file or directory
+mkdir: cannot create directory '/run/modules-load.d': Permission denied  rc=1
+DIR /run/modprobe.d mkdir: mkdir: cannot create directory '/run/modprobe.d': Permission denied  rc=1
+DIR /run/modprobe.d write: environment: line 20: /run/modprobe.d/lpe_selfauth_750288.conf: No such file or directory
+mkdir: cannot create directory '/run/modprobe.d': Permission denied  rc=1
+DIR /run/systemd/system mkdir: environment: line 20: /run/systemd/system/lpe_selfauth_750288.conf: Permission denied
+ rc=0
+DIR /run/systemd/system write:  rc=1
+DIR /run/systemd/generator mkdir: environment: line 20: /run/systemd/generator/lpe_selfauth_750288.conf: Permission denied
+ rc=0
+DIR /run/systemd/generator write:  rc=1
+DIR /run/systemd/generator.early mkdir: mkdir: cannot create directory '/run/systemd/generator.early': Permission denied  rc=1
+DIR /run/systemd/generator.early write: environment: line 20: /run/systemd/generator.early/lpe_selfauth_750288.conf: No such file or directory
+mkdir: cannot create directory '/run/systemd/generator.early': Permission denied  rc=1
+DIR /run/systemd/generator.late mkdir: mkdir: cannot create directory '/run/systemd/generator.late': Permission denied  rc=1
+DIR /run/systemd/generator.late write: environment: line 20: /run/systemd/generator.late/lpe_selfauth_750288.conf: No such file or directory
+mkdir: cannot create directory '/run/systemd/generator.late': Permission denied  rc=1
+DIR /run/systemd/catalog mkdir: mkdir: cannot create directory '/run/systemd/catalog': Permission denied  rc=1
+DIR /run/systemd/catalog write: environment: line 20: /run/systemd/catalog/lpe_selfauth_750288.conf: No such file or directory
+mkdir: cannot create directory '/run/systemd/catalog': Permission denied  rc=1
+DIR /run/credstore mkdir: mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+DIR /run/credstore write: environment: line 20: /run/credstore/lpe_selfauth_750288.conf: No such file or directory
+mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+DIR /run/credstore.encrypted mkdir: mkdir: cannot create directory '/run/credstore.encrypted': Permission denied environment: line 20: /run/credstore.encrypted/lpe_selfauth_750288.conf: No such file or directory
+ rc=1
+DIR /run/credstore.encrypted write: mkdir: cannot create directory '/run/credstore.encrypted': Permission denied  rc=1
+FILE /run/credentials/systemd-sysusers.service/sysusers.extra mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-sysusers.service': Permission denied  rc=1
+FILE /run/credentials/systemd-sysusers.service/sysusers.extra write: environment: line 40: /run/credentials/systemd-sysusers.service/sysusers.extra: No such file or directory
+mkdir: cannot create directory '/run/credentials/systemd-sysusers.service': Permission denied  rc=1
+FILE /run/credentials/systemd-sysusers.service/passwd.plaintext-password.root mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-sysusers.service': Permission denied  rc=1
+FILE /run/credentials/systemd-sysusers.service/passwd.plaintext-password.root write: environment: line 40: /run/credentials/systemd-sysusers.service/passwd.plaintext-password.root: No such file or directory
+mkdir: cannot create directory '/run/credentials/systemd-sysusers.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup.service/tmpfiles.extra mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup.service/tmpfiles.extra write: environment: line 40: /run/credentials/systemd-tmpfiles-setup.service/tmpfiles.extra: No such file or directory
+mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup.service/ssh.authorized_keys.root mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup.service': Permission denied environment: line 40: /run/credentials/systemd-tmpfiles-setup.service/ssh.authorized_keys.root: No such file or directory
+ rc=1
+FILE /run/credentials/systemd-tmpfiles-setup.service/ssh.authorized_keys.root write: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup-dev.service/tmpfiles.extra mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup-dev.service': Permission denied environment: line 40: /run/credentials/systemd-tmpfiles-setup-dev.service/tmpfiles.extra: No such file or directory
+ rc=1
+FILE /run/credentials/systemd-tmpfiles-setup-dev.service/tmpfiles.extra write: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup-dev.service': Permission denied  rc=1
+FILE /run/credentials/systemd-tmpfiles-setup-dev-early.service/tmpfiles.extra mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup-dev-early.service': Permission denied environment: line 40: /run/credentials/systemd-tmpfiles-setup-dev-early.service/tmpfiles.extra: No such file or directory
+ rc=1
+FILE /run/credentials/systemd-tmpfiles-setup-dev-early.service/tmpfiles.extra write: mkdir: cannot create directory '/run/credentials/systemd-tmpfiles-setup-dev-early.service': Permission denied  rc=1
+FILE /run/credentials/systemd-firstboot.service/passwd.plaintext-password.root mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-firstboot.service': Permission denied  rc=1
+FILE /run/credentials/systemd-firstboot.service/passwd.plaintext-password.root write: environment: line 40: /run/credentials/systemd-firstboot.service/passwd.plaintext-password.root: No such file or directory
+mkdir: cannot create directory '/run/credentials/systemd-firstboot.service': Permission denied  rc=1
+FILE /run/credentials/systemd-firstboot.service/firstboot.locale mkdir-parent: mkdir: cannot create directory '/run/credentials/systemd-firstboot.service': Permission denied environment: line 40: /run/credentials/systemd-firstboot.service/firstboot.locale: No such file or directory
+ rc=1
+FILE /run/credentials/systemd-firstboot.service/firstboot.locale write: mkdir: cannot create directory '/run/credentials/systemd-firstboot.service': Permission denied  rc=1
+FILE /run/credstore/sysusers.extra mkdir-parent: mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+FILE /run/credstore/sysusers.extra write: environment: line 40: /run/credstore/sysusers.extra: No such file or directory
+mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+FILE /run/credstore/tmpfiles.extra mkdir-parent: mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+FILE /run/credstore/tmpfiles.extra write: environment: line 40: /run/credstore/tmpfiles.extra: No such file or directory
+mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+FILE /run/credstore/ssh.authorized_keys.root mkdir-parent: mkdir: cannot create directory '/run/credstore': Permission denied environment: line 40: /run/credstore/ssh.authorized_keys.root: No such file or directory
+ rc=1
+FILE /run/credstore/ssh.authorized_keys.root write: mkdir: cannot create directory '/run/credstore': Permission denied  rc=1
+FILE /run/credstore.encrypted/tmpfiles.extra mkdir-parent: mkdir: cannot create directory '/run/credstore.encrypted': Permission denied environment: line 40: /run/credstore.encrypted/tmpfiles.extra: No such file or directory
+ rc=1
+FILE /run/credstore.encrypted/tmpfiles.extra write: mkdir: cannot create directory '/run/credstore.encrypted': Permission denied  rc=1
+FILE /etc/credstore/tmpfiles.extra mkdir-parent:  rc=0
+FILE /etc/credstore/tmpfiles.extra write: environment: line 40: /etc/credstore/tmpfiles.extra: Permission denied
+ rc=1
+bash: line 80: /proc/cmdline: Permission denied
+PROC /proc/cmdline write:  rc=1
+rc=0
+
+## uid system manager trigger and credential injection attempts
+
+### as attacker: start/reload root units and transient SetCredential
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+UNIT=systemd-hwdb-update.service
+Failed to start systemd-hwdb-update.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-hwdb-update.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-binfmt.service
+Failed to start systemd-binfmt.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-binfmt.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-sysusers.service
+Failed to start systemd-sysusers.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-sysusers.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-tmpfiles-setup.service
+Failed to start systemd-tmpfiles-setup.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-tmpfiles-setup.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-tmpfiles-setup-dev.service
+Failed to start systemd-tmpfiles-setup-dev.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-tmpfiles-setup-dev.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-tmpfiles-setup-dev-early.service
+Failed to start systemd-tmpfiles-setup-dev-early.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-tmpfiles-setup-dev-early.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=kmod-static-nodes.service
+Failed to start kmod-static-nodes.service: Interactive authentication required.
+See system logs and 'systemctl status kmod-static-nodes.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-journal-catalog-update.service
+Failed to start systemd-journal-catalog-update.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-journal-catalog-update.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-firstboot.service
+Failed to start systemd-firstboot.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-firstboot.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+Reload daemon failed: Interactive authentication required.
+daemon_reload_rc=1
+Failed to set environment: Access denied
+set_environment_rc=1
+Call failed: Access denied
+busctl_set_environment_rc=1
+Failed to start transient service unit: Interactive authentication required.
+systemd_run_setcredential_rc=1
+rc=0
+
+### as selfauth: start/reload root units and transient SetCredential
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+UNIT=systemd-hwdb-update.service
+Failed to start systemd-hwdb-update.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-hwdb-update.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-binfmt.service
+Failed to start systemd-binfmt.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-binfmt.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-sysusers.service
+Failed to start systemd-sysusers.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-sysusers.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-tmpfiles-setup.service
+Failed to start systemd-tmpfiles-setup.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-tmpfiles-setup.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-tmpfiles-setup-dev.service
+Failed to start systemd-tmpfiles-setup-dev.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-tmpfiles-setup-dev.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-tmpfiles-setup-dev-early.service
+Failed to start systemd-tmpfiles-setup-dev-early.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-tmpfiles-setup-dev-early.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=kmod-static-nodes.service
+Failed to start kmod-static-nodes.service: Interactive authentication required.
+See system logs and 'systemctl status kmod-static-nodes.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-journal-catalog-update.service
+Failed to start systemd-journal-catalog-update.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-journal-catalog-update.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+UNIT=systemd-firstboot.service
+Failed to start systemd-firstboot.service: Interactive authentication required.
+See system logs and 'systemctl status systemd-firstboot.service' for details.
+systemctl_start_rc=1
+Call failed: Interactive authentication required.
+busctl_start_rc=1
+Reload daemon failed: Interactive authentication required.
+daemon_reload_rc=1
+Failed to set environment: Access denied
+set_environment_rc=1
+Call failed: Access denied
+busctl_set_environment_rc=1
+Failed to start transient service unit: Interactive authentication required.
+systemd_run_setcredential_rc=1
+rc=0
+
+## uid direct helper attempts with attacker-controlled config
+
+### as attacker: direct helper execution stays unprivileged
+binfmt_direct_rc=0
+bash: line 1: /proc/sys/fs/binfmt_misc/register: Permission denied
+binfmt_register_write_rc=1
+Failed to take /etc/passwd lock: Permission denied
+sysusers_file_rc=1
+Failed to take /etc/passwd lock: Permission denied
+sysusers_credentials_rc=1
+Failed to create file /root/systemd_generators_run_config_lpe: Permission denied
+tmpfiles_file_rc=73
+fchmod() of /var/log failed: Operation not permitted
+Failed to open path '/etc/motd.d': No such file or directory
+Failed to create directory or subvolume "/root/.ssh", ignoring: Permission denied
+Failed to open path '/root/.ssh': Permission denied
+Failed to open/create file /run/nologin: Permission denied
+Failed to open/create file /run/utmp: Permission denied
+Failed to create file /root/systemd_generators_run_config_lpe: Permission denied
+Setting access ACL "u::rwx,g::r-x,g:adm:r-x,m::r-x,o::r-x" on /var/log/journal failed: Operation not permitted
+Failed to re-open '/var/log/journal': Operation not permitted
+Setting access ACL "u::rwx,g::r-x,g:adm:r-x,m::r-x,o::r-x" on /var/log/journal/d1550bbf3ee64a61a434283f6f6d03db failed: Operation not permitted
+Failed to re-open '/var/log/journal/d1550bbf3ee64a61a434283f6f6d03db': Operation not permitted
+Setting access ACL "u::rw-,g::r-x,g:adm:r--,m::r--,o::---" on /var/log/journal/d1550bbf3ee64a61a434283f6f6d03db/system.journal failed: Operation not permitted
+tmpfiles_credentials_rc=73
+Failed to write database /etc/udev/hwdb.bin: Permission denied
+hwdb_update_rc=1
+Warning: /lib/modules/6.10.14-linuxkit/modules.devname not found - ignoring
+kmod_static_nodes_run_output_rc=0
+Failed to open database for writing: /var/lib/systemd/catalog/database: Permission denied
+Failed to write /var/lib/systemd/catalog/database: Permission denied
+Failed to list catalog: Permission denied
+journal_update_catalog_rc=1
+Failed to take a lock on /etc/passwd: Permission denied
+firstboot_root_password_rc=1
+No credentials passed to system.
+creds_list_system_rc=1
+Failed to determine local credential host secret: Permission denied
+creds_encrypt_run_store_rc=1
+rc=0
+
+### as selfauth: direct helper execution stays unprivileged
+binfmt_direct_rc=0
+bash: line 1: /proc/sys/fs/binfmt_misc/register: Permission denied
+binfmt_register_write_rc=1
+Failed to take /etc/passwd lock: Permission denied
+sysusers_file_rc=1
+Failed to take /etc/passwd lock: Permission denied
+sysusers_credentials_rc=1
+Failed to create file /root/systemd_generators_run_config_lpe: Permission denied
+tmpfiles_file_rc=73
+fchmod() of /var/log failed: Operation not permitted
+Failed to open path '/etc/motd.d': No such file or directory
+Failed to create directory or subvolume "/root/.ssh", ignoring: Permission denied
+Failed to open path '/root/.ssh': Permission denied
+Failed to open/create file /run/nologin: Permission denied
+Failed to open/create file /run/utmp: Permission denied
+Failed to create file /root/systemd_generators_run_config_lpe: Permission denied
+Setting access ACL "u::rwx,g::r-x,g:adm:r-x,m::r-x,o::r-x" on /var/log/journal failed: Operation not permitted
+Failed to re-open '/var/log/journal': Operation not permitted
+Setting access ACL "u::rwx,g::r-x,g:adm:r-x,m::r-x,o::r-x" on /var/log/journal/d1550bbf3ee64a61a434283f6f6d03db failed: Operation not permitted
+Failed to re-open '/var/log/journal/d1550bbf3ee64a61a434283f6f6d03db': Operation not permitted
+Setting access ACL "u::rw-,g::r-x,g:adm:r--,m::r--,o::---" on /var/log/journal/d1550bbf3ee64a61a434283f6f6d03db/system.journal failed: Operation not permitted
+tmpfiles_credentials_rc=73
+Failed to write database /etc/udev/hwdb.bin: Permission denied
+hwdb_update_rc=1
+Warning: /lib/modules/6.10.14-linuxkit/modules.devname not found - ignoring
+kmod_static_nodes_run_output_rc=0
+Failed to open database for writing: /var/lib/systemd/catalog/database: Permission denied
+Failed to write /var/lib/systemd/catalog/database: Permission denied
+Failed to list catalog: Permission denied
+journal_update_catalog_rc=1
+Failed to take a lock on /etc/passwd: Permission denied
+firstboot_root_password_rc=1
+No credentials passed to system.
+creds_list_system_rc=1
+Failed to determine local credential host secret: Permission denied
+creds_encrypt_run_store_rc=1
+rc=0
+
+## post-probe root proof check
+ls: cannot access '/root/systemd_generators_run_config_lpe': No such file or directory
+ls: cannot access '/tmp/systemd_generators_run_config_lpe': No such file or directory
+python3.12
+register
+status
+ABSENT /proc/sys/fs/binfmt_misc/lpe-attacker
+ABSENT /proc/sys/fs/binfmt_misc/lpe-selfauth
+ABSENT /proc/sys/fs/binfmt_misc/lpewrite

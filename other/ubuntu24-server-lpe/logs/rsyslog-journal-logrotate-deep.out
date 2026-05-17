@@ -1,0 +1,866 @@
+
+## baseline: target, packages, units
+tag=RSJLD_20260516192025_76611
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+attacker_groups=attacker
+dpkg-query: no packages found matching mailutils
+dpkg-query: no packages found matching postfix
+un 	bsd-mailx	
+ii 	cron	3.0pl1-184ubuntu2
+ii 	logrotate	3.21.0-2build1
+ii 	rsyslog	8.2312.0-3ubuntu9.2
+ii 	systemd	255.4-1ubuntu8.15
+ii 	util-linux	2.39.3-9ubuntu6.5
+
+-- daemon versions --
+rsyslogd  8.2312.0 (aka 2023.12) compiled with:
+	PLATFORM:				aarch64-unknown-linux-gnu
+	PLATFORM (lsb_release -d):		
+	FEATURE_REGEXP:				Yes
+	GSSAPI Kerberos 5 support:		Yes
+	FEATURE_DEBUG (debug build, slow code):	No
+	32bit Atomic operations supported:	Yes
+	64bit Atomic operations supported:	Yes
+	memory allocator:			system default
+	Runtime Instrumentation (slow code):	No
+	uuid support:				Yes
+	systemd support:			Yes
+systemd 255 (255.4-1ubuntu8.15)
++PAM +AUDIT +SELINUX +APPARMOR +IMA +SMACK +SECCOMP +GCRYPT -GNUTLS +OPENSSL +ACL +BLKID +CURL +ELFUTILS +FIDO2 +IDN2 -IDN +IPTC +KMOD +LIBCRYPTSETUP +LIBFDISK +PCRE2 -PWQUALITY +P11KIT +QRENCODE +TPM2 +BZIP2 +LZ4 +XZ +ZLIB +ZSTD -BPF_FRAMEWORK -XKBCOMMON +UTMP +SYSVINIT default-hierarchy=unified
+logrotate 3.21.0
+
+    Default mail command:       /usr/bin/mail
+    Default compress command:   /bin/gzip
+    Default uncompress command: /bin/gunzip
+    Default compress extension: .gz
+    Default state file path:    /var/lib/logrotate/status
+    ACL support:                yes
+    SELinux support:            yes
+
+-- active/default units --
+running
+  UNIT                            LOAD   ACTIVE   SUB     DESCRIPTION
+  logrotate.service               loaded inactive dead    Rotate log files
+  rsyslog.service                 loaded active   running System Logging Service
+  systemd-journald.service        loaded active   running Journal Service
+  syslog.socket                   loaded active   running Syslog Socket
+  systemd-journald-dev-log.socket loaded active   running Journal Socket (/dev/log)
+  systemd-journald.socket         loaded active   running Journal Socket
+  logrotate.timer                 loaded active   waiting Daily rotation of log files
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+7 loaded units listed.
+To show all installed unit files use 'systemctl list-unit-files'.
+UNIT FILE                       STATE   PRESET
+logrotate.service               static  -
+rsyslog.service                 enabled enabled
+systemd-journald.service        static  -
+syslog.socket                   static  -
+systemd-journald-dev-log.socket static  -
+systemd-journald.socket         static  -
+logrotate.timer                 enabled enabled
+
+7 unit files listed.
+audit 1                               systemd-journald-audit.socket   systemd-journald.service
+/run/systemd/journal/dev-log          systemd-journald-dev-log.socket systemd-journald.service
+/run/systemd/journal/socket           systemd-journald.socket         systemd-journald.service
+/run/systemd/journal/stdout           systemd-journald.socket         systemd-journald.service
+/run/systemd/journal/syslog           syslog.socket                   rsyslog.service
+
+## runtime privilege and filesystem boundary
+regular file -rwxr-xr-x root:root /usr/sbin/rsyslogd
+regular file -rwxr-xr-x root:root /usr/lib/systemd/systemd-journald
+regular file -rwxr-xr-x root:root /usr/sbin/logrotate
+socket srw-rw-rw- root:root /dev/log
+socket srw-rw-rw- root:root /run/systemd/journal/dev-log
+socket srw-rw-rw- root:root /run/systemd/journal/socket
+socket srw-rw-rw- root:root /run/systemd/journal/stdout
+socket srw-rw-rw- root:root /run/systemd/journal/syslog
+regular file -rw-r--r-- root:root /etc/rsyslog.conf
+directory drwxr-xr-x root:root /etc/rsyslog.d
+regular file -rw-r--r-- root:root /etc/logrotate.conf
+directory drwxr-xr-x root:root /etc/logrotate.d
+directory drwxr-xr-x root:root /var/lib/logrotate
+regular file -rw-r----- root:root /var/lib/logrotate/status
+directory drwx------ syslog:adm /var/spool/rsyslog
+directory drwxr-xr-x root:root /run/log
+directory drwxr-sr-x root:systemd-journal /run/log/journal
+directory drwxrwxr-x root:syslog /var/log
+directory drwxr-sr-x root:systemd-journal /var/log/journal
+regular file -rw-r----- syslog:adm /var/log/syslog
+regular file -rw-r----- syslog:adm /var/log/auth.log
+regular file -rw-r----- syslog:adm /var/log/kern.log
+
+-- process credentials --
+
+/proc/273/status
+Name:	rsyslogd
+Uid:	103	103	103	103
+Gid:	104	104	104	104
+Groups:	4 104 
+CapEff:	0000000000000000
+NoNewPrivs:	1
+
+/proc/29/status
+Name:	systemd-journal
+Uid:	0	0	0	0
+Gid:	0	0	0	0
+Groups:	0 
+CapEff:	00000025402800cf
+NoNewPrivs:	1
+fs.protected_symlinks = 1
+fs.protected_hardlinks = 1
+fs.protected_regular = 2
+fs.protected_fifos = 1
+
+## rsyslog config: templates/actions and parser validation
+rsyslogd: version 8.2312.0, config validation run (level 1), master config /etc/rsyslog.conf
+rsyslogd: End of config validation run. Bye.
+
+-- default rsyslog config excerpts --
+# /etc/rsyslog.conf configuration file for rsyslog
+#
+# For more information install rsyslog-doc and see
+# /usr/share/doc/rsyslog-doc/html/configuration/index.html
+#
+# Default logging rules can be found in /etc/rsyslog.d/50-default.conf
+
+
+#################
+#### MODULES ####
+#################
+
+module(load="imuxsock") # provides support for local system logging
+#module(load="immark")  # provides --MARK-- message capability
+
+# provides UDP syslog reception
+#module(load="imudp")
+#input(type="imudp" port="514")
+
+# provides TCP syslog reception
+#module(load="imtcp")
+#input(type="imtcp" port="514")
+
+# provides kernel logging support and enable non-kernel klog messages
+module(load="imklog" permitnonkernelfacility="on")
+
+###########################
+#### GLOBAL DIRECTIVES ####
+###########################
+
+# Filter duplicated messages
+$RepeatedMsgReduction on
+
+#
+# Set the default permissions for all log files.
+#
+$FileOwner syslog
+$FileGroup adm
+$FileCreateMode 0640
+$DirCreateMode 0755
+$Umask 0022
+$PrivDropToUser syslog
+$PrivDropToGroup syslog
+
+#
+# Where to place spool and state files
+#
+$WorkDirectory /var/spool/rsyslog
+
+#
+# Include all config files in /etc/rsyslog.d/
+#
+$IncludeConfig /etc/rsyslog.d/*.conf
+
+-- /etc/rsyslog.d/20-ufw.conf --
+# Log kernel generated UFW log messages to file
+:msg,contains,"[UFW " /var/log/ufw.log
+
+# Uncomment the following to stop logging anything that matches the last rule.
+# Doing this will stop logging kernel generated UFW log messages to the file
+# normally containing kern.* messages (eg, /var/log/kern.log)
+#& stop
+
+-- /etc/rsyslog.d/50-default.conf --
+#  Default rules for rsyslog.
+#
+#			For more information see rsyslog.conf(5) and /etc/rsyslog.conf
+
+#
+# First some standard log files.  Log by facility.
+#
+auth,authpriv.*			/var/log/auth.log
+*.*;auth,authpriv.none		-/var/log/syslog
+#cron.*				/var/log/cron.log
+#daemon.*			-/var/log/daemon.log
+kern.*				-/var/log/kern.log
+#lpr.*				-/var/log/lpr.log
+mail.*				-/var/log/mail.log
+#user.*				-/var/log/user.log
+
+#
+# Logging for the mail system.  Split it up so that
+# it is easy to write scripts to parse these files.
+#
+#mail.info			-/var/log/mail.info
+#mail.warn			-/var/log/mail.warn
+mail.err			/var/log/mail.err
+
+#
+# Some "catch-all" log files.
+#
+#*.=debug;\
+#	auth,authpriv.none;\
+#	news.none;mail.none	-/var/log/debug
+#*.=info;*.=notice;*.=warn;\
+#	auth,authpriv.none;\
+#	cron,daemon.none;\
+#	mail,news.none		-/var/log/messages
+
+#
+# Emergencies are sent to everybody logged in.
+#
+*.emerg				:omusrmsg:*
+
+#
+# I like to have messages displayed on the console, but only on a virtual
+# console I usually leave idle.
+#
+#daemon,mail.*;\
+#	news.=crit;news.=err;news.=notice;\
+#	*.=debug;*.=info;\
+#	*.=notice;*.=warn	/dev/tty8
+
+-- dynamic or executable rsyslog action grep --
+/etc/rsyslog.d/20-ufw.conf:2::msg,contains,"[UFW " /var/log/ufw.log
+/etc/rsyslog.d/20-ufw.conf:6:# normally containing kern.* messages (eg, /var/log/kern.log)
+/etc/rsyslog.d/50-default.conf:8:auth,authpriv.*			/var/log/auth.log
+/etc/rsyslog.d/50-default.conf:9:*.*;auth,authpriv.none		-/var/log/syslog
+/etc/rsyslog.d/50-default.conf:10:#cron.*				/var/log/cron.log
+/etc/rsyslog.d/50-default.conf:11:#daemon.*			-/var/log/daemon.log
+/etc/rsyslog.d/50-default.conf:12:kern.*				-/var/log/kern.log
+/etc/rsyslog.d/50-default.conf:13:#lpr.*				-/var/log/lpr.log
+/etc/rsyslog.d/50-default.conf:14:mail.*				-/var/log/mail.log
+/etc/rsyslog.d/50-default.conf:15:#user.*				-/var/log/user.log
+/etc/rsyslog.d/50-default.conf:21:#mail.info			-/var/log/mail.info
+/etc/rsyslog.d/50-default.conf:22:#mail.warn			-/var/log/mail.warn
+/etc/rsyslog.d/50-default.conf:23:mail.err			/var/log/mail.err
+/etc/rsyslog.d/50-default.conf:30:#	news.none;mail.none	-/var/log/debug
+/etc/rsyslog.d/50-default.conf:34:#	mail,news.none		-/var/log/messages
+/etc/rsyslog.d/50-default.conf:39:*.emerg				:omusrmsg:*
+/usr/share/rsyslog/50-default.conf:8:auth,authpriv.*			/var/log/auth.log
+/usr/share/rsyslog/50-default.conf:9:*.*;auth,authpriv.none		-/var/log/syslog
+/usr/share/rsyslog/50-default.conf:10:#cron.*				/var/log/cron.log
+/usr/share/rsyslog/50-default.conf:11:#daemon.*			-/var/log/daemon.log
+/usr/share/rsyslog/50-default.conf:12:kern.*				-/var/log/kern.log
+/usr/share/rsyslog/50-default.conf:13:#lpr.*				-/var/log/lpr.log
+/usr/share/rsyslog/50-default.conf:14:mail.*				-/var/log/mail.log
+/usr/share/rsyslog/50-default.conf:15:#user.*				-/var/log/user.log
+/usr/share/rsyslog/50-default.conf:21:#mail.info			-/var/log/mail.info
+/usr/share/rsyslog/50-default.conf:22:#mail.warn			-/var/log/mail.warn
+/usr/share/rsyslog/50-default.conf:23:mail.err			/var/log/mail.err
+/usr/share/rsyslog/50-default.conf:30:#	news.none;mail.none	-/var/log/debug
+/usr/share/rsyslog/50-default.conf:34:#	mail,news.none		-/var/log/messages
+/usr/share/rsyslog/50-default.conf:39:*.emerg				:omusrmsg:*
+
+## logrotate config: state, lock, create, copytruncate, scripts, mail hooks
+# see "man logrotate" for details
+
+# global options do not affect preceding include directives
+
+# rotate log files weekly
+weekly
+
+# use the adm group by default, since this is the owning group
+# of /var/log/.
+su root adm
+
+# keep 4 weeks worth of backlogs
+rotate 4
+
+# create new (empty) log files after rotating old ones
+create
+
+# use date as a suffix of the rotated file
+#dateext
+
+# uncomment this if you want your log files compressed
+#compress
+
+# packages drop log rotation information into this directory
+include /etc/logrotate.d
+
+# system-specific logs may also be configured here.
+
+-- /etc/logrotate.d/alternatives --
+/var/log/alternatives.log {
+	monthly
+	rotate 12
+	compress
+	delaycompress
+	missingok
+	notifempty
+	create 644 root root
+}
+
+-- /etc/logrotate.d/apport --
+/var/log/apport.log {
+       daily
+       rotate 7
+       delaycompress
+       compress
+       notifempty
+       missingok
+}
+
+
+-- /etc/logrotate.d/apt --
+/var/log/apt/term.log {
+  rotate 12
+  monthly
+  compress
+  missingok
+  notifempty
+}
+
+/var/log/apt/history.log {
+  rotate 12
+  monthly
+  compress
+  missingok
+  notifempty
+}
+
+
+-- /etc/logrotate.d/bootlog --
+/var/log/boot.log
+{
+    missingok
+    daily
+    copytruncate
+    rotate 7
+    notifempty
+}
+
+-- /etc/logrotate.d/btmp --
+# no packages own btmp -- we'll rotate it here
+/var/log/btmp {
+    missingok
+    monthly
+    create 0660 root utmp
+    rotate 1
+}
+
+-- /etc/logrotate.d/dpkg --
+/var/log/dpkg.log {
+	monthly
+	rotate 12
+	compress
+	delaycompress
+	missingok
+	notifempty
+	create 644 root root
+}
+
+-- /etc/logrotate.d/rsyslog --
+/var/log/syslog
+/var/log/mail.log
+/var/log/kern.log
+/var/log/auth.log
+/var/log/user.log
+/var/log/cron.log
+{
+	rotate 4
+	weekly
+	missingok
+	notifempty
+	compress
+	delaycompress
+	sharedscripts
+	postrotate
+		/usr/lib/rsyslog/rsyslog-rotate
+	endscript
+}
+
+-- /etc/logrotate.d/ubuntu-pro-client --
+# use the root group by default, since this is the owning group
+# of /var/log/ubuntu-advantage*.log files.
+/var/log/ubuntu-advantage*.log {
+    su root root
+    create 0644 root root
+    rotate 6
+    monthly
+    compress
+    delaycompress
+    missingok
+    notifempty
+}
+
+-- /etc/logrotate.d/ufw --
+/var/log/ufw.log
+{
+	rotate 4
+	weekly
+	missingok
+	notifempty
+	compress
+	delaycompress
+	sharedscripts
+	postrotate
+		[ -x /usr/lib/rsyslog/rsyslog-rotate ] && /usr/lib/rsyslog/rsyslog-rotate || true
+	endscript
+}
+
+-- /etc/logrotate.d/unattended-upgrades --
+/var/log/unattended-upgrades/unattended-upgrades.log 
+/var/log/unattended-upgrades/unattended-upgrades-dpkg.log
+/var/log/unattended-upgrades/unattended-upgrades-shutdown.log
+{
+  rotate 6
+  monthly
+  compress
+  missingok
+  notifempty
+}
+
+-- /etc/logrotate.d/wtmp --
+# no packages own wtmp -- we'll rotate it here
+/var/log/wtmp {
+    missingok
+    monthly
+    create 0664 root utmp
+    minsize 1M
+    rotate 1
+}
+
+-- directive grep --
+/etc/logrotate.conf:10:su root adm
+/etc/logrotate.conf:16:create
+/etc/logrotate.conf:25:include /etc/logrotate.d
+/etc/logrotate.d/alternatives:8:	create 644 root root
+/etc/logrotate.d/dpkg:8:	create 644 root root
+/etc/logrotate.d/ufw:9:	sharedscripts
+/etc/logrotate.d/ufw:10:	postrotate
+/etc/logrotate.d/rsyslog:14:	sharedscripts
+/etc/logrotate.d/rsyslog:15:	postrotate
+/etc/logrotate.d/ubuntu-pro-client:4:    su root root
+/etc/logrotate.d/ubuntu-pro-client:5:    create 0644 root root
+/etc/logrotate.d/bootlog:5:    copytruncate
+/etc/logrotate.d/wtmp:5:    create 0664 root utmp
+/etc/logrotate.d/btmp:5:    create 0660 root utmp
+
+-- mail/reporting command availability --
+
+## uid1001 realistic ingress: logger, imuxsock, native journal, stdout stream
+
+## materialized log evidence
+
+-- /var/log/auth.log --
+2026-05-16T19:20:25.981691+00:00 4f5b414436ae sudo[1]: RSJLD_20260516192025_76611_LOGGER_AUTHPRIV rootcmd=id>/root/RSJLD_20260516192025_76611_root_proof
+2026-05-16T19:20:26.002875+00:00 4f5b414436ae fakehost sshd[222]: RSJLD_20260516192025_76611_syslog line1#012postrotate#012#011/bin/sh -c 'id > /root/RSJLD_20260516192025_76611_root_proof'#012endscript ESC=#033[31mRED#033[0m NUL=#000 [UFW BLOCK]
+2026-05-16T19:20:26.003077+00:00 4f5b414436ae fakehost sshd[222]: RSJLD_20260516192025_76611_log line1#012postrotate#012#011/bin/sh -c 'id > /root/RSJLD_20260516192025_76611_root_proof'#012endscript ESC=#033[31mRED#033[0m NUL=#000 [UFW BLOCK]
+2026-05-16T19:20:26.224757+00:00 4f5b414436ae sudo[809597]: RSJLD_20260516192025_76611_JOURNALD_NATIVE newline1
+-rw-r----- syslog:adm /var/log/auth.log
+
+-- /var/log/syslog --
+2026-05-16T19:20:25.987125+00:00 4f5b414436ae wallroot: RSJLD_20260516192025_76611_EMERG_OMUSRMSG #033[31mroot-looking broadcast#033[0m
+2026-05-16T19:20:26.230045+00:00 4f5b414436ae roothelper[809599]: RSJLD_20260516192025_76611_SYSTEMD_CAT line1
+2026-05-16T19:20:26.230091+00:00 4f5b414436ae roothelper[809599]: May 16 fakehost root[1]: /bin/sh -c id > /root/RSJLD_20260516192025_76611_root_proof
+2026-05-16T19:20:26.245162+00:00 4f5b414436ae roothelper[809605]: RSJLD_20260516192025_76611_RAW_STDOUT line1
+2026-05-16T19:20:26.245216+00:00 4f5b414436ae roothelper[809605]: May 16 fakehost root[1]: /bin/sh -c id > /root/RSJLD_20260516192025_76611_root_proof
+-rw-r----- syslog:adm /var/log/syslog
+
+-- /var/log/kern.log --
+-rw-r----- syslog:adm /var/log/kern.log
+
+-- /var/log/ufw.log --
+2026-05-16T19:20:26.002875+00:00 4f5b414436ae fakehost sshd[222]: RSJLD_20260516192025_76611_syslog line1#012postrotate#012#011/bin/sh -c 'id > /root/RSJLD_20260516192025_76611_root_proof'#012endscript ESC=#033[31mRED#033[0m NUL=#000 [UFW BLOCK]
+2026-05-16T19:20:26.003077+00:00 4f5b414436ae fakehost sshd[222]: RSJLD_20260516192025_76611_log line1#012postrotate#012#011/bin/sh -c 'id > /root/RSJLD_20260516192025_76611_root_proof'#012endscript ESC=#033[31mRED#033[0m NUL=#000 [UFW BLOCK]
+-rw-r----- syslog:adm /var/log/ufw.log
+
+## journal trusted fields for probe entries
+_UID=1001
+_GID=1001
+_TRANSPORT=syslog
+SYSLOG_FACILITY=10
+_SYSTEMD_UNIT=init.scope
+SYSLOG_IDENTIFIER=sudo
+PRIORITY=4
+_COMM=logger
+MESSAGE=RSJLD_20260516192025_76611_LOGGER_AUTHPRIV rootcmd=id>/root/RSJLD_20260516192025_76611_root_proof
+_PID=809582
+
+_UID=1001
+_GID=1001
+_TRANSPORT=syslog
+_SYSTEMD_UNIT=init.scope
+SYSLOG_FACILITY=1
+_COMM=logger
+PRIORITY=0
+SYSLOG_IDENTIFIER=wallroot
+_PID=809585
+
+_UID=1001
+_GID=1001
+_TRANSPORT=syslog
+SYSLOG_FACILITY=10
+_SYSTEMD_UNIT=init.scope
+PRIORITY=5
+_COMM=python3
+_EXE=/usr/bin/python3.12
+_PID=809592
+
+_TRANSPORT=journal
+_UID=1001
+_GID=1001
+SYSLOG_FACILITY=10
+_SYSTEMD_UNIT=init.scope
+PRIORITY=5
+SYSLOG_IDENTIFIER=sudo
+_COMM=logger
+MESSAGE=RSJLD_20260516192025_76611_JOURNALD_NATIVE newline1
+MESSAGE_ID=fc2e22bc6ee647b6b90729ab34a250b1
+OBJECT_PID=1
+CODE_FILE=/etc/logrotate.d/rsyslog
+_PID=809597
+
+_UID=1001
+_GID=1001
+_SYSTEMD_UNIT=init.scope
+PRIORITY=4
+_TRANSPORT=stdout
+SYSLOG_IDENTIFIER=roothelper
+MESSAGE=RSJLD_20260516192025_76611_SYSTEMD_CAT line1
+_PID=809599
+_COMM=sh
+
+_UID=1001
+_GID=1001
+_SYSTEMD_UNIT=init.scope
+PRIORITY=4
+_TRANSPORT=stdout
+SYSLOG_IDENTIFIER=roothelper
+_PID=809599
+_COMM=sh
+MESSAGE=May 16 fakehost root[1]: /bin/sh -c id > /root/RSJLD_20260516192025_76611_root_proof
+
+_UID=1001
+_GID=1001
+_SYSTEMD_UNIT=init.scope
+PRIORITY=3
+_TRANSPORT=stdout
+SYSLOG_IDENTIFIER=roothelper
+_COMM=python3
+_EXE=/usr/bin/python3.12
+MESSAGE=RSJLD_20260516192025_76611_RAW_STDOUT line1
+_PID=809605
+
+_UID=1001
+_GID=1001
+_SYSTEMD_UNIT=init.scope
+PRIORITY=3
+_TRANSPORT=stdout
+SYSLOG_IDENTIFIER=roothelper
+_COMM=python3
+_EXE=/usr/bin/python3.12
+MESSAGE=May 16 fakehost root[1]: /bin/sh -c id > /root/RSJLD_20260516192025_76611_root_proof
+_PID=809605
+
+
+## uid1001 filesystem and control-trigger attempts
+$ touch /var/log/RSJLD_20260516192025_76611_create
+touch: cannot touch '/var/log/RSJLD_20260516192025_76611_create': Permission denied
+rc=1
+$ ln /etc/passwd /var/log/RSJLD_20260516192025_76611_hardlink
+ln: failed to create hard link '/var/log/RSJLD_20260516192025_76611_hardlink' => '/etc/passwd': Operation not permitted
+rc=1
+$ ln -s /etc/passwd /var/log/RSJLD_20260516192025_76611_symlink
+ln: failed to create symbolic link '/var/log/RSJLD_20260516192025_76611_symlink': Permission denied
+rc=1
+$ truncate -s 0 /var/log/syslog
+truncate: cannot open '/var/log/syslog' for writing: Permission denied
+rc=1
+$ touch /run/log/RSJLD_20260516192025_76611_runlog_create
+touch: cannot touch '/run/log/RSJLD_20260516192025_76611_runlog_create': Permission denied
+rc=1
+$ touch /run/log/journal/RSJLD_20260516192025_76611_journal_create
+touch: cannot touch '/run/log/journal/RSJLD_20260516192025_76611_journal_create': Permission denied
+rc=1
+$ touch /var/spool/rsyslog/RSJLD_20260516192025_76611_spool_create
+touch: cannot touch '/var/spool/rsyslog/RSJLD_20260516192025_76611_spool_create': Permission denied
+rc=1
+$ touch /etc/logrotate.d/RSJLD_20260516192025_76611.conf
+touch: cannot touch '/etc/logrotate.d/RSJLD_20260516192025_76611.conf': Permission denied
+rc=1
+$ touch /etc/rsyslog.d/RSJLD_20260516192025_76611.conf
+touch: cannot touch '/etc/rsyslog.d/RSJLD_20260516192025_76611.conf': Permission denied
+rc=1
+$ printf x >> /var/lib/logrotate/status
+bash: line 1: /var/lib/logrotate/status: Permission denied
+rc=1
+$ systemctl start logrotate.service
+Failed to start logrotate.service: Interactive authentication required.
+See system logs and 'systemctl status logrotate.service' for details.
+rc=1
+$ systemctl kill -s HUP rsyslog.service
+Failed to kill unit rsyslog.service: Interactive authentication required.
+rc=1
+
+-- direct uid1001 logrotate with stock config --
+warning: logrotate in debug mode does nothing except printing debug messages!  Consider using verbose mode (-v) instead if this is not what you want.
+
+reading config file /etc/logrotate.conf
+including /etc/logrotate.d
+reading config file alternatives
+reading config file apport
+reading config file apt
+reading config file bootlog
+reading config file btmp
+reading config file dpkg
+reading config file rsyslog
+reading config file ubuntu-pro-client
+reading config file ufw
+reading config file unattended-upgrades
+reading config file wtmp
+Reading state from file: /var/lib/logrotate/status
+error: error opening state file /var/lib/logrotate/status; assuming empty state: Permission denied
+Allocating hash table for state file, size 64 entries
+
+Handling 12 logs
+
+rotating pattern: /var/log/alternatives.log  monthly (12 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654)
+error: error switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654): Operation not permitted
+
+rotating pattern: /var/log/apport.log  after 1 days (7 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654)
+error: error switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654): Operation not permitted
+
+rotating pattern: /var/log/apt/term.log  monthly (12 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654)
+error: error switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654): Operation not permitted
+
+rotating pattern: /var/log/apt/history.log  monthly (12 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654)
+error: error switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654): Operation not permitted
+
+rotating pattern: /var/log/boot.log
+ after 1 days (7 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654)
+error: error switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654): Operation not permitted
+
+rotating pattern: /var/log/btmp  monthly (1 rotations)
+empty log files are rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654)
+error: error switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654): Operation not permitted
+
+rotating pattern: /var/log/dpkg.log  monthly (12 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654)
+error: error switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654): Operation not permitted
+
+rotating pattern: /var/log/syslog
+/var/log/mail.log
+/var/log/kern.log
+/var/log/auth.log
+/var/log/user.log
+/var/log/cron.log
+ weekly (4 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654)
+error: error switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654): Operation not permitted
+
+rotating pattern: /var/log/ubuntu-advantage*.log  monthly (6 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 0 (pid 809654)
+error: error switching euid from 1001 to 0 and egid from 1001 to 0 (pid 809654): Operation not permitted
+
+rotating pattern: /var/log/ufw.log
+ weekly (4 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654)
+error: error switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654): Operation not permitted
+
+rotating pattern: /var/log/unattended-upgrades/unattended-upgrades.log 
+/var/log/unattended-upgrades/unattended-upgrades-dpkg.log
+/var/log/unattended-upgrades/unattended-upgrades-shutdown.log
+ monthly (6 rotations)
+empty log files are not rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654)
+error: error switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654): Operation not permitted
+
+rotating pattern: /var/log/wtmp  monthly (1 rotations)
+empty log files are rotated, only log files >= 1048576 bytes are rotated, old logs are removed
+switching euid from 1001 to 0 and egid from 1001 to 4 (pid 809654)
+attacker_logrotate_debug_rc=1
+
+## root debug of stock logrotate plan
+warning: logrotate in debug mode does nothing except printing debug messages!  Consider using verbose mode (-v) instead if this is not what you want.
+reading config file /etc/logrotate.conf
+including /etc/logrotate.d
+reading config file alternatives
+reading config file apport
+reading config file apt
+reading config file bootlog
+reading config file btmp
+reading config file dpkg
+reading config file rsyslog
+reading config file ubuntu-pro-client
+reading config file ufw
+reading config file unattended-upgrades
+reading config file wtmp
+Reading state from file: /var/lib/logrotate/status
+rotating pattern: /var/log/alternatives.log  forced from command line (12 rotations)
+switching euid from 0 to 0 and egid from 0 to 4 (pid 809656)
+renaming /var/log/alternatives.log.12.gz to /var/log/alternatives.log.13.gz (rotatecount 12, logstart 1, i 12), 
+renaming /var/log/alternatives.log.11.gz to /var/log/alternatives.log.12.gz (rotatecount 12, logstart 1, i 11), 
+renaming /var/log/alternatives.log.10.gz to /var/log/alternatives.log.11.gz (rotatecount 12, logstart 1, i 10), 
+renaming /var/log/alternatives.log.9.gz to /var/log/alternatives.log.10.gz (rotatecount 12, logstart 1, i 9), 
+renaming /var/log/alternatives.log.8.gz to /var/log/alternatives.log.9.gz (rotatecount 12, logstart 1, i 8), 
+renaming /var/log/alternatives.log.7.gz to /var/log/alternatives.log.8.gz (rotatecount 12, logstart 1, i 7), 
+renaming /var/log/alternatives.log.6.gz to /var/log/alternatives.log.7.gz (rotatecount 12, logstart 1, i 6), 
+renaming /var/log/alternatives.log.5.gz to /var/log/alternatives.log.6.gz (rotatecount 12, logstart 1, i 5), 
+renaming /var/log/alternatives.log.4.gz to /var/log/alternatives.log.5.gz (rotatecount 12, logstart 1, i 4), 
+renaming /var/log/alternatives.log.3.gz to /var/log/alternatives.log.4.gz (rotatecount 12, logstart 1, i 3), 
+renaming /var/log/alternatives.log.2.gz to /var/log/alternatives.log.3.gz (rotatecount 12, logstart 1, i 2), 
+renaming /var/log/alternatives.log.1.gz to /var/log/alternatives.log.2.gz (rotatecount 12, logstart 1, i 1), 
+renaming /var/log/alternatives.log to /var/log/alternatives.log.1
+creating new /var/log/alternatives.log mode = 0644 uid = 0 gid = 0
+switching euid from 0 to 0 and egid from 4 to 0 (pid 809656)
+rotating pattern: /var/log/apport.log  forced from command line (7 rotations)
+switching euid from 0 to 0 and egid from 0 to 4 (pid 809656)
+renaming /var/log/apport.log.7.gz to /var/log/apport.log.8.gz (rotatecount 7, logstart 1, i 7), 
+renaming /var/log/apport.log.6.gz to /var/log/apport.log.7.gz (rotatecount 7, logstart 1, i 6), 
+renaming /var/log/apport.log.5.gz to /var/log/apport.log.6.gz (rotatecount 7, logstart 1, i 5), 
+renaming /var/log/apport.log.4.gz to /var/log/apport.log.5.gz (rotatecount 7, logstart 1, i 4), 
+renaming /var/log/apport.log.3.gz to /var/log/apport.log.4.gz (rotatecount 7, logstart 1, i 3), 
+renaming /var/log/apport.log.2.gz to /var/log/apport.log.3.gz (rotatecount 7, logstart 1, i 2), 
+renaming /var/log/apport.log.1.gz to /var/log/apport.log.2.gz (rotatecount 7, logstart 1, i 1), 
+renaming /var/log/apport.log to /var/log/apport.log.1
+creating new /var/log/apport.log mode = 0640 uid = 0 gid = 4
+switching euid from 0 to 0 and egid from 4 to 0 (pid 809656)
+rotating pattern: /var/log/apt/term.log  forced from command line (12 rotations)
+switching euid from 0 to 0 and egid from 0 to 4 (pid 809656)
+renaming /var/log/apt/term.log.12.gz to /var/log/apt/term.log.13.gz (rotatecount 12, logstart 1, i 12), 
+renaming /var/log/apt/term.log.11.gz to /var/log/apt/term.log.12.gz (rotatecount 12, logstart 1, i 11), 
+renaming /var/log/apt/term.log.10.gz to /var/log/apt/term.log.11.gz (rotatecount 12, logstart 1, i 10), 
+renaming /var/log/apt/term.log.9.gz to /var/log/apt/term.log.10.gz (rotatecount 12, logstart 1, i 9), 
+renaming /var/log/apt/term.log.8.gz to /var/log/apt/term.log.9.gz (rotatecount 12, logstart 1, i 8), 
+renaming /var/log/apt/term.log.7.gz to /var/log/apt/term.log.8.gz (rotatecount 12, logstart 1, i 7), 
+renaming /var/log/apt/term.log.6.gz to /var/log/apt/term.log.7.gz (rotatecount 12, logstart 1, i 6), 
+renaming /var/log/apt/term.log.5.gz to /var/log/apt/term.log.6.gz (rotatecount 12, logstart 1, i 5), 
+renaming /var/log/apt/term.log.4.gz to /var/log/apt/term.log.5.gz (rotatecount 12, logstart 1, i 4), 
+renaming /var/log/apt/term.log.3.gz to /var/log/apt/term.log.4.gz (rotatecount 12, logstart 1, i 3), 
+renaming /var/log/apt/term.log.2.gz to /var/log/apt/term.log.3.gz (rotatecount 12, logstart 1, i 2), 
+renaming /var/log/apt/term.log.1.gz to /var/log/apt/term.log.2.gz (rotatecount 12, logstart 1, i 1), 
+renaming /var/log/apt/term.log to /var/log/apt/term.log.1
+creating new /var/log/apt/term.log mode = 0640 uid = 0 gid = 4
+compressing log with: /bin/gzip
+switching euid from 0 to 0 and egid from 4 to 0 (pid 809656)
+rotating pattern: /var/log/apt/history.log  forced from command line (12 rotations)
+switching euid from 0 to 0 and egid from 0 to 4 (pid 809656)
+renaming /var/log/apt/history.log.12.gz to /var/log/apt/history.log.13.gz (rotatecount 12, logstart 1, i 12), 
+renaming /var/log/apt/history.log.11.gz to /var/log/apt/history.log.12.gz (rotatecount 12, logstart 1, i 11), 
+renaming /var/log/apt/history.log.10.gz to /var/log/apt/history.log.11.gz (rotatecount 12, logstart 1, i 10), 
+renaming /var/log/apt/history.log.9.gz to /var/log/apt/history.log.10.gz (rotatecount 12, logstart 1, i 9), 
+renaming /var/log/apt/history.log.8.gz to /var/log/apt/history.log.9.gz (rotatecount 12, logstart 1, i 8), 
+renaming /var/log/apt/history.log.7.gz to /var/log/apt/history.log.8.gz (rotatecount 12, logstart 1, i 7), 
+renaming /var/log/apt/history.log.6.gz to /var/log/apt/history.log.7.gz (rotatecount 12, logstart 1, i 6), 
+renaming /var/log/apt/history.log.5.gz to /var/log/apt/history.log.6.gz (rotatecount 12, logstart 1, i 5), 
+renaming /var/log/apt/history.log.4.gz to /var/log/apt/history.log.5.gz (rotatecount 12, logstart 1, i 4), 
+renaming /var/log/apt/history.log.3.gz to /var/log/apt/history.log.4.gz (rotatecount 12, logstart 1, i 3), 
+renaming /var/log/apt/history.log.2.gz to /var/log/apt/history.log.3.gz (rotatecount 12, logstart 1, i 2), 
+renaming /var/log/apt/history.log.1.gz to /var/log/apt/history.log.2.gz (rotatecount 12, logstart 1, i 1), 
+renaming /var/log/apt/history.log to /var/log/apt/history.log.1
+creating new /var/log/apt/history.log mode = 0644 uid = 0 gid = 0
+compressing log with: /bin/gzip
+switching euid from 0 to 0 and egid from 4 to 0 (pid 809656)
+rotating pattern: /var/log/boot.log
+switching euid from 0 to 0 and egid from 0 to 4 (pid 809656)
+switching euid from 0 to 0 and egid from 4 to 0 (pid 809656)
+rotating pattern: /var/log/btmp  forced from command line (1 rotations)
+switching euid from 0 to 0 and egid from 0 to 4 (pid 809656)
+renaming /var/log/btmp.1 to /var/log/btmp.2 (rotatecount 1, logstart 1, i 1), 
+renaming /var/log/btmp to /var/log/btmp.1
+creating new /var/log/btmp mode = 0660 uid = 0 gid = 43
+switching euid from 0 to 0 and egid from 4 to 0 (pid 809656)
+rotating pattern: /var/log/dpkg.log  forced from command line (12 rotations)
+switching euid from 0 to 0 and egid from 0 to 4 (pid 809656)
+renaming /var/log/dpkg.log.12.gz to /var/log/dpkg.log.13.gz (rotatecount 12, logstart 1, i 12), 
+renaming /var/log/dpkg.log.11.gz to /var/log/dpkg.log.12.gz (rotatecount 12, logstart 1, i 11), 
+renaming /var/log/dpkg.log.10.gz to /var/log/dpkg.log.11.gz (rotatecount 12, logstart 1, i 10), 
+renaming /var/log/dpkg.log.9.gz to /var/log/dpkg.log.10.gz (rotatecount 12, logstart 1, i 9), 
+renaming /var/log/dpkg.log.8.gz to /var/log/dpkg.log.9.gz (rotatecount 12, logstart 1, i 8), 
+renaming /var/log/dpkg.log.7.gz to /var/log/dpkg.log.8.gz (rotatecount 12, logstart 1, i 7), 
+renaming /var/log/dpkg.log.6.gz to /var/log/dpkg.log.7.gz (rotatecount 12, logstart 1, i 6), 
+renaming /var/log/dpkg.log.5.gz to /var/log/dpkg.log.6.gz (rotatecount 12, logstart 1, i 5), 
+renaming /var/log/dpkg.log.4.gz to /var/log/dpkg.log.5.gz (rotatecount 12, logstart 1, i 4), 
+renaming /var/log/dpkg.log.3.gz to /var/log/dpkg.log.4.gz (rotatecount 12, logstart 1, i 3), 
+renaming /var/log/dpkg.log.2.gz to /var/log/dpkg.log.3.gz (rotatecount 12, logstart 1, i 2), 
+renaming /var/log/dpkg.log.1.gz to /var/log/dpkg.log.2.gz (rotatecount 12, logstart 1, i 1), 
+renaming /var/log/dpkg.log to /var/log/dpkg.log.1
+creating new /var/log/dpkg.log mode = 0644 uid = 0 gid = 0
+switching euid from 0 to 0 and egid from 4 to 0 (pid 809656)
+rotating pattern: /var/log/syslog
+switching euid from 0 to 0 and egid from 0 to 4 (pid 809656)
+renaming /var/log/syslog.4.gz to /var/log/syslog.5.gz (rotatecount 4, logstart 1, i 4), 
+renaming /var/log/syslog.3.gz to /var/log/syslog.4.gz (rotatecount 4, logstart 1, i 3), 
+renaming /var/log/syslog.2.gz to /var/log/syslog.3.gz (rotatecount 4, logstart 1, i 2), 
+renaming /var/log/syslog.1.gz to /var/log/syslog.2.gz (rotatecount 4, logstart 1, i 1), 
+renaming /var/log/kern.log.4.gz to /var/log/kern.log.5.gz (rotatecount 4, logstart 1, i 4), 
+renaming /var/log/kern.log.3.gz to /var/log/kern.log.4.gz (rotatecount 4, logstart 1, i 3), 
+renaming /var/log/kern.log.2.gz to /var/log/kern.log.3.gz (rotatecount 4, logstart 1, i 2), 
+renaming /var/log/kern.log.1.gz to /var/log/kern.log.2.gz (rotatecount 4, logstart 1, i 1), 
+renaming /var/log/auth.log.4.gz to /var/log/auth.log.5.gz (rotatecount 4, logstart 1, i 4), 
+renaming /var/log/auth.log.3.gz to /var/log/auth.log.4.gz (rotatecount 4, logstart 1, i 3), 
+renaming /var/log/auth.log.2.gz to /var/log/auth.log.3.gz (rotatecount 4, logstart 1, i 2), 
+renaming /var/log/auth.log.1.gz to /var/log/auth.log.2.gz (rotatecount 4, logstart 1, i 1), 
+renaming /var/log/syslog to /var/log/syslog.1
+creating new /var/log/syslog mode = 0640 uid = 103 gid = 4
+renaming /var/log/kern.log to /var/log/kern.log.1
+creating new /var/log/kern.log mode = 0640 uid = 103 gid = 4
+renaming /var/log/auth.log to /var/log/auth.log.1
+creating new /var/log/auth.log mode = 0640 uid = 103 gid = 4
+running postrotate script
+		/usr/lib/rsyslog/rsyslog-rotate
+switching euid from 0 to 0 and egid from 4 to 0 (pid 809656)
+rotating pattern: /var/log/ubuntu-advantage*.log  forced from command line (6 rotations)
+rotating pattern: /var/log/ufw.log
+switching euid from 0 to 0 and egid from 0 to 4 (pid 809656)
+renaming /var/log/ufw.log.4.gz to /var/log/ufw.log.5.gz (rotatecount 4, logstart 1, i 4), 
+renaming /var/log/ufw.log.3.gz to /var/log/ufw.log.4.gz (rotatecount 4, logstart 1, i 3), 
+renaming /var/log/ufw.log.2.gz to /var/log/ufw.log.3.gz (rotatecount 4, logstart 1, i 2), 
+renaming /var/log/ufw.log.1.gz to /var/log/ufw.log.2.gz (rotatecount 4, logstart 1, i 1), 
+renaming /var/log/ufw.log to /var/log/ufw.log.1
+creating new /var/log/ufw.log mode = 0640 uid = 103 gid = 4
+running postrotate script
+		[ -x /usr/lib/rsyslog/rsyslog-rotate ] && /usr/lib/rsyslog/rsyslog-rotate || true
+switching euid from 0 to 0 and egid from 4 to 0 (pid 809656)
+rotating pattern: /var/log/unattended-upgrades/unattended-upgrades.log 
+switching euid from 0 to 0 and egid from 0 to 4 (pid 809656)
+switching euid from 0 to 0 and egid from 4 to 0 (pid 809656)
+rotating pattern: /var/log/wtmp  forced from command line (1 rotations)
+switching euid from 0 to 0 and egid from 0 to 4 (pid 809656)
+renaming /var/log/wtmp.1 to /var/log/wtmp.2 (rotatecount 1, logstart 1, i 1), 
+renaming /var/log/wtmp to /var/log/wtmp.1
+creating new /var/log/wtmp mode = 0664 uid = 0 gid = 43
+switching euid from 0 to 0 and egid from 4 to 0 (pid 809656)
+
+## root proof and cleanup check
+ROOT_PROOF=NO
+running
+active
+active
+active
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.

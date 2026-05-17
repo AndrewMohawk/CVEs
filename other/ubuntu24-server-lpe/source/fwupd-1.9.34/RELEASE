@@ -1,0 +1,35 @@
+fwupd Release Notes
+
+Write release entries:
+
+    ../../contrib/generate-release.py
+    # copy into ../../data/org.freedesktop.fwupd.metainfo.xml
+    appstream-util appdata-to-news ../../data/org.freedesktop.fwupd.metainfo.xml > NEWS
+
+2. Commit changes to git:
+
+# MAKE SURE THIS IS CORRECT
+export release_ver="1.9.34"
+
+git commit -a -m "Release fwupd ${release_ver}" --no-verify
+git tag -s -f -m "Release fwupd ${release_ver}" "${release_ver}"
+<wait>
+git push --tags
+git push
+
+3. Generate the tarball:
+
+ninja dist
+
+3a. Generate the additional verification metadata
+
+gpg -b -a meson-dist/fwupd-${release_ver}.tar.xz
+
+4. Create release and upload tarball to https://github.com/fwupd/fwupd/tags
+
+5. Do post release version bump in meson.build and this file
+
+6. Commit changes:
+
+git commit -a -m "trivial: post release version bump" --no-verify
+git push

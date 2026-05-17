@@ -1,0 +1,100 @@
+== pre-clean ==
+== target identity ==
+uid=0(root) gid=0(root) groups=0(root)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+snapd	2.74.1+ubuntu24.04.4
+systemd	255.4-1ubuntu8.15
+snap          2.74.1+ubuntu24.04.4
+snapd         2.74.1+ubuntu24.04.4
+series        16
+ubuntu        24.04
+kernel        6.10.14-linuxkit
+architecture  arm64
+== default snapd services sockets and reachability ==
+active
+active
+active
+inactive
+enabled
+enabled
+enabled
+static
+srw-rw-rw- 666 root:root /run/snapd.socket
+srw-rw-rw- 666 root:root /run/snapd-snap.socket
+-rwxr-xr-x 755 root:root /usr/lib/snapd/snap-confine
+drwx------ 700 root:root /tmp/snap-private-tmp
+u_str LISTEN 0      4096                                 /run/snapd.socket 6657             * 0    users:(("snapd",pid=10891,fd=9),("systemd",pid=1,fd=65))                                     
+u_str LISTEN 0      4096                            /run/snapd-snap.socket 6658             * 0    users:(("snapd",pid=10891,fd=10),("systemd",pid=1,fd=66))                                    
+/usr/lib/snapd/snap-confine cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+/usr/lib/snapd/snap-update-ns
+== default snap state and tmpfiles policy ==
+No snaps are installed yet. Try 'snap install hello-world'.
+D! /tmp/snap-private-tmp 0700 root root -
+
+# Allow removing content in the private tmp folders without affecting the
+# architectural structure of the folders themselves.
+X /tmp/snap-private-tmp
+X /tmp/snap-private-tmp/*/tmp
+x /tmp/snap-private-tmp/*/tmp/.snap
+/usr/lib/tmpfiles.d/tmp.conf:11:D /tmp 1777 root root 30d
+/usr/lib/tmpfiles.d/snapd.conf:1:D! /tmp/snap-private-tmp 0700 root root -
+/usr/lib/tmpfiles.d/snapd.conf:5:X /tmp/snap-private-tmp
+/usr/lib/tmpfiles.d/snapd.conf:6:X /tmp/snap-private-tmp/*/tmp
+/usr/lib/tmpfiles.d/snapd.conf:7:x /tmp/snap-private-tmp/*/tmp/.snap
+== attacker REST read probes ==
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 16:10:42 GMT
+Transfer-Encoding: chunked
+
+{"type":"sync","status-code":200,"status":"OK","result":{"architecture":"arm64","build-id":"13476c98a1eccfcc83435dda3ccbd6db1b4f65be","confinement":"partial","features":{"apparmor-prompting":{"supported":false,"unsupported-reason":"cannot check apparmor kernel features: open /sys/kernel/security/apparmor/features: no such file or directory","enabled":false},"check-disk-space-install":{"supported":true,"enabled":false},"check-disk-space-refresh":{"supported":true,"enabled":false},"check-disk-space-remove":{"supported":true,"enabled":false},"classic-preserves-xdg-runtime-dir":{"supported":true,"enabled":true},"clustering":{"supported":true,"enabled":false},"confdb":{"supported":true,"enabled":false},"confdb-control":{"supported":true,"enabled":false},"content-compatibility-label":{"supported":true,"enabled":false},"dbus-activation":{"supported":true,"enabled":true},"gate-auto-refresh-hook":{"supported":true,"enabled":false},"hidden-snap-folder":{"supported":true,"enabled":false},"hotplug":{"supported":true,"enabled":false},"layouts":{"supported":true,"enabled":true},"move-snap-home-dir":{"supported":true,"enabled":false},"parallel-instances":{"supported":true,"enabled":false},"per-user-mount-namespace":{"supported":true,"enabled":false},"quota-groups":{"supported":true,"enabled":false},"refresh-app-awareness":{"supported":true,"enabled":true},"refresh-app-awareness-ux":{"supported":true,"enabled":false},"user-daemons":{"supported":true,"enabled":false}},"kernel-version":"6.10.14-linuxkit","locations":{"snap-bin-dir":"/snap/bin","snap-mount-dir":"/snap"},"managed":false,"on-classic":true,"os-release":{"id":"ubuntu","version-id":"24.04"},"refresh":{"timer":"00:00~24:00/4","hold":"2026-05-16T17:18:00Z"},"sandbox-features":{"configfiles":["mediated-configfiles"],"confinement-options":["classic","devmode"],"dbus":["mediated-bus-access"],"kmod":["mediated-modprobe"],"ldconfig":["mediated-ldconfig"],"mount":["layouts","mount-namespace","per-snap-persistency","per-snap-profiles","per-snap-updates","per-snap-user-profiles","stale-base-invalidation"],"seccomp":["bpf-actlog","bpf-argument-filtering","kernel:allow","kernel:errno","kernel:kill_process","kernel:kill_thread","kernel:log","kernel:trace","kernel:trap","kernel:user_notif"],"symlinks":["mediated-symlinks"],"udev":["device-cgroup-v2","device-filtering","tagging"]},"series":"16","snapd-bin-from":"native-package","system-mode":"run","version":"2.74.1+ubuntu24.04.4","virtualization":"docker"}}-- snaps --
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 16:10:42 GMT
+Content-Length: 79
+
+{"type":"sync","status-code":200,"status":"OK","result":[],"sources":["local"]}== build root-marker local snap as attacker ==
+built: /tmp/snapd-cve3888-test_1.0_all.snap
+-rw-r--r-- attacker:attacker 16384 /tmp/snapd-cve3888-test_1.0_all.snap
+== attacker REST install trigger ==
+rest_install_rc=0
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 16:10:42 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}== attacker CLI install trigger ==
+snap_install_rc=1
+== attacker snap-confine helper trigger ==
+snap_confine_rc=1
+== attacker snap socket spoof trigger ==
+snap_socket_rc=0
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sat, 16 May 2026 16:10:42 GMT
+Content-Length: 150
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"cannot use \"set\" with uid 1001, try with sudo","kind":"login-required"}}== root marker check ==
+ROOT_PROOF=NO
+== cleanup ==
+snap "snapd-cve3888-test" is not installed
+ls: cannot access '/tmp/snapd-cve3888-probe': No such file or directory
+ls: cannot access '/tmp/snapd-cve3888-test_1.0_all.snap': No such file or directory
+ls: cannot access '/root/snapd_cve3888_root': No such file or directory
+== final health ==
+running
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.
+active
+active
+active
+No snaps are installed yet. Try 'snap install hello-world'.

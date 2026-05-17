@@ -1,0 +1,23 @@
+$ sh -lc systemctl\ --type=socket\ --state=running\,active\ --no-pager\ --plain\ \|\|\ true
+UNIT                            LOAD   ACTIVE SUB       DESCRIPTION
+apport-forward.socket           loaded active listening Unix socket for apport crash forwarding
+dbus.socket                     loaded active running   D-Bus System Message Bus Socket
+dm-event.socket                 loaded active listening Device-mapper event daemon FIFOs
+iscsid.socket                   loaded active listening Open-iSCSI iscsid Socket
+lvm2-lvmpolld.socket            loaded active listening LVM2 poll daemon socket
+lxd-installer.socket            loaded active listening Helper to install lxd snap on demand
+snapd.socket                    loaded active listening Socket activation for snappy daemon
+syslog.socket                   loaded active running   Syslog Socket
+systemd-initctl.socket          loaded active listening initctl Compatibility Named Pipe
+systemd-journald-dev-log.socket loaded active running   Journal Socket (/dev/log)
+systemd-journald.socket         loaded active running   Journal Socket
+systemd-sysext.socket           loaded active listening System Extension Image Management (Varlink)
+systemd-udevd-control.socket    loaded active running   udev Control Socket
+systemd-udevd-kernel.socket     loaded active running   udev Kernel Socket
+uuidd.socket                    loaded active listening UUID daemon activation socket
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+15 loaded units listed.

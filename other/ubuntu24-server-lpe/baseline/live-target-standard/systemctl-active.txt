@@ -1,0 +1,76 @@
+$ sh -lc systemctl\ --type=service\,timer\,path\,socket\ --state=running\,active\ --no-pager\ --plain\ \|\|\ true
+UNIT                                     LOAD   ACTIVE SUB       DESCRIPTION
+systemd-ask-password-console.path        loaded active waiting   Dispatch Password Requests to Console Directory Watch
+systemd-ask-password-wall.path           loaded active waiting   Forward Password Requests to Wall Directory Watch
+blk-availability.service                 loaded active exited    Availability of block devices
+console-setup.service                    loaded active exited    Set console font and keymap
+cron.service                             loaded active running   Regular background program processing daemon
+dbus.service                             loaded active running   D-Bus System Message Bus
+finalrd.service                          loaded active exited    Create final runtime dir for shutdown pivot root
+getty@tty1.service                       loaded active running   Getty on tty1
+getty@tty2.service                       loaded active running   Getty on tty2
+keyboard-setup.service                   loaded active exited    Set the console keyboard layout
+ldconfig.service                         loaded active exited    Rebuild Dynamic Linker Cache
+plymouth-quit-wait.service               loaded active exited    Hold until boot process finishes up
+plymouth-quit.service                    loaded active exited    Terminate Plymouth Boot Screen
+plymouth-read-write.service              loaded active exited    Tell Plymouth To Write Out Runtime Data
+polkit.service                           loaded active running   Authorization Manager
+rsyslog.service                          loaded active running   System Logging Service
+setvtrgb.service                         loaded active exited    Set console scheme
+snapd.seeded.service                     loaded active exited    Wait until snapd is fully seeded
+sysstat.service                          loaded active exited    Resets System Activity Logs
+systemd-binfmt.service                   loaded active exited    Set Up Additional Binary Formats
+systemd-journal-catalog-update.service   loaded active exited    Rebuild Journal Catalog
+systemd-journal-flush.service            loaded active exited    Flush Journal to Persistent Storage
+systemd-journald.service                 loaded active running   Journal Service
+systemd-logind.service                   loaded active running   User Login Management
+systemd-modules-load.service             loaded active exited    Load Kernel Modules
+systemd-remount-fs.service               loaded active exited    Remount Root and Kernel File Systems
+systemd-resolved.service                 loaded active running   Network Name Resolution
+systemd-sysctl.service                   loaded active exited    Apply Kernel Variables
+systemd-sysusers.service                 loaded active exited    Create System Users
+systemd-timedated.service                loaded active running   Time & Date Service
+systemd-tmpfiles-setup-dev-early.service loaded active exited    Create Static Device Nodes in /dev gracefully
+systemd-tmpfiles-setup-dev.service       loaded active exited    Create Static Device Nodes in /dev
+systemd-tmpfiles-setup.service           loaded active exited    Create Volatile Files and Directories
+systemd-udev-trigger.service             loaded active exited    Coldplug All udev Devices
+systemd-udevd.service                    loaded active running   Rule-based Manager for Device Events and Files
+systemd-update-done.service              loaded active exited    Update is Completed
+systemd-update-utmp.service              loaded active exited    Record System Boot/Shutdown in UTMP
+systemd-user-sessions.service            loaded active exited    Permit User Sessions
+udisks2.service                          loaded active running   Disk Manager
+ufw.service                              loaded active exited    Uncomplicated firewall
+unattended-upgrades.service              loaded active running   Unattended Upgrades Shutdown
+apport-forward.socket                    loaded active listening Unix socket for apport crash forwarding
+dbus.socket                              loaded active running   D-Bus System Message Bus Socket
+dm-event.socket                          loaded active listening Device-mapper event daemon FIFOs
+iscsid.socket                            loaded active listening Open-iSCSI iscsid Socket
+lvm2-lvmpolld.socket                     loaded active listening LVM2 poll daemon socket
+lxd-installer.socket                     loaded active listening Helper to install lxd snap on demand
+snapd.socket                             loaded active listening Socket activation for snappy daemon
+syslog.socket                            loaded active running   Syslog Socket
+systemd-initctl.socket                   loaded active listening initctl Compatibility Named Pipe
+systemd-journald-dev-log.socket          loaded active running   Journal Socket (/dev/log)
+systemd-journald.socket                  loaded active running   Journal Socket
+systemd-sysext.socket                    loaded active listening System Extension Image Management (Varlink)
+systemd-udevd-control.socket             loaded active running   udev Control Socket
+systemd-udevd-kernel.socket              loaded active running   udev Kernel Socket
+uuidd.socket                             loaded active listening UUID daemon activation socket
+apt-daily-upgrade.timer                  loaded active waiting   Daily apt upgrade and clean activities
+apt-daily.timer                          loaded active waiting   Daily apt download activities
+dpkg-db-backup.timer                     loaded active waiting   Daily dpkg database backup timer
+e2scrub_all.timer                        loaded active waiting   Periodic ext4 Online Metadata Check for All Filesystems
+logrotate.timer                          loaded active waiting   Daily rotation of log files
+man-db.timer                             loaded active waiting   Daily man-db regeneration
+motd-news.timer                          loaded active waiting   Message of the Day
+sysstat-collect.timer                    loaded active waiting   Run system activity accounting tool every 10 minutes
+sysstat-summary.timer                    loaded active waiting   Generate summary of yesterday's process accounting
+systemd-tmpfiles-clean.timer             loaded active waiting   Daily Cleanup of Temporary Directories
+update-notifier-download.timer           loaded active waiting   Download data for packages that failed at package install time
+update-notifier-motd.timer               loaded active waiting   Check to see whether there is a new version of Ubuntu available
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+68 loaded units listed.

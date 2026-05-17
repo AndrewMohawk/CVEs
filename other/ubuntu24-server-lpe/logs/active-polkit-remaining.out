@@ -1,0 +1,295 @@
+
+## target identity and packages
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=noble
+LOGO=ubuntu-logo
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+bolt	0.9.7-1	ii 
+dbus	1.14.10-4ubuntu4.1	ii 
+fwupd	1.9.34-0ubuntu1~24.04.1	ii 
+modemmanager	1.23.4-0ubuntu2	ii 
+netplan.io	1.1.2-8ubuntu1~24.04.2	ii 
+packagekit	1.2.8-2ubuntu1.5	ii 
+pkexec		un 
+policykit-1		un 
+polkitd	124-2ubuntu1.24.04.3	ii 
+python3-software-properties	0.99.49.4	ii 
+software-properties-common	0.99.49.4	ii 
+systemd	255.4-1ubuntu8.15	ii 
+systemd-resolved	255.4-1ubuntu8.15	ii 
+systemd-timesyncd	255.4-1ubuntu8.15	ii 
+udisks2	2.10.1-6ubuntu1.3	ii 
+update-notifier-common	3.192.68.2	ii 
+
+## default service state
+:1.58                           1528 netplan-dbus    root            :1.58         dbus.service                -       -
+com.ubuntu.SoftwareProperties      - -               -               (activatable) -                           -       -
+io.netplan.Netplan              1528 netplan-dbus    root            :1.58         dbus.service                -       -
+org.freedesktop.ModemManager1      - -               -               (activatable) -                           -       -
+org.freedesktop.PolicyKit1       258 polkitd         polkitd         :1.4          polkit.service              -       -
+org.freedesktop.bolt               - -               -               (activatable) -                           -       -
+org.freedesktop.fwupd              - -               -               (activatable) -                           -       -
+org.freedesktop.hostname1          - -               -               (activatable) -                           -       -
+org.freedesktop.locale1            - -               -               (activatable) -                           -       -
+org.freedesktop.network1           - -               -               (activatable) -                           -       -
+org.freedesktop.resolve1          97 systemd-resolve systemd-resolve :1.1          systemd-resolved.service    -       -
+org.freedesktop.systemd1           1 systemd         root            :1.0          init.scope                  -       -
+org.freedesktop.timedate1          - -               -               (activatable) -                           -       -
+### systemd-hostnamed.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=static
+ConditionResult=no
+### systemd-localed.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=static
+ConditionResult=no
+### systemd-timedated.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=static
+ConditionResult=no
+### systemd-resolved.service
+LoadState=loaded
+ActiveState=active
+SubState=running
+UnitFileState=enabled
+ConditionResult=yes
+### systemd-networkd.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=disabled
+ConditionResult=no
+### systemd-networkd.socket
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=disabled
+ConditionResult=no
+### ModemManager.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=enabled
+ConditionResult=no
+### bolt.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=static
+ConditionResult=no
+### fwupd.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=static
+ConditionResult=no
+### fwupd-refresh.timer
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=enabled
+ConditionResult=no
+
+## polkit default action inventory
+[focus actions]
+com.ubuntu.softwareproperties.applychanges	/usr/share/polkit-1/actions/com.ubuntu.softwareproperties.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+com.ubuntu.update-notifier.pkexec.package-system-locked	/usr/share/polkit-1/actions/com.ubuntu.update-notifier.policy	any=no inactive=yes active=yes
+org.freedesktop.bolt.authorize	/usr/share/polkit-1/actions/org.freedesktop.bolt.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.bolt.enroll	/usr/share/polkit-1/actions/org.freedesktop.bolt.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.bolt.manage	/usr/share/polkit-1/actions/org.freedesktop.bolt.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.fwupd.device-activate	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.device-unlock	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.downgrade-hotplug	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.downgrade-hotplug-trusted	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.downgrade-internal	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.downgrade-internal-trusted	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.fix-host-security-attr	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin
+org.freedesktop.fwupd.get-bios-settings	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.modify-config	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.modify-remote	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.self-sign	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.set-approved-firmware	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.set-bios-settings	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin
+org.freedesktop.fwupd.undo-host-security-attr	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin
+org.freedesktop.fwupd.update-hotplug	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.update-hotplug-trusted	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=yes
+org.freedesktop.fwupd.update-internal	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.fwupd.update-internal-trusted	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=yes
+org.freedesktop.fwupd.verify-update	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=auth_admin_keep
+org.freedesktop.hostname1.get-description	/usr/share/polkit-1/actions/org.freedesktop.hostname1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+org.freedesktop.hostname1.get-hardware-serial	/usr/share/polkit-1/actions/org.freedesktop.hostname1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+org.freedesktop.hostname1.get-product-uuid	/usr/share/polkit-1/actions/org.freedesktop.hostname1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+org.freedesktop.hostname1.set-hostname	/usr/share/polkit-1/actions/org.freedesktop.hostname1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+org.freedesktop.hostname1.set-machine-info	/usr/share/polkit-1/actions/org.freedesktop.hostname1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+org.freedesktop.hostname1.set-static-hostname	/usr/share/polkit-1/actions/org.freedesktop.hostname1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+org.freedesktop.locale1.set-keyboard	/usr/share/polkit-1/actions/org.freedesktop.locale1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+org.freedesktop.locale1.set-locale	/usr/share/polkit-1/actions/org.freedesktop.locale1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+org.freedesktop.network1.forcerenew	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.reconfigure	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.reload	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.renew	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.revert-dns	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.revert-ntp	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.set-default-route	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.set-dns-over-tls	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.set-dns-servers	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.set-dnssec	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.set-dnssec-negative-trust-anchors	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.set-domains	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.set-llmnr	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.set-mdns	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.network1.set-ntp-servers	/usr/share/polkit-1/actions/org.freedesktop.network1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.resolve1.register-service	/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.resolve1.revert	/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.resolve1.set-default-route	/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.resolve1.set-dns-over-tls	/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.resolve1.set-dns-servers	/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.resolve1.set-dnssec	/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.resolve1.set-dnssec-negative-trust-anchors	/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.resolve1.set-domains	/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.resolve1.set-llmnr	/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.resolve1.set-mdns	/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.resolve1.unregister-service	/usr/share/polkit-1/actions/org.freedesktop.resolve1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.systemd1.bypass-dump-ratelimit	/usr/share/polkit-1/actions/org.freedesktop.systemd1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.systemd1.manage-unit-files	/usr/share/polkit-1/actions/org.freedesktop.systemd1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.systemd1.manage-units	/usr/share/polkit-1/actions/org.freedesktop.systemd1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.systemd1.reload-daemon	/usr/share/polkit-1/actions/org.freedesktop.systemd1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.systemd1.reply-password	/usr/share/polkit-1/actions/org.freedesktop.systemd1.policy	any=no inactive=no active=auth_admin_keep
+org.freedesktop.systemd1.set-environment	/usr/share/polkit-1/actions/org.freedesktop.systemd1.policy	any=auth_admin inactive=auth_admin active=auth_admin_keep
+org.freedesktop.timedate1.set-local-rtc	/usr/share/polkit-1/actions/org.freedesktop.timedate1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+org.freedesktop.timedate1.set-ntp	/usr/share/polkit-1/actions/org.freedesktop.timedate1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+org.freedesktop.timedate1.set-time	/usr/share/polkit-1/actions/org.freedesktop.timedate1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+org.freedesktop.timedate1.set-timezone	/usr/share/polkit-1/actions/org.freedesktop.timedate1.policy	any=auth_admin_keep inactive=auth_admin_keep active=auth_admin_keep
+[allow_active_yes_or_auth_self]
+remaining	com.ubuntu.update-notifier.pkexec.package-system-locked	/usr/share/polkit-1/actions/com.ubuntu.update-notifier.policy	any=no inactive=yes active=yes
+remaining	org.freedesktop.ModemManager1.Contacts	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy	any= inactive=no active=yes
+remaining	org.freedesktop.ModemManager1.Device.Control	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy	any= inactive=no active=yes
+remaining	org.freedesktop.ModemManager1.Location	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy	any= inactive=no active=yes
+remaining	org.freedesktop.ModemManager1.Messaging	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy	any= inactive=no active=yes
+remaining	org.freedesktop.ModemManager1.Time	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy	any= inactive=no active=yes
+remaining	org.freedesktop.ModemManager1.USSD	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy	any= inactive=no active=yes
+remaining	org.freedesktop.ModemManager1.Voice	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy	any= inactive=no active=yes
+remaining	org.freedesktop.fwupd.update-hotplug-trusted	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=yes
+remaining	org.freedesktop.fwupd.update-internal-trusted	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy	any=auth_admin inactive=no active=yes
+excluded-basic	org.freedesktop.login1.chvt	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.hibernate	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.login1.hibernate-multiple-sessions	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.login1.inhibit-block-idle	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=yes inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.inhibit-block-shutdown	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=no inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.inhibit-block-sleep	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=no inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.inhibit-delay-shutdown	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=yes inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.inhibit-delay-sleep	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=yes inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.inhibit-handle-hibernate-key	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=no inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.inhibit-handle-lid-switch	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=no inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.inhibit-handle-power-key	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=no inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.inhibit-handle-reboot-key	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=no inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.inhibit-handle-suspend-key	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=no inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.power-off	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.login1.power-off-multiple-sessions	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.login1.reboot	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.login1.reboot-multiple-sessions	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.login1.set-reboot-parameter	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.login1.set-reboot-to-boot-loader-entry	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.login1.set-reboot-to-boot-loader-menu	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.login1.set-reboot-to-firmware-setup	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.login1.set-self-linger	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=yes inactive=yes active=yes
+excluded-basic	org.freedesktop.login1.suspend	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.login1.suspend-multiple-sessions	/usr/share/polkit-1/actions/org.freedesktop.login1.policy	any=auth_admin_keep inactive=auth_admin_keep active=yes
+excluded-basic	org.freedesktop.packagekit.clear-offline-update	/usr/share/polkit-1/actions/org.freedesktop.packagekit.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.packagekit.system-network-proxy-configure	/usr/share/polkit-1/actions/org.freedesktop.packagekit.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.packagekit.system-sources-refresh	/usr/share/polkit-1/actions/org.freedesktop.packagekit.policy	any=auth_admin inactive=yes active=yes
+excluded-basic	org.freedesktop.packagekit.trigger-offline-update	/usr/share/polkit-1/actions/org.freedesktop.packagekit.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.ata-check-power	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.ata-smart-update	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.ata-standby	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.cancel-job	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.eject-media	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.encrypted-change-passphrase	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.encrypted-unlock	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.filesystem-mount	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.loop-setup	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.modify-device	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.nvme-smart-update	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.power-off-drive	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+excluded-basic	org.freedesktop.udisks2.rescan	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy	any=auth_admin inactive=auth_admin active=yes
+[auth_self] none
+
+## root-owned state before
+marker_pre:
+ls: cannot access '/root/active_polkit_remaining_root': No such file or directory
+-rw-r--r-- 1 root root 13 May 16 15:18 /etc/hostname
+daa99b0fc19375555ed5b390e6304cbe9ccd9ee752e60b20eb4b37dea36a69cd  /etc/hostname
+MISSING /etc/machine-info
+-rw-r--r-- 1 root root 13 Apr 10 02:23 /etc/locale.conf
+89dd29db91ea608d72b5b4d3d3f5816cc2d3c1dd730741dc41b20ce12f1c2b3b  /etc/locale.conf
+lrwxrwxrwx 1 root root 14 May 16 10:22 /etc/default/locale -> ../locale.conf
+89dd29db91ea608d72b5b4d3d3f5816cc2d3c1dd730741dc41b20ce12f1c2b3b  /etc/default/locale
+-rw-r--r-- 1 root root 150 May 16 10:22 /etc/default/keyboard
+9d2d64b5b738ef55ecc80e236cd00caba19d3afe1921c74fa7d73c9477ebe6eb  /etc/default/keyboard
+lrwxrwxrwx 1 root root 27 May 16 10:22 /etc/localtime -> /usr/share/zoneinfo/Etc/UTC
+8b85846791ab2c8a5463c83a5be3c043e2570d7448434d41398969ed47e3e6f2  /etc/localtime
+-rw-r--r-- 1 root root 1551 Mar 24 13:45 /etc/systemd/resolved.conf
+bccfe8136332d623efa0745c5799c54d71868ba7fe392d4677b4587038c03ae7  /etc/systemd/resolved.conf
+-rw-r--r-- 1 root root 1003 Mar 24 13:45 /etc/systemd/timesyncd.conf
+e6734751f8aaf19fddfff891ad246387f5f59bd9ff1a5f0cac2c34bc81941c62  /etc/systemd/timesyncd.conf
+644 root:root /etc/apt/sources.list.d/ubuntu.sources
+755 root:root /etc/apt/sources.list.d
+755 root:root /etc/netplan
+755 root:root /var/lib/boltd
+
+## launch active tty selfauth probe
+openvt_rc=124
+
+## root marker and state after active probes
+marker_post:
+ROOT_PROOF=no
+ls: cannot access '/root/active_polkit_remaining_root': No such file or directory
+-rw-r--r-- 1 root root 13 May 16 15:18 /etc/hostname
+daa99b0fc19375555ed5b390e6304cbe9ccd9ee752e60b20eb4b37dea36a69cd  /etc/hostname
+MISSING /etc/machine-info
+-rw-r--r-- 1 root root 13 Apr 10 02:23 /etc/locale.conf
+89dd29db91ea608d72b5b4d3d3f5816cc2d3c1dd730741dc41b20ce12f1c2b3b  /etc/locale.conf
+lrwxrwxrwx 1 root root 14 May 16 10:22 /etc/default/locale -> ../locale.conf
+89dd29db91ea608d72b5b4d3d3f5816cc2d3c1dd730741dc41b20ce12f1c2b3b  /etc/default/locale
+-rw-r--r-- 1 root root 150 May 16 10:22 /etc/default/keyboard
+9d2d64b5b738ef55ecc80e236cd00caba19d3afe1921c74fa7d73c9477ebe6eb  /etc/default/keyboard
+lrwxrwxrwx 1 root root 27 May 16 10:22 /etc/localtime -> /usr/share/zoneinfo/Etc/UTC
+8b85846791ab2c8a5463c83a5be3c043e2570d7448434d41398969ed47e3e6f2  /etc/localtime
+-rw-r--r-- 1 root root 1551 Mar 24 13:45 /etc/systemd/resolved.conf
+bccfe8136332d623efa0745c5799c54d71868ba7fe392d4677b4587038c03ae7  /etc/systemd/resolved.conf
+-rw-r--r-- 1 root root 1003 Mar 24 13:45 /etc/systemd/timesyncd.conf
+e6734751f8aaf19fddfff891ad246387f5f59bd9ff1a5f0cac2c34bc81941c62  /etc/systemd/timesyncd.conf
+644 root:root /etc/apt/sources.list.d/ubuntu.sources
+755 root:root /etc/apt/sources.list.d
+755 root:root /etc/netplan
+755 root:root /var/lib/boltd
+
+## cleanup and systemd health
+is-system-running:
+running
+failed-units:
+
+## operator-requested cleanup verification
+marker_check:
+ls: cannot access '/root/active_polkit_remaining_root': No such file or directory
+is-system-running:
+running
+failed-units:

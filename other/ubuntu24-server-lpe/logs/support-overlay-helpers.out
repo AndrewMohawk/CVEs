@@ -1,0 +1,395 @@
+
+## target and attacker
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+root     systemd         /sbin/init
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+running
+
+## default package proof
+apport	2.28.1-0ubuntu3.8	ii 
+apport-core-dump-handler	2.28.1-0ubuntu3.8	ii 
+cloud-guest-utils	0.33-1	ii 
+cloud-init		un 
+cloud-initramfs-copymods	0.49~24.04.1	ii 
+cloud-initramfs-dyn-netconf	0.49~24.04.1	ii 
+cloud-initramfs-tools	(not installed)	un
+finalrd	9build1	ii 
+friendly-recovery	0.2.42	ii 
+growpart	(not installed)	un
+overlayroot	0.49~24.04.1	ii 
+pkexec		un 
+policykit-1		un 
+polkitd	124-2ubuntu1.24.04.3	ii 
+python3-apport	2.28.1-0ubuntu3.8	ii 
+sos	(not installed)	un
+sosreport	4.10.2-0ubuntu0~24.04.1	ii 
+ubuntu-minimal	1.539.2	ii 
+ubuntu-server	1.539.2	ii 
+ubuntu-standard	1.539.2	ii 
+unminimize	0.2.1	ii 
+
+## command ownership and privilege bits
+-rwxr-xr-x 755 root:root regular file /usr/bin/sosreport
+-rwxr-xr-x 755 root:root regular file /usr/bin/sos
+-rwxr-xr-x 755 root:root regular file /usr/bin/apport-cli
+-rwxr-xr-x 755 root:root regular file /usr/bin/ubuntu-bug
+-rwxr-xr-x 755 root:root regular file /usr/bin/apport-bug
+-rwxr-xr-x 755 root:root regular file /usr/share/apport/root_info_wrapper
+-rwxr-xr-x 755 root:root regular file /usr/share/apport/apport
+-rwxr-xr-x 755 root:root regular file /usr/sbin/overlayroot-chroot
+-rwxr-xr-x 755 root:root regular file /usr/bin/growpart
+-rwxr-xr-x 755 root:root regular file /usr/bin/finalrd
+-rwxr-xr-x 755 root:root regular file /usr/sbin/update-initramfs
+-rwxr-xr-x 755 root:root regular file /usr/sbin/mkinitramfs
+-rwxr-xr-x 755 root:root regular file /usr/bin/unminimize
+-rwxr-xr-x 755 root:root regular file /lib/recovery-mode/recovery-menu
+-rwxr-xr-x 755 root:root regular file /usr/lib/systemd/system-generators/friendly-recovery
+
+## unit reachability
+apport-autoreport.path                 enabled enabled
+apport-autoreport.service              static  -
+apport-autoreport.timer                enabled enabled
+apport-coredump-hook@.service          static  -
+apport-forward.socket                  enabled enabled
+apport-forward@.service                static  -
+apport.service                         enabled enabled
+finalrd.service                        enabled enabled
+friendly-recovery.service              static  -
+friendly-recovery.target               static  -
+snapd.recovery-chooser-trigger.service enabled enabled
+### apport.service
+Result=success
+ExecStart={ path=/usr/share/apport/apport ; argv[]=/usr/share/apport/apport --start ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStop={ path=/usr/share/apport/apport ; argv[]=/usr/share/apport/apport --stop ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apport.service
+UnitFileState=enabled
+ConditionResult=no
+### apport-forward.socket
+Result=success
+User=
+LoadState=loaded
+ActiveState=active
+SubState=listening
+FragmentPath=/usr/lib/systemd/system/apport-forward.socket
+UnitFileState=enabled
+ConditionResult=yes
+### apport-autoreport.path
+Result=success
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apport-autoreport.path
+UnitFileState=enabled
+ConditionResult=no
+### apport-autoreport.timer
+Result=success
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apport-autoreport.timer
+UnitFileState=enabled
+ConditionResult=no
+### apport-autoreport.service
+Result=success
+ExecStart={ path=/usr/share/apport/whoopsie-upload-all ; argv[]=/usr/share/apport/whoopsie-upload-all --timeout 20 ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/apport-autoreport.service
+UnitFileState=static
+ConditionResult=no
+### finalrd.service
+Result=success
+ExecStart={ path=/bin/true ; argv[]=/bin/true ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+ExecStop={ path=/usr/bin/finalrd ; argv[]=/usr/bin/finalrd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=active
+SubState=exited
+FragmentPath=/usr/lib/systemd/system/finalrd.service
+UnitFileState=enabled
+ConditionResult=yes
+### friendly-recovery.service
+Result=success
+ExecStart={ path=/lib/recovery-mode/recovery-menu ; argv[]=/lib/recovery-mode/recovery-menu ; ignore_errors=yes ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/friendly-recovery.service
+UnitFileState=static
+ConditionResult=no
+### friendly-recovery.target
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+FragmentPath=/usr/lib/systemd/system/friendly-recovery.target
+UnitFileState=static
+ConditionResult=no
+### cloud-init-local.service
+Result=success
+User=
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+FragmentPath=
+UnitFileState=
+ConditionResult=no
+### cloud-init.service
+Result=success
+User=
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+FragmentPath=
+UnitFileState=
+ConditionResult=no
+### cloud-config.service
+Result=success
+User=
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+FragmentPath=
+UnitFileState=
+ConditionResult=no
+### cloud-final.service
+Result=success
+User=
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
+FragmentPath=
+UnitFileState=
+ConditionResult=no
+
+## hook config and state path modes
+drwxr-xr-x 755 root:root directory /etc/sos
+drwxr-xr-x 755 root:root directory /etc/sos/extras.d
+drwxr-xr-x 755 root:root directory /etc/sos/presets.d
+drwxr-xr-x 755 root:root directory /etc/sos/groups.d
+drwxr-xr-x 755 root:root directory /usr/lib/python3/dist-packages/sos
+drwxr-xr-x 755 root:root directory /usr/share/apport
+drwxr-xr-x 755 root:root directory /usr/share/apport/package-hooks
+drwxr-xr-x 755 root:root directory /usr/share/apport/general-hooks
+drwxr-xr-x 755 root:root directory /etc/apport
+drwxrwsrwt 3777 root:root directory /var/crash
+srw------- 600 root:root socket /run/apport.socket
+-rw-r--r-- 644 root:root regular file /etc/overlayroot.conf
+MISSING /etc/overlayroot.local.conf
+-rwxr-xr-x 755 root:root regular file /etc/update-motd.d/97-overlayroot
+-rwxr-xr-x 755 root:root regular file /usr/share/initramfs-tools/hooks/overlayroot
+-rwxr-xr-x 755 root:root regular file /usr/share/initramfs-tools/scripts/init-bottom/overlayroot
+-rwxr-xr-x 755 root:root regular file /usr/share/initramfs-tools/hooks/cloud-initramfs-dyn-netconf
+-rwxr-xr-x 755 root:root regular file /usr/share/initramfs-tools/scripts/init-premount/cloud-initramfs-dyn-netconf
+-rwxr-xr-x 755 root:root regular file /usr/share/initramfs-tools/scripts/init-bottom/cloud-initramfs-dyn-netconf
+-rwxr-xr-x 755 root:root regular file /usr/share/initramfs-tools/hooks/copymods
+-rwxr-xr-x 755 root:root regular file /usr/share/initramfs-tools/scripts/init-bottom/copymods
+drwxr-xr-x 755 root:root directory /etc/initramfs-tools
+drwxr-xr-x 755 root:root directory /etc/initramfs-tools/hooks
+drwxr-xr-x 755 root:root directory /etc/initramfs-tools/conf.d
+drwxr-xr-x 755 root:root directory /etc/cloud
+MISSING /var/lib/cloud
+MISSING /run/cloud-init
+MISSING /run/network
+drwxr-xr-x 755 root:root directory /usr/share/finalrd
+MISSING /etc/finalrd
+MISSING /run/finalrd
+drwxr-xr-x 755 root:root directory /usr/lib/finalrd
+drwxr-xr-x 755 root:root directory /lib/recovery-mode/options
+MISSING /run/friendly_recovery.resume
+-rwxr-xr-x 755 root:root regular file /var/lib/dpkg/info/overlayroot.postinst
+-rwxr-xr-x 755 root:root regular file /var/lib/dpkg/info/cloud-initramfs-copymods.postinst
+-rwxr-xr-x 755 root:root regular file /var/lib/dpkg/info/cloud-initramfs-dyn-netconf.postinst
+
+## attacker write attempts to root hook/state paths
+
+### attacker: write root-owned support/overlay paths
+touch /etc/sos/extras.d/support_overlay_helpers -> touch: cannot touch '/etc/sos/extras.d/support_overlay_helpers': Permission denied
+touch /etc/sos/presets.d/support_overlay_helpers -> touch: cannot touch '/etc/sos/presets.d/support_overlay_helpers': Permission denied
+touch /usr/share/apport/package-hooks/support_overlay_helpers.py -> touch: cannot touch '/usr/share/apport/package-hooks/support_overlay_helpers.py': Permission denied
+touch /usr/share/apport/general-hooks/support_overlay_helpers.py -> touch: cannot touch '/usr/share/apport/general-hooks/support_overlay_helpers.py': Permission denied
+touch /etc/apport/support_overlay_helpers -> touch: cannot touch '/etc/apport/support_overlay_helpers': Permission denied
+touch /var/crash/support_overlay_helpers.crash -> OK
+touch /etc/overlayroot.local.conf -> touch: cannot touch '/etc/overlayroot.local.conf': Permission denied
+touch /etc/overlayroot.conf -> touch: cannot touch '/etc/overlayroot.conf': Permission denied
+touch /etc/update-motd.d/97-overlayroot -> touch: cannot touch '/etc/update-motd.d/97-overlayroot': Permission denied
+touch /usr/share/initramfs-tools/hooks/support_overlay_helpers -> touch: cannot touch '/usr/share/initramfs-tools/hooks/support_overlay_helpers': Permission denied
+touch /usr/share/initramfs-tools/scripts/init-bottom/support_overlay_helpers -> touch: cannot touch '/usr/share/initramfs-tools/scripts/init-bottom/support_overlay_helpers': Permission denied
+touch /etc/initramfs-tools/hooks/support_overlay_helpers -> touch: cannot touch '/etc/initramfs-tools/hooks/support_overlay_helpers': Permission denied
+touch /etc/initramfs-tools/conf.d/support_overlay_helpers -> touch: cannot touch '/etc/initramfs-tools/conf.d/support_overlay_helpers': Permission denied
+touch /run/network/support_overlay_helpers -> touch: cannot touch '/run/network/support_overlay_helpers': No such file or directory
+touch /usr/share/finalrd/support_overlay_helpers.finalrd -> touch: cannot touch '/usr/share/finalrd/support_overlay_helpers.finalrd': Permission denied
+touch /etc/finalrd/support_overlay_helpers.finalrd -> touch: cannot touch '/etc/finalrd/support_overlay_helpers.finalrd': No such file or directory
+touch /run/finalrd/support_overlay_helpers.finalrd -> touch: cannot touch '/run/finalrd/support_overlay_helpers.finalrd': No such file or directory
+touch /lib/recovery-mode/options/support_overlay_helpers -> touch: cannot touch '/lib/recovery-mode/options/support_overlay_helpers': Permission denied
+touch /run/friendly_recovery.resume -> touch: cannot touch '/run/friendly_recovery.resume': Permission denied
+touch /var/lib/dpkg/info/overlayroot.postinst.support_overlay_helpers -> touch: cannot touch '/var/lib/dpkg/info/overlayroot.postinst.support_overlay_helpers': Permission denied
+rc=0
+
+## sosreport/sos uid1001 boundary
+
+### attacker: sos cwd import remains caller uid
+sos_rc=77
+SOS_IMPORT_EUID=1001
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+rc=0
+
+### attacker: sos report root-required check
+sos_report_rc=1
+Could not initialize 'report': Component must be run with root privileges
+rc=0
+
+## apport/ubuntu-bug uid1001 boundary
+
+### attacker: apport root_info_wrapper prefix remains caller uid
+caller_euid 1001
+probe uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+rc=0
+
+### attacker: apport forward socket is not reachable
+CONNECT_FAIL PermissionError [Errno 13] Permission denied euid 1001
+rc=0
+
+### attacker: apport-cli report output stays attacker-owned
+apport_cli_rc=1
+Traceback (most recent call last):
+  File "/usr/bin/apport-cli", line 418, in <module>
+    if not app.run_argv():
+           ^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport/ui.py", line 922, in run_argv
+    return self.run_report_bug()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport/ui.py", line 715, in run_report_bug
+    if self.check_unreportable():
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/apport/ui.py", line 1872, in check_unreportable
+    self.ui_info_message(
+  File "/usr/bin/apport-cli", line 262, in ui_info_message
+    dialog.run()
+  File "/usr/bin/apport-cli", line 87, in run
+    self.raw_input_char(_("Press any key to continue..."))
+  File "/usr/bin/apport-cli", line 56, in raw_input_char
+    saved_attributes = termios.tcgetattr(file)
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+termios.error: (25, 'Inappropriate ioctl for device')
+rc=0
+
+## overlayroot and motd helper uid1001 boundary
+
+### attacker: overlayroot-chroot hostile PATH remains caller uid
+overlayroot_chroot_rc=1
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+rc=0
+
+### attacker: 97-overlayroot motd hostile PATH remains caller uid
+overlayroot_motd_rc=0
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+rc=0
+
+## cloud-initramfs and growpart uid1001 boundary
+
+### attacker: growpart hostile PATH remains caller uid
+growpart_rc=2
+failed to get sfdisk version
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+rc=0
+
+### attacker: cloud-initramfs live service triggers absent
+### cloud-init-local.service
+Failed to start cloud-init-local.service: Interactive authentication required.
+See system logs and 'systemctl status cloud-init-local.service' for details.
+### cloud-init.service
+Failed to start cloud-init.service: Interactive authentication required.
+See system logs and 'systemctl status cloud-init.service' for details.
+### cloud-config.service
+Failed to start cloud-config.service: Interactive authentication required.
+See system logs and 'systemctl status cloud-config.service' for details.
+### cloud-final.service
+Failed to start cloud-final.service: Interactive authentication required.
+See system logs and 'systemctl status cloud-final.service' for details.
+rc=0
+
+## finalrd/recovery/unminimize uid1001 boundary
+
+### attacker: attacker cannot alter system manager environment or finalrd/recovery units
+Failed to set environment: Access denied
+Failed to stop finalrd.service: Interactive authentication required.
+See system logs and 'systemctl status finalrd.service' for details.
+Failed to start friendly-recovery.service: Interactive authentication required.
+See system logs and 'systemctl status friendly-recovery.service' for details.
+rc=0
+
+### attacker: finalrd direct hostile PATH remains caller uid
+finalrd_rc=1
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+rc=0
+
+### attacker: unminimize direct run is caller uid and aborts before package changes
+unminimize_rc=1
+This system has been minimized by removing packages and content that are
+not required on a system that users do not log into.
+
+This script restores content and packages that are found on a default
+Ubuntu server system in order to make this system more suitable for
+interactive use.
+
+Reinstallation of packages may fail due to changes to the system
+configuration, the presence of third-party packages, or for other
+reasons.
+
+This operation may take some time.
+
+
+rc=0
+
+## root proof sweep before cleanup
+ROOT_PROOF_ABSENT
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.apport_cli.err
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.apport_cli.out
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.apport_wrapper_id
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.disk
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.finalrd.err
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.finalrd.out
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.finalrd_path_id
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.growpart.err
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.growpart.out
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.growpart_path_id
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.overlayroot.err
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.overlayroot.out
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.overlayroot_motd.err
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.overlayroot_motd.out
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.overlayroot_motd_id
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.overlayroot_path_id
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.sos.err
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.sos.out
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.sos_import_id
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.sos_report.err
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.sos_report.out
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.unminimize.err
+-rw-r--r-- attacker:attacker /tmp/support_overlay_helpers.unminimize.out
+drwxr-xr-x attacker:attacker /home/attacker/support_overlay_helpers
+drwxr-xr-x attacker:attacker /tmp/support_overlay_helpers.apport_data
+
+## cleanup
+root_marker_absent_after_cleanup=yes
+
+## systemd health
+running
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.

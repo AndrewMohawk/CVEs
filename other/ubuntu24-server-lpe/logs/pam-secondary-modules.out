@@ -1,0 +1,631 @@
+
+== target identity ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+attacker:x:1001:1001::/home/attacker:/bin/bash
+selfauth:x:1002:1002::/home/selfauth:/bin/bash
+attacker:x:1001:
+selfauth:x:1002:selfauth
+sudo:x:27:ubuntu
+adm:x:4:ubuntu,syslog
+shadow:x:42:
+crontab:x:997:
+root:x:0:
+attacker L 2026-05-16 0 99999 7 -1
+selfauth P 2026-05-16 0 99999 7 -1
+
+== package and helper modes ==
+cron	3.0pl1-184ubuntu2	ii 
+keyutils		un 
+libcap2-bin	1:2.66-5ubuntu2.4	ii 
+libkeyutils1:arm64	1.6.3-3build1	ii 
+libpam-cap:arm64	1:2.66-5ubuntu2.4	ii 
+libpam-modules:arm64	1.5.3-5ubuntu5.5	ii 
+libpam-runtime	1.5.3-5ubuntu5.5	ii 
+libpam0g:arm64	1.5.3-5ubuntu5.5	ii 
+login	1:4.13+dfsg1-4ubuntu3.2	ii 
+passwd	1:4.13+dfsg1-4ubuntu3.2	ii 
+util-linux	2.39.3-9ubuntu6.5	ii 
+-rwsr-xr-x 4755 root:root regular file /usr/bin/su
+-rwsr-xr-x 4755 root:root regular file /bin/su
+-rwsr-xr-x 4755 root:root regular file /usr/bin/chsh
+-rwsr-xr-x 4755 root:root regular file /usr/bin/chfn
+-rwsr-xr-x 4755 root:root regular file /usr/bin/passwd
+-rwxr-xr-x 755 root:root regular file /usr/bin/login
+-rwxr-xr-x 755 root:root regular file /bin/login
+-rwxr-xr-x 755 root:root regular file /usr/sbin/cron
+-rwxr-sr-x 2755 root:crontab regular file /usr/bin/crontab
+-rwxr-xr-x 755 root:root regular file /usr/sbin/runuser
+-rwxr-xr-x 755 root:root regular file /usr/sbin/pam_timestamp_check
+-rwxr-sr-x 2755 root:shadow regular file /usr/sbin/unix_chkpwd
+-rwxr-sr-x 2755 root:shadow regular file /usr/sbin/pam_extrausers_chkpwd
+
+== default PAM reachability map ==
+/etc/pam.d/common-auth:25:auth	optional			pam_cap.so 
+/etc/pam.d/cron:6:session    required     pam_loginuid.so
+/etc/pam.d/login:27:session    required     pam_loginuid.so
+/etc/pam.d/login:63:auth       optional   pam_group.so
+/etc/pam.d/login:69:# account    requisite  pam_time.so
+/etc/pam.d/login:95:session    optional   pam_keyinit.so force revoke
+/etc/pam.d/runuser-l:3:session		optional	pam_keyinit.so force revoke
+/etc/pam.d/runuser:3:session		optional	pam_keyinit.so revoke
+/etc/pam.d/su-l:5:session		optional	pam_keyinit.so force revoke
+/etc/pam.d/su:29:# account    requisite  pam_time.so
+--- /etc/pam.d/login
+     1	#
+     2	# The PAM configuration file for the Shadow `login' service
+     3	#
+     4	
+     5	# Enforce a minimal delay in case of failure (in microseconds).
+     6	# (Replaces the `FAIL_DELAY' setting from login.defs)
+     7	# Note that other modules may require another minimal delay. (for example,
+     8	# to disable any delay, you should add the nodelay option to pam_unix)
+     9	auth       optional   pam_faildelay.so  delay=3000000
+    10	
+    11	# Outputs an issue file prior to each login prompt (Replaces the
+    12	# ISSUE_FILE option from login.defs). Uncomment for use
+    13	# auth       required   pam_issue.so issue=/etc/issue
+    14	
+    15	# Disallows other than root logins when /etc/nologin exists
+    16	# (Replaces the `NOLOGINS_FILE' option from login.defs)
+    17	auth       requisite  pam_nologin.so
+    18	
+    19	# SELinux needs to be the first session rule. This ensures that any
+    20	# lingering context has been cleared. Without this it is possible
+    21	# that a module could execute code in the wrong domain.
+    22	# When the module is present, "required" would be sufficient (When SELinux
+    23	# is disabled, this returns success.)
+    24	session [success=ok ignore=ignore module_unknown=ignore default=bad] pam_selinux.so close
+    25	
+    26	# Sets the loginuid process attribute
+    27	session    required     pam_loginuid.so
+    28	
+    29	# Prints the message of the day upon successful login.
+    30	# (Replaces the `MOTD_FILE' option in login.defs)
+    31	# This includes a dynamically generated part from /run/motd.dynamic
+    32	# and a static (admin-editable) part from /etc/motd.
+    33	session    optional   pam_motd.so motd=/run/motd.dynamic
+    34	session    optional   pam_motd.so noupdate
+    35	
+    36	# SELinux needs to intervene at login time to ensure that the process
+    37	# starts in the proper default security context. Only sessions which are
+    38	# intended to run in the user's context should be run after this.
+    39	# pam_selinux.so changes the SELinux context of the used TTY and configures
+    40	# SELinux in order to transition to the user context with the next execve()
+    41	# call.
+    42	session [success=ok ignore=ignore module_unknown=ignore default=bad] pam_selinux.so open
+    43	# When the module is present, "required" would be sufficient (When SELinux
+    44	# is disabled, this returns success.)
+    45	
+    46	# This module parses environment configuration file(s)
+    47	# and also allows you to use an extended config
+    48	# file /etc/security/pam_env.conf.
+    49	# 
+    50	# parsing /etc/environment needs "readenv=1"
+    51	session       required   pam_env.so readenv=1
+    52	# locale variables can also be set in /etc/default/locale
+    53	# reading this file *in addition to /etc/environment* does not hurt
+    54	session       required   pam_env.so readenv=1 envfile=/etc/default/locale
+    55	
+    56	# Standard Un*x authentication.
+    57	@include common-auth
+    58	
+    59	# This allows certain extra groups to be granted to a user
+    60	# based on things like time of day, tty, service, and user.
+    61	# Please edit /etc/security/group.conf to fit your needs
+    62	# (Replaces the `CONSOLE_GROUPS' option in login.defs)
+    63	auth       optional   pam_group.so
+    64	
+    65	# Uncomment and edit /etc/security/time.conf if you need to set
+    66	# time restraint on logins.
+    67	# (Replaces the `PORTTIME_CHECKS_ENAB' option from login.defs
+    68	# as well as /etc/porttime)
+    69	# account    requisite  pam_time.so
+    70	
+    71	# Uncomment and edit /etc/security/access.conf if you need to
+    72	# set access limits.
+    73	# (Replaces /etc/login.access file)
+    74	# account  required       pam_access.so
+    75	
+    76	# Sets up user limits according to /etc/security/limits.conf
+    77	# (Replaces the use of /etc/limits in old login)
+    78	session    required   pam_limits.so
+    79	
+    80	# Prints the last login info upon successful login
+    81	# (Replaces the `LASTLOG_ENAB' option from login.defs)
+    82	session    optional   pam_lastlog.so
+    83	
+    84	# Prints the status of the user's mailbox upon successful login
+    85	# (Replaces the `MAIL_CHECK_ENAB' option from login.defs). 
+    86	#
+    87	# This also defines the MAIL environment variable
+    88	# However, userdel also needs MAIL_DIR and MAIL_FILE variables
+    89	# in /etc/login.defs to make sure that removing a user 
+    90	# also removes the user's mail spool file.
+    91	# See comments in /etc/login.defs
+    92	session    optional   pam_mail.so standard
+    93	
+    94	# Create a new session keyring.
+    95	session    optional   pam_keyinit.so force revoke
+    96	
+    97	# Standard Un*x account and session
+    98	@include common-account
+    99	@include common-session
+   100	@include common-password
+--- /etc/pam.d/su
+     1	#
+     2	# The PAM configuration file for the Shadow `su' service
+     3	#
+     4	
+     5	# This allows root to su without passwords (normal operation)
+     6	auth       sufficient pam_rootok.so
+     7	
+     8	# Uncomment this to force users to be a member of group wheel
+     9	# before they can use `su'. You can also add "group=foo"
+    10	# to the end of this line if you want to use a group other
+    11	# than the default "wheel" (but this may have side effect of
+    12	# denying "root" user, unless she's a member of "foo" or explicitly
+    13	# permitted earlier by e.g. "sufficient pam_rootok.so").
+    14	# (Replaces the `SU_WHEEL_ONLY' option from login.defs)
+    15	# auth       required   pam_wheel.so
+    16	
+    17	# Uncomment this if you want wheel members to be able to
+    18	# su without a password.
+    19	# auth       sufficient pam_wheel.so trust
+    20	
+    21	# Uncomment this if you want members of a specific group to not
+    22	# be allowed to use su at all.
+    23	# auth       required   pam_wheel.so deny group=nosu
+    24	
+    25	# Uncomment and edit /etc/security/time.conf if you need to set
+    26	# time restrainst on su usage.
+    27	# (Replaces the `PORTTIME_CHECKS_ENAB' option from login.defs
+    28	# as well as /etc/porttime)
+    29	# account    requisite  pam_time.so
+    30	
+    31	# This module parses environment configuration file(s)
+    32	# and also allows you to use an extended config
+    33	# file /etc/security/pam_env.conf.
+    34	# 
+    35	# parsing /etc/environment needs "readenv=1"
+    36	session       required   pam_env.so readenv=1
+    37	# locale variables are also kept into /etc/default/locale in etch
+    38	# reading this file *in addition to /etc/environment* does not hurt
+    39	session       required   pam_env.so readenv=1 envfile=/etc/default/locale
+    40	
+    41	# Defines the MAIL environment variable
+    42	# However, userdel also needs MAIL_DIR and MAIL_FILE variables
+    43	# in /etc/login.defs to make sure that removing a user 
+    44	# also removes the user's mail spool file.
+    45	# See comments in /etc/login.defs
+    46	#
+    47	# "nopen" stands to avoid reporting new mail when su'ing to another user
+    48	session    optional   pam_mail.so nopen
+    49	
+    50	# Sets up user limits according to /etc/security/limits.conf
+    51	# (Replaces the use of /etc/limits in old login)
+    52	session    required   pam_limits.so
+    53	
+    54	# The standard Unix authentication modules, used with
+    55	# NIS (man nsswitch) as well as normal /etc/passwd and
+    56	# /etc/shadow entries.
+    57	@include common-auth
+    58	@include common-account
+    59	@include common-session
+    60	
+    61	
+--- /etc/pam.d/su-l
+     1	#%PAM-1.0
+     2	auth		include		su
+     3	account		include		su
+     4	password	include		su
+     5	session		optional	pam_keyinit.so force revoke
+     6	session		include		su
+--- /etc/pam.d/chsh
+     1	#
+     2	# The PAM configuration file for the Shadow `chsh' service
+     3	#
+     4	
+     5	# This will not allow a user to change their shell unless
+     6	# their current one is listed in /etc/shells. This keeps
+     7	# accounts with special shells from changing them.
+     8	auth       required   pam_shells.so
+     9	
+    10	# This allows root to change user shell without being
+    11	# prompted for a password
+    12	auth		sufficient	pam_rootok.so
+    13	
+    14	# The standard Unix authentication modules, used with
+    15	# NIS (man nsswitch) as well as normal /etc/passwd and
+    16	# /etc/shadow entries.
+    17	@include common-auth
+    18	@include common-account
+    19	@include common-session
+    20	
+--- /etc/pam.d/chfn
+     1	#
+     2	# The PAM configuration file for the Shadow `chfn' service
+     3	#
+     4	
+     5	# This allows root to change user infomation without being
+     6	# prompted for a password
+     7	auth		sufficient	pam_rootok.so
+     8	
+     9	# The standard Unix authentication modules, used with
+    10	# NIS (man nsswitch) as well as normal /etc/passwd and
+    11	# /etc/shadow entries.
+    12	@include common-auth
+    13	@include common-account
+    14	@include common-session
+    15	
+    16	
+--- /etc/pam.d/passwd
+     1	#
+     2	# The PAM configuration file for the Shadow `passwd' service
+     3	#
+     4	
+     5	@include common-password
+     6	
+--- /etc/pam.d/cron
+     1	# The PAM configuration file for the cron daemon
+     2	
+     3	@include common-auth
+     4	
+     5	# Sets the loginuid process attribute
+     6	session    required     pam_loginuid.so
+     7	
+     8	# Read environment variables from pam_env's default files, /etc/environment
+     9	# and /etc/security/pam_env.conf.
+    10	session       required   pam_env.so
+    11	
+    12	# In addition, read system locale information
+    13	session       required   pam_env.so envfile=/etc/default/locale
+    14	
+    15	@include common-account
+    16	@include common-session-noninteractive 
+    17	
+    18	# Sets up user limits, please define limits for cron tasks
+    19	# through /etc/security/limits.conf
+    20	session    required   pam_limits.so
+    21	
+--- /etc/pam.d/runuser
+     1	#%PAM-1.0
+     2	auth		sufficient	pam_rootok.so
+     3	session		optional	pam_keyinit.so revoke
+     4	session		required	pam_limits.so
+     5	session		required	pam_unix.so
+--- /etc/pam.d/runuser-l
+     1	#%PAM-1.0
+     2	auth		include		runuser
+     3	session		optional	pam_keyinit.so force revoke
+     4	-session	optional	pam_systemd.so
+     5	session		include		runuser
+--- /etc/pam.d/common-auth
+     1	#
+     2	# /etc/pam.d/common-auth - authentication settings common to all services
+     3	#
+     4	# This file is included from other service-specific PAM config files,
+     5	# and should contain a list of the authentication modules that define
+     6	# the central authentication scheme for use on the system
+     7	# (e.g., /etc/shadow, LDAP, Kerberos, etc.).  The default is to use the
+     8	# traditional Unix authentication mechanisms.
+     9	#
+    10	# As of pam 1.0.1-6, this file is managed by pam-auth-update by default.
+    11	# To take advantage of this, it is recommended that you configure any
+    12	# local modules either before or after the default block, and use
+    13	# pam-auth-update to manage selection of other modules.  See
+    14	# pam-auth-update(8) for details.
+    15	
+    16	# here are the per-package modules (the "Primary" block)
+    17	auth	[success=1 default=ignore]	pam_unix.so nullok
+    18	# here's the fallback if no module succeeds
+    19	auth	requisite			pam_deny.so
+    20	# prime the stack with a positive return value if there isn't one already;
+    21	# this avoids us returning an error just because nothing sets a success code
+    22	# since the modules above will each just jump around
+    23	auth	required			pam_permit.so
+    24	# and here are more per-package modules (the "Additional" block)
+    25	auth	optional			pam_cap.so 
+    26	# end of pam-auth-update config
+--- /etc/pam.d/common-account
+     1	#
+     2	# /etc/pam.d/common-account - authorization settings common to all services
+     3	#
+     4	# This file is included from other service-specific PAM config files,
+     5	# and should contain a list of the authorization modules that define
+     6	# the central access policy for use on the system.  The default is to
+     7	# only deny service to users whose accounts are expired in /etc/shadow.
+     8	#
+     9	# As of pam 1.0.1-6, this file is managed by pam-auth-update by default.
+    10	# To take advantage of this, it is recommended that you configure any
+    11	# local modules either before or after the default block, and use
+    12	# pam-auth-update to manage selection of other modules.  See
+    13	# pam-auth-update(8) for details.
+    14	#
+    15	
+    16	# here are the per-package modules (the "Primary" block)
+    17	account	[success=1 new_authtok_reqd=done default=ignore]	pam_unix.so 
+    18	# here's the fallback if no module succeeds
+    19	account	requisite			pam_deny.so
+    20	# prime the stack with a positive return value if there isn't one already;
+    21	# this avoids us returning an error just because nothing sets a success code
+    22	# since the modules above will each just jump around
+    23	account	required			pam_permit.so
+    24	# and here are more per-package modules (the "Additional" block)
+    25	# end of pam-auth-update config
+--- /etc/pam.d/common-session
+     1	#
+     2	# /etc/pam.d/common-session - session-related modules common to all services
+     3	#
+     4	# This file is included from other service-specific PAM config files,
+     5	# and should contain a list of modules that define tasks to be performed
+     6	# at the start and end of interactive sessions.
+     7	#
+     8	# As of pam 1.0.1-6, this file is managed by pam-auth-update by default.
+     9	# To take advantage of this, it is recommended that you configure any
+    10	# local modules either before or after the default block, and use
+    11	# pam-auth-update to manage selection of other modules.  See
+    12	# pam-auth-update(8) for details.
+    13	
+    14	# here are the per-package modules (the "Primary" block)
+    15	session	[default=1]			pam_permit.so
+    16	# here's the fallback if no module succeeds
+    17	session	requisite			pam_deny.so
+    18	# prime the stack with a positive return value if there isn't one already;
+    19	# this avoids us returning an error just because nothing sets a success code
+    20	# since the modules above will each just jump around
+    21	session	required			pam_permit.so
+    22	# The pam_umask module will set the umask according to the system default in
+    23	# /etc/login.defs and user settings, solving the problem of different
+    24	# umask settings with different shells, display managers, remote sessions etc.
+    25	# See "man pam_umask".
+    26	session optional			pam_umask.so
+    27	# and here are more per-package modules (the "Additional" block)
+    28	session	required	pam_unix.so 
+    29	session	optional	pam_systemd.so 
+    30	# end of pam-auth-update config
+--- /etc/pam.d/common-session-noninteractive
+     1	#
+     2	# /etc/pam.d/common-session-noninteractive - session-related modules
+     3	# common to all non-interactive services
+     4	#
+     5	# This file is included from other service-specific PAM config files,
+     6	# and should contain a list of modules that define tasks to be performed
+     7	# at the start and end of all non-interactive sessions.
+     8	#
+     9	# As of pam 1.0.1-6, this file is managed by pam-auth-update by default.
+    10	# To take advantage of this, it is recommended that you configure any
+    11	# local modules either before or after the default block, and use
+    12	# pam-auth-update to manage selection of other modules.  See
+    13	# pam-auth-update(8) for details.
+    14	
+    15	# here are the per-package modules (the "Primary" block)
+    16	session	[default=1]			pam_permit.so
+    17	# here's the fallback if no module succeeds
+    18	session	requisite			pam_deny.so
+    19	# prime the stack with a positive return value if there isn't one already;
+    20	# this avoids us returning an error just because nothing sets a success code
+    21	# since the modules above will each just jump around
+    22	session	required			pam_permit.so
+    23	# The pam_umask module will set the umask according to the system default in
+    24	# /etc/login.defs and user settings, solving the problem of different
+    25	# umask settings with different shells, display managers, remote sessions etc.
+    26	# See "man pam_umask".
+    27	session optional			pam_umask.so
+    28	# and here are more per-package modules (the "Additional" block)
+    29	session	required	pam_unix.so 
+    30	# end of pam-auth-update config
+
+== security policy file state ==
+-rw-r--r-- 644 root:root regular file /etc/security/capability.conf
+-rw-r--r-- 644 root:root regular file /etc/security/group.conf
+-rw-r--r-- 644 root:root regular file /etc/security/time.conf
+-rw-r--r-- 644 root:root regular file /etc/security/namespace.conf
+-rwxr-xr-x 755 root:root regular file /etc/security/namespace.init
+drwxr-xr-x 755 root:root directory /etc/security/namespace.d
+-rw-r--r-- 644 root:root regular file /etc/security/limits.conf
+drwxr-xr-x 755 root:root directory /etc/security/limits.d
+-rw-r--r-- 644 root:root regular file /etc/security/pam_env.conf
+-rw-r--r-- 644 root:root regular file /etc/environment
+-rw-r--r-- 644 root:root regular file /etc/default/locale
+drwxr-xr-x 755 root:root directory /run/user
+--- active non-comment lines in /etc/security/capability.conf
+37:none  *
+--- active non-comment lines in /etc/security/group.conf
+--- active non-comment lines in /etc/security/time.conf
+--- active non-comment lines in /etc/security/namespace.conf
+--- namespace.init root-helper header
+#!/bin/sh
+# It receives as arguments:
+# - $1 polydir path (see WARNING below)
+# - $2 instance path (see WARNING below)
+# - $3 flag whether the instance dir was newly created (0 - no, 1 - yes)
+# - $4 user name
+# - $5 flag whether the polydir path ($1) is safe (0 - unsafe, 1 -safe)
+# - $6 flag whether the instance path ($2) is safe (0 - unsafe, 1 - safe)
+#
+# WARNING: This script is invoked with full root privileges. Accessing
+# the polydir ($1) and the instance ($2) directories in this context may be
+# extremely dangerous as those can be under user control. The flags $5 and $6
+# are provided to let you know if all the segments part of the path (except the
+# last one) are owned by root and are writable by root only. If the path does
+# not meet these criteria, you expose yourself to possible symlink attacks when
+# accessing these path.
+# However, even if the path components are safe, the content of the
+# directories may still be owned/writable by a user, so care must be taken!
+#
+# The following section will copy the contents of /etc/skel if this is a
+# newly created home directory.
+
+# Executes only if the polydir path is safe
+if [ "$5" = 1 ]; then
+
+    if [ "$3" = 1 ]; then
+            # This line will fix the labeling on all newly created directories
+            [ -x /sbin/restorecon ] && /sbin/restorecon "$1"
+            user="$4"
+            passwd=$(getent passwd "$user")
+            homedir=$(echo "$passwd" | cut -f6 -d":")
+            if [ "$1" = "$homedir" ]; then
+                    gid=$(echo "$passwd" | cut -f4 -d":")
+                    cp -rT /etc/skel "$homedir"
+                    chown -R "$user":"$gid" "$homedir"
+                    mask=$(sed -E -n 's/^UMASK[[:space:]]+([^#[:space:]]+).*/\1/p' /etc/login.defs)
+                    mode=$(printf "%o" $((0777 & ~mask)))
+                    chmod ${mode:-700} "$homedir"
+                    [ -x /sbin/restorecon ] && /sbin/restorecon -R "$homedir"
+            fi
+    fi
+fi
+exit 0
+
+== attacker write and precreation attempts ==
+write /etc/security/capability.conf: bash: line 8: /etc/security/capability.conf: Permission denied
+write /etc/security/group.conf: bash: line 8: /etc/security/group.conf: Permission denied
+write /etc/security/time.conf: bash: line 8: /etc/security/time.conf: Permission denied
+write /etc/security/namespace.conf: bash: line 8: /etc/security/namespace.conf: Permission denied
+write /etc/security/namespace.d/pam_secondary_modules: bash: line 8: /etc/security/namespace.d/pam_secondary_modules: Permission denied
+write /etc/security/limits.d/pam_secondary_modules.conf: bash: line 8: /etc/security/limits.d/pam_secondary_modules.conf: Permission denied
+write /etc/security/namespace.init: bash: line 8: /etc/security/namespace.init: Permission denied
+write /run/user/1001: bash: line 8: /run/user/1001: Permission denied
+write /run/user/1002: bash: line 8: /run/user/1002: Permission denied
+write /run/user/pam_secondary_modules: bash: line 8: /run/user/pam_secondary_modules: Permission denied
+symlink /etc/security/capability.conf.link: ln: failed to create symbolic link '/etc/security/capability.conf.link': Permission denied
+symlink /etc/security/group.conf.link: ln: failed to create symbolic link '/etc/security/group.conf.link': Permission denied
+symlink /etc/security/namespace.d/pam_secondary_modules.link: ln: failed to create symbolic link '/etc/security/namespace.d/pam_secondary_modules.link': Permission denied
+symlink /run/user/1001.link: ln: failed to create symbolic link '/run/user/1001.link': Permission denied
+attacker_write_rc=1
+drwxr-xr-x root:root /run/user -> 
+
+== login direct reachability ==
+login_rc=1
+login: Cannot possibly work without effective root
+
+== su to selfauth: pam_cap and pam_keyinit reachable, no privilege retained ==
+su_rc=0
+Password: uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+loginuid=4294967295CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+groups=selfauth
+drwxr-xr-x 3 root     root      60 May 16 17:31 /run/user
+drwx------ 4 selfauth selfauth 140 May 16 17:31 /run/user/1002
+touch: cannot touch '/root/pam_secondary_modules_su.root': Permission denied
+root_touch_denied=1
+--- su trace highlights
+execve("/usr/sbin/runuser", ["runuser", "-u", "attacker", "--", "su", "-", "selfauth", "-c", "id; printf loginuid=; cat /proc/self/loginuid 2>/dev/null || true; grep \"^Cap\" /proc/self/status; printf groups=; id -Gn; ls -ld /run/user /run/user/$(id -u) 2>&1 || true; touch /r"...], 0xffffdbd88e98 /* 7 vars */) = 0
+openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_keyinit.so", O_RDONLY|O_CLOEXEC) = 4
+openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_cap.so", O_RDONLY|O_CLOEXEC) = 5
+setgroups(1, [1001])                    = 0
+keyctl(KEYCTL_GET_KEYRING_ID, KEY_SPEC_SESSION_KEYRING, 0) = 580017334
+keyctl(KEYCTL_GET_KEYRING_ID, KEY_SPEC_USER_SESSION_KEYRING, 0) = 1032228155
+setgid(1001)                            = 0
+setuid(1001)                            = 0
+execve("/usr/local/sbin/su", ["su", "-", "selfauth", "-c", "id; printf loginuid=; cat /proc/self/loginuid 2>/dev/null || true; grep \"^Cap\" /proc/self/status; printf groups=; id -Gn; ls -ld /run/user /run/user/$(id -u) 2>&1 || true; touch /r"...], 0xaaaad7cb3800 /* 9 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/local/bin/su", ["su", "-", "selfauth", "-c", "id; printf loginuid=; cat /proc/self/loginuid 2>/dev/null || true; grep \"^Cap\" /proc/self/status; printf groups=; id -Gn; ls -ld /run/user /run/user/$(id -u) 2>&1 || true; touch /r"...], 0xaaaad7cb3800 /* 9 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/sbin/su", ["su", "-", "selfauth", "-c", "id; printf loginuid=; cat /proc/self/loginuid 2>/dev/null || true; grep \"^Cap\" /proc/self/status; printf groups=; id -Gn; ls -ld /run/user /run/user/$(id -u) 2>&1 || true; touch /r"...], 0xaaaad7cb3800 /* 9 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/bin/su", ["su", "-", "selfauth", "-c", "id; printf loginuid=; cat /proc/self/loginuid 2>/dev/null || true; grep \"^Cap\" /proc/self/status; printf groups=; id -Gn; ls -ld /run/user /run/user/$(id -u) 2>&1 || true; touch /r"...], 0xaaaad7cb3800 /* 9 vars */) = 0
+openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_cap.so", O_RDONLY|O_CLOEXEC) = 6
+openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_keyinit.so", O_RDONLY|O_CLOEXEC) = 4
+openat(AT_FDCWD, "/etc/security/capability.conf", O_RDONLY) = 3
+setgroups(1, [1002])                    = 0
+openat(AT_FDCWD, "/etc/security/capability.conf", O_RDONLY) = 3
+capset({version=_LINUX_CAPABILITY_VERSION_3, pid=0}, {effective=1<<CAP_CHOWN|1<<CAP_DAC_OVERRIDE|1<<CAP_DAC_READ_SEARCH|1<<CAP_FOWNER|1<<CAP_FSETID|1<<CAP_KILL|1<<CAP_SETGID|1<<CAP_SETUID|1<<CAP_SETPCAP|1<<CAP_LINUX_IMMUTABLE|1<<CAP_NET_BIND_SERVICE|1<<CAP_NET_BROADCAST|1<<CAP_NET_ADMIN|1<<CAP_NET_RAW|1<<CAP_IPC_LOCK|1<<CAP_IPC_OWNER|1<<CAP_SYS_MODULE|1<<CAP_SYS_RAWIO|1<<CAP_SYS_CHROOT|1<<CAP_SYS_PTRACE|1<<CAP_SYS_PACCT|1<<CAP_SYS_ADMIN|1<<CAP_SYS_BOOT|1<<CAP_SYS_NICE|1<<CAP_SYS_RESOURCE|1<<CAP_SYS_TIME|1<<CAP_SYS_TTY_CONFIG|1<<CAP_MKNOD|1<<CAP_LEASE|1<<CAP_AUDIT_WRITE|1<<CAP_AUDIT_CONTROL|1<<CAP_SETFCAP|1<<CAP_MAC_OVERRIDE|1<<CAP_MAC_ADMIN|1<<CAP_SYSLOG|1<<CAP_WAKE_ALARM|1<<CAP_BLOCK_SUSPEND|1<<CAP_AUDIT_READ|1<<CAP_PERFMON|1<<CAP_BPF|1<<CAP_CHECKPOINT_RESTORE, permitted=1<<CAP_CHOWN|1<<CAP_DAC_OVERRIDE|1<<CAP_DAC_READ_SEARCH|1<<CAP_FOWNER|1<<CAP_FSETID|1<<CAP_KILL|1<<CAP_SETGID|1<<CAP_SETUID|1<<CAP_SETPCAP|1<<CAP_LINUX_IMMUTABLE|1<<CAP_NET_BIND_SERVICE|1<<CAP_NET_BROADCAST|1<<CAP_NET_ADMIN|1<<CAP_NET_RAW|1<<CAP_IPC_LOCK|1<<CAP_IPC_OWNER|1<<CAP_SYS_MODULE|1<<CAP_SYS_RAWIO|1<<CAP_SYS_CHROOT|1<<CAP_SYS_PTRACE|1<<CAP_SYS_PACCT|1<<CAP_SYS_ADMIN|1<<CAP_SYS_BOOT|1<<CAP_SYS_NICE|1<<CAP_SYS_RESOURCE|1<<CAP_SYS_TIME|1<<CAP_SYS_TTY_CONFIG|1<<CAP_MKNOD|1<<CAP_LEASE|1<<CAP_AUDIT_WRITE|1<<CAP_AUDIT_CONTROL|1<<CAP_SETFCAP|1<<CAP_MAC_OVERRIDE|1<<CAP_MAC_ADMIN|1<<CAP_SYSLOG|1<<CAP_WAKE_ALARM|1<<CAP_BLOCK_SUSPEND|1<<CAP_AUDIT_READ|1<<CAP_PERFMON|1<<CAP_BPF|1<<CAP_CHECKPOINT_RESTORE, inheritable=0}) = 0
+keyctl(KEYCTL_JOIN_SESSION_KEYRING, NULL) = 783554991
+keyctl(KEYCTL_LINK, KEY_SPEC_USER_KEYRING, KEY_SPEC_SESSION_KEYRING) = 0
+openat(AT_FDCWD, "/run/userdb/selfauth.user", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/run/user/1002", {st_mode=S_IFDIR|0700, st_size=140, ...}, AT_SYMLINK_NOFOLLOW) = 0
+faccessat(AT_FDCWD, "/run/user/1002/bus", F_OK) = -1 EACCES (Permission denied)
+keyctl(KEYCTL_REVOKE, 783554991)        = 0
+setgid(1002)                            = 0
+setuid(1002)                            = 0
+execve("/bin/bash", ["-bash", "-c", "id; printf loginuid=; cat /proc/self/loginuid 2>/dev/null || true; grep \"^Cap\" /proc/self/status; printf groups=; id -Gn; ls -ld /run/user /run/user/$(id -u) 2>&1 || true; touch /r"...], 0xaaab00b5ef60 /* 11 vars */) = 0
+execve("/usr/bin/ls", ["ls", "-ld", "/run/user", "/run/user/1002"], 0xaaaaf594eb60 /* 15 vars */) = 0
+statx(AT_FDCWD, "/run/user", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW|AT_NO_AUTOMOUNT, STATX_MODE|STATX_NLINK|STATX_UID|STATX_GID|STATX_MTIME|STATX_SIZE, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFDIR|0755, stx_size=60, ...}) = 0
+lgetxattr("/run/user", "security.selinux", 0xaaaaf23392f0, 255) = -1 ENODATA (No data available)
+listxattr("/run/user", "", 152)         = 0
+statx(AT_FDCWD, "/run/user/1002", AT_STATX_SYNC_AS_STAT|AT_SYMLINK_NOFOLLOW|AT_NO_AUTOMOUNT, STATX_MODE|STATX_NLINK|STATX_UID|STATX_GID|STATX_MTIME|STATX_SIZE, {stx_mask=STATX_BASIC_STATS|STATX_MNT_ID, stx_attributes=STATX_ATTR_MOUNT_ROOT, stx_mode=S_IFDIR|0700, stx_size=140, ...}) = 0
+lgetxattr("/run/user/1002", "security.selinux", 0xaaaaf23399b0, 255) = -1 ENODATA (No data available)
+listxattr("/run/user/1002", "", 152)    = 0
+su_root_marker=absent
+
+== chsh no-op as selfauth: pam_cap reachable only ==
+chsh_rc=0
+Password: --- chsh trace highlights
+openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_keyinit.so", O_RDONLY|O_CLOEXEC) = 4
+openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_cap.so", O_RDONLY|O_CLOEXEC) = 5
+setgroups(1, [1002])                    = 0
+keyctl(KEYCTL_GET_KEYRING_ID, KEY_SPEC_SESSION_KEYRING, 0) = 580017334
+keyctl(KEYCTL_GET_KEYRING_ID, KEY_SPEC_USER_SESSION_KEYRING, 0) = 984765827
+setgid(1002)                            = 0
+setuid(1002)                            = 0
+openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_cap.so", O_RDONLY|O_CLOEXEC) = 5
+openat(AT_FDCWD, "/etc/security/capability.conf", O_RDONLY) = 3
+setuid(0)                               = 0
+selfauth:x:1002:1002::/home/selfauth:/bin/bash
+
+== chfn as selfauth: pam_cap reachable, GECOS restored ==
+chfn_rc=0
+Password: Changing the user information for selfauth
+Enter the new value, or press ENTER for the default
+	Full Name: 
+	Room Number []: 	Work Phone []: 	Home Phone []: selfauth_after_chfn=selfauth:x:1002:1002:,,,:/home/selfauth:/bin/bash
+--- chfn trace highlights
+openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_keyinit.so", O_RDONLY|O_CLOEXEC) = 4
+openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_cap.so", O_RDONLY|O_CLOEXEC) = 5
+setgroups(1, [1002])                    = 0
+keyctl(KEYCTL_GET_KEYRING_ID, KEY_SPEC_SESSION_KEYRING, 0) = 580017334
+keyctl(KEYCTL_GET_KEYRING_ID, KEY_SPEC_USER_SESSION_KEYRING, 0) = 984765827
+setgid(1002)                            = 0
+setuid(1002)                            = 0
+openat(AT_FDCWD, "/usr/lib/aarch64-linux-gnu/security/pam_cap.so", O_RDONLY|O_CLOEXEC) = 5
+openat(AT_FDCWD, "/etc/security/capability.conf", O_RDONLY) = 3
+setuid(0)                               = 0
+selfauth_after_restore=selfauth:x:1002:1002::/home/selfauth:/bin/bash
+
+== passwd service has no secondary module hooks ==
+     1	#
+     2	# The PAM configuration file for the Shadow `passwd' service
+     3	#
+     4	
+     5	@include common-password
+     6	
+selfauth P 2026-05-16 0 99999 7 -1
+
+== cron PAM session trigger from uid1001 crontab ==
+active
+root         254       1  0 15:18 ?        00:00:00 /usr/sbin/cron -f -P
+# pam_secondary_modules_750906_cron
+* * * * * /bin/bash /home/attacker/.pam_secondary_modules_750906_cron.sh # pam_secondary_modules_750906_cron
+cron_probe_start
+2026-05-16T17:32:01+00:00
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+loginuid=1001CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+groups=attacker
+umask=0002
+env_USER= env_LOGNAME=attacker env_HOME=/home/attacker env_SHELL=/bin/sh
+ls: cannot access '/run/user/1001': No such file or directory
+drwxr-xr-x 2 root root 40 May 16 17:31 /run/user
+touch: cannot touch '/root/pam_secondary_modules_750906_cron.root': Permission denied
+root_touch_denied=1
+cron_root_marker=absent
+
+== post-probe root marker and cleanup check ==
+absent /root/pam_secondary_modules_su.root
+absent /root/pam_secondary_modules_750906_cron.root
+selfauth_final=selfauth:x:1002:1002::/home/selfauth:/bin/bash

@@ -1,0 +1,20 @@
+[Unit]
+Description=Firmware update daemon
+Documentation=https://fwupd.org/
+After=dbus.service
+Before=display-manager.service
+ConditionVirtualization=!container
+
+[Service]
+Type=dbus
+TimeoutSec=180
+RuntimeDirectory=@motd_dir@
+RuntimeDirectoryPreserve=yes
+BusName=org.freedesktop.fwupd
+ExecStart=@libexecdir@/fwupd/fwupd
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=full
+SystemCallFilter=~@mount
+Environment="GLIBC_TUNABLES=glibc.cpu.hwcaps=SHSTK"
+@dynamic_options@

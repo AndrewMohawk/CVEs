@@ -1,0 +1,89 @@
+udisksd_pid=22918
+=== root.log ===
+udisksd_pid=22918
+openvt_rc=0
+=== user.log ===
+identity=uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+session:
+selfauth (1002)
+   Since: Sun 2026-05-17 19:22:05 UTC; 35s ago
+   State: active
+Sessions: *72
+  Linger: no
+    Unit: user-1002.slice
+          ├─session-72.scope
+          │ ├─22954 /bin/login -f
+          │ ├─23014 -bash
+          │ ├─23020 bash /tmp/udisks-missing-goto-strace-trigger.sh Repair vfat
+          │ ├─23023 loginctl user-status 1002 --no-pager
+          │ └─23024 sed -n 1,35p
+          └─user@1002.service
+            └─init.scope
+              ├─23002 /usr/lib/systemd/systemd --user
+              └─23003 "(sd-pam)"
+
+May 17 19:22:40 bf51bb670420 systemd[23002]: Listening on gpg-agent.socket - GnuPG cryptographic agent and passphrase cache.
+May 17 19:22:40 bf51bb670420 systemd[23002]: Listening on keyboxd.socket - GnuPG public key management service.
+May 17 19:22:40 bf51bb670420 systemd[23002]: Listening on pk-debconf-helper.socket - debconf communication socket.
+May 17 19:22:40 bf51bb670420 systemd[23002]: Listening on snapd.session-agent.socket - REST API socket for snapd user session agent.
+May 17 19:22:40 bf51bb670420 systemd[23002]: Listening on dbus.socket - D-Bus User Message Bus Socket.
+May 17 19:22:40 bf51bb670420 systemd[23002]: Listening on gpg-agent-ssh.socket - GnuPG cryptographic agent (ssh-agent emulation).
+May 17 19:22:40 bf51bb670420 systemd[23002]: Reached target sockets.target - Sockets.
+May 17 19:22:40 bf51bb670420 systemd[23002]: Reached target basic.target - Basic System.
+May 17 19:22:40 bf51bb670420 systemd[23002]: Reached target default.target - Main User Target.
+May 17 19:22:40 bf51bb670420 systemd[23002]: Startup finished in 97ms.
+mkfs.fat 4.2 (2021-01-31)
+image=/home/selfauth/udisks-missing-goto-active/vfat-Repair.img
+Mapped file /home/selfauth/udisks-missing-goto-active/vfat-Repair.img as /dev/loop6.
+loop_setup_rc=0
+dev=/dev/loop6
+obj=/org/freedesktop/UDisks2/block_devices/loop6
+()
+Mounted /dev/loop6 at /media/selfauth/580B-FAFA
+mount_rc=0
+TARGET                    SOURCE     FSTYPE OPTIONS
+/media/selfauth/580B-FAFA /dev/loop6 vfat   rw,nosuid,nodev,relatime,uid=1002,gid=1002,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,showexec,utf8,flush,errors=remount-ro
+unique_name=:1.668
+exception=DBusException: org.freedesktop.UDisks2.Error.NotSupported: Cannot repair filesystem filesystem on /dev/loop6 if mounted
+holding_system_bus_name=20s
+method_rc=0
+=== exec trace ===
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0xffffa3e0f010) = 23064
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0xffffa3e0f010) = 23065
+execve("/usr/local/sbin/fsck.vfat", ["fsck.vfat", "-a", "/dev/loop6"], 0xffff9800a2b0 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/local/bin/fsck.vfat", ["fsck.vfat", "-a", "/dev/loop6"], 0xffff9800a2b0 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/sbin/fsck.vfat", ["fsck.vfat", "-a", "/dev/loop6"], 0xffff9800a2b0 /* 10 vars */) = 0
+execve("/usr/local/sbin/fsck.vfat", ["fsck.vfat", "-a", "/dev/loop6"], 0xffff9800a2b0 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/local/bin/fsck.vfat", ["fsck.vfat", "-a", "/dev/loop6"], 0xffff9800a2b0 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/sbin/fsck.vfat", ["fsck.vfat", "-a", "/dev/loop6"], 0xffff9800a2b0 /* 10 vars */) = 0
+=== journal crash lines ===
+May 17 19:22:33 bf51bb670420 udisksd[22622]: No longer watching loop device /dev/loop11
+May 17 19:22:33 bf51bb670420 udisksd[22622]: Deleted loop device /dev/loop9 (was backed by /home/selfauth/udisks-udev-meta-consumers-20260517/gpt-line.img)
+May 17 19:22:33 bf51bb670420 udisksd[22622]: No longer watching loop device /dev/loop9
+May 17 19:22:33 bf51bb670420 udisksd[22622]: Error statting /var/lib/swap: No such file or directory
+May 17 19:22:33 bf51bb670420 udisksd[22622]: Cleaning up mount point /media/selfauth/BT_SYSTEMD_WANTS=u.service (device 7:7 is not mounted)
+May 17 19:22:33 bf51bb670420 udisksd[22622]: Unmounted /dev/loop7 on behalf of uid 0
+May 17 19:22:33 bf51bb670420 udisksd[22622]: Deleted loop device /dev/loop7 (was backed by /home/selfauth/udisks-udev-meta-consumers-20260517/btrfs-line.img)
+May 17 19:22:33 bf51bb670420 udisksd[22622]: No longer watching loop device /dev/loop7
+May 17 19:22:33 bf51bb670420 udisksd[22622]: Error statting /var/lib/swap: No such file or directory
+May 17 19:22:33 bf51bb670420 udisksd[22622]: Cleaning up mount point /media/selfauth/--help (device 7:12 is not mounted)
+May 17 19:22:33 bf51bb670420 udisksd[22622]: Unmounted /dev/loop12 on behalf of uid 0
+May 17 19:22:33 bf51bb670420 udisksd[22622]: Deleted loop device /dev/loop12 (was backed by /home/selfauth/udisks-udev-meta-consumers-20260517/xfs-help.img)
+May 17 19:22:33 bf51bb670420 udisksd[22622]: No longer watching loop device /dev/loop12
+May 17 19:22:33 bf51bb670420 udisksd[22622]: Deleted loop device /dev/loop10 (was backed by /home/selfauth/udisks-udev-meta-consumers-20260517/lvm-uulvm.service.img)
+May 17 19:22:33 bf51bb670420 udisksd[22622]: No longer watching loop device /dev/loop10
+May 17 19:22:37 bf51bb670420 systemd[1]: Stopping udisks2.service - Disk Manager...
+May 17 19:22:37 bf51bb670420 udisksd[22622]: udisks daemon version 2.10.1 exiting
+May 17 19:22:37 bf51bb670420 systemd[1]: udisks2.service: Deactivated successfully.
+May 17 19:22:37 bf51bb670420 systemd[1]: Stopped udisks2.service - Disk Manager.
+May 17 19:22:37 bf51bb670420 systemd[1]: Starting udisks2.service - Disk Manager...
+May 17 19:22:37 bf51bb670420 udisksd[22918]: udisks daemon version 2.10.1 starting
+May 17 19:22:37 bf51bb670420 udisksd[22918]: Error statting /var/lib/swap: No such file or directory
+May 17 19:22:37 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:22:37 bf51bb670420 udisksd[22918]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+May 17 19:22:40 bf51bb670420 udisksd[22918]: Error statting /var/lib/swap: No such file or directory
+May 17 19:22:41 bf51bb670420 udisksd[22918]: Set up loop device /dev/loop6 (backed by /home/selfauth/udisks-missing-goto-active/vfat-Repair.img)
+May 17 19:22:43 bf51bb670420 udisksd[22918]: Error statting /var/lib/swap: No such file or directory
+May 17 19:22:43 bf51bb670420 udisksd[22918]: Mounted /dev/loop6 at /media/selfauth/580B-FAFA on behalf of uid 1002
+May 17 19:22:45 bf51bb670420 systemd[1]: udisks2.service: Main process exited, code=killed, status=11/SEGV
+May 17 19:22:45 bf51bb670420 systemd[1]: udisks2.service: Failed with result 'signal'.

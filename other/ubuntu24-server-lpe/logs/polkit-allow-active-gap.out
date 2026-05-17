@@ -1,0 +1,444 @@
+
+## target identity and package state
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 508d797cbad0 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+sudo:x:27:ubuntu
+adm:x:4:ubuntu,syslog
+lxd:x:101:
+disk:x:6:
+input:x:995:
+tty:x:5:
+dbus	1.14.10-4ubuntu4.1	ii 
+fwupd	1.9.34-0ubuntu1~24.04.1	ii 
+libpam-systemd:arm64	255.4-1ubuntu8.15	ii 
+libudisks2-0:arm64	2.10.1-6ubuntu1.3	ii 
+modemmanager	1.23.4-0ubuntu2	ii 
+packagekit	1.2.8-2ubuntu1.5	ii 
+pkexec		un 
+policykit-1		un 
+polkitd	124-2ubuntu1.24.04.3	ii 
+systemd	255.4-1ubuntu8.15	ii 
+udisks2	2.10.1-6ubuntu1.3	ii 
+update-notifier-common	3.192.68.2	ii 
+
+## live allow_active=yes and auth_self action inventory
+fwupd-condition-gated	org.freedesktop.fwupd.update-hotplug-trusted	pkg=fwupd	any=auth_admin	inactive=no	active=yes	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy
+fwupd-condition-gated	org.freedesktop.fwupd.update-internal-trusted	pkg=fwupd	any=auth_admin	inactive=no	active=yes	/usr/share/polkit-1/actions/org.freedesktop.fwupd.policy
+login1-covered	org.freedesktop.login1.chvt	pkg=systemd	any=auth_admin_keep	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.hibernate	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.hibernate-multiple-sessions	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.inhibit-block-idle	pkg=systemd	any=yes	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.inhibit-block-shutdown	pkg=systemd	any=no	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.inhibit-block-sleep	pkg=systemd	any=no	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.inhibit-delay-shutdown	pkg=systemd	any=yes	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.inhibit-delay-sleep	pkg=systemd	any=yes	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.inhibit-handle-hibernate-key	pkg=systemd	any=no	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.inhibit-handle-lid-switch	pkg=systemd	any=no	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.inhibit-handle-power-key	pkg=systemd	any=no	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.inhibit-handle-reboot-key	pkg=systemd	any=no	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.inhibit-handle-suspend-key	pkg=systemd	any=no	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.power-off	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.power-off-multiple-sessions	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.reboot	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.reboot-multiple-sessions	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.set-reboot-parameter	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.set-reboot-to-boot-loader-entry	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.set-reboot-to-boot-loader-menu	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.set-reboot-to-firmware-setup	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.set-self-linger	pkg=systemd	any=yes	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.suspend	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+login1-covered	org.freedesktop.login1.suspend-multiple-sessions	pkg=systemd	any=auth_admin_keep	inactive=auth_admin_keep	active=yes	/usr/share/polkit-1/actions/org.freedesktop.login1.policy
+modemmanager-condition-gated	org.freedesktop.ModemManager1.Contacts	pkg=modemmanager	any=	inactive=no	active=yes	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy
+modemmanager-condition-gated	org.freedesktop.ModemManager1.Device.Control	pkg=modemmanager	any=	inactive=no	active=yes	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy
+modemmanager-condition-gated	org.freedesktop.ModemManager1.Location	pkg=modemmanager	any=	inactive=no	active=yes	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy
+modemmanager-condition-gated	org.freedesktop.ModemManager1.Messaging	pkg=modemmanager	any=	inactive=no	active=yes	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy
+modemmanager-condition-gated	org.freedesktop.ModemManager1.Time	pkg=modemmanager	any=	inactive=no	active=yes	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy
+modemmanager-condition-gated	org.freedesktop.ModemManager1.USSD	pkg=modemmanager	any=	inactive=no	active=yes	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy
+modemmanager-condition-gated	org.freedesktop.ModemManager1.Voice	pkg=modemmanager	any=	inactive=no	active=yes	/usr/share/polkit-1/actions/org.freedesktop.ModemManager1.policy
+packagekit-covered	org.freedesktop.packagekit.clear-offline-update	pkg=packagekit	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.packagekit.policy
+packagekit-covered	org.freedesktop.packagekit.system-network-proxy-configure	pkg=packagekit	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.packagekit.policy
+packagekit-covered	org.freedesktop.packagekit.system-sources-refresh	pkg=packagekit	any=auth_admin	inactive=yes	active=yes	/usr/share/polkit-1/actions/org.freedesktop.packagekit.policy
+packagekit-covered	org.freedesktop.packagekit.trigger-offline-update	pkg=packagekit	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.packagekit.policy
+pkexec-absent	com.ubuntu.update-notifier.pkexec.package-system-locked	pkg=update-notifier-common	any=no	inactive=yes	active=yes	/usr/share/polkit-1/actions/com.ubuntu.update-notifier.policy
+probe-focus	org.freedesktop.udisks2.ata-smart-update	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+probe-focus	org.freedesktop.udisks2.cancel-job	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+probe-focus	org.freedesktop.udisks2.eject-media	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+probe-focus	org.freedesktop.udisks2.modify-device	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+probe-focus	org.freedesktop.udisks2.nvme-smart-update	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+probe-focus	org.freedesktop.udisks2.power-off-drive	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+probe-focus	org.freedesktop.udisks2.rescan	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+udisks-covered-adjacent	org.freedesktop.udisks2.ata-check-power	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+udisks-covered-adjacent	org.freedesktop.udisks2.ata-standby	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+udisks-covered-adjacent	org.freedesktop.udisks2.encrypted-change-passphrase	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+udisks-covered-adjacent	org.freedesktop.udisks2.encrypted-unlock	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+udisks-covered-adjacent	org.freedesktop.udisks2.filesystem-mount	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+udisks-covered-adjacent	org.freedesktop.udisks2.loop-setup	pkg=udisks2	any=auth_admin	inactive=auth_admin	active=yes	/usr/share/polkit-1/actions/org.freedesktop.UDisks2.policy
+[auth_self] none
+
+## default service and object reachability
+org.freedesktop.ModemManager1      - -               -               (activatable) -                           -       -
+org.freedesktop.PackageKit    188636 packagekitd     root            :1.161        packagekit.service          -       -
+org.freedesktop.PolicyKit1       266 polkitd         polkitd         :1.4          polkit.service              -       -
+org.freedesktop.UDisks2          273 udisksd         root            :1.2          udisks2.service             -       -
+org.freedesktop.fwupd              - -               -               (activatable) -                           -       -
+org.freedesktop.login1           271 systemd-logind  root            :1.3          systemd-logind.service      -       -
+org.freedesktop.systemd1           1 systemd         root            :1.1          init.scope                  -       -
+
+### udisks2.service
+ExecStart={ path=/usr/libexec/udisks2/udisksd ; argv[]=/usr/libexec/udisks2/udisksd ; ignore_errors=no ; start_time=[Sat 2026-05-16 20:04:41 UTC] ; stop_time=[n/a] ; pid=273 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=active
+SubState=running
+UnitFileState=enabled
+ConditionResult=yes
+### packagekit.service
+ExecStart={ path=/usr/libexec/packagekitd ; argv[]=/usr/libexec/packagekitd ; ignore_errors=no ; start_time=[Sat 2026-05-16 20:17:29 UTC] ; stop_time=[n/a] ; pid=188636 ; code=(null) ; status=0/0 }
+User=root
+LoadState=loaded
+ActiveState=active
+SubState=running
+UnitFileState=static
+ConditionResult=yes
+### systemd-logind.service
+ExecStart={ path=/usr/lib/systemd/systemd-logind ; argv[]=/usr/lib/systemd/systemd-logind ; ignore_errors=no ; start_time=[Sat 2026-05-16 20:04:41 UTC] ; stop_time=[n/a] ; pid=271 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=active
+SubState=running
+UnitFileState=static
+ConditionResult=yes
+### ModemManager.service
+ExecStart={ path=/usr/sbin/ModemManager ; argv[]=/usr/sbin/ModemManager ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=root
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=enabled
+ConditionResult=no
+### fwupd.service
+ExecStart={ path=/usr/libexec/fwupd/fwupd ; argv[]=/usr/libexec/fwupd/fwupd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=static
+ConditionResult=no
+### polkit.service
+ExecStart={ path=/usr/lib/polkit-1/polkitd ; argv[]=/usr/lib/polkit-1/polkitd --no-debug ; ignore_errors=no ; start_time=[Sat 2026-05-16 20:04:41 UTC] ; stop_time=[n/a] ; pid=266 ; code=(null) ; status=0/0 }
+User=polkitd
+LoadState=loaded
+ActiveState=active
+SubState=running
+UnitFileState=static
+ConditionResult=yes
+### dbus.service
+ExecStart={ path=/usr/bin/dbus-daemon ; argv[]=@dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only ; ignore_errors=no ; start_time=[Sat 2026-05-16 20:04:41 UTC] ; stop_time=[n/a] ; pid=263 ; code=(null) ; status=0/0 }
+User=
+LoadState=loaded
+ActiveState=active
+SubState=running
+UnitFileState=static
+ConditionResult=yes
+
+pkexec=ABSENT
+
+UDisks tree:
+/
+/org
+/org/freedesktop
+/org/freedesktop/UDisks2
+/org/freedesktop/UDisks2/Manager
+/org/freedesktop/UDisks2/block_devices
+/org/freedesktop/UDisks2/block_devices/loop0
+/org/freedesktop/UDisks2/block_devices/loop1
+/org/freedesktop/UDisks2/block_devices/loop2
+/org/freedesktop/UDisks2/block_devices/loop3
+/org/freedesktop/UDisks2/block_devices/loop4
+/org/freedesktop/UDisks2/block_devices/loop5
+/org/freedesktop/UDisks2/block_devices/loop6
+/org/freedesktop/UDisks2/block_devices/loop7
+/org/freedesktop/UDisks2/block_devices/nbd0
+/org/freedesktop/UDisks2/block_devices/nbd1
+/org/freedesktop/UDisks2/block_devices/nbd10
+/org/freedesktop/UDisks2/block_devices/nbd11
+/org/freedesktop/UDisks2/block_devices/nbd12
+/org/freedesktop/UDisks2/block_devices/nbd13
+/org/freedesktop/UDisks2/block_devices/nbd14
+/org/freedesktop/UDisks2/block_devices/nbd15
+/org/freedesktop/UDisks2/block_devices/nbd2
+/org/freedesktop/UDisks2/block_devices/nbd3
+/org/freedesktop/UDisks2/block_devices/nbd4
+/org/freedesktop/UDisks2/block_devices/nbd5
+/org/freedesktop/UDisks2/block_devices/nbd6
+/org/freedesktop/UDisks2/block_devices/nbd7
+/org/freedesktop/UDisks2/block_devices/nbd8
+/org/freedesktop/UDisks2/block_devices/nbd9
+/org/freedesktop/UDisks2/block_devices/ram0
+/org/freedesktop/UDisks2/block_devices/ram1
+/org/freedesktop/UDisks2/block_devices/ram10
+/org/freedesktop/UDisks2/block_devices/ram11
+/org/freedesktop/UDisks2/block_devices/ram12
+/org/freedesktop/UDisks2/block_devices/ram13
+/org/freedesktop/UDisks2/block_devices/ram14
+/org/freedesktop/UDisks2/block_devices/ram15
+/org/freedesktop/UDisks2/block_devices/ram2
+/org/freedesktop/UDisks2/block_devices/ram3
+/org/freedesktop/UDisks2/block_devices/ram4
+/org/freedesktop/UDisks2/block_devices/ram5
+/org/freedesktop/UDisks2/block_devices/ram6
+/org/freedesktop/UDisks2/block_devices/ram7
+/org/freedesktop/UDisks2/block_devices/ram8
+/org/freedesktop/UDisks2/block_devices/ram9
+/org/freedesktop/UDisks2/block_devices/vda
+/org/freedesktop/UDisks2/block_devices/vda1
+/org/freedesktop/UDisks2/block_devices/vdb
+/org/freedesktop/UDisks2/drives
+/org/freedesktop/UDisks2/drives/VirtIO_Disk
+/org/freedesktop/UDisks2/drives/VirtIO_Disk_1
+
+Drive properties:
+### /org/freedesktop/UDisks2/drives/VirtIO_Disk
+s "VirtIO Disk"
+s "seat0"
+b false
+b false
+a{sv} 0
+### /org/freedesktop/UDisks2/drives/VirtIO_Disk_1
+s "VirtIO Disk"
+s "seat0"
+b false
+b false
+a{sv} 0
+
+## root-owned state before
+ls: cannot access '/root/polkit_allow_active_gap_root': No such file or directory
+-rw-r--r-- root:root /etc/udisks2/mount_options.conf.example -> 
+-rw-r--r-- root:root /etc/udisks2/udisks2.conf -> 
+-rw-r--r-- root:root /run/udisks2/loop -> 
+drwx------ root:root /run/udisks2 -> 
+drwx------ root:root /var/lib/udisks2 -> 
+drwxr-xr-x root:root /etc/udisks2 -> 
+overlay / overlay rw,relatime,lowerdir=/var/lib/docker/overlay2/l/UW65ESKXB6G3NJ4PEVFZC33CJB:/var/lib/docker/overlay2/l/NP6PGATZGY73PBLSEXXLG46J37:/var/lib/docker/overlay2/l/YGP5TEZ6MXA64GPTXXF5HEEMPK:/var/lib/docker/overlay2/l/WDFNRTS7YCBQQKYP33UALPWY6Z,upperdir=/var/lib/docker/overlay2/5660b90b773f7207f1b5e9a9dac7697efbed2f8ae813aeea13fe60824ce7f39a/diff,workdir=/var/lib/docker/overlay2/5660b90b773f7207f1b5e9a9dac7697efbed2f8ae813aeea13fe60824ce7f39a/work
+proc /proc proc rw,nosuid,nodev,noexec,relatime
+tmpfs /dev tmpfs rw,nosuid,size=65536k,mode=755
+devpts /dev/pts devpts rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=666
+sysfs /sys sysfs rw,nosuid,nodev,noexec,relatime
+mqueue /dev/mqueue mqueue rw,nosuid,nodev,noexec,relatime
+shm /dev/shm tmpfs rw,nosuid,nodev,noexec,relatime,size=65536k
+/dev/vda1[/docker/containers/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/resolv.conf] /etc/resolv.conf ext4 rw,relatime,discard
+/dev/vda1[/docker/containers/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/hostname] /etc/hostname ext4 rw,relatime,discard
+/dev/vda1[/docker/containers/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/hosts] /etc/hosts ext4 rw,relatime,discard
+cgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime
+tmpfs /run tmpfs rw,nosuid,nodev,size=1625528k,nr_inodes=819200,mode=755
+tmpfs /run/lock tmpfs rw,nosuid,nodev,noexec,relatime,size=5120k
+systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd=30,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=1718
+debugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime
+hugetlbfs /dev/hugepages hugetlbfs rw,nosuid,nodev,relatime,pagesize=2M
+tracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime
+fusectl /sys/fs/fuse/connections fusectl rw,nosuid,nodev,noexec,relatime
+configfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime
+binfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc rw,nosuid,nodev,noexec,relatime
+tracefs /sys/kernel/debug/tracing tracefs rw,nosuid,nodev,noexec,relatime
+tmpfs /run/user/1002 tmpfs rw,nosuid,nodev,relatime,size=812760k,nr_inodes=203190,mode=700,uid=1002,gid=1002
+NAME   MAJ:MIN TYPE   SIZE MOUNTPOINTS      FSTYPE LABEL MODEL TRAN   RO RM
+nbd0    43:0   disk     0B                                             0  0
+nbd1    43:32  disk     0B                                             0  0
+nbd2    43:64  disk     0B                                             0  0
+nbd3    43:96  disk     0B                                             0  0
+nbd4    43:128 disk     0B                                             0  0
+nbd5    43:160 disk     0B                                             0  0
+nbd6    43:192 disk     0B                                             0  0
+nbd7    43:224 disk     0B                                             0  0
+vda    254:0   disk   512G                                     virtio  0  0
+`-vda1 254:1   part   512G /etc/hosts       ext4               virtio  0  0
+                           /etc/hostname                                 
+                           /etc/resolv.conf                              
+vdb    254:16  disk 558.8M                  erofs              virtio  1  0
+nbd8    43:256 disk     0B                                             0  0
+nbd9    43:288 disk     0B                                             0  0
+nbd10   43:320 disk     0B                                             0  0
+nbd11   43:352 disk     0B                                             0  0
+nbd12   43:384 disk     0B                                             0  0
+nbd13   43:416 disk     0B                                             0  0
+nbd14   43:448 disk     0B                                             0  0
+nbd15   43:480 disk     0B                                             0  0
+
+## launch active tty selfauth probe
+
+## active tty subject
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/tty7
+XDG_SESSION_ID=18
+Id=18
+User=1002
+Name=selfauth
+Seat=seat0
+TTY=tty7
+Remote=no
+Leader=188951
+Type=tty
+Class=user
+Active=yes
+State=active
+selfauth
+
+## active pkcheck for probe-focus UDisks actions
+### org.freedesktop.udisks2.power-off-drive
+rc=0
+### org.freedesktop.udisks2.eject-media
+rc=0
+### org.freedesktop.udisks2.modify-device
+rc=0
+### org.freedesktop.udisks2.rescan
+rc=0
+### org.freedesktop.udisks2.ata-smart-update
+rc=0
+### org.freedesktop.udisks2.nvme-smart-update
+rc=0
+### org.freedesktop.udisks2.cancel-job
+rc=0
+
+## UDisks residual control method semantics
+dbus uid=1002 euid=1002
+NAME   MAJ:MIN TYPE   SIZE MOUNTPOINTS      FSTYPE LABEL RO RM
+nbd0    43:0   disk     0B                                0  0
+nbd1    43:32  disk     0B                                0  0
+nbd2    43:64  disk     0B                                0  0
+nbd3    43:96  disk     0B                                0  0
+nbd4    43:128 disk     0B                                0  0
+nbd5    43:160 disk     0B                                0  0
+nbd6    43:192 disk     0B                                0  0
+nbd7    43:224 disk     0B                                0  0
+vda    254:0   disk   512G                                0  0
+└─vda1 254:1   part   512G /etc/hosts       ext4          0  0
+                           /etc/hostname                    
+                           /etc/resolv.conf                 
+vdb    254:16  disk 558.8M                  erofs         1  0
+nbd8    43:256 disk     0B                                0  0
+nbd9    43:288 disk     0B                                0  0
+nbd10   43:320 disk     0B                                0  0
+nbd11   43:352 disk     0B                                0  0
+nbd12   43:384 disk     0B                                0  0
+nbd13   43:416 disk     0B                                0  0
+nbd14   43:448 disk     0B                                0  0
+nbd15   43:480 disk     0B                                0  0
+lsblk snapshot:
+CALL Manager.LoopSetup(user-owned 8M image)
+  OK dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0')
+BLOCK /org/freedesktop/UDisks2/block_devices/loop0
+  Device=b'/dev/loop0' Drive=/ IdUsage= IdType= HintSystem=1
+CALL /org/freedesktop/UDisks2/block_devices/loop0.Block.Rescan({})
+  OK None
+CALL /org/freedesktop/UDisks2/block_devices/loop0.Block.OpenDevice('r', {})
+  FAIL org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: Not authorized to perform operation
+BLOCK /org/freedesktop/UDisks2/block_devices/vdb
+  Device=b'/dev/vdb' Drive=/org/freedesktop/UDisks2/drives/VirtIO_Disk_1 IdUsage=filesystem IdType=erofs HintSystem=1
+CALL /org/freedesktop/UDisks2/block_devices/vdb.Block.Rescan({})
+  OK None
+CALL /org/freedesktop/UDisks2/block_devices/vdb.Block.OpenDevice('r', {})
+  FAIL org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: Not authorized to perform operation
+BLOCK /org/freedesktop/UDisks2/block_devices/vda1
+  Device=b'/dev/vda1' Drive=/org/freedesktop/UDisks2/drives/VirtIO_Disk IdUsage=filesystem IdType=ext4 HintSystem=1
+CALL /org/freedesktop/UDisks2/block_devices/vda1.Block.Rescan({})
+  OK None
+CALL /org/freedesktop/UDisks2/block_devices/vda1.Block.OpenDevice('r', {})
+  FAIL org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: Not authorized to perform operation
+DRIVE /org/freedesktop/UDisks2/drives/VirtIO_Disk_1
+  Model=VirtIO Disk Seat=seat0 CanPowerOff=0 Ejectable=0 Removable=0 Configuration={}
+CALL /org/freedesktop/UDisks2/drives/VirtIO_Disk_1.Drive.PowerOff({})
+  FAIL org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: Not authorized to perform operation
+CALL /org/freedesktop/UDisks2/drives/VirtIO_Disk_1.Drive.Eject({})
+  FAIL org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: Not authorized to perform operation
+CALL /org/freedesktop/UDisks2/drives/VirtIO_Disk_1.Drive.SetConfiguration(marker dict)
+  FAIL org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: Not authorized to perform operation
+DRIVE /org/freedesktop/UDisks2/drives/VirtIO_Disk
+  Model=VirtIO Disk Seat=seat0 CanPowerOff=0 Ejectable=0 Removable=0 Configuration={}
+CALL /org/freedesktop/UDisks2/drives/VirtIO_Disk.Drive.PowerOff({})
+  FAIL org.freedesktop.UDisks2.Error.DeviceBusy: org.freedesktop.UDisks2.Error.DeviceBusy: The drive in use: Device /dev/vda1 is mounted
+CALL /org/freedesktop/UDisks2/drives/VirtIO_Disk.Drive.Eject({})
+  FAIL org.freedesktop.UDisks2.Error.DeviceBusy: org.freedesktop.UDisks2.Error.DeviceBusy: Cannot eject drive in use: Device /dev/vda1 is mounted
+CALL /org/freedesktop/UDisks2/drives/VirtIO_Disk.Drive.SetConfiguration(marker dict)
+  FAIL org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: org.freedesktop.UDisks2.Error.NotAuthorizedCanObtain: Not authorized to perform operation
+/
+/org
+/org/freedesktop
+/org/freedesktop/UDisks2
+/org/freedesktop/UDisks2/Manager
+/org/freedesktop/UDisks2/block_devices
+/org/freedesktop/UDisks2/block_devices/loop0
+/org/freedesktop/UDisks2/block_devices/loop1
+/org/freedesktop/UDisks2/block_devices/loop2
+/org/freedesktop/UDisks2/block_devices/loop3
+/org/freedesktop/UDisks2/block_devices/loop4
+/org/freedesktop/UDisks2/block_devices/loop5
+/org/freedesktop/UDisks2/block_devices/loop6
+/org/freedesktop/UDisks2/block_devices/loop7
+/org/freedesktop/UDisks2/block_devices/nbd0
+/org/freedesktop/UDisks2/block_devices/nbd1
+/org/freedesktop/UDisks2/block_devices/nbd10
+/org/freedesktop/UDisks2/block_devices/nbd11
+/org/freedesktop/UDisks2/block_devices/nbd12
+/org/freedesktop/UDisks2/block_devices/nbd13
+/org/freedesktop/UDisks2/block_devices/nbd14
+/org/freedesktop/UDisks2/block_devices/nbd15
+/org/freedesktop/UDisks2/block_devices/nbd2
+/org/freedesktop/UDisks2/block_devices/nbd3
+/org/freedesktop/UDisks2/block_devices/nbd4
+/org/freedesktop/UDisks2/block_devices/nbd5
+/org/freedesktop/UDisks2/block_devices/nbd6
+/org/freedesktop/UDisks2/block_devices/nbd7
+/org/freedesktop/UDisks2/block_devices/nbd8
+/org/freedesktop/UDisks2/block_devices/nbd9
+/org/freedesktop/UDisks2/block_devices/ram0
+/org/freedesktop/UDisks2/block_devices/ram1
+/org/freedesktop/UDisks2/block_devices/ram10
+/org/freedesktop/UDisks2/block_devices/ram11
+/org/freedesktop/UDisks2/block_devices/ram12
+/org/freedesktop/UDisks2/block_devices/ram13
+/org/freedesktop/UDisks2/block_devices/ram14
+/org/freedesktop/UDisks2/block_devices/ram15
+/org/freedesktop/UDisks2/block_devices/ram2
+/org/freedesktop/UDisks2/block_devices/ram3
+/org/freedesktop/UDisks2/block_devices/ram4
+/org/freedesktop/UDisks2/block_devices/ram5
+/org/freedesktop/UDisks2/block_devices/ram6
+/org/freedesktop/UDisks2/block_devices/ram7
+/org/freedesktop/UDisks2/block_devices/ram8
+/org/freedesktop/UDisks2/block_devices/ram9
+/org/freedesktop/UDisks2/block_devices/vda
+/org/freedesktop/UDisks2/block_devices/vda1
+/org/freedesktop/UDisks2/block_devices/vdb
+/org/freedesktop/UDisks2/drives
+/org/freedesktop/UDisks2/drives/VirtIO_Disk
+/org/freedesktop/UDisks2/drives/VirtIO_Disk_1
+Job objects:
+CALL /org/freedesktop/UDisks2/block_devices/loop0.Loop.Delete({})
+  OK None
+
+## state after active method calls
+-rw-r--r-- root:root /etc/udisks2/mount_options.conf.example -> 
+-rw-r--r-- root:root /etc/udisks2/udisks2.conf -> 
+drwx------ root:root /run/udisks2 -> 
+drwx------ root:root /var/lib/udisks2 -> 
+drwxr-xr-x root:root /etc/udisks2 -> 
+ls: cannot access '/root/polkit_allow_active_gap_root': Permission denied
+openvt_rc=0
+
+## root proof and cleanup precheck
+ROOT_PROOF=no
+ls: cannot access '/root/polkit_allow_active_gap_root': No such file or directory
+running
+
+## cleanup verification
+ls: cannot access '/root/polkit_allow_active_gap_root': No such file or directory
+running

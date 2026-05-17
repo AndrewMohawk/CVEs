@@ -1,0 +1,732 @@
+## target
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+
+## docker loop-node harness accommodation
+/dev/loop8
+/dev/loop9
+/dev/loop10
+/dev/loop11
+/dev/loop12
+/dev/loop13
+/dev/loop14
+/dev/loop15
+brw-rw---- 1 root disk 7,  0 May 16 16:43 /dev/loop0
+brw-rw---- 1 root disk 7,  1 May 16 16:43 /dev/loop1
+brw-rw---- 1 root disk 7, 10 May 16 16:43 /dev/loop10
+brw-rw---- 1 root disk 7, 11 May 16 16:43 /dev/loop11
+brw-rw---- 1 root disk 7, 12 May 16 16:43 /dev/loop12
+brw-rw---- 1 root disk 7, 13 May 16 16:43 /dev/loop13
+brw-rw---- 1 root disk 7, 14 May 16 16:43 /dev/loop14
+brw-rw---- 1 root disk 7, 15 May 16 16:43 /dev/loop15
+brw-rw---- 1 root disk 7,  2 May 16 16:43 /dev/loop2
+brw-rw---- 1 root disk 7,  3 May 16 16:43 /dev/loop3
+brw-rw---- 1 root disk 7,  4 May 16 16:43 /dev/loop4
+brw-rw---- 1 root disk 7,  5 May 16 16:43 /dev/loop5
+brw-rw---- 1 root disk 7,  6 May 16 16:42 /dev/loop6
+brw-rw---- 1 root disk 7,  7 May 16 16:42 /dev/loop7
+brw-rw---- 1 root disk 7,  8 May 16 16:43 /dev/loop8
+brw-rw---- 1 root disk 7,  9 May 16 16:43 /dev/loop9
+
+## package versions
+policykit-1	
+polkitd	124-2ubuntu1.24.04.3
+systemd	255.4-1ubuntu8.15
+udisks2	2.10.1-6ubuntu1.3
+xfsprogs	6.6.0-1ubuntu2.1
+EXPERIMENTAL xfs_scrub program in use! Use at your own risk!
+xfs_scrub version 6.6.0
+xfs_scrub_all version 6.6.0
+
+## default xfs/udisks unit state
+disabled
+static
+static
+static
+enabled
+inactive
+inactive
+active
+
+## exact unit ExecStart/config paths
+### xfs_scrub_all.timer
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/xfs_scrub_all.timer
+UnitFileState=disabled
+# /usr/lib/systemd/system/xfs_scrub_all.timer
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# Copyright (C) 2018-2024 Oracle.  All Rights Reserved.
+# Author: Darrick J. Wong <djwong@kernel.org>
+
+[Unit]
+Description=Periodic XFS Online Metadata Check for All Filesystems
+
+[Timer]
+# Run on Sunday at 3:10am, to avoid running afoul of DST changes
+OnCalendar=Sun *-*-* 03:10:00
+RandomizedDelaySec=60
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+### xfs_scrub_all.service
+ExecStart={ path=/usr/sbin/xfs_scrub_all ; argv[]=/usr/sbin/xfs_scrub_all ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+ActiveState=inactive
+FragmentPath=/usr/lib/systemd/system/xfs_scrub_all.service
+UnitFileState=static
+# /usr/lib/systemd/system/xfs_scrub_all.service
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# Copyright (C) 2018-2024 Oracle.  All Rights Reserved.
+# Author: Darrick J. Wong <djwong@kernel.org>
+
+[Unit]
+Description=Online XFS Metadata Check for All Filesystems
+ConditionACPower=true
+Documentation=man:xfs_scrub_all(8)
+After=paths.target multi-user.target network.target network-online.target systemd-networkd.service NetworkManager.service connman.service
+
+[Service]
+Type=oneshot
+Environment=SERVICE_MODE=1
+ExecStart=/usr/sbin/xfs_scrub_all
+SyslogIdentifier=xfs_scrub_all
+### xfs_scrub@.service
+Failed to get properties: Unit name xfs_scrub@.service is neither a valid invocation ID nor unit name.
+# /usr/lib/systemd/system/xfs_scrub@.service
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# Copyright (C) 2018-2024 Oracle.  All Rights Reserved.
+# Author: Darrick J. Wong <djwong@kernel.org>
+
+[Unit]
+Description=Online XFS Metadata Check for %f
+OnFailure=xfs_scrub_fail@%i.service
+Documentation=man:xfs_scrub(8)
+
+[Service]
+Type=oneshot
+PrivateNetwork=true
+ProtectSystem=full
+ProtectHome=read-only
+# Disable private /tmp just in case %f is a path under /tmp.
+PrivateTmp=no
+AmbientCapabilities=CAP_SYS_ADMIN CAP_FOWNER CAP_DAC_OVERRIDE CAP_DAC_READ_SEARCH CAP_SYS_RAWIO
+NoNewPrivileges=yes
+User=nobody
+IOSchedulingClass=idle
+CPUSchedulingPolicy=idle
+Environment=SERVICE_MODE=1
+ExecStart=/usr/sbin/xfs_scrub -b -n %f
+SyslogIdentifier=%N
+### xfs_scrub_fail@.service
+Failed to get properties: Unit name xfs_scrub_fail@.service is neither a valid invocation ID nor unit name.
+# /usr/lib/systemd/system/xfs_scrub_fail@.service
+# SPDX-License-Identifier: GPL-2.0-or-later
+#
+# Copyright (C) 2018-2024 Oracle.  All Rights Reserved.
+# Author: Darrick J. Wong <djwong@kernel.org>
+
+[Unit]
+Description=Online XFS Metadata Check Failure Reporting for %f
+Documentation=man:xfs_scrub(8)
+
+[Service]
+Type=oneshot
+Environment=EMAIL_ADDR=root
+ExecStart=/usr/libexec/xfsprogs/xfs_scrub_fail "${EMAIL_ADDR}" %f
+User=mail
+Group=mail
+SupplementaryGroups=systemd-journal
+### udisks2.service
+ExecStart={ path=/usr/libexec/udisks2/udisksd ; argv[]=/usr/libexec/udisks2/udisksd ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=
+Group=
+ActiveState=active
+FragmentPath=/usr/lib/systemd/system/udisks2.service
+UnitFileState=enabled
+# /usr/lib/systemd/system/udisks2.service
+[Unit]
+Description=Disk Manager
+Documentation=man:udisks(8)
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.UDisks2
+ExecStart=/usr/libexec/udisks2/udisksd
+KillSignal=SIGINT
+
+[Install]
+WantedBy=graphical.target
+
+## xfsprogs scrub file/config inventory
+/usr/lib/systemd
+/usr/lib/systemd/system
+/usr/lib/systemd/system/xfs_scrub@.service
+/usr/lib/systemd/system/xfs_scrub_all.service
+/usr/lib/systemd/system/xfs_scrub_all.timer
+/usr/lib/systemd/system/xfs_scrub_fail@.service
+/usr/libexec/xfsprogs/xfs_scrub_fail
+/usr/sbin/xfs_scrub
+/usr/sbin/xfs_scrub_all
+/usr/share/man/man8/xfs_scrub.8.gz
+/usr/share/man/man8/xfs_scrub_all.8.gz
+/usr/share/xfsprogs/mkfs/dax_x86_64.conf
+/usr/share/xfsprogs/mkfs/lts_4.19.conf
+/usr/share/xfsprogs/mkfs/lts_5.10.conf
+/usr/share/xfsprogs/mkfs/lts_5.15.conf
+/usr/share/xfsprogs/mkfs/lts_5.4.conf
+/usr/share/xfsprogs/mkfs/lts_6.1.conf
+/usr/share/xfsprogs/mkfs/lts_6.6.conf
+/usr/share/xfsprogs/xfs_scrub_all.cron
+MISSING /etc/xfs_scrub.conf
+MISSING /etc/xfs_scrub
+-rwxr-xr-x root:root /usr/sbin/xfs_scrub
+-rwxr-xr-x root:root /usr/sbin/xfs_scrub_all
+-rwxr-xr-x root:root /usr/libexec/xfsprogs/xfs_scrub_fail
+-rw-r--r-- root:root /usr/lib/systemd/system/xfs_scrub@.service
+-rw-r--r-- root:root /usr/lib/systemd/system/xfs_scrub_all.service
+-rw-r--r-- root:root /usr/lib/systemd/system/xfs_scrub_all.timer
+-rw-r--r-- root:root /usr/share/xfsprogs/xfs_scrub_all.cron
+
+## xfs_scrub_all implementation path
+    31	def find_mounts():
+    32		'''Map mountpoints to physical disks.'''
+    33		def find_xfs_mounts(bdev, fs, lastdisk):
+    34			'''Attach lastdisk to each fs found under bdev.'''
+    35			if bdev['fstype'] == 'xfs' and bdev['mountpoint'] is not None:
+    36				mnt = bdev['mountpoint']
+    37				if mnt in fs:
+    38					fs[mnt].add(lastdisk)
+    39				else:
+    40					fs[mnt] = set([lastdisk])
+    41			if 'children' not in bdev:
+    42				return
+    43			for child in bdev['children']:
+    44				find_xfs_mounts(child, fs, lastdisk)
+    45	
+    46		fs = {}
+    47		cmd=['lsblk', '-o', 'NAME,KNAME,TYPE,FSTYPE,MOUNTPOINT', '-J']
+    48		result = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    49		result.wait()
+    50		if result.returncode != 0:
+    51			return fs
+    52		sarray = [x.decode(sys.stdout.encoding) for x in result.stdout.readlines()]
+    53		output = ' '.join(sarray)
+    54		bdevdata = json.loads(output)
+    55	
+    56		# The lsblk output had better be in disks-then-partitions order
+    57		for bdev in bdevdata['blockdevices']:
+    58			lastdisk = bdev['kname']
+    59			find_xfs_mounts(bdev, fs, lastdisk)
+    60	
+    61		return fs
+    62	
+    63	def backtick(cmd):
+    64		'''Generator function that yields lines of a program's stdout.'''
+    65		p = subprocess.Popen(cmd, stdout = subprocess.PIPE)
+    66		for line in TextIOWrapper(p.stdout, encoding="utf-8"):
+    67			yield line.strip()
+    68	
+    69	def remove_killfunc(killfuncs, fn):
+    70		'''Ensure fn is not in killfuncs.'''
+    71		try:
+    72			killfuncs.remove(fn)
+    73		except:
+    74			pass
+    75	
+    76	def run_killable(cmd, stdout, killfuncs):
+    77		'''Run a killable program.  Returns program retcode or -1 if we can't
+    78		start it.'''
+    79		try:
+    80			proc = subprocess.Popen(cmd, stdout = stdout)
+    81			killfuncs.add(proc.terminate)
+    82			proc.wait()
+    83			remove_killfunc(killfuncs, proc.terminate)
+    84			return proc.returncode
+    85		except:
+    86			return -1
+    87	
+    88	# systemd doesn't like unit instance names with slashes in them, so it
+    89	# replaces them with dashes when it invokes the service.  Filesystem paths
+    90	# need a special --path argument so that dashes do not get mangled.
+    91	def path_to_serviceunit(path):
+    92		'''Convert a pathname into a systemd service unit name.'''
+    93	
+    94		cmd = ['systemd-escape', '--template', 'xfs_scrub@.service',
+    95		       '--path', path]
+    96		try:
+    97			proc = subprocess.Popen(cmd, stdout = subprocess.PIPE)
+    98			proc.wait()
+    99			for line in proc.stdout:
+   100				return line.decode(sys.stdout.encoding).strip()
+   101		except:
+   102			return None
+   103	
+   104	def systemctl_stop(unitname):
+   105		'''Stop a systemd unit.'''
+   106		cmd = ['systemctl', 'stop', unitname]
+   107		x = subprocess.Popen(cmd)
+   108		x.wait()
+   109	
+   110	def systemctl_start(unitname, killfuncs):
+   111		'''Start a systemd unit and wait for it to complete.'''
+   112		stop_fn = None
+   113		cmd = ['systemctl', 'start', unitname]
+   114		try:
+   115			proc = subprocess.Popen(cmd, stdout = DEVNULL())
+   116			stop_fn = lambda: systemctl_stop(unitname)
+   117			killfuncs.add(stop_fn)
+   118			proc.wait()
+   119			ret = proc.returncode
+   120		except:
+   121			if stop_fn is not None:
+   122				remove_killfunc(killfuncs, stop_fn)
+   123			return -1
+   124	
+   125		if ret != 1:
+   126			remove_killfunc(killfuncs, stop_fn)
+   127			return ret
+   128	
+   129		# If systemctl-start returns 1, it's possible that the service failed
+   130		# or that dbus/systemd restarted and the client program lost its
+   131		# connection -- according to the systemctl man page, 1 means "unit not
+   132		# failed".
+   133		#
+   134		# Either way, we switch to polling the service status to try to wait
+   135		# for the service to end.  As of systemd 249, the is-active command
+   136		# returns any of the following states: active, reloading, inactive,
+   137		# failed, activating, deactivating, or maintenance.  Apparently these
+   138		# strings are not localized.
+   139		while True:
+   140			try:
+   141				for l in backtick(['systemctl', 'is-active', unitname]):
+   142					if l == 'failed':
+   143						remove_killfunc(killfuncs, stop_fn)
+   144						return 1
+   145					if l == 'inactive':
+   146						remove_killfunc(killfuncs, stop_fn)
+   147						return 0
+   148			except:
+   149				remove_killfunc(killfuncs, stop_fn)
+   150				return -1
+   151	
+   152			time.sleep(1)
+   153	
+   154	def run_scrub(mnt, cond, running_devs, mntdevs, killfuncs):
+   155		'''Run a scrub process.'''
+   156		global retcode, terminate
+   157	
+   158		print("Scrubbing %s..." % mnt)
+   159		sys.stdout.flush()
+   160	
+   161		try:
+   162			if terminate:
+   163				return
+   164	
+   165			# Try it the systemd way
+   166			unitname = path_to_serviceunit(path)
+   167			if unitname is not None:
+   168				ret = systemctl_start(unitname, killfuncs)
+   169				if ret == 0 or ret == 1:
+   170					print("Scrubbing %s done, (err=%d)" % (mnt, ret))
+   171					sys.stdout.flush()
+   172					retcode |= ret
+   173					return
+   174	
+   175				if terminate:
+   176					return
+   177	
+   178			# Invoke xfs_scrub manually
+   179			cmd = ['/usr/sbin/xfs_scrub']
+   180			cmd += '-b -n'.split()
+   181			cmd += [mnt]
+   182			ret = run_killable(cmd, None, killfuncs)
+   183			if ret >= 0:
+   184				print("Scrubbing %s done, (err=%d)" % (mnt, ret))
+   185				sys.stdout.flush()
+   186				retcode |= ret
+   187				return
+   188	
+   189			if terminate:
+   190				return
+
+## UDisks polkit reachability
+org.freedesktop.udisks2.filesystem-mount	allow_any=auth_admin	allow_inactive=auth_admin	allow_active=yes
+org.freedesktop.udisks2.filesystem-mount-system	allow_any=auth_admin	allow_inactive=auth_admin	allow_active=auth_admin_keep
+org.freedesktop.udisks2.filesystem-mount-other-user	allow_any=auth_admin	allow_inactive=auth_admin	allow_active=auth_admin_keep
+org.freedesktop.udisks2.loop-setup	allow_any=auth_admin	allow_inactive=auth_admin	allow_active=yes
+
+## active selfauth UDisks trigger
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/tty1
+XDG_SESSION_ID=46
+Id=46
+Seat=seat0
+TTY=tty1
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+## make xfs label=[XFSOK] img=XFSOK.img
+meta-data=./XFSOK.img            isize=512    agcount=4, agsize=32768 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=1
+         =                       reflink=1    bigtime=1 inobtcount=1 nrext64=0
+data     =                       bsize=4096   blocks=131072, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=16384, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+## loop setup XFSOK.img
+Mapped file /home/selfauth/active-udisks-xfs-scrub/XFSOK.img as /dev/loop0.
+loop_setup_rc=0
+## mount /dev/loop0
+Mounted /dev/loop0 at /media/selfauth/XFSOK
+mount_rc=0
+## make xfs label=[dot.service] img=dot.service.img
+meta-data=./dot.service.img      isize=512    agcount=4, agsize=32768 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=1
+         =                       reflink=1    bigtime=1 inobtcount=1 nrext64=0
+data     =                       bsize=4096   blocks=131072, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=16384, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+## loop setup dot.service.img
+Mapped file /home/selfauth/active-udisks-xfs-scrub/dot.service.img as /dev/loop1.
+loop_setup_rc=0
+## mount /dev/loop1
+Mounted /dev/loop1 at /media/selfauth/dot.service
+mount_rc=0
+## make xfs label=[space name] img=space_name.img
+meta-data=./space_name.img       isize=512    agcount=4, agsize=32768 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=1
+         =                       reflink=1    bigtime=1 inobtcount=1 nrext64=0
+data     =                       bsize=4096   blocks=131072, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=16384, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+## loop setup space_name.img
+Mapped file /home/selfauth/active-udisks-xfs-scrub/space_name.img as /dev/loop2.
+loop_setup_rc=0
+## mount /dev/loop2
+Mounted /dev/loop2 at /media/selfauth/space name
+mount_rc=0
+## make xfs label=[--help] img=dashhelp.img
+meta-data=./dashhelp.img         isize=512    agcount=4, agsize=32768 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=1
+         =                       reflink=1    bigtime=1 inobtcount=1 nrext64=0
+data     =                       bsize=4096   blocks=131072, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=16384, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+## loop setup dashhelp.img
+Mapped file /home/selfauth/active-udisks-xfs-scrub/dashhelp.img as /dev/loop3.
+loop_setup_rc=0
+## mount /dev/loop3
+Mounted /dev/loop3 at /media/selfauth/--help
+mount_rc=0
+## user lsblk
+NAME="loop0" KNAME="loop0" TYPE="loop" FSTYPE="xfs" LABEL="XFSOK" UUID="139544da-8e7d-4f52-9a4e-d4129823c001" MOUNTPOINT="/media/selfauth/XFSOK" PATH="/dev/loop0"
+NAME="loop1" KNAME="loop1" TYPE="loop" FSTYPE="xfs" LABEL="dot.service" UUID="1bf6934f-843b-4e42-92ca-34d21130299c" MOUNTPOINT="/media/selfauth/dot.service" PATH="/dev/loop1"
+NAME="loop2" KNAME="loop2" TYPE="loop" FSTYPE="xfs" LABEL="space name" UUID="345aa552-60c7-45b1-ad13-541f5219b501" MOUNTPOINT="/media/selfauth/space name" PATH="/dev/loop2"
+NAME="loop3" KNAME="loop3" TYPE="loop" FSTYPE="xfs" LABEL="--help" UUID="56b1e793-9d64-4463-89e6-709edbf7ccf4" MOUNTPOINT="/media/selfauth/--help" PATH="/dev/loop3"
+NAME="nbd0" KNAME="nbd0" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd0"
+NAME="nbd1" KNAME="nbd1" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd1"
+NAME="nbd2" KNAME="nbd2" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd2"
+NAME="nbd3" KNAME="nbd3" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd3"
+NAME="nbd4" KNAME="nbd4" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd4"
+NAME="nbd5" KNAME="nbd5" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd5"
+NAME="nbd6" KNAME="nbd6" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd6"
+NAME="nbd7" KNAME="nbd7" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd7"
+NAME="vda" KNAME="vda" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/vda"
+NAME="vda1" KNAME="vda1" TYPE="part" FSTYPE="ext4" LABEL="" UUID="55897b87-5d1f-4f12-8931-37b6e249877b" MOUNTPOINT="/etc/hosts" PATH="/dev/vda1"
+NAME="vdb" KNAME="vdb" TYPE="disk" FSTYPE="erofs" LABEL="" UUID="27685418-1790-40c3-bbc1-ea2342957362" MOUNTPOINT="" PATH="/dev/vdb"
+NAME="nbd8" KNAME="nbd8" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd8"
+NAME="nbd9" KNAME="nbd9" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd9"
+NAME="nbd10" KNAME="nbd10" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd10"
+NAME="nbd11" KNAME="nbd11" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd11"
+NAME="nbd12" KNAME="nbd12" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd12"
+NAME="nbd13" KNAME="nbd13" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd13"
+NAME="nbd14" KNAME="nbd14" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd14"
+NAME="nbd15" KNAME="nbd15" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd15"
+## user findmnt xfs
+/dev/loop0 /media/selfauth/XFSOK xfs rw,nosuid,nodev,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota
+/dev/loop1 /media/selfauth/dot.service xfs rw,nosuid,nodev,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota
+/dev/loop2 /media/selfauth/space\x20name xfs rw,nosuid,nodev,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota
+/dev/loop3 /media/selfauth/--help xfs rw,nosuid,nodev,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota
+
+## root view of mounted attacker xfs filesystems
+loopdev= /dev/loop0 label=[XFSOK]
+mountpoint= /media/selfauth/XFSOK label=[XFSOK]
+loopdev= /dev/loop1 label=[dot.service]
+mountpoint= /media/selfauth/dot.service label=[dot.service]
+loopdev= /dev/loop2 label=[space name]
+mountpoint= /media/selfauth/space name label=[space name]
+loopdev= /dev/loop3 label=[--help]
+mountpoint= /media/selfauth/--help label=[--help]
+NAME="loop0" KNAME="loop0" TYPE="loop" FSTYPE="xfs" LABEL="XFSOK" UUID="139544da-8e7d-4f52-9a4e-d4129823c001" MOUNTPOINT="/media/selfauth/XFSOK" PATH="/dev/loop0"
+NAME="loop1" KNAME="loop1" TYPE="loop" FSTYPE="xfs" LABEL="dot.service" UUID="1bf6934f-843b-4e42-92ca-34d21130299c" MOUNTPOINT="/media/selfauth/dot.service" PATH="/dev/loop1"
+NAME="loop2" KNAME="loop2" TYPE="loop" FSTYPE="xfs" LABEL="space name" UUID="345aa552-60c7-45b1-ad13-541f5219b501" MOUNTPOINT="/media/selfauth/space name" PATH="/dev/loop2"
+NAME="loop3" KNAME="loop3" TYPE="loop" FSTYPE="xfs" LABEL="--help" UUID="56b1e793-9d64-4463-89e6-709edbf7ccf4" MOUNTPOINT="/media/selfauth/--help" PATH="/dev/loop3"
+NAME="nbd0" KNAME="nbd0" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd0"
+NAME="nbd1" KNAME="nbd1" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd1"
+NAME="nbd2" KNAME="nbd2" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd2"
+NAME="nbd3" KNAME="nbd3" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd3"
+NAME="nbd4" KNAME="nbd4" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd4"
+NAME="nbd5" KNAME="nbd5" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd5"
+NAME="nbd6" KNAME="nbd6" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd6"
+NAME="nbd7" KNAME="nbd7" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd7"
+NAME="vda" KNAME="vda" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/vda"
+NAME="vda1" KNAME="vda1" TYPE="part" FSTYPE="ext4" LABEL="" UUID="55897b87-5d1f-4f12-8931-37b6e249877b" MOUNTPOINT="/etc/hosts" PATH="/dev/vda1"
+NAME="vdb" KNAME="vdb" TYPE="disk" FSTYPE="erofs" LABEL="" UUID="27685418-1790-40c3-bbc1-ea2342957362" MOUNTPOINT="" PATH="/dev/vdb"
+NAME="nbd8" KNAME="nbd8" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd8"
+NAME="nbd9" KNAME="nbd9" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd9"
+NAME="nbd10" KNAME="nbd10" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd10"
+NAME="nbd11" KNAME="nbd11" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd11"
+NAME="nbd12" KNAME="nbd12" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd12"
+NAME="nbd13" KNAME="nbd13" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd13"
+NAME="nbd14" KNAME="nbd14" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd14"
+NAME="nbd15" KNAME="nbd15" TYPE="disk" FSTYPE="" LABEL="" UUID="" MOUNTPOINT="" PATH="/dev/nbd15"
+/dev/loop0 /media/selfauth/XFSOK xfs rw,nosuid,nodev,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota
+/dev/loop1 /media/selfauth/dot.service xfs rw,nosuid,nodev,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota
+/dev/loop2 /media/selfauth/space\x20name xfs rw,nosuid,nodev,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota
+/dev/loop3 /media/selfauth/--help xfs rw,nosuid,nodev,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota
+
+## root xfs_scrub_all direct service-mode run
+Scrubbing /media/selfauth/--help...
+Exception in thread Thread-1 (run_scrub):
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+Scrubbing /media/selfauth/XFSOK...
+Exception in thread Thread-2 (run_scrub):
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/sbin/xfs_scrub_all", line 166, in run_scrub
+Scrubbing /media/selfauth/dot.service...
+Exception in thread Thread-3 (run_scrub):
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/sbin/xfs_scrub_all", line 166, in run_scrub
+    self._target(*self._args, **self._kwargs)
+  File "/usr/sbin/xfs_scrub_all", line 166, in run_scrub
+    unitname = path_to_serviceunit(path)
+                                   ^^^^
+NameError: name 'path' is not defined
+    unitname = path_to_serviceunit(path)
+                                   ^^^^
+NameError: name 'path' is not defined
+    unitname = path_to_serviceunit(path)
+                                   ^^^^
+NameError: name 'path' is not defined
+Scrubbing /media/selfauth/space name...
+Exception in thread Thread-4 (run_scrub):
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/sbin/xfs_scrub_all", line 166, in run_scrub
+    unitname = path_to_serviceunit(path)
+                                   ^^^^
+NameError: name 'path' is not defined
+Traceback (most recent call last):
+  File "/usr/sbin/xfs_scrub_all", line 318, in <module>
+    main()
+  File "/usr/sbin/xfs_scrub_all", line 299, in main
+    if wait_for_termination(cond, killfuncs):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/sbin/xfs_scrub_all", line 218, in wait_for_termination
+    if debug:
+       ^^^^^
+NameError: name 'debug' is not defined
+
+## root xfs_scrub_all systemd service start
+Job for xfs_scrub_all.service failed because the control process exited with error code.
+See "systemctl status xfs_scrub_all.service" and "journalctl -xeu xfs_scrub_all.service" for details.
+May 16 16:43:43 4f5b414436ae systemd[1]: Starting xfs_scrub_all.service - Online XFS Metadata Check for All Filesystems...
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Scrubbing /media/selfauth/--help...
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Exception in thread Thread-1 (run_scrub):
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Traceback (most recent call last):
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     self.run()
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Scrubbing /media/selfauth/XFSOK...
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/lib/python3.12/threading.py", line 1010, in run
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     self._target(*self._args, **self._kwargs)
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Exception in thread Thread-2 (run_scrub):
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Scrubbing /media/selfauth/dot.service...
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Traceback (most recent call last):
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/sbin/xfs_scrub_all", line 166, in run_scrub
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Scrubbing /media/selfauth/space name...
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Exception in thread Thread-3 (run_scrub):
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     unitname = path_to_serviceunit(path)
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Traceback (most recent call last):
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:                                    ^^^^
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Exception in thread Thread-4 (run_scrub):
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     self.run()
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: NameError: name 'path' is not defined
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     self.run()
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: Traceback (most recent call last):
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/lib/python3.12/threading.py", line 1010, in run
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     self.run()
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/lib/python3.12/threading.py", line 1010, in run
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/lib/python3.12/threading.py", line 1010, in run
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     self._target(*self._args, **self._kwargs)
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     self._target(*self._args, **self._kwargs)
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/sbin/xfs_scrub_all", line 166, in run_scrub
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/sbin/xfs_scrub_all", line 166, in run_scrub
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     self._target(*self._args, **self._kwargs)
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/sbin/xfs_scrub_all", line 166, in run_scrub
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     unitname = path_to_serviceunit(path)
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     unitname = path_to_serviceunit(path)
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:     unitname = path_to_serviceunit(path)
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:                                    ^^^^
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:                                    ^^^^
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]:                                    ^^^^
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: NameError: name 'path' is not defined
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: NameError: name 'path' is not defined
+May 16 16:43:43 4f5b414436ae xfs_scrub_all[729694]: NameError: name 'path' is not defined
+May 16 16:43:44 4f5b414436ae xfs_scrub_all[729694]: Traceback (most recent call last):
+May 16 16:43:44 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/sbin/xfs_scrub_all", line 318, in <module>
+May 16 16:43:44 4f5b414436ae xfs_scrub_all[729694]:     main()
+May 16 16:43:44 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/sbin/xfs_scrub_all", line 299, in main
+May 16 16:43:44 4f5b414436ae xfs_scrub_all[729694]:     if wait_for_termination(cond, killfuncs):
+May 16 16:43:44 4f5b414436ae xfs_scrub_all[729694]:        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+May 16 16:43:44 4f5b414436ae xfs_scrub_all[729694]:   File "/usr/sbin/xfs_scrub_all", line 218, in wait_for_termination
+May 16 16:43:44 4f5b414436ae xfs_scrub_all[729694]:     if debug:
+May 16 16:43:44 4f5b414436ae xfs_scrub_all[729694]:        ^^^^^
+May 16 16:43:44 4f5b414436ae xfs_scrub_all[729694]: NameError: name 'debug' is not defined
+May 16 16:43:44 4f5b414436ae systemd[1]: xfs_scrub_all.service: Main process exited, code=exited, status=1/FAILURE
+May 16 16:43:44 4f5b414436ae systemd[1]: xfs_scrub_all.service: Failed with result 'exit-code'.
+May 16 16:43:44 4f5b414436ae systemd[1]: Failed to start xfs_scrub_all.service - Online XFS Metadata Check for All Filesystems.
+
+## direct xfs_scrub@ instance starts for attacker mountpoints
+mountpoint=/media/selfauth/XFSOK
+unit=xfs_scrub@media-selfauth-XFSOK.service
+ExecStart={ path=/usr/sbin/xfs_scrub ; argv[]=/usr/sbin/xfs_scrub -b -n /media/selfauth/XFSOK ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=nobody
+Group=
+FragmentPath=/usr/lib/systemd/system/xfs_scrub@.service
+○ xfs_scrub@media-selfauth-XFSOK.service - Online XFS Metadata Check for /media/selfauth/XFSOK
+     Loaded: loaded (/usr/lib/systemd/system/xfs_scrub@.service; static)
+     Active: inactive (dead)
+       Docs: man:xfs_scrub(8)
+
+May 16 16:43:44 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+May 16 16:43:44 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+May 16 16:43:44 4f5b414436ae systemd[1]: Starting xfs_scrub@media-selfauth-XFSOK.service - Online XFS Metadata Check for /media/selfauth/XFSOK...
+May 16 16:43:44 4f5b414436ae xfs_scrub@media-selfauth-XFSOK[729760]: EXPERIMENTAL xfs_scrub program in use! Use at your own risk!
+May 16 16:43:44 4f5b414436ae xfs_scrub@media-selfauth-XFSOK[729760]: Error: /media/selfauth/XFSOK: Kernel metadata scrubbing facility is not available.
+May 16 16:43:44 4f5b414436ae xfs_scrub@media-selfauth-XFSOK[729760]: Info: /media/selfauth/XFSOK: Scrub aborted after phase 1.
+May 16 16:43:44 4f5b414436ae xfs_scrub@media-selfauth-XFSOK[729760]: /media/selfauth/XFSOK: operational errors found: 1
+May 16 16:43:46 4f5b414436ae systemd[1]: xfs_scrub@media-selfauth-XFSOK.service: Deactivated successfully.
+May 16 16:43:46 4f5b414436ae systemd[1]: Finished xfs_scrub@media-selfauth-XFSOK.service - Online XFS Metadata Check for /media/selfauth/XFSOK.
+May 16 16:43:46 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+mountpoint=/media/selfauth/dot.service
+unit=xfs_scrub@media-selfauth-dot.service.service
+ExecStart={ path=/usr/sbin/xfs_scrub ; argv[]=/usr/sbin/xfs_scrub -b -n /media/selfauth/dot.service ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=nobody
+Group=
+FragmentPath=/usr/lib/systemd/system/xfs_scrub@.service
+○ xfs_scrub@media-selfauth-dot.service.service - Online XFS Metadata Check for /media/selfauth/dot.service
+     Loaded: loaded (/usr/lib/systemd/system/xfs_scrub@.service; static)
+     Active: inactive (dead)
+       Docs: man:xfs_scrub(8)
+
+May 16 16:43:46 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+May 16 16:43:46 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+May 16 16:43:46 4f5b414436ae systemd[1]: Starting xfs_scrub@media-selfauth-dot.service.service - Online XFS Metadata Check for /media/selfauth/dot.service...
+May 16 16:43:46 4f5b414436ae xfs_scrub@media-selfauth-dot.service[729767]: EXPERIMENTAL xfs_scrub program in use! Use at your own risk!
+May 16 16:43:46 4f5b414436ae xfs_scrub@media-selfauth-dot.service[729767]: Error: /media/selfauth/dot.service: Kernel metadata scrubbing facility is not available.
+May 16 16:43:46 4f5b414436ae xfs_scrub@media-selfauth-dot.service[729767]: Info: /media/selfauth/dot.service: Scrub aborted after phase 1.
+May 16 16:43:46 4f5b414436ae xfs_scrub@media-selfauth-dot.service[729767]: /media/selfauth/dot.service: operational errors found: 1
+May 16 16:43:48 4f5b414436ae systemd[1]: xfs_scrub@media-selfauth-dot.service.service: Deactivated successfully.
+May 16 16:43:48 4f5b414436ae systemd[1]: Finished xfs_scrub@media-selfauth-dot.service.service - Online XFS Metadata Check for /media/selfauth/dot.service.
+May 16 16:43:48 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+mountpoint=/media/selfauth/space name
+unit=xfs_scrub@media-selfauth-space\x20name.service
+ExecStart={ path=/usr/sbin/xfs_scrub ; argv[]=/usr/sbin/xfs_scrub -b -n /media/selfauth/space name ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=nobody
+Group=
+FragmentPath=/usr/lib/systemd/system/xfs_scrub@.service
+○ xfs_scrub@media-selfauth-space\x20name.service - Online XFS Metadata Check for /media/selfauth/space name
+     Loaded: loaded (/usr/lib/systemd/system/xfs_scrub@.service; static)
+     Active: inactive (dead)
+       Docs: man:xfs_scrub(8)
+
+May 16 16:43:48 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+May 16 16:43:48 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+May 16 16:43:48 4f5b414436ae systemd[1]: Starting xfs_scrub@media-selfauth-space\x20name.service - Online XFS Metadata Check for /media/selfauth/space name...
+May 16 16:43:48 4f5b414436ae xfs_scrub@media-selfauth-space\x20name[729774]: EXPERIMENTAL xfs_scrub program in use! Use at your own risk!
+May 16 16:43:48 4f5b414436ae xfs_scrub@media-selfauth-space\x20name[729774]: Error: /media/selfauth/space name: Kernel metadata scrubbing facility is not available.
+May 16 16:43:48 4f5b414436ae xfs_scrub@media-selfauth-space\x20name[729774]: Info: /media/selfauth/space name: Scrub aborted after phase 1.
+May 16 16:43:48 4f5b414436ae xfs_scrub@media-selfauth-space\x20name[729774]: /media/selfauth/space name: operational errors found: 1
+May 16 16:43:50 4f5b414436ae systemd[1]: xfs_scrub@media-selfauth-space\x20name.service: Deactivated successfully.
+May 16 16:43:50 4f5b414436ae systemd[1]: Finished xfs_scrub@media-selfauth-space\x20name.service - Online XFS Metadata Check for /media/selfauth/space name.
+May 16 16:43:50 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+mountpoint=/media/selfauth/--help
+unit=xfs_scrub@media-selfauth-\x2d\x2dhelp.service
+ExecStart={ path=/usr/sbin/xfs_scrub ; argv[]=/usr/sbin/xfs_scrub -b -n /media/selfauth/--help ; ignore_errors=no ; start_time=[n/a] ; stop_time=[n/a] ; pid=0 ; code=(null) ; status=0/0 }
+User=nobody
+Group=
+FragmentPath=/usr/lib/systemd/system/xfs_scrub@.service
+○ xfs_scrub@media-selfauth-\x2d\x2dhelp.service - Online XFS Metadata Check for /media/selfauth/--help
+     Loaded: loaded (/usr/lib/systemd/system/xfs_scrub@.service; static)
+     Active: inactive (dead)
+       Docs: man:xfs_scrub(8)
+
+May 16 16:43:50 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+May 16 16:43:50 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+May 16 16:43:50 4f5b414436ae systemd[1]: Starting xfs_scrub@media-selfauth-\x2d\x2dhelp.service - Online XFS Metadata Check for /media/selfauth/--help...
+May 16 16:43:50 4f5b414436ae xfs_scrub@media-selfauth-\x2d\x2dhelp[729781]: EXPERIMENTAL xfs_scrub program in use! Use at your own risk!
+May 16 16:43:50 4f5b414436ae xfs_scrub@media-selfauth-\x2d\x2dhelp[729781]: Error: /media/selfauth/--help: Kernel metadata scrubbing facility is not available.
+May 16 16:43:50 4f5b414436ae xfs_scrub@media-selfauth-\x2d\x2dhelp[729781]: Info: /media/selfauth/--help: Scrub aborted after phase 1.
+May 16 16:43:50 4f5b414436ae xfs_scrub@media-selfauth-\x2d\x2dhelp[729781]: /media/selfauth/--help: operational errors found: 1
+May 16 16:43:52 4f5b414436ae systemd[1]: xfs_scrub@media-selfauth-\x2d\x2dhelp.service: Deactivated successfully.
+May 16 16:43:52 4f5b414436ae systemd[1]: Finished xfs_scrub@media-selfauth-\x2d\x2dhelp.service - Online XFS Metadata Check for /media/selfauth/--help.
+May 16 16:43:52 4f5b414436ae systemd[1]: /usr/lib/systemd/system/xfs_scrub@.service:20: Special user nobody configured, this is not safe!
+
+## root proof markers
+ls: cannot access '/root/active_udisks_xfs_scrub_root': No such file or directory
+ls: cannot access '/tmp/active_udisks_xfs_scrub_root': No such file or directory
+
+## pre-cleanup health
+degraded
+● xfs_scrub_all.service loaded failed failed Online XFS Metadata Check for All Filesystems
+
+## cleanup verification
+running

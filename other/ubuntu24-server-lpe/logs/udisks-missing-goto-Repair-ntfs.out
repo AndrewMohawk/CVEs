@@ -1,0 +1,96 @@
+udisksd_pid=23770
+=== root.log ===
+udisksd_pid=23770
+openvt_rc=0
+=== user.log ===
+identity=uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+session:
+selfauth (1002)
+   Since: Sun 2026-05-17 19:24:25 UTC; 256ms ago
+   State: active
+Sessions: *78
+  Linger: no
+    Unit: user-1002.slice
+          ├─session-78.scope
+          │ ├─23791 /bin/login -f
+          │ ├─23860 -bash
+          │ ├─23867 bash /tmp/udisks-missing-goto-strace-trigger.sh Repair ntfs
+          │ ├─23875 loginctl user-status 1002 --no-pager
+          │ └─23876 sed -n 1,35p
+          └─user@1002.service
+            └─init.scope
+              ├─23848 /usr/lib/systemd/systemd --user
+              └─23849 "(sd-pam)"
+
+May 17 19:24:26 bf51bb670420 systemd[23848]: Listening on gpg-agent.socket - GnuPG cryptographic agent and passphrase cache.
+May 17 19:24:26 bf51bb670420 systemd[23848]: Listening on keyboxd.socket - GnuPG public key management service.
+May 17 19:24:26 bf51bb670420 systemd[23848]: Listening on pk-debconf-helper.socket - debconf communication socket.
+May 17 19:24:26 bf51bb670420 systemd[23848]: Listening on snapd.session-agent.socket - REST API socket for snapd user session agent.
+May 17 19:24:26 bf51bb670420 systemd[23848]: Listening on dbus.socket - D-Bus User Message Bus Socket.
+May 17 19:24:26 bf51bb670420 systemd[23848]: Listening on gpg-agent-ssh.socket - GnuPG cryptographic agent (ssh-agent emulation).
+May 17 19:24:26 bf51bb670420 systemd[23848]: Reached target sockets.target - Sockets.
+May 17 19:24:26 bf51bb670420 systemd[23848]: Reached target basic.target - Basic System.
+May 17 19:24:26 bf51bb670420 systemd[23848]: Reached target default.target - Main User Target.
+May 17 19:24:26 bf51bb670420 systemd[23848]: Startup finished in 114ms.
+/home/selfauth/udisks-missing-goto-active/ntfs-Repair.img is not a block device.
+mkntfs forced anyway.
+The sector size was not specified for /home/selfauth/udisks-missing-goto-active/ntfs-Repair.img and it could not be obtained automatically.  It has been set to 512 bytes.
+The partition start sector was not specified for /home/selfauth/udisks-missing-goto-active/ntfs-Repair.img and it could not be obtained automatically.  It has been set to 0.
+The number of sectors per track was not specified for /home/selfauth/udisks-missing-goto-active/ntfs-Repair.img and it could not be obtained automatically.  It has been set to 0.
+The number of heads was not specified for /home/selfauth/udisks-missing-goto-active/ntfs-Repair.img and it could not be obtained automatically.  It has been set to 0.
+Cluster size has been automatically set to 4096 bytes.
+To boot from a device, Windows needs the 'partition start sector', the 'sectors per track' and the 'number of heads' to be set.
+Windows will not be able to boot from this device.
+Creating NTFS volume structures.
+mkntfs completed successfully. Have a nice day.
+image=/home/selfauth/udisks-missing-goto-active/ntfs-Repair.img
+Mapped file /home/selfauth/udisks-missing-goto-active/ntfs-Repair.img as /dev/loop0.
+loop_setup_rc=0
+dev=/dev/loop0
+obj=/org/freedesktop/UDisks2/block_devices/loop0
+()
+Mounted /dev/loop0 at /media/selfauth/UDISKSNTFS
+mount_rc=0
+TARGET                     SOURCE     FSTYPE OPTIONS
+/media/selfauth/UDISKSNTFS /dev/loop0 ntfs3  rw,nosuid,nodev,relatime,uid=1002,gid=1002,iocharset=iso8859-1
+unique_name=:1.703
+exception=DBusException: org.freedesktop.UDisks2.Error.NotSupported: Cannot repair filesystem filesystem on /dev/loop0 if mounted
+holding_system_bus_name=20s
+method_rc=0
+=== exec trace ===
+clone(child_stack=NULL, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0xffffb700f010) = 23976
+execve("/usr/local/sbin/ntfsfix", ["ntfsfix", "-d", "/dev/loop0"], 0xffffa4008f80 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/local/bin/ntfsfix", ["ntfsfix", "-d", "/dev/loop0"], 0xffffa4008f80 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/sbin/ntfsfix", ["ntfsfix", "-d", "/dev/loop0"], 0xffffa4008f80 /* 10 vars */) = -1 ENOENT (No such file or directory)
+execve("/usr/bin/ntfsfix", ["ntfsfix", "-d", "/dev/loop0"], 0xffffa4008f80 /* 10 vars */) = 0
+=== journal crash lines ===
+May 17 19:24:08 bf51bb670420 udisksd[23453]: Cleaning up mount point /media/selfauth/UDISKSNTFS (device 7:7 is not mounted)
+May 17 19:24:08 bf51bb670420 udisksd[23453]: No longer watching loop device /dev/loop6
+May 17 19:24:08 bf51bb670420 udisksd[23453]: No longer watching loop device /dev/loop13
+May 17 19:24:08 bf51bb670420 udisksd[23453]: No longer watching loop device /dev/loop4
+May 17 19:24:08 bf51bb670420 udisksd[23453]: No longer watching loop device /dev/loop7
+May 17 19:24:08 bf51bb670420 udisksd[23453]: No longer watching loop device /dev/loop5
+May 17 19:24:08 bf51bb670420 systemd[1]: Stopping udisks2.service - Disk Manager...
+May 17 19:24:08 bf51bb670420 udisksd[23453]: udisks daemon version 2.10.1 exiting
+May 17 19:24:08 bf51bb670420 systemd[1]: udisks2.service: Deactivated successfully.
+May 17 19:24:08 bf51bb670420 systemd[1]: Stopped udisks2.service - Disk Manager.
+May 17 19:24:08 bf51bb670420 systemd[1]: Starting udisks2.service - Disk Manager...
+May 17 19:24:08 bf51bb670420 udisksd[23708]: udisks daemon version 2.10.1 starting
+May 17 19:24:08 bf51bb670420 udisksd[23708]: Error statting /var/lib/swap: No such file or directory
+May 17 19:24:08 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:24:08 bf51bb670420 udisksd[23708]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+May 17 19:24:22 bf51bb670420 systemd[1]: Stopping udisks2.service - Disk Manager...
+May 17 19:24:22 bf51bb670420 udisksd[23708]: udisks daemon version 2.10.1 exiting
+May 17 19:24:22 bf51bb670420 systemd[1]: udisks2.service: Deactivated successfully.
+May 17 19:24:22 bf51bb670420 systemd[1]: Stopped udisks2.service - Disk Manager.
+May 17 19:24:22 bf51bb670420 systemd[1]: Starting udisks2.service - Disk Manager...
+May 17 19:24:22 bf51bb670420 udisksd[23770]: udisks daemon version 2.10.1 starting
+May 17 19:24:22 bf51bb670420 udisksd[23770]: Error statting /var/lib/swap: No such file or directory
+May 17 19:24:22 bf51bb670420 systemd[1]: Started udisks2.service - Disk Manager.
+May 17 19:24:22 bf51bb670420 udisksd[23770]: Acquired the name org.freedesktop.UDisks2 on the system message bus
+May 17 19:24:25 bf51bb670420 udisksd[23770]: Error statting /var/lib/swap: No such file or directory
+May 17 19:24:26 bf51bb670420 udisksd[23770]: Set up loop device /dev/loop0 (backed by /home/selfauth/udisks-missing-goto-active/ntfs-Repair.img)
+May 17 19:24:28 bf51bb670420 udisksd[23770]: Error statting /var/lib/swap: No such file or directory
+May 17 19:24:28 bf51bb670420 udisksd[23770]: Mounted /dev/loop0 at /media/selfauth/UDISKSNTFS on behalf of uid 1002
+May 17 19:24:30 bf51bb670420 systemd[1]: udisks2.service: Main process exited, code=killed, status=11/SEGV
+May 17 19:24:30 bf51bb670420 systemd[1]: udisks2.service: Failed with result 'signal'.

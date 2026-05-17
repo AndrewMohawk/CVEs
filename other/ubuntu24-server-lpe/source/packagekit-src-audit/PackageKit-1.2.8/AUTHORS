@@ -1,0 +1,31 @@
+Richard Hughes <richard@hughsie.com>
+Tom Parker <palfrey@tevp.net>
+Ken VanDine <ken@vandine.org>
+Matthias Klumpp <matthias@tenstral.net>
+Neal Gompa <ngompa13@gmail.com>
+
+Backend: alpm
+    Aleix Pol i Gonzàlez <aleixpol@kde.org>
+    Fabien Bourigault <bourigaultfabien@gmail.com>
+    Jonathan Conder <jonno.conder@gmail.com>
+
+Backend: dnf
+    Richard Hughes <richard@hughsie.com>
+    Neal Gompa <ngompa13@gmail.com>
+
+Backend: freebsd
+    Gleb Popov <arrowd@FreeBSD.org>
+
+Backend: pisi
+    Pisilinux Team <admin@pisilinux.org>
+    Erkan IŞIK <erkanisik@pisilinux.org>
+
+Backend: poldek
+    Marcin Banasiak <megabajt@pld-linux.org>
+
+Backend: portage
+    Mounir Lamouri (volkmar) <mounir.lamouri@gmail.com>
+
+Backend: zypp
+    Boyd Timothy <btimothy@gmail.com>
+    Scott Reeves <sreeves@novell.com>

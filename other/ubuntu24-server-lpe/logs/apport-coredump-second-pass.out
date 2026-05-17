@@ -1,0 +1,328 @@
+
+== target and default apport state ==
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+attacker : attacker
+-- packages
+apport	2.28.1-0ubuntu3.8	ii 
+apport-core-dump-handler	2.28.1-0ubuntu3.8	ii 
+apport-symptoms	0.25	ii 
+python3-apport	2.28.1-0ubuntu3.8	ii 
+python3-problem-report	2.28.1-0ubuntu3.8	ii 
+systemd	255.4-1ubuntu8.15	ii 
+systemd-coredump		un 
+whoopsie	<not-installed>
+-- sysctls
+kernel.core_pattern = core
+fs.suid_dumpable = 0
+kernel.core_pipe_limit = 0
+kernel.core_uses_pid = 0
+-- paths
+directory drwxrwsrwt 3777 root root 4096 '/var/crash'
+directory drwxr-xr-x 755 root root 4096 '/var/lib/apport'
+directory drwxr-xr-x 755 root root 4096 '/var/lib/apport/coredump'
+MISSING /var/lib/apport/autoreport
+socket srw------- 600 root root 0 '/run/apport.socket'
+MISSING /usr/bin/whoopsie
+-- unit files
+UNIT FILE                     STATE   PRESET
+apport-autoreport.path        enabled enabled
+apport-autoreport.service     static  -
+apport-coredump-hook@.service static  -
+apport-forward@.service       static  -
+apport.service                enabled enabled
+apport-forward.socket         enabled enabled
+apport-autoreport.timer       enabled enabled
+
+7 unit files listed.
+-- sockets
+/run/apport.socket                    apport-forward.socket           -
+-- timers
+-                                - -                                      - apport-autoreport.timer        apport-autoreport.service
+
+== apport unit definitions ==
+### /usr/lib/systemd/system/apport.service
+[Unit]
+Description=automatic crash report generation
+After=remote-fs.target
+ConditionVirtualization=!container
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/share/apport/apport --start
+ExecStop=/usr/share/apport/apport --stop
+
+[Install]
+WantedBy=multi-user.target
+### /usr/lib/systemd/system/apport-forward.socket
+[Unit]
+Description=Unix socket for apport crash forwarding
+ConditionVirtualization=container
+
+[Socket]
+ListenStream=/run/apport.socket
+SocketMode=0600
+Accept=yes
+MaxConnections=10
+Backlog=5
+PassCredentials=true
+
+[Install]
+WantedBy=sockets.target
+### /usr/lib/systemd/system/apport-forward@.service
+[Unit]
+Description=Apport crash forwarding receiver
+Requires=apport-forward.socket
+
+[Service]
+Type=oneshot
+ExecStart=/usr/share/apport/apport
+### /usr/lib/systemd/system/apport-autoreport.path
+[Unit]
+Description=Process error reports when automatic reporting is enabled (file watch)
+ConditionPathExists=/var/lib/apport/autoreport
+
+[Path]
+PathChanged=/var/crash
+
+[Install]
+WantedBy=paths.target
+### /usr/lib/systemd/system/apport-autoreport.timer
+[Unit]
+Description=Process error reports when automatic reporting is enabled (timer based)
+ConditionPathExists=/var/lib/apport/autoreport
+
+[Timer]
+OnStartupSec=1h
+OnUnitActiveSec=3h
+
+[Install]
+WantedBy=timers.target
+### /usr/lib/systemd/system/apport-autoreport.service
+[Unit]
+Description=Process error reports when automatic reporting is enabled
+ConditionPathExists=/var/lib/apport/autoreport
+Wants=whoopsie.path
+After=whoopsie.path
+
+[Service]
+Type=oneshot
+ExecStart=/usr/share/apport/whoopsie-upload-all --timeout 20
+### /usr/lib/systemd/system/apport-coredump-hook@.service
+# This service is responsible for reading the coredump data from systemd journal
+# after a crash has occurred, and generating a crash file to /var/crash/.
+[Service]
+Type=oneshot
+ExecStart=/usr/share/apport/apport --from-systemd-coredump %i
+Nice=9
+OOMScoreAdjust=500
+IPAddressDeny=any
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateNetwork=yes
+PrivateTmp=yes
+ProtectControlGroups=yes
+ProtectHome=read-only
+ProtectHostname=yes
+ProtectKernelLogs=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectSystem=strict
+ReadWritePaths=/var/crash /var/log
+RestrictAddressFamilies=AF_UNIX
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+SystemCallArchitectures=native
+SystemCallErrorNumber=EPERM
+SystemCallFilter=@system-service @file-system @setuid
+
+== bounded live trust-boundary probes ==
+-- attacker identity
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+attacker:x:1001:1001::/home/attacker:/bin/bash
+-- normal user default crash path with core_pattern=core
++ as attacker: /bin/bash -c cd "$1"; ulimit -c unlimited; rm -f core core.*; /bin/bash -c "kill -SEGV \$\$"; rc=$?; echo "crash_rc=$rc"; ls -la "$1" bash /tmp/apport-second-pass.7JEHLF/default-core
+bash: line 1: 724928 Segmentation fault      (core dumped) /bin/bash -c "kill -SEGV \$\$"
+crash_rc=139
+total 248
+drwx------ 2 attacker attacker     60 May 16 16:32 .
+drwxr-xr-x 3 root     root         60 May 16 16:32 ..
+-rw------- 1 attacker attacker 516096 May 16 16:32 core
+rc=0
+MISSING /var/crash/_usr_bin_bash.1001.crash
+-- attacker writable /var/crash and direct uploader path
++ as attacker: printf 'ProblemType: Crash\nExecutablePath: /usr/bin/python3\nPackage: python3 3.12\nDate: Sat May 16 00:00:00 2026\n' > '/var/crash/apport_sp_fake.1001.crash'; touch '/var/crash/apport_sp_fake.1001.upload'; stat -c '%F %A %a %U %G %s %N' '/var/crash/apport_sp_fake.1001.crash' '/var/crash/apport_sp_fake.1001.upload'; /usr/share/apport/whoopsie-upload-all --timeout 0
+regular file -rw-r--r-- 644 attacker root 105 '/var/crash/apport_sp_fake.1001.crash'
+regular empty file -rw-r--r-- 644 attacker root 0 '/var/crash/apport_sp_fake.1001.upload'
+INFO:root:whoopsie.path is not enabled, doing nothing
+rc=0
+-- apport-forward socket normal-user reachability
+socket srw------- 600 root root 0 '/run/apport.socket'
++ as attacker: python3 -
+connect=FAIL errno=13 Permission denied
+rc=0
+-- autoreport path/timer consumption gates
+directory drwxr-xr-x 755 root root 4096 '/var/lib/apport'
+MISSING /var/lib/apport/autoreport
+MISSING /usr/bin/whoopsie
++ as attacker: touch /var/lib/apport/autoreport
+touch: cannot touch '/var/lib/apport/autoreport': Permission denied
+rc=1
++ as attacker: timeout 5 systemctl start apport-autoreport.service
+Failed to start apport-autoreport.service: Interactive authentication required.
+See system logs and 'systemctl status apport-autoreport.service' for details.
+rc=1
++ systemctl start apport-autoreport.service
+rc=0
++ systemctl status apport-autoreport.path apport-autoreport.timer apport-autoreport.service --no-pager
+○ apport-autoreport.path - Process error reports when automatic reporting is enabled (file watch)
+     Loaded: loaded (/usr/lib/systemd/system/apport-autoreport.path; enabled; preset: enabled)
+     Active: inactive (dead)
+   Triggers: ● apport-autoreport.service
+  Condition: start condition unmet at Sat 2026-05-16 15:18:51 UTC; 1h 13min ago
+
+May 16 15:18:51 4f5b414436ae systemd[1]: apport-autoreport.path - Process error reports when automatic reporting is enabled (file watch) was skipped because of an unmet condition check (ConditionPathExists=/var/lib/apport/autoreport).
+
+○ apport-autoreport.timer - Process error reports when automatic reporting is enabled (timer based)
+     Loaded: loaded (/usr/lib/systemd/system/apport-autoreport.timer; enabled; preset: enabled)
+     Active: inactive (dead)
+    Trigger: n/a
+   Triggers: ● apport-autoreport.service
+  Condition: start condition unmet at Sat 2026-05-16 15:18:51 UTC; 1h 13min ago
+
+May 16 15:18:51 4f5b414436ae systemd[1]: apport-autoreport.timer - Process error reports when automatic reporting is enabled (timer based) was skipped because of an unmet condition check (ConditionPathExists=/var/lib/apport/autoreport).
+
+○ apport-autoreport.service - Process error reports when automatic reporting is enabled
+     Loaded: loaded (/usr/lib/systemd/system/apport-autoreport.service; static)
+     Active: inactive (dead)
+TriggeredBy: ○ apport-autoreport.path
+             ○ apport-autoreport.timer
+  Condition: start condition unmet at Sat 2026-05-16 16:32:24 UTC; 5ms ago
+             └─ ConditionPathExists=/var/lib/apport/autoreport was not met
+
+May 16 16:31:31 4f5b414436ae systemd[1]: apport-autoreport.service - Process error reports when automatic reporting is enabled was skipped because of an unmet condition check (ConditionPathExists=/var/lib/apport/autoreport).
+May 16 16:32:24 4f5b414436ae systemd[1]: apport-autoreport.service - Process error reports when automatic reporting is enabled was skipped because of an unmet condition check (ConditionPathExists=/var/lib/apport/autoreport).
+rc=3
++ /usr/share/apport/whoopsie-upload-all --timeout 0
+INFO:root:whoopsie.path is not enabled, doing nothing
+rc=0
+-- package hook import boundary
+644 root root /etc/apport/crashdb.conf
+644 root root /etc/apport/report-ignore/README.denylist
+644 root root /usr/share/apport/package-hooks/cryptsetup.py
+644 root root /usr/share/apport/package-hooks/libatasmart4.py
+644 root root /usr/share/apport/package-hooks/openssh-client.py
+644 root root /usr/share/apport/package-hooks/source_apparmor.py
+644 root root /usr/share/apport/package-hooks/source_apport.py
+644 root root /usr/share/apport/package-hooks/source_byobu.py
+644 root root /usr/share/apport/package-hooks/source_console-setup.py
+644 root root /usr/share/apport/package-hooks/source_linux.py
+644 root root /usr/share/apport/package-hooks/source_mdadm.py
+644 root root /usr/share/apport/package-hooks/source_plymouth.py
+644 root root /usr/share/apport/package-hooks/source_shadow.py
+644 root root /usr/share/apport/package-hooks/source_ubiquity.py
+644 root root /usr/share/apport/package-hooks/source_ubuntu-advantage-tools.py
+644 root root /usr/share/apport/package-hooks/source_ubuntu-release-upgrader.py
+644 root root /usr/share/apport/package-hooks/source_unattended-upgrades.py
+644 root root /usr/share/apport/package-hooks/source_update-manager.py
+644 root root /usr/share/apport/package-hooks/subiquity.py
+644 root root /usr/share/apport/package-hooks/systemd.py
+644 root root /usr/share/apport/package-hooks/ubuntu-desktop-bootstrap.py
+644 root root /usr/share/apport/package-hooks/udev.py
+644 root root /usr/share/apport/package-hooks/udisks2.py
+755 root root /usr/share/apport/package-hooks/source_sudo.py
+dpkg-query: no packages found matching apport_sp_hookpkg
+local_tmp_hook=/tmp/apport-second-pass.7JEHLF/apport_sp_hookpkg.py
+local_tmp_package_hook_result False
+local_tmp_hook_marker_exists False
+slash_package_hook_result False
+slash_package_unreportable invalid Package: ../../tmp/apport_sp_hookpkg
+slash_hook_marker_exists False
+MISSING /root/apport_sp_hook_marker
+-- crafted process name/environment/cwd and symlink report refusal
+py_pid=724997
+/usr/bin/python3.12
+Name:	ap) 999
+Umask:	0022
+State:	S (sleeping)
+Tgid:	724997
+Ngid:	0
++ as attacker: ln -s '/root/apport_sp_py_symlink_target' '/var/crash/_usr_bin_python3.1001.crash'; stat -c '%F %A %a %U %G %s %N' '/var/crash/_usr_bin_python3.1001.crash'
+symbolic link lrwxrwxrwx 777 attacker root 33 '/var/crash/_usr_bin_python3.1001.crash' -> '/root/apport_sp_py_symlink_target'
+rc=0
++ printf payload | /usr/share/apport/apport -p 724997 -s 11 -c 0 -d 1 -P 724997 -u 1001 -g 1001
+rc=0
+symbolic link lrwxrwxrwx 777 attacker root 33 '/var/crash/_usr_bin_python3.1001.crash' -> '/root/apport_sp_py_symlink_target'
+MISSING /root/apport_sp_py_symlink_target
++ printf payload | /usr/share/apport/apport -p 724997 -s 11 -c 0 -d 1 -P 724997 -u 1001 -g 1001
+rc=0
+MISSING /var/crash/_usr_bin_python3.1001.crash
+MISSING report /var/crash/_usr_bin_python3.1001.crash
+-- executable symlink and FIFO report path race
+sleep_pid=725058
+/usr/bin/sleep
++ as attacker: mkfifo '/var/crash/_usr_bin_sleep.1001.crash'; stat -c '%F %A %a %U %G %s %N' '/var/crash/_usr_bin_sleep.1001.crash'
+fifo prw-r--r-- 644 attacker root 0 '/var/crash/_usr_bin_sleep.1001.crash'
+rc=0
++ printf payload | /usr/share/apport/apport -p 725058 -s 11 -c 0 -d 1 -P 725058 -u 1001 -g 1001
+rc=0
+regular file -rw-r----- 640 attacker root 3878 '/var/crash/_usr_bin_sleep.1001.crash'
+ProblemType: 'Crash'
+ExecutablePath: '/usr/bin/sleep'
+InterpreterPath: '<missing>'
+Package: 'coreutils 9.4-3ubuntu6.2 [origin: unknown]'
+SourcePackage: 'coreutils'
+Signal: '11'
+ProcCmdline: '/tmp/apport-second-pass.7JEHLF/sleep-link 60'
+ProcCwd: '/'
+ProcEnviron: 'PATH=(custom, no user)'
+UserGroups: 'N/A'
+-- setuid dump-mode root-owned report and symlink refusal
+su_pid=725083
+    PID USER     RUSER    EUSER     RUID  EUID STAT COMMAND
+ 725083 root     attacker root      1001     0 S    su
++ as attacker: ln -s '/root/apport_sp_su_symlink_target' '/var/crash/_usr_bin_su.1001.crash'; stat -c '%F %A %a %U %G %s %N' '/var/crash/_usr_bin_su.1001.crash'
+symbolic link lrwxrwxrwx 777 attacker root 33 '/var/crash/_usr_bin_su.1001.crash' -> '/root/apport_sp_su_symlink_target'
+rc=0
++ printf payload | /usr/share/apport/apport -p 725083 -s 11 -c 0 -d 2 -P 725083 -u 1001 -g 1001
+rc=1
+symbolic link lrwxrwxrwx 777 attacker root 33 '/var/crash/_usr_bin_su.1001.crash' -> '/root/apport_sp_su_symlink_target'
+MISSING /root/apport_sp_su_symlink_target
++ printf payload | /usr/share/apport/apport -p 725083 -s 11 -c 0 -d 2 -P 725083 -u 1001 -g 1001
+rc=0
+regular file -rw-r----- 640 root root 5202 '/var/crash/_usr_bin_su.1001.crash'
+ProblemType: 'Crash'
+ExecutablePath: '/usr/bin/su'
+InterpreterPath: '<missing>'
+Package: 'util-linux 2.39.3-9ubuntu6.5 [origin: unknown]'
+SourcePackage: 'util-linux'
+Signal: '11'
+ProcCmdline: '/usr/bin/su root'
+ProcCwd: '<missing>'
+ProcEnviron: "Error: [Errno 13] Permission denied: 'environ'"
+UserGroups: 'N/A'
+-- cleanup preview before trap
+-rw-r----- attacker root 3878 /var/crash/_usr_bin_sleep.1001.crash -> 
+-rw-r----- root root 5202 /var/crash/_usr_bin_su.1001.crash -> 
+-rw-r--r-- attacker root 0 /var/crash/apport_sp_fake.1001.upload -> 
+-rw-r--r-- attacker root 105 /var/crash/apport_sp_fake.1001.crash -> 
+
+== post-cleanup health ==
+-- generated apport second-pass crash files
+-rw-r----- attacker root 9447 /var/crash/_usr_bin_python3.12.1001.crash -> 
+-- systemd state
+running
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.

@@ -1,0 +1,1200 @@
+## target/default proof
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 508d797cbad0 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+
+## default package versions
+dbus	1.14.10-4ubuntu4.1	ii 
+gdisk	1.0.10-1build1	ii 
+libudisks2-0:arm64	2.10.1-6ubuntu1.3	ii 
+parted	3.6-4build1	ii 
+polkitd	124-2ubuntu1.24.04.3	ii 
+python3-dbus	1.3.2-5build3	ii 
+systemd	255.4-1ubuntu8.15	ii 
+udev	255.4-1ubuntu8.15	ii 
+udisks2	2.10.1-6ubuntu1.3	ii 
+util-linux	2.39.3-9ubuntu6.5	ii 
+
+## default service and policy
+enabled
+active
+# /usr/lib/systemd/system/udisks2.service
+[Unit]
+Description=Disk Manager
+Documentation=man:udisks(8)
+
+[Service]
+Type=dbus
+BusName=org.freedesktop.UDisks2
+ExecStart=/usr/libexec/udisks2/udisksd
+KillSignal=SIGINT
+
+[Install]
+WantedBy=graphical.target
+
+  1143	  <action id="org.freedesktop.udisks2.loop-setup">
+  1144	    <description>Manage loop devices</description>
+  1145	    <description xml:lang="zh_TW">管理迴圈裝置</description>
+  1146	    <description xml:lang="zh_CN">管理回环设备</description>
+  1147	    <description xml:lang="uk">Керування петльовими пристроями</description>
+  1148	    <description xml:lang="tr">Döngü aygıtlarını yönet</description>
+  1149	    <description xml:lang="sv">Hantera loop-enheter</description>
+  1150	    <description xml:lang="sr">Управљајте уређајима петље</description>
+  1151	    <description xml:lang="sl">Upravljaj z zančnimi napravami</description>
+  1152	    <description xml:lang="sk">Spravovať zariadenia loop</description>
+  1153	    <description xml:lang="ru">Управление петлевыми устройствами</description>
+  1154	    <description xml:lang="pt_BR">Gerenciar dispositivos de loop</description>
+  1155	    <description xml:lang="pl">Zarządzanie urządzeniami zwrotnymi</description>
+  1156	    <description xml:lang="pa">ਲੂਪ ਜੰਤਰ ਪਰਬੰਧ</description>
+  1157	    <description xml:lang="nn">Handsam loop-einingar</description>
+  1158	    <description xml:lang="nl">Manage loop-devices</description>
+  1159	    <description xml:lang="lv">Pārvaldīt cikla ierīces</description>
+  1160	    <description xml:lang="lt">Tvarkyti ciklinius įrenginius</description>
+  1161	    <description xml:lang="ko">루프 장치 관리</description>
+  1162	    <description xml:lang="kk">Loop құрылғыларын басқару</description>
+  1163	    <description xml:lang="ka">მარყუჟის მოწყობილობის მართვა</description>
+  1164	    <description xml:lang="ja">ループデバイスを管理します。</description>
+  1165	    <description xml:lang="it">Gestisce device di loop</description>
+  1166	    <description xml:lang="id">Kelola perangkat loop</description>
+  1167	    <description xml:lang="ia">Gerer dispositivos de bucla</description>
+  1168	    <description xml:lang="hu">Hurokeszközök kezelése</description>
+  1169	    <description xml:lang="hr">Upravljanje virtualnim uređajima</description>
+  1170	    <description xml:lang="gl">Xestionar os dispositivos loop</description>
+  1171	    <description xml:lang="fur">Gjestìs dispositîfs di loop</description>
+  1172	    <description xml:lang="fr">Gérer les périphériques virtuels</description>
+  1173	    <description xml:lang="es">Gestiona sus dispositivos de «loop»</description>
+  1174	    <description xml:lang="en_GB">Manage loop devices</description>
+  1175	    <description xml:lang="el">Διαχείριση συσκευών βρόχου</description>
+  1176	    <description xml:lang="de">Schleifen-Geräte verwalten</description>
+  1177	    <description xml:lang="da">Håndter loop-enheder</description>
+  1178	    <description xml:lang="cs">Spravovat zařízení místních smyček</description>
+  1179	    <description xml:lang="ca">Gestiona els dispositius de bucles</description>
+  1180	    <description xml:lang="af">Bestuur lustoestelle</description>
+  1181	    <message>Authentication is required to set up a loop device</message>
+  1182	    <message xml:lang="zh_TW">要設置迴圈裝置需要先核對身分</message>
+  1183	    <message xml:lang="zh_CN">设定回环设备需要身份验证</message>
+  1184	    <message xml:lang="uk">Щоб отримати доступ до визначення петльового пристрою, слід пройти розпізнавання</message>
+  1185	    <message xml:lang="tr">Döngü aygıtı kurmak için kimlik doğrulaması gerekli</message>
+  1186	    <message xml:lang="sv">Autentisering krävs för att konfigurera en loop-enhet</message>
+  1187	    <message xml:lang="sr">Потребно је потврђивање идентитета за подешавање уређаја петље</message>
+  1188	    <message xml:lang="sl">Za vzpostavitev zančne naprave je zahtevana overitev.</message>
+  1189	    <message xml:lang="sk">Nastavenie zariadenia loop vyžaduje overenie totožnosti</message>
+  1190	    <message xml:lang="ru">Для настройки петлевого устройства требуется подтверждение подлинности пользователя</message>
+  1191	    <message xml:lang="pt_BR">Autenticação é necessária para criar um dispositivo de loop</message>
+  1192	    <message xml:lang="pl">Wymagane jest uwierzytelnienie, aby ustawić urządzenie zwrotne</message>
+  1193	    <message xml:lang="nn">Treng autentisering for å setja opp ei loop-eining</message>
+  1194	    <message xml:lang="nl">Authenticatie is vereist om een loop-device op te zetten</message>
+  1195	    <message xml:lang="lv">Vajag autentificēties, lai iestatītu cikla ierīci</message>
+  1196	    <message xml:lang="lt">Norint nustatyti ciklinį įrenginį, reikia patvirtinti tapatybę</message>
+  1197	    <message xml:lang="ko">루프 장치를 설정하려면 인증이 필요합니다</message>
+  1198	    <message xml:lang="kk">Loop құрылғысын жасау үшін аутентификация керек</message>
+  1199	    <message xml:lang="ka">მარყუჟმოწყობილობის დაყენებას ავთენტიკაცია სჭირდება</message>
+  1200	    <message xml:lang="ja">ループデバイスをセットアップするには、認証が必要です。</message>
+  1201	    <message xml:lang="it">È richiesto autenticarsi per impostare il device di loop</message>
+  1202	    <message xml:lang="id">Otentikasi diperlukan untuk menyiapkan suatu perangkat loop</message>
+  1203	    <message xml:lang="ia">Authentication es necessari pro crear un dispositivo de bucla</message>
+  1204	    <message xml:lang="hu">Hitelesítés szükséges egy hurokeszköz beállításához</message>
+  1205	    <message xml:lang="hr">Potrebna je provjera za postavljanje virtualnog uređaja</message>
+  1206	    <message xml:lang="gl">Debe autenticarse para configurar un dispositivo loop</message>
+  1207	    <message xml:lang="fur">La autenticazion e je necessarie par configurâ un dispositîf di loop</message>
+  1208	    <message xml:lang="fr">Une authentification est nécessaire pour configurer un périphérique virtuel</message>
+  1209	    <message xml:lang="es">Se requiere autenticación para configurar un dispositivo de «loop»</message>
+  1210	    <message xml:lang="en_GB">Authentication is required to set up a loop device</message>
+  1211	    <message xml:lang="el">Απαιτείται πιστοποίηση για ρύθμιση μιας συσκευής βρόχου</message>
+  1212	    <message xml:lang="de">Legitimierung ist zum Einrichten eines Schleifengeräts notwendig</message>
+  1213	    <message xml:lang="da">Der kræves godkendelse for at opsætte en loop-enhed</message>
+  2035	  <action id="org.freedesktop.udisks2.modify-device">
+  2036	    <description>Modify a device</description>
+  2037	    <description xml:lang="zh_TW">修改裝置</description>
+  2038	    <description xml:lang="zh_CN">修改设备</description>
+  2039	    <description xml:lang="uk">Внести зміни до параметрів пристрою</description>
+  2040	    <description xml:lang="tr">Aygıt düzenle</description>
+  2041	    <description xml:lang="sv">Ändra en enhet</description>
+  2042	    <description xml:lang="sr">Измените уређај</description>
+  2043	    <description xml:lang="sl">Spremeni napravo</description>
+  2044	    <description xml:lang="sk">Zmeniť zariadenie</description>
+  2045	    <description xml:lang="ru">Изменить устройство</description>
+  2046	    <description xml:lang="pt_BR">Modificar um dispositivo</description>
+  2047	    <description xml:lang="pt">Modifique um dispositivo</description>
+  2048	    <description xml:lang="pl">Modyfikacja urządzenia</description>
+  2049	    <description xml:lang="pa">ਜੰਤਰ ਸੋਧੋ</description>
+  2050	    <description xml:lang="nn">Gjer endringar for ei eining</description>
+  2051	    <description xml:lang="nl">Pas een apparaat aan</description>
+  2052	    <description xml:lang="lv">Modificēt ierīci</description>
+  2053	    <description xml:lang="lt">Modifikuoti įrenginį</description>
+  2054	    <description xml:lang="ko">장치 수정</description>
+  2055	    <description xml:lang="kk">Құрылғыны түрлендіру</description>
+  2056	    <description xml:lang="ka">მოწყობილობის შეცვლა</description>
+  2057	    <description xml:lang="ja">デバイスを変更します。</description>
+  2058	    <description xml:lang="it">Modifica un dispositivo</description>
+  2059	    <description xml:lang="id">Ubah suatu perangkat</description>
+  2060	    <description xml:lang="ia">Modificar un dispositivo</description>
+  2061	    <description xml:lang="hu">Eszköz módosítása</description>
+  2062	    <description xml:lang="hr">Uredi uređaj</description>
+  2063	    <description xml:lang="gl">Modificar un dispositivo</description>
+  2064	    <description xml:lang="fur">Modifiche un dispositîf</description>
+  2065	    <description xml:lang="fr">Modifier un périphérique</description>
+  2066	    <description xml:lang="fi">Muokkaa laitetta</description>
+  2067	    <description xml:lang="es">Modificar un dispositivo</description>
+  2068	    <description xml:lang="en_GB">Modify a device</description>
+  2069	    <description xml:lang="el">Τροποποίηση συσκευής</description>
+  2070	    <description xml:lang="de">Ein Gerät verändern</description>
+  2071	    <description xml:lang="da">Rediger en enhed</description>
+  2072	    <description xml:lang="cs">Změnit zařízení</description>
+  2073	    <description xml:lang="ca">Modifica un dispositiu</description>
+  2074	    <description xml:lang="af">Wysig ’n toestel</description>
+  2075	    <message>Authentication is required to modify a device</message>
+  2076	    <message xml:lang="zh_TW">要修改裝置需要先核對身分</message>
+  2077	    <message xml:lang="zh_CN">需要授权来修改设备</message>
+  2078	    <message xml:lang="uk">Для внесення змін до параметрів пристрою слід пройти розпізнавання</message>
+  2079	    <message xml:lang="tr">Aygıtı değiştirmek için kimlik doğrulaması gerekli</message>
+  2080	    <message xml:lang="sv">Autentisering krävs för att ändra en enhet</message>
+  2081	    <message xml:lang="sr">Потребно је потврђивање идентитета за мењање уређаја</message>
+  2082	    <message xml:lang="sl">Za spreminjanje naprave je zahtevana overitev.</message>
+  2083	    <message xml:lang="sk">Zmena zariadenia vyžaduje overenie totožnosti</message>
+  2084	    <message xml:lang="ru">Для изменения устройства требуется подтверждение подлинности пользователя</message>
+  2085	    <message xml:lang="pt_BR">Autenticação é necessária para modificar um dispositivo</message>
+  2086	    <message xml:lang="pt">É necessária autenticação para modificar um dispositivo</message>
+  2087	    <message xml:lang="pl">Wymagane jest uwierzytelnienie, aby zmodyfikować urządzenie</message>
+  2088	    <message xml:lang="pa">ਜੰਤਰ ਸੋਧਣ ਲਈ ਪਰਮਾਣਿਤ ਹੋਣ ਦੀ ਲੋੜ ਹੈ</message>
+  2089	    <message xml:lang="nn">Treng autentisering for å gjera endringar for ei eining</message>
+  2090	    <message xml:lang="nl">Authenticatie is vereist om een apparaat aan te passen</message>
+  2091	    <message xml:lang="lv">Vajag autentificēties, lai modificētu ierīci</message>
+  2092	    <message xml:lang="lt">Norint modifikuoti įrenginį, reikia patvirtinti tapatybę</message>
+  2093	    <message xml:lang="ko">장치를 수정하려면 인증이 필요합니다</message>
+  2094	    <message xml:lang="kk">Құрылғыны түрлендіру үшін аутентификация керек</message>
+  2095	    <message xml:lang="ka">მოწყობილობის შეცვლას ავთენტიკაცია სჭირდება</message>
+  2096	    <message xml:lang="ja">デバイスを変更するには、認証が必要です。</message>
+  2097	    <message xml:lang="it">È richiesto autenticarsi per modificare un dispositivo</message>
+  2098	    <message xml:lang="id">Otentikasi diperlukan untuk mengubah suatu perangkat</message>
+  2099	    <message xml:lang="ia">Authentication es necessari pro modificar un dispositivo</message>
+  2100	    <message xml:lang="hu">Hitelesítés szükséges az eszköz módosításához</message>
+  2101	    <message xml:lang="hr">Potrebna je provjera za uređivanje uređaja</message>
+  2102	    <message xml:lang="gl">Debe autenticarse para modificar un dispositivo</message>
+  2103	    <message xml:lang="fur">La autenticazion e je necessarie par modificâ un dispositîf</message>
+  2104	    <message xml:lang="fr">Une authentification est nécessaire pour modifier un périphérique</message>
+  2105	    <message xml:lang="fi">Tunnistautuminen vaaditaan laitteen muokkausta varten</message>
+  2121	  <action id="org.freedesktop.udisks2.modify-device-system">
+  2122	    <description>Modify a system device</description>
+  2123	    <description xml:lang="zh_TW">修改系統裝置</description>
+  2124	    <description xml:lang="zh_CN">修改系统设备</description>
+  2125	    <description xml:lang="uk">Внести зміни до параметрів системного пристрою</description>
+  2126	    <description xml:lang="tr">Sistem aygıtını düzenle</description>
+  2127	    <description xml:lang="sv">Ändra en systemenhet</description>
+  2128	    <description xml:lang="sr">Измените уређај система</description>
+  2129	    <description xml:lang="sl">Spremeni sistemsko napravo</description>
+  2130	    <description xml:lang="sk">Zmeniť systémové zariadenie</description>
+  2131	    <description xml:lang="ru">Изменить системное устройство</description>
+  2132	    <description xml:lang="pt_BR">Modificar um dispositivo de sistema</description>
+  2133	    <description xml:lang="pt">Modifique um dispositivo do sistema</description>
+  2134	    <description xml:lang="pl">Modyfikacja urządzenia systemowego</description>
+  2135	    <description xml:lang="pa">ਸਿਸਟਮ ਜੰਤਰ ਸੋਧੋ</description>
+  2136	    <description xml:lang="nn">Gjer endringar for ei systemeining</description>
+  2137	    <description xml:lang="nl">Pas een systeemapparaat aan</description>
+  2138	    <description xml:lang="lv">Modificēt sistēmas ierīci</description>
+  2139	    <description xml:lang="lt">Modifikuoti sisteminį įrenginį</description>
+  2140	    <description xml:lang="ko">시스템 장치 수정</description>
+  2141	    <description xml:lang="kk">Жүйелік құрылғыны түрлендіру</description>
+  2142	    <description xml:lang="ka">სისტემური მოწყობილობის შეცვლა</description>
+  2143	    <description xml:lang="ja">システムデバイスを変更します。</description>
+  2144	    <description xml:lang="it">Modifica un dispositivo di sistema</description>
+  2145	    <description xml:lang="id">Ubah suatu perangkat sistem</description>
+  2146	    <description xml:lang="ia">Modificar un dispositivo de systema</description>
+  2147	    <description xml:lang="hu">Rendszereszköz módosítása</description>
+  2148	    <description xml:lang="hr">Uredi sustavski uređaj</description>
+  2149	    <description xml:lang="gl">Modificar un dispositivo do sistema</description>
+  2150	    <description xml:lang="fur">Modifiche un dispositîf di sisteme</description>
+  2151	    <description xml:lang="fr">Modifier un périphérique système</description>
+  2152	    <description xml:lang="fi">Muokkaa järjestelmälaitetta</description>
+  2153	    <description xml:lang="es">Modificar un dispositivo del sistema</description>
+  2154	    <description xml:lang="en_GB">Modify a system device</description>
+  2155	    <description xml:lang="el">Τροποποίηση συσκευής συστήματος</description>
+  2156	    <description xml:lang="de">Ein Systemgerät verändern</description>
+  2157	    <description xml:lang="da">Rediger en systemenhed</description>
+  2158	    <description xml:lang="cs">Změnit systémové zařízení</description>
+  2159	    <description xml:lang="ca">Modifica un dispositiu de sistema</description>
+  2160	    <description xml:lang="af">Wysig ’n stelseltoestel</description>
+  2161	    <message>Authentication is required to modify a device</message>
+  2162	    <message xml:lang="zh_TW">要修改裝置需要先核對身分</message>
+  2163	    <message xml:lang="zh_CN">需要授权来修改设备</message>
+  2164	    <message xml:lang="uk">Для внесення змін до параметрів пристрою слід пройти розпізнавання</message>
+  2165	    <message xml:lang="tr">Aygıtı değiştirmek için kimlik doğrulaması gerekli</message>
+  2166	    <message xml:lang="sv">Autentisering krävs för att ändra en enhet</message>
+  2167	    <message xml:lang="sr">Потребно је потврђивање идентитета за мењање уређаја</message>
+  2168	    <message xml:lang="sl">Za spreminjanje naprave je zahtevana overitev.</message>
+  2169	    <message xml:lang="sk">Zmena zariadenia vyžaduje overenie totožnosti</message>
+  2170	    <message xml:lang="ru">Для изменения устройства требуется подтверждение подлинности пользователя</message>
+  2171	    <message xml:lang="pt_BR">Autenticação é necessária para modificar um dispositivo</message>
+  2172	    <message xml:lang="pt">É necessária autenticação para modificar um dispositivo</message>
+  2173	    <message xml:lang="pl">Wymagane jest uwierzytelnienie, aby zmodyfikować urządzenie</message>
+  2174	    <message xml:lang="pa">ਜੰਤਰ ਸੋਧਣ ਲਈ ਪਰਮਾਣਿਤ ਹੋਣ ਦੀ ਲੋੜ ਹੈ</message>
+  2175	    <message xml:lang="nn">Treng autentisering for å gjera endringar for ei eining</message>
+  2176	    <message xml:lang="nl">Authenticatie is vereist om een apparaat aan te passen</message>
+  2177	    <message xml:lang="lv">Vajag autentificēties, lai modificētu ierīci</message>
+  2178	    <message xml:lang="lt">Norint modifikuoti įrenginį, reikia patvirtinti tapatybę</message>
+  2179	    <message xml:lang="ko">장치를 수정하려면 인증이 필요합니다</message>
+  2180	    <message xml:lang="kk">Құрылғыны түрлендіру үшін аутентификация керек</message>
+  2181	    <message xml:lang="ka">მოწყობილობის შეცვლას ავთენტიკაცია სჭირდება</message>
+  2182	    <message xml:lang="ja">デバイスを変更するには、認証が必要です。</message>
+  2183	    <message xml:lang="it">È richiesto autenticarsi per modificare un dispositivo</message>
+  2184	    <message xml:lang="id">Otentikasi diperlukan untuk mengubah suatu perangkat</message>
+  2185	    <message xml:lang="ia">Authentication es necessari pro modificar un dispositivo</message>
+  2186	    <message xml:lang="hu">Hitelesítés szükséges az eszköz módosításához</message>
+  2187	    <message xml:lang="hr">Potrebna je provjera za uređivanje uređaja</message>
+  2188	    <message xml:lang="gl">Debe autenticarse para modificar un dispositivo</message>
+  2189	    <message xml:lang="fur">La autenticazion e je necessarie par modificâ un dispositîf</message>
+  2190	    <message xml:lang="fr">Une authentification est nécessaire pour modifier un périphérique</message>
+  2191	    <message xml:lang="fi">Tunnistautuminen vaaditaan laitteen muokkausta varten</message>
+
+## method and udev evidence
+/usr/lib/udev/rules.d/61-persistent-storage-android.rules:6:ACTION!="remove", KERNEL=="mmcblk[0-9]p[0-9]", ENV{PARTNAME}=="?*", SYMLINK+="disk/by-partlabel/$env{PARTNAME}"
+/usr/lib/udev/rules.d/80-udisks2.rules:121:ENV{ID_PART_ENTRY_SCHEME}=="mac", ENV{ID_PART_ENTRY_TYPE}=="Apple_Bootstrap", ENV{UDISKS_IGNORE}="1"
+/usr/lib/udev/rules.d/80-udisks2.rules:124:ENV{ID_PART_ENTRY_SCHEME}=="gpt", ENV{ID_PART_ENTRY_TYPE}=="426f6f74-0000-11aa-aa11-00306543ecac", ENV{UDISKS_IGNORE}="1"
+/usr/lib/udev/rules.d/80-udisks2.rules:128:ENV{ID_PART_ENTRY_SCHEME}=="dos", \
+/usr/lib/udev/rules.d/80-udisks2.rules:129:  ENV{ID_PART_ENTRY_TYPE}=="0x0|0x11|0x12|0x14|0x16|0x17|0x1b|0x1c|0x1e|0x27|0x3d|0x84|0x8d|0x8e|0x90|0x91|0x92|0x93|0x97|0x98|0x9a|0x9b|0xab|0xbb|0xc2|0xc3|0xdd|0xef|0xfd", \
+/usr/lib/udev/rules.d/80-udisks2.rules:134:ENV{ID_PART_ENTRY_SCHEME}=="gpt", \
+/usr/lib/udev/rules.d/80-udisks2.rules:135:  ENV{ID_PART_ENTRY_TYPE}=="c12a7328-f81f-11d2-ba4b-00a0c93ec93b|21686148-6449-6e6f-744e-656564454649|a19d880f-05fc-4d3b-a006-743f0f84911e|e6d6d379-f507-44c2-a23c-238f2a3df928|e3c9e316-0b5c-4db8-817d-f92df00215ae|de94bba4-06d1-4d40-a16a-bfd50179d6ac", \
+/usr/lib/udev/rules.d/80-udisks2.rules:140:ENV{ID_PART_ENTRY_SCHEME}=="gpt", \
+/usr/lib/udev/rules.d/80-udisks2.rules:141:  ENV{ID_PART_ENTRY_TYPE}=="bc13c2ff-59e6-4262-a352-b275fd6f7172", \
+/usr/lib/udev/rules.d/80-udisks2.rules:145:ENV{ID_PART_ENTRY_SCHEME}=="gpt", \
+/usr/lib/udev/rules.d/80-udisks2.rules:146:  ENV{ID_FS_TYPE}=="zfs_member", ENV{ID_PART_ENTRY_TYPE}=="6a898cc3-1dd2-11b2-99a6-080020736631", \
+/usr/lib/udev/rules.d/80-udisks2.rules:150:ENV{ID_PART_ENTRY_SCHEME}=="mac", \
+/usr/lib/udev/rules.d/80-udisks2.rules:184:ENV{ID_PART_TABLE_TYPE}=="dos", ENV{ID_PART_ENTRY_TYPE}=="0x0|0x17", ENV{ID_PART_ENTRY_NUMBER}=="1|2", ENV{ID_FS_TYPE}=="iso9660|udf", ENV{UDISKS_IGNORE}="0"
+/usr/lib/udev/rules.d/63-md-raid-arrays.rules:34:ENV{ID_FS_USAGE}=="filesystem|other", ENV{ID_PART_ENTRY_UUID}=="?*", SYMLINK+="disk/by-partuuid/$env{ID_PART_ENTRY_UUID}"
+/usr/lib/udev/rules.d/60-persistent-storage.rules:147:# by-partlabel/by-partuuid links (partition metadata)
+/usr/lib/udev/rules.d/60-persistent-storage.rules:148:ENV{ID_PART_ENTRY_UUID}=="?*", SYMLINK+="disk/by-partuuid/$env{ID_PART_ENTRY_UUID}"
+/usr/lib/udev/rules.d/60-persistent-storage.rules:149:ENV{ID_PART_ENTRY_SCHEME}=="gpt", ENV{ID_PART_ENTRY_NAME}=="?*", SYMLINK+="disk/by-partlabel/$env{ID_PART_ENTRY_NAME}"
+/usr/lib/udev/rules.d/60-persistent-storage-dm.rules:31:ENV{ID_PART_ENTRY_UUID}=="?*", SYMLINK+="disk/by-partuuid/$env{ID_PART_ENTRY_UUID}"
+/usr/lib/udev/rules.d/60-persistent-storage-dm.rules:32:ENV{ID_PART_ENTRY_SCHEME}=="gpt", ENV{ID_PART_ENTRY_NAME}=="?*", SYMLINK+="disk/by-partlabel/$env{ID_PART_ENTRY_NAME}"
+/usr/lib/udev/rules.d/60-persistent-storage-dm.rules:33:ENV{ID_PART_ENTRY_SCHEME}=="gpt", ENV{ID_PART_GPT_AUTO_ROOT}=="1", SYMLINK+="gpt-auto-root"
+/usr/lib/udev/rules.d/56-dm-parts.rules:19:IMPORT{db}="ID_PART_ENTRY_NAME"
+/usr/lib/udev/rules.d/56-dm-parts.rules:20:IMPORT{db}="ID_PART_ENTRY_UUID"
+/usr/lib/udev/rules.d/56-dm-parts.rules:21:IMPORT{db}="ID_PART_ENTRY_SCHEME"
+-rwxr-xr-x root:root /usr/libexec/udisks2/udisksd
+-rw-r--r-- root:root /usr/lib/udev/rules.d/60-persistent-storage.rules
+-rw-r--r-- root:root /usr/lib/udev/rules.d/99-systemd.rules
+-rwxr-xr-x root:root /usr/bin/udisksctl
+-rwxr-xr-x root:root /usr/bin/gdbus
+-rwxr-xr-x root:root /usr/bin/python3
+-rwxr-xr-x root:root /usr/sbin/parted
+-rwxr-xr-x root:root /usr/sbin/sgdisk
+
+## active selfauth session
+$ id; tty; echo XDG_SESSION_ID=${XDG_SESSION_ID:-}; if [ -n "${XDG_SESSION_ID:-}" ]; then loginctl show-session "$XDG_SESSION_ID" -p Id -p User -p Name -p Seat -p TTY -p Active -p State -p Type -p Class -p Remote; fi
+uid=1002(selfauth) gid=1002(selfauth) groups=1002(selfauth)
+/dev/tty1
+XDG_SESSION_ID=93
+Id=93
+User=1002
+Name=selfauth
+Seat=seat0
+TTY=tty1
+Remote=no
+Type=tty
+Class=user
+Active=yes
+State=active
+rc=0
+
+## create active-user loop disk
+$ truncate -s 96M /home/selfauth/active-udisks-partition-metadata/partmeta.img; ls -l /home/selfauth/active-udisks-partition-metadata/partmeta.img
+-rw-rw-r-- 1 selfauth selfauth 100663296 May 16 22:09 /home/selfauth/active-udisks-partition-metadata/partmeta.img
+rc=0
+loop_path=/org/freedesktop/UDisks2/block_devices/loop0
+loop_dev=/dev/loop0
+
+## settle after LoopSetup
+$ udevadm settle --timeout=20 || true
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+## Block.Format(gpt) and PartitionTable
+Format_gpt_OK None
+
+## settle after Format(gpt)
+$ udevadm settle --timeout=20 || true
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+$ gdbus introspect --system --dest org.freedesktop.UDisks2 --object-path /org/freedesktop/UDisks2/block_devices/loop0 | sed -n '/interface org.freedesktop.UDisks2.PartitionTable/,/};/p'
+  interface org.freedesktop.UDisks2.PartitionTable {
+    methods:
+      CreatePartition(in  t offset,
+                      in  t size,
+                      in  s type,
+                      in  s name,
+                      in  a{sv} options,
+                      out o created_partition);
+      CreatePartitionAndFormat(in  t offset,
+                               in  t size,
+                               in  s type,
+                               in  s name,
+                               in  a{sv} options,
+                               in  s format_type,
+                               in  a{sv} format_options,
+                               out o created_partition);
+    signals:
+    properties:
+      readonly ao Partitions = [];
+      readonly s Type = 'gpt';
+  };
+rc=0
+CreatePartition_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Error wiping newly created partition /dev/loop0p1: Failed to open the device '/dev/loop0p1': No such file or directory
+CreatePartition_recovered_part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1
+
+## settle after CreatePartition
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+$ gdbus introspect --system --dest org.freedesktop.UDisks2 --object-path /org/freedesktop/UDisks2/block_devices/loop0p1 | sed -n '/interface org.freedesktop.UDisks2.Partition/,/};/p'
+  interface org.freedesktop.UDisks2.Partition {
+    methods:
+      SetType(in  s type,
+              in  a{sv} options);
+      SetName(in  s name,
+              in  a{sv} options);
+      SetUUID(in  s uuid,
+              in  a{sv} options);
+      SetFlags(in  t flags,
+               in  a{sv} options);
+      Resize(in  t size,
+             in  a{sv} options);
+      Delete(in  a{sv} options);
+    signals:
+    properties:
+      readonly u Number = 1;
+      readonly s Type = '';
+      readonly t Flags = 0;
+      readonly t Offset = 1048576;
+      readonly t Size = 16777216;
+      readonly s Name = '';
+      readonly s UUID = '';
+      readonly o Table = '/org/freedesktop/UDisks2/block_devices/loop0';
+      readonly b IsContainer = false;
+      readonly b IsContained = false;
+  };
+rc=0
+
+## Partition.SetName matrix
+
+### SetName repr='SAFEPART2'
+SetName_OK None
+
+## settle after SetName 'SAFEPART2'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetName repr='../../root/partpwn'
+SetName_OK None
+
+## settle after SetName '../../root/partpwn'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetName repr='semi;id>/root/active-udisks-partition-metadata-root'
+SetName_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Max partition name length is 36 characters
+
+## settle after SetName 'semi;id>/root/active-udisks-partition-metadata-root'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetName repr='$(id>/root/active-udisks-partition-metadata-root)'
+SetName_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Max partition name length is 36 characters
+
+## settle after SetName '$(id>/root/active-udisks-partition-metadata-root)'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetName repr='line\nSYSTEMD_WANTS=active-udisks-partition-metadata.service'
+SetName_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Max partition name length is 36 characters
+
+## settle after SetName 'line\nSYSTEMD_WANTS=active-udisks-partition-metadata.service'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetName repr='--attributes=1:set:2'
+SetName_OK None
+
+## settle after SetName '--attributes=1:set:2'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+## Partition.SetType matrix
+
+### SetType repr='0FC63DAF-8483-4772-8E79-3D69D8477DE4'
+SetType_OK None
+
+## settle after SetType '0FC63DAF-8483-4772-8E79-3D69D8477DE4'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetType repr='21686148-6449-6E6F-744E-656564454649'
+SetType_OK None
+
+## settle after SetType '21686148-6449-6E6F-744E-656564454649'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetType repr='../../root/parttype'
+SetType_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Given type `../../root/parttype' is not a valid UUID
+
+## settle after SetType '../../root/parttype'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetType repr='semi;id>/root/active-udisks-partition-metadata-root'
+SetType_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Given type `semi;id>/root/active-udisks-partition-metadata-root' is not a valid UUID
+
+## settle after SetType 'semi;id>/root/active-udisks-partition-metadata-root'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetType repr='$(id>/root/active-udisks-partition-metadata-root)'
+SetType_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Given type `$(id>/root/active-udisks-partition-metadata-root)' is not a valid UUID
+
+## settle after SetType '$(id>/root/active-udisks-partition-metadata-root)'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetType repr='11111111-2222-4333-8444-555555555555\nSYSTEMD_WANTS=x.service'
+SetType_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Given type `11111111-2222-4333-8444-555555555555
+SYSTEMD_WANTS=x.service' is not a valid UUID
+
+## settle after SetType '11111111-2222-4333-8444-555555555555\nSYSTEMD_WANTS=x.service'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+## Partition.SetUUID matrix
+
+### SetUUID repr='11111111-2222-4333-8444-555555555555'
+SetUUID_OK None
+
+## settle after SetUUID '11111111-2222-4333-8444-555555555555'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetUUID repr='aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee'
+SetUUID_OK None
+
+## settle after SetUUID 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetUUID repr='../../root/partuuid'
+SetUUID_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Provided UUID is not a valid RFC-4122 UUID
+
+## settle after SetUUID '../../root/partuuid'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetUUID repr='semi;id>/root/active-udisks-partition-metadata-root'
+SetUUID_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Provided UUID is not a valid RFC-4122 UUID
+
+## settle after SetUUID 'semi;id>/root/active-udisks-partition-metadata-root'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetUUID repr='$(id>/root/active-udisks-partition-metadata-root)'
+SetUUID_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Provided UUID is not a valid RFC-4122 UUID
+
+## settle after SetUUID '$(id>/root/active-udisks-partition-metadata-root)'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetUUID repr='aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee\nSYSTEMD_WANTS=x.service'
+SetUUID_ERR DBusException: org.freedesktop.UDisks2.Error.Failed: Provided UUID is not a valid RFC-4122 UUID
+
+## settle after SetUUID 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee\nSYSTEMD_WANTS=x.service'
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+## Partition.SetFlags matrix
+
+### SetFlags value=0x0000000000000000
+SetFlags_OK None
+
+## settle after SetFlags 0x0000000000000000
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetFlags value=0x0000000000000001
+SetFlags_OK None
+
+## settle after SetFlags 0x0000000000000001
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetFlags value=0x0000000000000002
+SetFlags_OK None
+
+## settle after SetFlags 0x0000000000000002
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-diskseq/63-part1 /dev/disk/by-loop-inode/0:60-5425972-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetFlags value=0x0000000000000004
+SetFlags_OK None
+
+## settle after SetFlags 0x0000000000000004
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetFlags value=0x8000000000000000
+SetFlags_OK None
+
+## settle after SetFlags 0x8000000000000000
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+### SetFlags value=0xffffffffffffffff
+SetFlags_OK None
+
+## settle after SetFlags 0xffffffffffffffff
+$ udevadm settle --timeout=20 || true
+rc=0
+part_obj=/org/freedesktop/UDisks2/block_devices/loop0p1 dev=/dev/loop0p1
+partition_props Flags=dbus.UInt64(0, variant_level=1) IsContained=dbus.Boolean(False, variant_level=1) IsContainer=dbus.Boolean(False, variant_level=1) Name=dbus.String('', variant_level=1) Number=dbus.UInt32(1, variant_level=1) Offset=dbus.UInt64(1048576, variant_level=1) Size=dbus.UInt64(16777216, variant_level=1) Table=dbus.ObjectPath('/org/freedesktop/UDisks2/block_devices/loop0', variant_level=1) Type=dbus.String('', variant_level=1) UUID=dbus.String('', variant_level=1)
+$ ls -l /dev/loop0p1 /sys/class/block/loop0p1 2>&1 || true
+ls: cannot access '/dev/loop0p1': No such file or directory
+lrwxrwxrwx 1 root root 0 May 16 22:09 /sys/class/block/loop0p1 -> ../../devices/virtual/block/loop0/loop0p1
+rc=0
+$ udevadm info --query=property --name /dev/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+rc=0
+$ udevadm info --query=property --path /sys/class/block/loop0p1 2>&1 | grep -E '^(DEVNAME|DEVLINKS|ID_PART|ID_FS|SYSTEMD|UDISKS)' | sort || true
+DEVLINKS=/dev/disk/by-loop-inode/0:60-5425972-part1 /dev/disk/by-diskseq/63-part1
+DEVNAME=/dev/loop0p1
+ID_PART_TABLE_TYPE=gpt
+ID_PART_TABLE_UUID=b681d0bd-079b-459a-85f1-1af24a207c47
+rc=0
+$ find /dev/disk/by-partlabel /dev/disk/by-partuuid /dev/disk/by-label /dev/disk/by-uuid -maxdepth 1 -mindepth 1 -printf '%M %u:%g %p -> %l\n' 2>/dev/null | sort | sed -n '1,220p'
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+lrwxrwxrwx root:root /dev/disk/by-uuid/27685418-1790-40c3-bbc1-ea2342957362 -> ../../vdb
+lrwxrwxrwx root:root /dev/disk/by-uuid/55897b87-5d1f-4f12-8931-37b6e249877b -> ../../vda1
+rc=0
+$ stat -Lc '%A %a %U:%G %n' /root/active-udisks-partition-metadata-root /run/active-udisks-partition-metadata-root /tmp/active-udisks-partition-metadata-root 2>&1 || true
+stat: cannot statx '/root/active-udisks-partition-metadata-root': Permission denied
+stat: cannot statx '/run/active-udisks-partition-metadata-root': No such file or directory
+stat: cannot statx '/tmp/active-udisks-partition-metadata-root': No such file or directory
+rc=0
+
+## cleanup loop
+Loop.Delete_OK
+
+## root-side postcheck
+ROOT_MARKER_ABSENT /root/active-udisks-partition-metadata-root
+ROOT_MARKER_ABSENT /run/active-udisks-partition-metadata-root
+ROOT_MARKER_ABSENT /tmp/active-udisks-partition-metadata-root
+
+## root-side device state
+lrwxrwxrwx root:root /dev/disk/by-partuuid/7b0c49f7-01 -> ../../vda1
+
+## recent relevant journal
+May 16 22:09:10 508d797cbad0 udisksd[251674]: Deleted loop device /dev/loop0 (was backed by /home/selfauth/active-udisks-partition-metadata/partmeta.img)
+May 16 22:09:04 508d797cbad0 udisksd[251674]: Set up loop device /dev/loop0 (backed by /home/selfauth/active-udisks-partition-metadata/partmeta.img)
+May 16 22:08:42 508d797cbad0 udisksd[251674]: Set up loop device /dev/loop0 (backed by /home/selfauth/active-udisks-partition-metadata/partmeta.img)
+
+## cleanup-health
+running
+0
+
+## result
+ROOT_PROOF=NO

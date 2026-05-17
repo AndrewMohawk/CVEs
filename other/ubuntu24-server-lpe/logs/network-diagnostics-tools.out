@@ -1,0 +1,283 @@
+## target and package proof
+uid=0(root) gid=0(root) groups=0(root)
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+PRETTY_NAME="Ubuntu 24.04.4 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.4 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+Linux 4f5b414436ae 6.10.14-linuxkit #1 SMP Sat May 17 08:28:57 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+bind9-dnsutils	1:9.18.39-0ubuntu0.24.04.3	ii 
+bind9-host	1:9.18.39-0ubuntu0.24.04.3	ii 
+curl	8.5.0-2ubuntu10.9	ii 
+ftp	20230507-2build3	ii 
+inetutils-telnet	2:2.5-3ubuntu4.1	ii 
+iputils-ping	3:20240117-1ubuntu0.1	ii 
+iputils-tracepath	3:20240117-1ubuntu0.1	ii 
+libpcap0.8t64:arm64	1.10.4-4.1ubuntu3	ii 
+mtr-tiny	0.95-1.1ubuntu0.1	ii 
+netcat-openbsd	1.226-1ubuntu2	ii 
+tcpdump	4.99.4-3ubuntu4.24.04.1	ii 
+tnftp	20230507-2build3	ii 
+wget	1.21.4-1ubuntu4.1	ii 
+## helper modes and capabilities
+-rwxr-xr-x 755 root:root regular file /usr/bin/tcpdump
+-rwxr-xr-x 755 root:root regular file /usr/bin/mtr-packet
+-rwxr-xr-x 755 root:root regular file /usr/bin/ping
+-rwxr-xr-x 755 root:root regular file /usr/bin/tracepath
+-rwxr-xr-x 755 root:root regular file /usr/bin/nc.openbsd
+-rwxr-xr-x 755 root:root regular file /usr/bin/netcat
+-rwxr-xr-x 755 root:root regular file /usr/bin/dig
+-rwxr-xr-x 755 root:root regular file /usr/bin/host
+-rwxr-xr-x 755 root:root regular file /usr/bin/curl
+-rwxr-xr-x 755 root:root regular file /usr/bin/wget
+-rwxr-xr-x 755 root:root regular file /usr/bin/ftp
+-rwxr-xr-x 755 root:root regular file /usr/bin/tnftp
+-rwxr-xr-x 755 root:root regular file /usr/bin/telnet
+/usr/bin/mtr-packet cap_net_raw=ep
+/usr/bin/ping cap_net_raw=ep
+/usr/lib/aarch64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper cap_net_bind_service,cap_net_admin,cap_sys_nice=ep
+/usr/lib/snapd/snap-confine cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_setgid,cap_setuid,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin,cap_sys_resource=p
+## default root service/timer proof
+UNIT FILE     STATE    PRESET
+rsync.service disabled enabled
+
+1 unit files listed.
+/usr/lib/systemd/system/apt-news.service:1:# APT News is hosted at https://motd.ubuntu.com/aptnews.json and can include
+/usr/lib/systemd/system/apt-news.service:7:# You can also host your own aptnews.json and configure your system to use it
+/usr/lib/systemd/system/apt-news.service:9:# `pro config set apt_news_url=https://yourhostname/path/to/aptnews.json`
+/usr/lib/systemd/system/apt-news.service:30:# ProtectHome=true seems to reliably break the GH integration test with a lunar lxd on jammy host
+/usr/lib/systemd/system/dmesg.service:8:ExecStart=/bin/journalctl --boot 0 --dmesg --output short-monotonic --quiet --no-pager --no-hostname
+/usr/lib/systemd/system/open-vm-tools.service:2:Description=Service for virtual machines hosted on VMware
+/usr/lib/systemd/system/systemd-hostnamed.service:12:Documentation=man:systemd-hostnamed.service(8)
+/usr/lib/systemd/system/systemd-hostnamed.service:13:Documentation=man:hostname(5)
+/usr/lib/systemd/system/systemd-hostnamed.service:15:Documentation=man:org.freedesktop.hostname1(5)
+/usr/lib/systemd/system/systemd-hostnamed.service:18:BusName=org.freedesktop.hostname1
+/usr/lib/systemd/system/systemd-hostnamed.service:20:ExecStart=/usr/lib/systemd/systemd-hostnamed
+/usr/lib/systemd/system/systemd-hostnamed.service:42:SystemCallFilter=@system-service sethostname
+/usr/lib/systemd/system/systemd-timesyncd.service:25:# Turn off DNSSEC validation for hostname look-ups, since those need the
+/usr/lib/systemd/system/systemd-tmpfiles-setup.service:29:ImportCredential=network.hosts
+/usr/lib/systemd/system/vgauth.service:2:Description=Authentication service for virtual machines hosted on VMware
+/usr/lib/tmpfiles.d/provision.conf:16:# Provision a /etc/hosts file from credentials.
+/usr/lib/tmpfiles.d/provision.conf:17:f^ /etc/hosts - - - - network.hosts
+/usr/lib/tmpfiles.d/static-nodes-permissions.conf:19:z /dev/vhost-net    0660 - kvm -
+/usr/lib/tmpfiles.d/static-nodes-permissions.conf:20:z /dev/vhost-vsock  0660 - kvm -
+## writable roots
+-rwxr-xr-x 755 root:root regular file /usr/bin/tcpdump
+MISSING /etc/tcpdump
+drwxr-xr-x 755 root:root directory /etc/logrotate.d
+drwxr-xr-x 755 root:root directory /etc/cron.daily
+drwxr-xr-x 755 root:root directory /usr/lib/systemd/system
+drwxr-xr-x 755 root:root directory /run/systemd/system
+drwxrwxrwt 1777 root:root directory /tmp
+drwxrwxrwt 1777 root:root directory /var/tmp
+## attacker cannot install root hooks or service overrides
+### attacker: 
+id
+for p in \
+  /etc/logrotate.d/network-diagnostics-lpe \
+  /etc/cron.daily/network-diagnostics-lpe \
+  /usr/lib/systemd/system/network-diagnostics-lpe.service \
+  /run/systemd/system/network-diagnostics-lpe.service \
+  /etc/tcpdump/network-diagnostics-lpe; do
+  echo "--- $p"
+  mkdir -p "$(dirname "$p")" 2>/tmp/network_diag_mkdir.err || true
+  printf "owned\n" > "$p" 2>/tmp/network_diag_write.err
+  echo "write_rc=$? err=$(cat /tmp/network_diag_write.err 2>/dev/null)"
+done
+
+uid=1001(attacker) gid=1001(attacker) groups=1001(attacker)
+--- /etc/logrotate.d/network-diagnostics-lpe
+bash: line 11: /etc/logrotate.d/network-diagnostics-lpe: Permission denied
+write_rc=1 err=
+--- /etc/cron.daily/network-diagnostics-lpe
+bash: line 11: /etc/cron.daily/network-diagnostics-lpe: Permission denied
+write_rc=1 err=
+--- /usr/lib/systemd/system/network-diagnostics-lpe.service
+bash: line 11: /usr/lib/systemd/system/network-diagnostics-lpe.service: Permission denied
+write_rc=1 err=
+--- /run/systemd/system/network-diagnostics-lpe.service
+bash: line 11: /run/systemd/system/network-diagnostics-lpe.service: Permission denied
+write_rc=1 err=
+--- /etc/tcpdump/network-diagnostics-lpe
+bash: line 11: /etc/tcpdump/network-diagnostics-lpe: No such file or directory
+write_rc=1 err=
+rc=0
+## attacker direct tcpdump/postrotate and network helper attempts
+### attacker: 
+set -e
+mkdir -p "$HOME/network_diagnostics_tools_probe"
+cat > "$HOME/network_diagnostics_tools_probe/postrotate.sh" <<EOF
+#!/bin/sh
+id > "$HOME/network_diagnostics_tools_probe/postrotate_uid"
+touch /root/network_diagnostics_tools_lpe_marker 2>/dev/null || true
+echo "args=\$*" >> "$HOME/network_diagnostics_tools_probe/postrotate_args"
+EOF
+chmod 755 "$HOME/network_diagnostics_tools_probe/postrotate.sh"
+for cmd in \
+  "tcpdump -D" \
+  "tcpdump -i lo -c 1 -w /tmp/network_diag_attacker.pcap" \
+  "tcpdump -i lo -G 1 -W 1 -w /tmp/network_diag_rotate.pcap -z $HOME/network_diagnostics_tools_probe/postrotate.sh" \
+  "tracepath 127.0.0.1" \
+  "dig localhost" \
+  "host localhost" \
+  "nc.openbsd -h"; do
+  echo "--- $cmd"
+  timeout 6s bash -lc "$cmd" 2>&1 | sed -n "1,80p"
+  echo cmd_rc=${PIPESTATUS[0]}
+done
+for f in "$HOME"/network_diagnostics_tools_probe/postrotate_*; do
+  [ -e "$f" ] && { echo "--- $f"; cat "$f"; }
+done
+test -e /root/network_diagnostics_tools_lpe_marker && echo direct_root_marker || echo no_direct_root_marker
+
+--- tcpdump -D
+1.eth0 [Up, Running, Connected]
+2.any (Pseudo-device that captures on all interfaces) [Up, Running]
+3.lo [Up, Running, Loopback]
+4.tunl0 [none]
+5.gre0 [none]
+6.gretap0 [none]
+7.erspan0 [none]
+8.ip_vti0 [none]
+9.ip6_vti0 [none]
+10.sit0 [none]
+11.ip6tnl0 [none]
+12.ip6gre0 [none]
+13.bluetooth-monitor (Bluetooth Linux Monitor) [Wireless]
+14.usbmon0 (Raw USB traffic, all USB buses) [none]
+15.usbmon1 (Raw USB traffic, bus number 1)
+16.usbmon2 (Raw USB traffic, bus number 2)
+17.nflog (Linux netfilter log (NFLOG) interface) [none]
+18.nfqueue (Linux netfilter queue (NFQUEUE) interface) [none]
+19.dbus-system (D-Bus system bus) [none]
+20.dbus-session (D-Bus session bus) [none]
+cmd_rc=0
+--- tcpdump -i lo -c 1 -w /tmp/network_diag_attacker.pcap
+tcpdump: lo: You don't have permission to perform this capture on that device
+(socket: Operation not permitted)
+cmd_rc=1
+--- tcpdump -i lo -G 1 -W 1 -w /tmp/network_diag_rotate.pcap -z /home/attacker/network_diagnostics_tools_probe/postrotate.sh
+tcpdump: lo: You don't have permission to perform this capture on that device
+(socket: Operation not permitted)
+cmd_rc=1
+--- tracepath 127.0.0.1
+ 1:  localhost                                             0.038ms reached
+     Resume: pmtu 65535 hops 1 back 1 
+cmd_rc=0
+--- dig localhost
+
+; <<>> DiG 9.18.39-0ubuntu0.24.04.3-Ubuntu <<>> localhost
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 59768
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;localhost.			IN	A
+
+;; ANSWER SECTION:
+localhost.		1	IN	A	127.0.0.1
+
+;; Query time: 3 msec
+;; SERVER: 192.168.65.7#53(192.168.65.7) (UDP)
+;; WHEN: Sat May 16 18:45:24 UTC 2026
+;; MSG SIZE  rcvd: 52
+
+cmd_rc=0
+--- host localhost
+localhost has address 127.0.0.1
+localhost has IPv6 address ::1
+cmd_rc=0
+--- nc.openbsd -h
+OpenBSD netcat (Debian patchlevel 1.226-1ubuntu2)
+usage: nc [-46CDdFhklNnrStUuvZz] [-I length] [-i interval] [-M ttl]
+	  [-m minttl] [-O length] [-P proxy_username] [-p source_port]
+	  [-q seconds] [-s sourceaddr] [-T keyword] [-V rtable] [-W recvlimit]
+	  [-w timeout] [-X proxy_protocol] [-x proxy_address[:port]]
+	  [destination] [port]
+	Command Summary:
+		-4		Use IPv4
+		-6		Use IPv6
+		-b		Allow broadcast
+		-C		Send CRLF as line-ending
+		-D		Enable the debug socket option
+		-d		Detach from stdin
+		-F		Pass socket fd
+		-h		This help text
+		-I length	TCP receive buffer length
+		-i interval	Delay interval for lines sent, ports scanned
+		-k		Keep inbound sockets open for multiple connects
+		-l		Listen mode, for inbound connects
+		-M ttl		Outgoing TTL / Hop Limit
+		-m minttl	Minimum incoming TTL / Hop Limit
+		-N		Shutdown the network socket after EOF on stdin
+		-n		Suppress name/port resolutions
+		-O length	TCP send buffer length
+		-P proxyuser	Username for proxy authentication
+		-p port		Specify local port for remote connects
+		-q secs		quit after EOF on stdin and delay of secs
+		-r		Randomize remote ports
+		-S		Enable the TCP MD5 signature option
+		-s sourceaddr	Local source address
+		-T keyword	TOS value
+		-t		Answer TELNET negotiation
+		-U		Use UNIX domain socket
+		-u		UDP mode
+		-V rtable	Specify alternate routing table
+		-v		Verbose
+		-W recvlimit	Terminate after receiving a number of packets
+		-w timeout	Timeout for connects and final net reads
+		-X proto	Proxy protocol: "4", "5" (SOCKS) or "connect"
+		-x addr[:port]	Specify proxy address and port
+		-Z		DCCP mode
+		-z		Zero-I/O mode [used for scanning]
+	Port numbers can be individual or ranges: lo-hi [inclusive]
+cmd_rc=0
+no_direct_root_marker
+rc=0
+## attacker service start and manager-env attempts
+### attacker: 
+for cmd in \
+  "systemctl start tcpdump.service" \
+  "systemctl start rsync.service" \
+  "systemctl set-environment PATH=$HOME/network_diagnostics_tools_probe:$PATH"; do
+  echo "--- $cmd"
+  timeout 6s bash -lc "$cmd" 2>&1 | sed -n "1,80p"
+  echo cmd_rc=${PIPESTATUS[0]}
+done
+
+--- systemctl start tcpdump.service
+Failed to start tcpdump.service: Interactive authentication required.
+See system logs and 'systemctl status tcpdump.service' for details.
+cmd_rc=1
+--- systemctl start rsync.service
+Failed to start rsync.service: Interactive authentication required.
+See system logs and 'systemctl status rsync.service' for details.
+cmd_rc=1
+--- systemctl set-environment PATH=/home/attacker/network_diagnostics_tools_probe:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+Failed to set environment: Access denied
+cmd_rc=1
+rc=0
+## root fixed-trigger sanity check
+### root: systemctl start rsync.service 2>&1; echo rsync_start_rc=$?; systemctl status rsync.service --no-pager -l 2>&1 | sed -n "1,80p"
+rsync_start_rc=0
+○ rsync.service - fast remote file copy program daemon
+     Loaded: loaded (/usr/lib/systemd/system/rsync.service; disabled; preset: enabled)
+     Active: inactive (dead)
+       Docs: man:rsync(1)
+             man:rsyncd.conf(5)
+
+May 16 18:45:24 4f5b414436ae systemd[1]: rsync.service - fast remote file copy program daemon was skipped because of an unmet condition check (ConditionPathExists=/etc/rsyncd.conf).
+rc=0
+## root proof before cleanup
+ROOT_PROOF=no
+## cleanup and health
+ABSENT /root/network_diagnostics_tools_lpe_marker
+ABSENT /home/attacker/network_diagnostics_tools_probe
+ABSENT /tmp/network_diag_attacker.pcap
+ABSENT /tmp/network_diag_rotate.pcap
+running

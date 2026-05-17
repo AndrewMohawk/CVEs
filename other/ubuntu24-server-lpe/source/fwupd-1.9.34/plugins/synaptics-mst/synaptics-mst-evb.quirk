@@ -1,0 +1,22 @@
+# Synaptics MST early validation board support
+#
+# This is not installed by default, but can be used to exercise new boards
+# that don't yet have customer ID or board ID bytes filled out.
+#
+# To use it, load the quirk file into the quirks directory for the fwupd installation
+# Usually this is /usr/share/fwupd/quirks.d
+#
+# Note: The flag "ignore-board-id" will be used to ignore the board ID checking in
+# during flashing. This shouldn't be used in practice for production boards.
+#
+
+[MST-4]
+Name = Synaptics Carrera EVB R2
+SynapticsMstDeviceKind = carrera_evb_r2
+
+[MST-2]
+Name = Synaptics EVB development board
+SynapticsMstDeviceKind = panamera_evb
+
+[MST-panamera_evb-vmm5331-2]
+Flags = ignore-board-id
